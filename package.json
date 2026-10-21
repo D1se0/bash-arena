@@ -1,0 +1,37 @@
+{
+  "name": "bash-arena",
+  "version": "0.1.0",
+  "private": true,
+  "description": "bash-arena — plataforma web de práctica de Linux con terminal real (Ubuntu en Docker), niveles gamificados y progreso persistente",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "app/server",
+    "app/client",
+    "docs-site"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc -p app/server --noEmit && tsc -p app/client --noEmit && tsc -p docs-site --noEmit",
+    "test": "npm run test --workspaces --if-present && npm run test:e2e",
+    "test:unit": "npm run test --workspace app/server",
+    "test:e2e": "npm run test:e2e",
+    "postinstall": "node -e \"console.log('bash-arena workspaces ready')\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^22.18.0",
+    "eslint": "^9.36.0",
+    "prettier": "^3.6.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.44.0",
+    "vitest": "^3.2.0"
+  },
+  "packageManager": "npm@9.2.0"
+}

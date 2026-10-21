@@ -1,0 +1,43 @@
+id: boss-l2
+track: boss
+title: Caza mayor II
+subtitle: find -newer, mtime
+xp: 90
+difficulty: 4
+brief: >
+  Cientos de ficheros idénticos, y solo UNO fue tocado hace minutos
+  (los demás tienen fechas viejas). `find -newer REF` dife truncate
+  o `find -mmin`. La salida del recién pizzado es la flag.
+goal: >
+  En /var/dojo/estantería hay libros .txt idénticos por fuera; solo
+  uno fue modificado en los últimos minutos. Identifica cuál por
+  fecha (find -newer o sort por mtime) y muéstrame su línea clave.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "BOSS 02" "Boss"
+  mkdir -p /var/dojo/estantería
+  for i in $(seq 1 200); do
+    printf 'libro %d con la misma portada y el mismo texto.\n' "$i" > "/var/dojo/estantería/libro-$i.txt"
+    touch -d '2019-01-01 00:00:00' "/var/dojo/estantería/libro-$i.txt"
+  done
+  printf 'edición recién impresa: %s\n' "$DOJO_FLAG" > /var/dojo/estantería/libro-100.txt
+  touch -m "/var/dojo/estantería/libro-100.txt"
+  chown -R agent:agent /var/dojo/estantería
+hints:
+  - "touch -t '202001010000' /tmp/REF crea un fichero-tótem viejo."
+  - "find /var/dojo/estantería -type f -newer /tmp/REF"
+  - "La variante simple: find … -mmin -10  (los últimos 10 minutos)."
+teach: >
+  `find` filtra por mtime: `-newer fichero` compara contra un REF;
+  `-mmin -10` busca tocados hace MENOS de 10 min, `-newermt 'YYYY-MM-DD'`
+  por fecha. Forenses buscan «lo recién cambiado» tras un intruso.
+cheatsheet:
+  - {cmd: 'find /r -newer REF', desc: más nuevo que REF}
+  - {cmd: 'find /r -mmin -10', desc: tocado hace menos de 10 min}
+  - {cmd: 'touch -m f', desc: refresca mtime}
+solution: |
+  find /var/dojo/estantería -type f -mmin -30 -exec cat {} \;
+
+keywords: [find, mtime]
+profile: default

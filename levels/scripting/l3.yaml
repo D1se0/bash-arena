@@ -1,0 +1,49 @@
+id: scripting-l3
+track: scripting
+title: La función encantada
+subtitle: funciones y argumentos "$@"
+xp: 60
+difficulty: 3
+brief: >
+  Un hechicero es hizo un script que solo desbloquea el truco correcto
+  si lo llamas con DOS argumentos en orden específico — y todo en
+  estilo shell, claro: invocando ./verso.sh arg1 arg2.
+goal: >
+  En /home/agent/verso.sh hay un script que exige (en orden): el primer
+  argumento 'abierto' y el segundo 'sésamo'. LÁNZALO correctamente
+  desde el shell (bash verso.sh abierto sésamo) y te dará la flag.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Scripting"
+  cat > /home/agent/verso.sh <<'EOF'
+  #!/bin/bash
+  # verso.sh — exige dos argumentos en el orden correcto
+  if [ "$#" -lt 2 ]; then
+    echo 'me faltan argumentos: verso.sh arg1 arg2'
+    exit 1
+  fi
+  if [ "$1" = "abierto" ] && [ "$2" = "sésamo" ]; then
+    echo "invocación correcta. Banner del honi: %s"
+  else
+    echo "argumentos incorrectos. Estoy siendo ejercitado…"
+  fi
+  EOF
+  sed -i "s|%s|$DOJO_FLAG|" /home/agent/verso.sh
+  chmod 0755 /home/agent/verso.sh
+hints:
+  - "bash /home/agent/verso.sh abierto sésamo"
+  - "'$#' cuenta argumentos; $1 y $2 son los primero y segundo."
+teach: >
+  `$1`..`$9` son argumentos posicionales; `$#` el número total; `$@`
+  todos, cada uno como está. Las funciones (`fn() { … }`) se llaman
+  como comandos con SUS argumentos locales a $1/$2 dentro.
+cheatsheet:
+  - {cmd: 'fn() { echo "$1"; }', desc: define una función}
+  - {cmd: '"$@"', desc: todos los args, cada uno como palabra}
+  - {cmd: '[ -f fichero ]', desc: test de existencia}
+solution: |
+  bash /home/agent/verso.sh abierto sésamo
+
+keywords: [funciones, args]
+profile: default

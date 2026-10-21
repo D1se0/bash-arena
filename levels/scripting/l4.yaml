@@ -1,0 +1,54 @@
+id: scripting-l4
+track: scripting
+title: El oráculo con opciones
+subtitle: getopts y argumentos con -x
+xp: 65
+difficulty: 3
+brief: >
+  El oráculo del dojo solo desvela la flag si le pasas las opciones
+  correctas en el orden que quiere (-k con valor clave) — y lanza un
+  mensaje de uso si te despistas. getopts es tu amiga.
+goal: >
+  El binario /usr/local/bin/oraculo solo imprime la flag si lo llamas
+  con -k seguido de la palabra 'matrix' (getopts clásico).
+  Ejecútalo correctamente.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 04" "Scripting"
+  cat > /usr/local/bin/oraculo <<'EOF'
+  #!/bin/bash
+  # oraculo — getopts: -k <palabra>
+  key=""
+  while getopts "k:vh" opt; do
+    case "$opt" in
+      k) key="$OPTARG" ;;
+      v) echo "oraculo v0.1 del dojo"; exit 0 ;;
+      *) echo "uso: oraculo -k <palabra-secreta>" >&2; exit 2 ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+  if [ "$key" = "matrix" ]; then
+    echo "@@@ %s @@@"
+  else
+    echo "clave inválida ('$key')"
+  fi
+  EOF
+  sed -i "s|%s|$DOJO_FLAG|" /usr/local/bin/oraculo
+  chmod 0755 /usr/local/bin/oraculo
+hints:
+  - "oraculo -k matrix"
+  - "Mira el script con cat: el uso correcto está en la línea de error."
+teach: >
+  `getopts "k:vh" opt` procesa opciones cortas: `k:` exige valor
+  (queda en $OPTARG). La forma correcta de escribir opciones es la
+  misma en cualquier script de sistema — y es lo que hace legible
+  a tus herramientas.
+cheatsheet:
+  - {cmd: 'while getopts "k:h" opt; do case $opt in k) K=$OPTARG;; esac; done', desc: patrón getopts}
+  - {cmd: 'shift $((OPTIND-1))', desc: deja solo los args restantes}
+solution: |
+  oraculo -k matrix
+
+keywords: [getopts]
+profile: default

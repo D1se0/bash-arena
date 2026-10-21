@@ -1,0 +1,40 @@
+id: procesado-l3
+track: procesado
+title: La llave partida
+subtitle: pipes, cat entre ficheros y tee
+xp: 45
+difficulty: 2
+brief: >
+  Por seguridad, la clave se partió en dos mitades que se distribuyeron
+  en dos ficheros. Un buen regresador las une con la tubería adecuada,
+  el mismo flujo… antes de que se pierdan.
+goal: >
+  Reconstruye la flag concatenando la 1ª y 2ª mitad de /var/dojo/mitad-a
+  y mitad-b en el orden correcto (sin salto de línea entre ambas) y
+  muéstralo.
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 03" "Procesado"
+  flag="$DOJO_FLAG"
+  half=$(( ${#flag} / 2 ))
+  printf '%s' "${flag:0:${half}}" > /var/dojo/mitad-a
+  printf '%s\n' "${flag:${half}}" > /var/dojo/mitad-b
+  chown agent:agent /var/dojo/mitad-a /var/dojo/mitad-b
+hints:
+  - "cat mitada-a mitad-b no funciona bien: mitad-a no acaba en salto de línea, mitad-b sí."
+  - "Solución simple: tr -d '\\n' < <(cat mitad-a mitad-b)  — o printf '%s%s\n' \"$(cat mitad-a)\" \"$(cat mitad-b)\"."
+teach: >
+  El operador pipe `|` sirve de frente común de los comandos; `tee`
+  duplica un stream hacia fichero y pantalla. Recuerda que cada
+  redirección `>` trunca y `>>` añade (append).
+cheatsheet:
+  - {cmd: 'cat a b', desc: concatena ficheros en salida}
+  - {cmd: 'cmd | tee fichero', desc: muestra y guarda a la vez}
+  - {cmd: 'cmd > fichero', desc: sobrescribe; >> añade al final}
+solution: |
+  cat /var/dojo/mitad-a /var/dojo/mitad-b
+
+keywords: [pipe, tee]
+profile: default

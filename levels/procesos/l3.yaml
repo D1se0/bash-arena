@@ -1,0 +1,40 @@
+id: procesos-l3
+track: procesos
+title: Bytes van al cielo
+subtitle: du, df y find por tamaño
+xp: 50
+difficulty: 2
+brief: >
+  Alguien llenó /var/dojo/silo con dat ficheros de ruido de tamaños
+  absurdos. El más grande conserva, como no, el secuestro.
+goal: >
+  En /var/dojo/silo hay ficheros de distintos tamaños; el fichero MAYOR
+  contiene la flag. Encuéntralo con du + sort + tail y muéstralo con cat.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Procesos"
+  mkdir -p /var/dojo/silo
+  for n in 4 8 16 32 64 128; do
+    dd if=/dev/zero of="/var/dojo/silo/blob-$((n)).dat" bs=1K count="$((n * 7))" 2>/dev/null
+  done
+  {
+    dd if=/dev/zero of="/var/dojo/silo/blob-madre.dat" bs=1K count=1024 2>/dev/null
+    printf '\nRADIOGRAFÍA: %s\n' "$DOJO_FLAG" >> /var/dojo/silo/blob-madre.dat
+  }
+  chown -R agent:agent /var/dojo/silo
+hints:
+  - "find /var/dojo/silo -type f -printf '%s %p\\n' | sort -n | tail -3 saca los mayores (por bytes)."
+  - "cat $(find /var/dojo/silo -type f -printf '%s %p\\n' | sort -n | tail -1 | cut -d' ' -f2-)"
+teach: >
+  `du -a` lista el tamaño de cada fichero/archivo; en disco `df` reporta
+  filesystems. `sort -n | tail -1` ordena numéric y coje el mayor.
+cheatsheet:
+  - {cmd: 'du -ah ruta', desc: tamaño por elemento + total}
+  - {cmd: df -h, desc: espacio de filesystems}
+  - {cmd: 'du -a | sort -rn | head', desc: los mayores primero}
+solution: |
+  cat "$(find /var/dojo/silo -type f -printf '%s %p\n' | sort -n | tail -1 | cut -d' ' -f2-)"
+
+keywords: [du, df]
+profile: default

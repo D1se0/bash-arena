@@ -1,0 +1,40 @@
+id: fundamentos-l2
+track: fundamentos
+title: Rutas y navegación
+subtitle: cd, pwd, rutas absolutas y relativas
+xp: 30
+difficulty: 1
+brief: >
+  Un mensaje cifrado quedó enterrado en una estructura de carpetas con
+  trampas: carpetas con nombres parecidos (misi0n, mision, MISION…).
+goal: >
+  Navega por la estructura de /home/agent/empresa, encuentra el único fichero
+  llamado nota.txt dentro de la carpeta correcta (la real, no las señuelos que
+  contienen trampas) y muéstralo.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Fundamentos"
+  mkdir -p /home/agent/empresa/{misi0n,mision,MISION,backup}
+  for d in misi0n MISION backup; do
+    printf 'Carpeta trampa. Sigue buscando.\n' > "/home/agent/empresa/$d/nota.txt"
+  done
+  echo "Código de la misión: $DOJO_FLAG" > /home/agent/empresa/mision/nota.txt
+  chown -R agent:agent /home/agent/empresa
+hints:
+  - "Compara el nombre de cada carpeta octavo a octavo: eres imperfecto como nadie."
+  - "Compara el nombre exacto letra a letra con ls /home/agent/empresa."
+  - "cat /home/agent/empresa/mision/nota.txt"
+teach: >
+  Una ruta absoluta (/home/…) empieza en la raíz; una relativa empieza en
+  tu posición actual. `cd ~` te lleva a home y `cd ..` sube un nivel.
+  Verifica dónde estás con `pwd` antes de fiarte de las rutas relativas.
+cheatsheet:
+  - {cmd: cd ruta, desc: cambia de directorio (absoluta con /, relativa sin)}
+  - {cmd: pwd, desc: muestra la ruta actual}
+  - {cmd: cd .., desc: sube un nivel}
+solution: |
+  cat /home/agent/empresa/mision/nota.txt
+
+keywords: [cd, pwd, rutas]
+profile: default

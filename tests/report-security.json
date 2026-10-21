@@ -1,0 +1,60 @@
+{
+  "generated": "2026-10-21T16:33:15.133Z",
+  "results": [
+    {
+      "name": "docker.sock NO montado en el contenedor de sesión",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sin salida externa (curl 8.8.8.8)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ping denegado (sin NET_RAW)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "asignación de 300MB abortada (mem limit 256MB)",
+      "ok": true,
+      "detail": "RC=137"
+    },
+    {
+      "name": "agent no puede escribir /etc",
+      "ok": true,
+      "detail": "touch: cannot touch '/etc/dojo-probe': Permission denied\nETC-DENIED"
+    },
+    {
+      "name": "agent no puede leer /root",
+      "ok": true,
+      "detail": "cat: /root/dojo: Permission denied\nROOT-DENIED"
+    },
+    {
+      "name": "sin CAP_SYS_PTRACE",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sin CAP_NET_RAW",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "NoNewPrivs activo",
+      "ok": true,
+      "detail": "NoNewPrivs:\t1"
+    },
+    {
+      "name": "fork bomb contenida (contenedor sigue Running — verificado desde el host)",
+      "ok": true,
+      "detail": "status=running"
+    },
+    {
+      "name": "cliente WS disponible para pruebas de abuso",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

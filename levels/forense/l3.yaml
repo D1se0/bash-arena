@@ -1,0 +1,40 @@
+id: forense-l3
+track: forense
+title: Basura con joyas
+subtitle: hexdump y grep binario
+xp: 65
+difficulty: 3
+brief: >
+  Un binario correcto con basura de bytes lejos ocupa casi 2.000 bytes
+  y las herramientas de texto se tragan la mayor parte. La flag está
+  incrustada en texto plano en algún byte.
+goal: >
+  En /var/dojo/core-dump existe un dump con bytes raros; en algún hueco
+  placa textual está FLAG{...}. Recuperala: puedes con xxd (hexdump) +
+  grep, o con grep -a (aclara: grep trata el fichero como texto plano).
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 03" "Forense"
+  dd if=/dev/urandom of=/var/dojo/core-dump bs=2048 count=1 2>/dev/null
+  printf '\nLa joya escondida: %s\n' "$DOJO_FLAG" >> /var/dojo/core-dump
+  dd if=/dev/urandom of=/var/dojo/core-dump bs=1024 count=1 oflag=append conv=notrunc 2>/dev/null
+  chown agent:agent /var/dojo/core-dump
+hints:
+  - "grep -a 'FLAG{' /var/dojo/core-dump — el -a fuerza modo texto."
+  - "xxd fichero | grep 'FLAG{' también funciona (con cuidado con bytes raros)."
+teach: >
+  `grep` por defecto se niega a procesar el binario; `-a` (text-jump)
+  fuerza la lectura texto. `xxd` vuelca hexadecimal para el análisis
+  forense clásico. Si tu herramienta falla con bytes raros, reduce a
+  octetos con `xxd -r -p` (reconstruye el binario del hex).
+cheatsheet:
+  - {cmd: 'grep -a patrón fichero', desc: grep en binarios como texto}
+  - {cmd: 'xxd fichero', desc: volcado hexadecimal}
+  - {cmd: 'xxd -r -p', desc: hex/plain → binario}
+solution: |
+  grep -a 'FLAG{' /var/dojo/core-dump
+
+keywords: [grep-a, xxd]
+profile: default

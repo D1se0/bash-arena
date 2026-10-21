@@ -1,0 +1,39 @@
+id: busqueda-l2
+track: busqueda
+title: Bosque de ficheros
+subtitle: grep -r
+xp: 40
+difficulty: 2
+brief: >
+  Un directorio con decenas de subcarpetas esconde un fichero con la
+  palabra clave. Nadie sabe en cuál: buscar fichero a fichero es perder
+  el día.
+goal: >
+  Busca RECURSIVAMENTE en /var/dojo/proyecto la línea que contiene FLAG{
+  y muestra el resultado completo (fichero y línea).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Búsqueda"
+  mkdir -p /var/dojo/proyecto/{src,docs,tools/{assets,scripts},tests}
+  for d in src docs tools/assets tools/scripts tests; do
+    printf '// código sin nada especial (%s)\n' "$d" > "/var/dojo/proyecto/$d/fichero$(echo "$d" | tr / _).txt"
+  done
+  printf '## Nota interna:\ncódigo: %s\n' "$DOJO_FLAG" > /var/dojo/proyecto/tools/scripts/deploy-notes.txt
+  find /var/dojo/proyecto -type d -exec chown agent:agent {} +
+  find /var/dojo/proyecto -type f -exec chown agent:agent {} +
+hints:
+  - "grep -r busca en todos los ficheros de un árbol de carpetas."
+  - "grep -rn añade número de línea: tú decides, simplemente -r basta."
+teach: >
+  `grep -r patrón carpeta` recorre el árbol completo. Con `grep -rl`
+  puedes listar solo los nombres de fichero. Para combinar con find
+  considera xargs en el nivel 5.
+cheatsheet:
+  - {cmd: 'grep -r patrón carpeta', desc: búsqueda recursiva}
+  - {cmd: 'grep -rn patrón', desc: incluye número de línea}
+solution: |
+  grep -r FLAG /var/dojo/proyecto
+
+keywords: [grep-r, recursivo]
+profile: default

@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --arena-bg: #191d24;
+  --arena-panel: #22262e;
+  --arena-ice: #88c0d0;
+  --arena-morado: #b48ead;
+  --arena-num: 163, 190, 140;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(94, 129, 172, 0.16), transparent 70%),
+    radial-gradient(900px 400px at 10% 110%, rgba(180, 142, 173, 0.14), transparent 60%),
+    var(--arena-bg);
+  color: #d8dee9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* scrollbar discreta */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #3b4252;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* efecto CRT opcional (babel del tema 'crt') */
+.arena-terminal.crt {
+  filter: saturate(1.08) contrast(1.06);
+  position: relative;
+}
+.arena-terminal.crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0) 3px);
+  mix-blend-mode: multiply;
+  border-radius: 12px;
+}
+
+/* técnicamente la terminal xterm necesita línea base mínima */
+.xterm .xterm-viewport {
+  background-color: transparent !important;
+}
+
+/* flash ✨ para submit correcto */
+@keyframes arena-pop {
+  0% { transform: scale(0.94); opacity: 0; }
+  60% { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.arena-pop {
+  animation: arena-pop 0.32s ease-out both;
+}
+
+/* mini accesibilidad: skip-links y focus visible */
+:focus-visible {
+  outline: 2px solid var(--arena-ice);
+  outline-offset: 2px;
+}

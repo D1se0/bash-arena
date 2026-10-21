@@ -1,0 +1,49 @@
+id: scripting-l2
+track: scripting
+title: El guardián de la puerta
+subtitle: variables, case y argumentos
+xp: 55
+difficulty: 3
+brief: >
+  Un script portero (/usr/local/bin/portero) solo abre si le pasas la
+  palabra correcta como argumento. La pista para adivinarla está en
+  /home/agent/pista-portero.txt… escrita del revés, eso sí.
+goal: >
+  Lee la pista, descubre la palabra (está invertida en la pista),
+  invoca al portero con ella y recoge la flag que entrega.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Scripting"
+  cat > /usr/local/bin/portero <<'EOF'
+  #!/bin/bash
+  # portero del dojo: se abre con la palabra correcta en $1
+  case "${1:-}" in
+    espiral) echo "Puerta abierta. Clave: %s" ;;
+    *) echo "Nada de nada. Aporta la palabra correcta." ;;
+  esac
+  EOF
+  sed -i "s|%s|$DOJO_FLAG|" /usr/local/bin/portero
+  chmod 0755 /usr/local/bin/portero
+  printf 'La palabra está desdorada: laropse (ñaka ñaka)\n' > /home/agent/pista-portero.txt
+  chown agent:agent /home/agent/pista-portero.txt
+hints:
+  - "cat /home/agent/pista-portero.txt — la palabra aparece escrita del revés."
+  - "Inviértela (rev, o a ojo): queda 'espiral'."
+  - "portero espiral"
+teach: >
+  `case $x in patrón) cmd;; esac` ramifica por valor sin if/elif.
+  Las variables se leen con $var y entre comillas dobles conservan
+  espacios. Si el portero se resiste, `cat` del script enseña su
+  lógica (y a veces, sus secretos — lección sobre NO meter secretos
+  en scripts legibles).
+cheatsheet:
+  - {cmd: 'case $1 in a) …;; b) …;; esac', desc: ramifica por valor}
+  - {cmd: 'var=valor', desc: define sin espacios alrededor del =}
+  - {cmd: 'rev fichero', desc: invierte caracteres por línea}
+solution: |
+  cat /home/agent/pista-portero.txt
+  portero espiral
+
+keywords: [case, variables]
+profile: default

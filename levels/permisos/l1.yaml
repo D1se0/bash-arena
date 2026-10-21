@@ -1,0 +1,35 @@
+id: permisos-l1
+track: permisos
+title: Cerrado con todo
+subtitle: chmod y sudo
+xp: 50
+difficulty: 3
+brief: >
+  El dueño anterior dejó un fichero con la clave pero con permisos 0600
+  y propietario root. Un admin legítimo corrige permisos, no fuerza.
+goal: >
+  El fichero /home/agent/bóveda.txt es de root con permiso 600. Dale
+  permiso de lectura al agente (chmod) de forma correcta y léelo.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Permisos"
+  echo "$DOJO_FLAG" > /home/agent/bóveda.txt
+  chown root:root /home/agent/bóveda.txt
+  chmod 600 /home/agent/bóveda.txt
+hints:
+  - "sudo chmod 0644 /home/agent/bóveda.txt"
+teach: >
+  `chmod 644 fichero` = dueño escribe/lee, grupo lee, otros leen. `chmod
+  u+x` activa ejecución del dueño. Cambiar permisos de ficheros ajenos
+  exige root (sudo). En el dojo tienes sudo de confianza.
+cheatsheet:
+  - {cmd: 'chmod 644 f', desc: dueño rw, grupo/otros r}
+  - {cmd: 'chmod u+x f', desc: añade ejecución al dueño}
+  - {cmd: 'sudo chmod …', desc: eleva permisos con sudo}
+solution: |
+  sudo chmod 0644 /home/agent/bóveda.txt
+  cat /home/agent/bóveda.txt
+
+keywords: [chmod, sudo]
+profile: sudo

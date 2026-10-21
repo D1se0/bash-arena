@@ -1,0 +1,48 @@
+id: scripting-l5
+track: scripting
+title: Legion de fragmentos
+subtitle: boss — bucles + base64
+xp: 85
+difficulty: 4
+brief: >
+  La clave fue codificada a base64 y troceada en 5 ficheros (a..e).
+  Los pedazos solo valen juntos: concatenados EN ORDEN alfabético
+  forman el base64 completo, que decodificado revela la flag.
+goal: >
+  Concatena en orden alfabético los ficheros .b64 de /var/dojo/fragmentos,
+  decodifica el resultado UNA VEZ y muestra la flag completa.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 05" "Scripting"
+  mkdir -p /var/dojo/fragmentos
+  printf '%s' "$DOJO_FLAG" | base64 -w0 > /var/dojo/.frag
+  len=$(wc -c < /var/dojo/.frag)
+  sz=$(((len + 4) / 5))
+  split -d -b "$sz" /var/dojo/.frag /var/dojo/fragsplit-
+  sufs=(a b c d e)
+  i=0
+  for f in /var/dojo/fragsplit-*; do
+    mv "$f" "/var/dojo/fragmentos/${sufs[$i]}.b64"
+    i=$((i + 1))
+  done
+  rm -f /var/dojo/.frag
+  chown -R agent:agent /var/dojo/fragmentos
+hints:
+  - "cat /var/dojo/fragmentos/a.b64 /var/dojo/fragmentos/b.b64 … (en orden) une los base64."
+  - "cat /var/dojo/fragmentos/*.b64 | base64 -d hace todo de golpe: el globo * sigue el orden alfabético."
+  - "atención: decodifica UNA sola vez sobre la concatenación, no fragmento a fragmento."
+teach: >
+  El glob `*` expande en orden alfabético: por eso `cat fragdir/*.b64
+  | base64 -d` rearma lo troceado. Recuerda: base64 exige bloques de
+  4 caracteres — si troceas en el medio, cada fragmento por separado
+  NO es base64 válido; solo la concatenación lo es.
+cheatsheet:
+  - {cmd: 'cat /dir/*.b64', desc: concatena en orden alfabético}
+  - {cmd: 'base64 -d', desc: decodifica base64 de stdin}
+  - {cmd: 'cmd; echo', desc: añade salto de línea final para verlo limpio}
+solution: |
+  cat /var/dojo/fragmentos/*.b64 | base64 -d; echo
+
+keywords: [for, base64, boss]
+profile: default

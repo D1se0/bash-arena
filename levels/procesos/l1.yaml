@@ -1,0 +1,38 @@
+id: procesos-l1
+track: procesos
+title: El proceso bocazas
+subtitle: ps aux + grep
+xp: 45
+difficulty: 2
+brief: >
+  Un demonio despistado fue arrancado con su secreto en la propia línea de
+  comando. Los argumentos de un proceso son públicos para quien sepa mirar.
+goal: >
+  Encuentra el proceso cuyo comando contiene FLAG{ y muestra su full
+  commandline (la línea completa del ps aux).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Procesos"
+  printf 'El símbolo del dojo está en el proceso:\n' > /home/agent/pista.txt
+  setsid python3 -c "import time
+  time.sleep(30000)" "$DOJO_FLAG" >/dev/null 2>&1 &
+  disown
+  chown agent:agent /home/agent/pista.txt
+hints:
+  - "ps aux | grep FLAG"
+teach: >
+  `ps aux` lista todos los procesos con PID, CPU, usuario y el
+  commandline completo — que es público: cualquiera puede verlo con
+  `ps -ef` o leyendo /proc/PID/cmdline. NUNCA pongas secretos en la
+  línea de comandos de un proceso real: ese es el educativo punto.
+  `pgrep -f 'patrón'` te devuelve los PIDs que casan directamente.
+cheatsheet:
+  - {cmd: 'ps aux | grep patrón', desc: busca un proceso concreto}
+  - {cmd: 'pgrep -f patrón', desc: solo PIDs que casan}
+  - {cmd: 'ps -ef', desc: formato alternativo con PPID}
+solution: |
+  ps aux | grep 'FLAG{' | grep -v grep
+
+keywords: [ps, pgrep]
+profile: default

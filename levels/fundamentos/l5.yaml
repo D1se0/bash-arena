@@ -1,0 +1,42 @@
+id: fundamentos-l5
+track: fundamentos
+title: Laberinto de ficheros
+subtitle: boss — cd profundo, ls, cat, rutas
+xp: 60
+difficulty: 3
+brief: >
+  El instructor ha escondido una flag en lo más profundo de un laberinto
+  de carpetas. Cada nivel del laberinto tiene un aviso que te orienta
+  (o te despista). Confía solo en lo que veas: lee los avisos con cat.
+goal: >
+  Sigue los avisos que hay en cada aviso.txt, encuentra el fichero pentagram
+  que contiene la flag y muéstralo completo.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 05" "Fundamentos"
+  rm -rf /home/agent/lab
+  mkdir -p /home/agent/lab/.oculto/nivel1/{portal,biblioteca,bodegon}
+  printf 'No aquí. La pista real está DOS niveles más abajo, en .oculto.\n' > /home/agent/aviso.txt
+  printf 'Avanza hacia .caldera: el código te espera.\n' > /home/agent/lab/.oculto/aviso.txt
+  mkdir -p /home/agent/lab/.oculto/nivel1/bodegon/.caldera
+  printf 'Clave: %s\n' "$DOJO_FLAG" > /home/agent/lab/.oculto/nivel1/bodegon/.caldera/pentagram
+  find /home/agent/lab -type d -exec chown agent:agent {} +
+hints:
+  - "Empieza por el aviso de tu home y ve siguiendo los aviso.txt con cat."
+  - "La carpeta objetivo es .caldera (empieza por punto), dentro de .oculto/nivel1."
+teach: >
+  En Linux los ficheros ocultos empiezan por punto y las rutas anidadas se
+  escriben — no hay mágia real: cat + cd + ls resuelven laberintos.
+  `cat fichero` solo funciona si el fichero existe y puedes leerlo.
+cheatsheet:
+  - {cmd: cat ruta, desc: muestra ficheros}
+  - {cmd: 'ls -la', desc: listar los ficheros ilegibles/completos}
+  - {cmd: 'cd carpeta/.sub', desc: navegar subcarpetas ocultas}
+solution: |
+  cat ~/aviso.txt
+  cat ~/lab/.oculto/aviso.txt
+  cat ~/lab/.oculto/nivel1/bodegon/.caldera/pentagram
+
+keywords: [boss, cd, ls, cat]
+profile: default

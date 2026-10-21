@@ -1,0 +1,40 @@
+id: fundamentos-l4
+track: fundamentos
+title: Limpieza quirúrgica
+subtitle: globbing, for, rm seguro
+xp: 40
+difficulty: 2
+brief: >
+  En /var/dojo/ruido hay 40 ficheros .trash que ensucian el disco. Entre ellos
+  hay uno que NO es basura: .importantísimo con la clave de cifrado. Tienes
+  que limpiar los .trash SIN borrar la clave.
+goal: >
+  Elimina todos los ficheros *.trash de /var/dojo/ruido, deja intactos
+  los demás y muéstrame por pantalla el único que queda con contenido.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 04" "Fundamentos"
+  mkdir -p /var/dojo/ruido
+  for i in $(seq 1 40); do
+    printf 'basura %d\n' "$i" > "/var/dojo/ruido/registro-$i.trash"
+  done
+  printf 'clave %s\n' "$DOJO_FLAG" > /var/dojo/ruido/.importantísimo
+  chown -R agent:agent /var/dojo
+hints:
+  - "El rm acepta comodines: rm /ruta/*.trash solo toca los .trash."
+  - "Las claves ocultas empiezan por punto (ls -a)."
+teach: >
+  El shell expande `*` antes de que rm lo vea, así que /ruido/*.trash es una
+  lista explícita de ficheros. `rm -i` pide confirmación uno a uno: útil
+  cuando dudas. Cuidado con `rm -rf` en rutas mal escritas.
+cheatsheet:
+  - {cmd: 'rm fichero', desc: borra (-r para carpetas, -i pide confirmación)}
+  - {cmd: 'ls -a', desc: lista también los ocultos con punto}
+  - {cmd: 'echo "texto con espacios"', desc: comillas dobles para preservar espacios}
+solution: |
+  rm -f /var/dojo/ruido/*.trash
+  cat /var/dojo/ruido/.importantísimo
+
+keywords: [rm, globbing, ls, -a]
+profile: default

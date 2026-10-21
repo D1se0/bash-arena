@@ -1,0 +1,37 @@
+id: filtrado-l1
+track: filtrado
+title: Primeras líneas
+subtitle: head
+xp: 30
+difficulty: 1
+brief: >
+  Un volcado de telemetría de 5.000 líneas empieza con una cabecera
+  administrativa. La primera línea útil del volcado lleva la flag.
+goal: >
+  El fichero /var/log/telemetry.log tiene 5000 líneas; el código está en
+  las 5 primeras. Solo usa head para verlas.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Filtrado"
+  { printf 'CABECERA — registro sensible. NO difundir.\n'
+    printf 'origen: equipo dojo · fecha: hoy\n'
+    printf 'código maestro: %s\n' "$DOJO_FLAG"
+    printf 'resto de telemetría repetitiva:\n'
+    seq 1 5000 | sed 's/^/ evento /'
+  } > /var/log/telemetry.log
+  chown agent:agent /var/log/telemetry.log
+hints:
+  - "head muestra el principio: head fichero (10 líneas por defecto)."
+  - "head -n 5 fichero limita el número de líneas."
+teach: >
+  `head -n N fichero` te ahorra leer megas cuando el dato está al
+  principio. `head -c N` limita por bytes. El complemento natural es `tail`.
+cheatsheet:
+  - {cmd: 'head -n 5 fichero', desc: muestra las primeras N líneas}
+  - {cmd: 'head -c 100 fichero', desc: primeros N bytes}
+solution: |
+  head -n 5 /var/log/telemetry.log
+
+keywords: [head]
+profile: default

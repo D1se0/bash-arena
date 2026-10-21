@@ -1,0 +1,36 @@
+id: busqueda-l1
+track: busqueda
+title: La aguja
+subtitle: grep básico
+xp: 35
+difficulty: 1
+brief: >
+  Una pila de 2000 líneas de acceso al servidor contiene exactamente una
+  línea con la palabra clave del agente. Nadie la va a leer a ojo.
+goal: >
+  El fichero /var/log/access.log tiene 2000 líneas. Usa grep para localizar
+  la única línea que empieza por "FLAG{" y muéstrala.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Búsqueda"
+  {
+    awk 'BEGIN{for(i=1;i<=1999;i++) printf "192.0.2.%d GET /index.html 200\n", i}'
+    printf '%s 200\n' "$DOJO_FLAG"
+  } > /var/log/access.log
+  chown agent:agent /var/log/access.log
+hints:
+  - "grep PATRÓN fichero imprime las líneas que casan."
+  - "grep '^FLAG{' /var/log/access.log ancla al inicio de línea."
+teach: >
+  `grep` busca en ficheros y streams. Con '^' anclas al principio, '$' al
+  final, '.' vale por cualquier carácter. Añade --color=auto y serás feliz.
+cheatsheet:
+  - {cmd: 'grep patrón fichero', desc: muestra líneas que contienen el patrón}
+  - {cmd: 'grep -i patrón', desc: ignora mayúsculas/minúsculas}
+  - {cmd: 'grep -v patrón', desc: líneas que NO casan}
+solution: |
+  grep '^FLAG{' /var/log/access.log
+
+keywords: [grep]
+profile: default

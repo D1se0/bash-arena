@@ -1,0 +1,47 @@
+id: procesos-l2
+track: procesos
+title: Apagar la radio
+subtitle: kill, señales y demonios
+xp: 50
+difficulty: 3
+brief: >
+  Una radio pirata (proceso hunterd) emite un fragmento de los datos cada
+  pocos segundos, alterando el log. Hay que apagarla con la señal correcta
+  y luego ordenar el menú: el log guarda la clave sectorizada.
+goal: >
+  Mata el proceso emisor (hunterd) con la señal TERM, espera 2 segundos,
+  y luego lee /var/log/hunter.log completo. Contiene la clave completa.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Procesos"
+  cat > /usr/local/bin/hunterd <<EOF
+  #!/bin/bash
+  while true; do
+    echo "\$(date +%s) emit:: $DOJO_FLAG fragmento-\$RANDOM" >> /var/log/hunter.log
+    sleep 3
+  done
+  EOF
+  chmod 0755 /usr/local/bin/hunterd
+  touch /var/log/hunter.log && chown agent:agent /var/log/hunter.log
+  su agent -c 'setsid /usr/local/bin/hunterd >/dev/null 2>&1 &'
+  sleep 1
+hints:
+  - "pgrep -f hunterd para concretar el PID; kill PID para TERM."
+  - "killall hunterd o pkill -f hunterd también van."
+  - "después: cat /var/log/hunter.log"
+teach: >
+  `kill -TERM PID` pide finalización limpia (la señal por omisión de kill).
+  `-KILL` (9) es el «espadón» que no puede ser ignorado. `killall` y
+  `pkill -f` apuntan por nombre. Verifica procesos al acecho con `ps`.
+cheatsheet:
+  - {cmd: kill PID, desc: envía TERM}
+  - {cmd: 'kill -9 PID', desc: fuerza SIGKILL}
+  - {cmd: 'pkill -f nombre', desc: mata por patrón de cmdline}
+solution: |
+  pkill -f '[h]unterd$' || true
+  sleep 2
+  cat /var/log/hunter.log
+
+keywords: [kill, pkill, señales]
+profile: default

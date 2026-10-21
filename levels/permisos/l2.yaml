@@ -1,0 +1,35 @@
+id: permisos-l2
+track: permisos
+title: Propiedad heredada
+subtitle: chown y sudo
+xp: 50
+difficulty: 3
+brief: >
+  Otro clásico: el fichero es de root y el agente no debe forzarlo, sino
+  reclamar la propiedad legítima. chown es la herramienta del dueño.
+goal: >
+  Cambia la propiedad del fichero /home/agent/config-premium.conf de root
+  a agent y muéstralo (contiene la flag).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Permisos"
+  echo "$DOJO_FLAG" > /home/agent/config-premium.conf
+  chown root:root /home/agent/config-premium.conf
+  chmod 600 /home/agent/config-premium.conf
+hints:
+  - "sudo chown agent:agent /home/agent/config-premium.conf"
+  - "tras el chown los permisos 600 ya te dejan leer como dueño."
+teach: >
+  `chown usuario:grupo fichero` transfiere propiedad; solo root puede
+  quitar/poner dueños ajenos. La forma `chown :grupo` cambia solo grupo.
+cheatsheet:
+  - {cmd: 'chown user f', desc: cambia propietario}
+  - {cmd: 'chown user:grupo f', desc: cambia propietario y grupo}
+  - {cmd: 'ls -l f', desc: muestra permisos y dueños}
+solution: |
+  sudo chown agent:agent /home/agent/config-premium.conf
+  cat /home/agent/config-premium.conf
+
+keywords: [chown, sudo]
+profile: sudo

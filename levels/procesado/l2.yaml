@@ -1,0 +1,42 @@
+id: procesado-l2
+track: procesado
+title: Cirugía de líneas
+subtitle: sed de sustitución
+xp: 50
+difficulty: 3
+brief: >
+  Un informe redactado con spam alrededor de la frase clave. La clave
+  está envuelta en unos corchetes con un delimitador raro que la separa
+  del contexto.
+goal: >
+  En /var/dojo/informe.md la única línea con la frase EXTRAIDO ### FLAG{...}
+  ### es la buena. Con sed, extrae SOLO lo que está entre los delimitadores
+  ### ... ### (sin incluirlos) y muéstralo.
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 02" "Procesado"
+  {
+    printf '# Informe diario de novedades\\n'
+    printf 'Todo en orden. Rotaciones ejecutadas correctamente.\\n'
+    printf 'EXTRAIDO ### %s ### firma del operador\\n' "$DOJO_FLAG"
+    printf 'Sesión cerrada con éxito.\\n'
+  } > /var/dojo/informe.md
+  chown agent:agent /var/dojo/informe.md
+hints:
+  - "Con sed puedes: sed 's/EXTRAIDO ### \\(.*\\) ###.*/\\1/' coge solo el grupo \\1."
+  - "Alternativa moderna: grep -oE '### [^#]+ ###' y recortes con cut."
+teach: >
+  La sintaxis documentada de sed `s/PATRON/REEMPLAZO/` es la base de la
+  sustitución. `\\(...\\)` captura grupos que luego se referencian como
+  `\\1` en el reemplazo. Para cortes simples también sirve `cut -d#`.
+cheatsheet:
+  - {cmd: "sed 's/a/b/' f", desc: sustituye primera aparición por línea}
+  - {cmd: "sed 's/a/b/g' f", desc: sustituye todas (g de global)}
+  - {cmd: "sed -n '5,10p' f", desc: imprime líneas 5 a 10}
+solution: |
+  grep EXTRAIDO /var/dojo/informe.md | sed 's/EXTRAIDO ### \(.*\) ###.*/\1/'
+
+keywords: [sed]
+profile: default

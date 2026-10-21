@@ -1,0 +1,41 @@
+id: archivos-l3
+track: archivos
+title: El maletín en los abismos
+subtitle: unzip
+xp: 50
+difficulty: 2
+brief: >
+  Un agente movió todo a un zip con estructura interna profunda. La
+  clave está en el fichero mas profundo del arbol interno.
+goal: >
+  En /var/dojo/maletín.zip hay un árbol interno de carpetas con un
+  fichero que contiene la flag. Localiza su ruta interna (unzip -l),
+  extrae (unzip) y muéstralo por cat.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Archivos"
+  rm -rf /var/dojo/tmpz
+  mkdir -p /var/dojo/tmpz/fondos/lote3/no-lucer
+  printf 'copia-oferta-03\n' > /var/dojo/tmpz/fondos/lote3/no-lucer/intermedio.txt
+  printf 'clave: %s\n' "$DOJO_FLAG" > /var/dojo/tmpz/fondos/lote3/no-lucer/interior.txt
+  cd /var/dojo/tmpz && zip -qr /var/dojo/maletin.zip . && cd /
+  rm -rf /var/dojo/tmpz
+  chown agent:agent /var/dojo/maletin.zip
+hints:
+  - "unzip -l fichero.zip lista sin extraer (l=list)."
+  - "unzip maletin.zip -d /tmp/extrae lo extrae en /tmp/extrae."
+teach: >
+  `zip -r pack.zip carpeta` crea (recursivo); `unzip -l` lee el índice;
+  `unzip pack.zip -d destino` extrae a un sitio concreto. Contrasta con
+  tar: zip comparte formatos multiplataforma (Windows-friendly).
+cheatsheet:
+  - {cmd: 'unzip -l pack.zip', desc: listar contenido sin extraer}
+  - {cmd: 'unzip pack.zip -d dir', desc: extraer a dir}
+solution: |
+  mkdir -p /tmp/extraigo
+  unzip -o /var/dojo/maletin.zip -d /tmp/extraigo
+  cat /tmp/extraigo/fondos/lote3/no-lucer/interior.txt
+
+keywords: [zip, unzip]
+profile: default

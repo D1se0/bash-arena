@@ -1,0 +1,40 @@
+id: busqueda-l5
+track: busqueda
+title: Pipeline forense
+subtitle: find + xargs (boss)
+xp: 60
+difficulty: 3
+brief: >
+  Un parche con nombres raros (espacios y acentos) esconde el momento en
+  que la clave llegó a /var/dojo/cartera. Tienes que find it + xargs o
+  grep -r; elige tu arma.
+goal: >
+  En algún fichero del árbol /var/dojo/cartera hay una línea con la marca
+  FLAG{. Localiza el fichero con find/grep -r y muestra la línea completa
+  con el contenido.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 05" "Búsqueda"
+  rm -rf /var/dojo/cartera
+  mkdir -p '/var/dojo/cartera/sin títulos raros'
+  mkdir -p '/var/dojo/cartera/asuntos pendientes/dir dos'
+  printf 'nota: sin nada %s\n' "lote 1" > '/var/dojo/cartera/sin títulos raros/a.txt'
+  printf 'nota: nada aquí\n' > '/var/dojo/cartera/asuntos pendientes/dir dos/b.txt'
+  printf 'transacción aprobada: %s\n' "$DOJO_FLAG" > '/var/dojo/cartera/asuntos pendientes/dir dos/nota reservada.txt'
+  find /var/dojo/cartera -type d -exec chown agent:agent {} +
+  find /var/dojo/cartera -type f -exec chown agent:agent {} +
+hints:
+  - "grep -r FLAG{ /var/dojo/cartera muestra fichero y línea de golpe."
+teach: >
+  La combinación `find … | xargs command` canaliza resultados a otros
+  comandos; con nombres raros usa `find … -print0 | xargs -0 cmd`.
+  `grep -r` ya hace esto por ti si buscas PATRÓN en un árbol.
+cheatsheet:
+  - {cmd: 'find ruta | xargs cmd', desc: aplica cmd a los resultados}
+  - {cmd: 'xargs -0', desc: separador nulo (nombres con espacios)}
+solution: |
+  grep -r FLAG /var/dojo/cartera
+
+keywords: [find, xargs, boss]
+profile: default

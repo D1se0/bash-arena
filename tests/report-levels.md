@@ -1,0 +1,59 @@
+# Informe de niveles
+
+generado: 2026-10-21T16:01:08.631Z
+
+| nivel | estado | tiempo |
+|---|---|---|
+| fundamentos/l1.yaml | ✅ | 0s |
+| fundamentos/l2.yaml | ✅ | 0s |
+| fundamentos/l3.yaml | ✅ | 0s |
+| fundamentos/l4.yaml | ✅ | 0s |
+| fundamentos/l5.yaml | ✅ | 0s |
+| filtrado/l1.yaml | ✅ | 0s |
+| filtrado/l2.yaml | ✅ | 0s |
+| filtrado/l3.yaml | ✅ | 0s |
+| filtrado/l4.yaml | ✅ | 0s |
+| filtrado/l5.yaml | ✅ | 0s |
+| busqueda/l1.yaml | ✅ | 0s |
+| busqueda/l2.yaml | ✅ | 0s |
+| busqueda/l3.yaml | ✅ | 0s |
+| busqueda/l4.yaml | ✅ | 0s |
+| busqueda/l5.yaml | ✅ | 0s |
+| procesado/l1.yaml | ✅ | 0s |
+| procesado/l2.yaml | ✅ | 0s |
+| procesado/l3.yaml | ✅ | 0s |
+| procesado/l4.yaml | ✅ | 0s |
+| procesado/l5.yaml | ✅ | 0s |
+| permisos/l1.yaml | ✅ | 0s |
+| permisos/l2.yaml | ✅ | 0s |
+| permisos/l3.yaml | ✅ | 0s |
+| permisos/l4.yaml | ✅ | 0s |
+| permisos/l5.yaml | ✅ | 0s |
+| procesos/l1.yaml | ✅ | 0s |
+| procesos/l2.yaml | ✅ | 3s |
+| procesos/l3.yaml | ✅ | 0s |
+| procesos/l4.yaml | ✅ | 1s |
+| procesos/l5.yaml | ✅ | 0s |
+| redes/l1.yaml | ✅ | 0s |
+| redes/l2.yaml | ✅ | 1s |
+| redes/l3.yaml | ✅ | 1s |
+| redes/l4.yaml | ✅ | 1s |
+| archivos/l1.yaml | ✅ | 0s |
+| archivos/l2.yaml | ✅ | 0s |
+| archivos/l3.yaml | ✅ | 0s |
+| archivos/l4.yaml | ✅ | 0s |
+| archivos/l5.yaml | ✅ | 0s |
+| scripting/l1.yaml | ✅ | 0s |
+| scripting/l2.yaml | ✅ | 0s |
+| scripting/l3.yaml | ✅ | 0s |
+| scripting/l4.yaml | ✅ | 0s |
+| scripting/l5.yaml | ✅ | 0s |
+| forense/l1.yaml | ✅ | 0s |
+| forense/l2.yaml | ✅ | 0s |
+| forense/l3.yaml | ✅ | 0s |
+| forense/l4.yaml | ✅ | 0s |
+| forense/l5.yaml | ✅ | 0s |
+| boss/l1.yaml | ✅ | 0s |
+| boss/l2.yaml | ✅ | 1s |
+| boss/l3.yaml | ✅ | 4s |
+| boss/l4.yaml | ✅ | 0s |

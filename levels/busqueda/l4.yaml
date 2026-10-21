@@ -1,0 +1,44 @@
+id: busqueda-l4
+track: busqueda
+title: El fichero invisible
+subtitle: find por tamaño y nombre
+xp: 45
+difficulty: 2
+brief: >
+  Un agente minucioso dejó la clave en un fichero cuyo nombre es revelador,
+  pero el árbol es enorme y se llenó de isotopos de directorios con otros
+  ficheros .flag falsos. Los criterios de find son tus binoculares.
+goal: >
+  En /var/dojo/archivo hay MÚLTIPLES ficheros llamados .flag (trampas vacías);
+  solo uno pesa 700 bytes cerca del patrón discour. Encuéntralo con find y
+  muéstralo.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 04" "Búsqueda"
+  mkdir -p /var/dojo/archivo
+  for i in $(seq 1 12); do
+    printf 'isotopo %d sin nada: trampa de find.\n' "$i" > "/var/dojo/archivo/trampa-$i.flag"
+  done
+  {
+    printf 'FICHERO REAL — cooldown del agente Skywalker.\\n'
+    printf 'Código entregable: %s\\n' "$DOJO_FLAG"
+    for i in $(seq 1 400); do printf 'comentario viajero %d\\n' "$i"; done
+  } > "/var/dojo/archivo/discour.flag"
+  chmod 0644 /var/dojo/archivo/*.flag
+  find /var/dojo/archivo -type f -exec chown agent:agent {} +
+hints:
+  - "find carpeta -name '*.flag' -size +400c lista candidatos."
+teach: >
+  `find carpeta -name X -size +Nc` te filtra por tamaño exacto +
+  nombre. Los criterios se combinan y actúan sobre la salida con
+  `-exec cmd {} \\;`; para pipes más libres usa xargs.
+cheatsheet:
+  - {cmd: 'find /ruta -name "*.flag"', desc: búsqueda por nombre}
+  - {cmd: 'find /ruta -size +1k', desc: tamaño en bloques (c=bytes, k=KB, M=MB)}
+  - {cmd: 'find /ruta -type d', desc: solo directorios}
+solution: |
+  cat "$(find /var/dojo/archivo -name '*.flag' -size +400c)"
+
+keywords: [find]
+profile: default

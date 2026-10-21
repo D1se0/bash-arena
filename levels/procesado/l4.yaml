@@ -1,0 +1,41 @@
+id: procesado-l4
+track: procesado
+title: Anomalía en la réplica
+subtitle: diff, comm y sort -u
+xp: 50
+difficulty: 3
+brief: >
+  Un replicador escribió el mismo catálogo en dos ficheros, pero en uno
+  de ellos se escapó una línea con la clave. La sincronización está
+  rota y solo el diff la revela.
+goal: >
+  En /var/dojo/replica-a y replica-b hay catálogos idénticos excepto una
+  línea que solo está en replica-a y que empieza por "CLAVE". Muéstrala.
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 04" "Procesado"
+  {
+    for i in $(seq 1 60); do printf 'dominio suave %d\n' "$i"; done
+    printf 'CLAVE %s\n' "$DOJO_FLAG"
+    for i in $(seq 61 120); do printf 'dominio suave %d\n' "$i"; done
+  } > /var/dojo/replica-a
+  grep -v '^CLAVE' /var/dojo/replica-a > /var/dojo/replica-b
+  chown agent:agent /var/dojo/replica-a /var/dojo/replica-b
+hints:
+  - "diff fichero-a fichero-b enseña las diferencias; `>` marca lo añadido en el 2º…"
+  - "Cuando solo existe en el 1º, la línea sale con el prefijo 'a ' en modo diff normal."
+teach: >
+  `diff` muestra qué cambia de un fichero a otro; `diff -u` muestra con
+  contexto y `comm` compara ficheros ordenados con columnas por único
+  en cada uno. Ambos huelen a UNIX clásicos.
+cheatsheet:
+  - {cmd: diff a b, desc: diferencias entre dos ficheros}
+  - {cmd: 'diff -u a b', desc: formato unificado}
+  - {cmd: 'comm -12 a b', desc: líneas comunes (ficheros ordenados)}
+solution: |
+  diff /var/dojo/replica-a /var/dojo/replica-b || true
+
+keywords: [diff]
+profile: default

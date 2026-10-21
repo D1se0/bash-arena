@@ -1,0 +1,48 @@
+id: redes-l3
+track: redes
+title: Escaneo sin papas
+subtitle: ss y puertos en escucha
+xp: 65
+difficulty: 3
+brief: >
+  Un servicio oceano está escuchando en una puerta de alta mar no
+  estándar (la 9X9X). ¿Cual? Solo lo sabes si sabes mirar quiénes
+  están a la espera con ss.
+goal: >
+  Con ss localiza el puerto local que esté LIS TENiendo (estado LISTEN) con
+  número par alto (ej: 9X9X) e accede al servicio nc que lo atiende para
+  conseguir la flag.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Redes"
+  # puerto no estándar PAR: 9696
+  cp /var/nota.txt /var/nota.txt.bak 2>/dev/null || true
+  printf '%s\n' "$DOJO_FLAG" > /tmp/puerto-constancia.txt
+  setsid python3 -c "import socket
+  s = socket.socket()
+  s.bind(('127.0.0.1', 9696))
+  s.listen(1)
+  while True:
+      c, _ = s.accept()
+      c.send(open('/tmp/puerto-constancia.txt', 'rb').read())
+      c.close()" >/dev/null 2>&1 &
+  sleep 1
+hints:
+  - "ss -tln lista los puertos TCP a la espera (LISTEN)."
+  - "Busca el puerto 9XXX que no sea 8501 ni 7080: es 9696… pero practica el ss."
+  - "nc 127.0.0.1 9696"
+teach: >
+  `ss` es el sucesor de netstat: `-t` TCP, `-l` LISTEN, `-n` sin resolver
+  nombres. Para осмотiatrico rueda memoria mental: en el dojo hay un
+  servicio solo en loopback. Nada peor que un servicio abierto a todos
+  por descuido.
+cheatsheet:
+  - {cmd: 'ss -tln', desc: puertos TCP a la escucha}
+  - {cmd: 'ss -tlnp', desc: añade el proceso (como root)}
+solution: |
+  ss -tln
+  nc 127.0.0.1 9696
+
+keywords: [ss, netstat]
+profile: default

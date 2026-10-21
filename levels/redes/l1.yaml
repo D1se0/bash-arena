@@ -1,0 +1,46 @@
+id: redes-l1
+track: redes
+title: El oráculo por teléfono
+subtitle: nc (netcat cliente)
+xp: 60
+difficulty: 3
+brief: >
+  Un oráculo local escucha en el puerto 7080 y habla con quien se
+  conecte. La respuesta solo la ve quien llame… (en este dojo solo
+  existe el loopback — mejor así).
+goal: >
+  Conecta con nc al puerto 7080 de la propia máquina para recibir
+  el mensaje del oráculo (contiene la flag).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Redes"
+  printf 'NON-NETWORK dojo: curl + nc + loopback only\n' > /var/log/dojo-net.log
+  setsid python3 -c "import socket
+  s = socket.socket()
+  s.bind(('127.0.0.1', 7080))
+  s.listen(1)
+  while True:
+      c, _ = s.accept()
+      c.send(open('/var/oracle/msg.txt', 'rb').read())
+      c.close()" >/dev/null 2>&1 &
+  rm -f /var/oracle-msg.tmp
+  mkdir -p /var/oracle
+  printf '%s\n' "$DOJO_FLAG" > /var/oracle/msg.txt
+  chown agent:agent /var/oracle/msg.txt
+hints:
+  - "nc 127.0.0.1 7080 (host y puerto) — la conexión queda abierta hasta recibir."
+  - "El puerto es 7080; el host es tu propia máquina (127.0.0.1)."
+teach: >
+  `nc host puerto` conecta TCP y vacía stdin; escupirá la respuesta al
+  stdout. `-l escucha (`servidor`), `-v verbose`. En este dojo la única
+  red es la loopback: mola para lab sin abrir la máquina al mundo.
+cheatsheet:
+  - {cmd: 'nc host puerto', desc: conecta TCP y pasa stdin/stdout}
+  - {cmd: 'nc -l puerto', desc: escucha un puerto}
+  - {cmd: 'nc -v host p', desc: verbose}
+solution: |
+  nc 127.0.0.1 7080
+
+keywords: [nc, tcp]
+profile: default

@@ -1,0 +1,68 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-typecheck-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Instalar dependencias (workspaces)
+        run: npm install --no-audit --no-fund
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck (server + client + docs-site)
+        run: |
+          npx tsc -p app/server --noEmit
+          npx tsc -p app/client --noEmit
+          npx tsc -p docs-site --noEmit
+      - name: Tests unitarios (server)
+        run: npm run test:unit
+      - name: Lint de niveles (53)
+        run: node scripts/lint-levels.mjs
+      - name: Build cliente
+        run: npm run build --workspace app/client
+      - name: Build docs-site
+        run: npm run build --workspace docs-site
+
+  test-levels-in-docker:
+    runs-on: ubuntu-latest
+    needs: lint-typecheck-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm install --no-audit --no-fund
+      - name: Build imagen dojo-base
+        run: docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
+      - name: Verificar solución de los 53 niveles (setup + solución + flag)
+        run: node scripts/test-levels.mjs
+      - name: Pruebas de seguridad (aislamiento, red, límites)
+        run: node scripts/security-tests.mjs
+
+  smoke-e2e:
+    runs-on: ubuntu-latest
+    needs: lint-typecheck-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm install --no-audit --no-fund
+      - run: npm i --no-save typescript
+      - run: docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
+      - name: Smoke E2E (WS + dockerode + SQLite + submit)
+        run: node scripts/e2e-smoke.mjs

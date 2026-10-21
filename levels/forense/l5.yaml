@@ -1,0 +1,39 @@
+id: forense-l5
+track: forense
+title: Triple embalaje
+subtitle: boss — base64 → gzip → flag
+xp: 85
+difficulty: 4
+brief: >
+  Un paquete de exfiltración pasó por DOS capas: primero gzip, después
+  base64 (así su "ruido" se mete en logs de texto). Dos herramientas
+  encadenadas por pipe dan con la carga útil.
+goal: >
+  En /var/dojo/exfiltrado.log hay una línea con datos base64. Decodifica
+  y descomprime para recuperar el mensaje original — dentro está la flag.
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 05" "Forense"
+  {
+    printf 'canal seguro: nótese la cabecera x-b64\n'
+    printf '%s\n' "$(printf 'el tesoro: %s\n' "$DOJO_FLAG" | gzip | base64 -w0)"
+  } > /var/dojo/exfiltrado.log
+  chown agent:agent /var/dojo/exfiltrado.log
+hints:
+  - "El orden de desembalaje es el inverso: primero base64 -d, después gzip -d / zcat."
+  - "tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat"
+teach: >
+  Las capas se deshacen en orden inverso al de embalaje: `base64 -d`
+  te da el flujo gzip, y `zcat` (uo `gunzip -c`) el contenido. La
+  disciplina UNIX de pipelines hace trivial encadenar 2, 3 o más
+  transformaciones.
+cheatsheet:
+  - {cmd: 'cmd | base64 -d | zcat', desc: desembalaje por capas}
+  - {cmd: 'zcat fichero.gz', desc: descomprime a stdout}
+solution: |
+  tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat
+
+keywords: [base64, gzip, boss]
+profile: default

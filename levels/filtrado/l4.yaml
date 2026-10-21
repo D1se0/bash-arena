@@ -1,0 +1,38 @@
+id: filtrado-l4
+track: filtrado
+title: El saldo outlier
+subtitle: sort, uniq (y -u)
+xp: 40
+difficulty: 2
+brief: >
+  Un volcado de 200O registros duplicados contiene UNA entrada que solo
+  aparece una vez: es la clave. Encontrarla a ojo es imposible.
+goal: >
+  En /var/dojo/dupes.txt hay líneas idénticas repetidas y una sola única.
+  Extrae esa línea: contiene la flag.
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 04" "Filtrado"
+  { for i in $(seq 1 120); do printf 'hash-estándar-%d\n' "$((i % 12))"; done
+    printf '%s\n' "$DOJO_FLAG"
+    for i in $(seq 1 80); do printf 'registro-repetido-%d\n' "$((i % 7))"; done
+  } | sort > /var/dojo/dupes.txt
+  chown agent:agent /var/dojo/dupes.txt
+hints:
+  - "sort -u solo muestra cada línea única (elimina repetidos)."
+  - "La línea de la flag jamás se repetía: sort -u la destruye y uniq -d marca repetidos."
+teach: >
+  `sort` ordena alfabético/numéricamente (-n, -r, -u sin repetidos).
+  `uniq` solo es útil después de sort (compara líneas adyacentes):
+  `uniq -d` enseña los repetidos y `uniq -c` los cuenta.
+cheatsheet:
+  - {cmd: sort fichero, desc: ordena alfabético}
+  - {cmd: 'sort -u fichero', desc: ordena eliminando repetidos}
+  - {cmd: 'sort fichero | uniq -c | sort -rn', desc: cuenta frecuencias}
+solution: |
+  sort -u /var/dojo/dupes.txt
+
+keywords: [sort, uniq]
+profile: default

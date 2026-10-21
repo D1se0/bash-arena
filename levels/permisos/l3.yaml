@@ -1,0 +1,42 @@
+id: permisos-l3
+track: permisos
+title: El clan del dojo
+subtitle: grupos, chgrp y /etc/group
+xp: 55
+difficulty: 3
+brief: >
+  La clave es de un grupo concreto: 'dojo'. El fichero se lee solo si
+  perteneces al grupo correcto (y el login lo refresca).
+goal: >
+  El fichero /var/dojo/gimnasio.txt es del grupo doorkeeper con modo 640.
+  Añádete al grupo con sudo (usermod -aG), WARN: los grupos solo aplican
+  en la SESIÓN SIGUIENTE; verifica cómo te ves con id y recupera el
+  contenido por la vía admin (sudo cat).
+setup: |
+  #!/bin/bash
+  set -e
+  mkdir -p /var/dojo
+  arena-prompt "LVL 03" "Permisos"
+  groupadd doorkeeper
+  echo "$DOJO_FLAG" > /var/dojo/gimnasio.txt
+  chgrp doorkeeper /var/dojo/gimnasio.txt
+  chmod 640 /var/dojo/gimnasio.txt
+hints:
+  - "sudo usermod -aG doorkeeper agent   (el -a evita que borres los grupos previos)."
+  - "Con id ves uid/gid; groups lista los tuyos — nota que NO aparecen hasta nueva sesión."
+  - "vía admin inmediata: sudo cat /var/dojo/gimnasio.txt"
+teach: >
+  `id` muestra uids/gids; `usermod -aG grupo usu` añade a un grupo — `-a`
+  evita reemplazar los existentes. IMPORTANTE: la pertenencia nueva solo
+  aplica en la siguiente sesión (login); en un contenedor efímero cada
+  exec es una sesión. Para trabajo inmediato, el admin usa sudo.
+cheatsheet:
+  - {cmd: id, desc: uid y grupos actuales}
+  - {cmd: 'sudo usermod -aG grupo usu', desc: añade al grupo (efectivo próxima sesión)}
+  - {cmd: 'sudo cat fichero', desc: lectura admin inmediata}
+solution: |
+  id
+  sudo usermod -aG doorkeeper agent
+  sudo cat /var/dojo/gimnasio.txt
+keywords: [grupos, usermod, login]
+profile: sudo
