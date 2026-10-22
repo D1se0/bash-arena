@@ -35,7 +35,10 @@ export default function LevelPanel() {
   };
 
   return (
-    <section className="rounded-xl bg-panel/80 border border-edge focus:ring-0 p-4 flex flex-col gap-3 min-h-0 overflow-hidden">
+    <section
+      className="rounded-xl bg-panel/80 border border-edge focus:ring-0 p-4 flex flex-col gap-3 min-h-0 overflow-y-auto lg:max-h-[46vh] shrink-0"
+      aria-label="panel del nivel"
+    >
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="text-lg font-semibold text-nord6 truncate">
           <span className="text-morado">{level.track}</span> · {level.title}

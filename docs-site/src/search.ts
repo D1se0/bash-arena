@@ -14,6 +14,7 @@ const INDEX: SearchHit[] = [
   { to: '/tecnico', label: 'Documentación técnica', section: 'estructura del repo, protocolo WebSocket, crear niveles, formato YAML, contribuir' },
   { to: '/tecnico', label: 'Protocolo', section: 'hello, start, input, resize, submitFlag, submitResult, hint, levelState' },
   { to: '/extras', label: 'Roadmap', section: 'sandbox, reto diario, tabla de clasificación, multi-jugador' },
+  { to: '/soluciones', label: 'Soluciones', section: 'soluciones paso a paso, 194 niveles, comandos explicados, flags explicadas, awk, sed, grep, find, chmod, patch, tar' },
   { to: '/extras', label: 'Créditos', section: 'licencia MIT, xterm.js, dockerode, React, Tailwind, Framer Motion' },
 ];
 

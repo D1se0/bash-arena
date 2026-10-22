@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
@@ -7,6 +7,8 @@ import HowItWorks from './pages/HowItWorks';
 import Deploy from './pages/Deploy';
 import Technical from './pages/Technical';
 import Extras from './pages/Extras';
+// la página de soluciones arrastra el catálogo entero (194 niveles): carga diferida
+const Soluciones = lazy(() => import('./pages/Soluciones'));
 import { searchIndex, SearchHit } from './search';
 import { useTheme } from './theme';
 
@@ -17,6 +19,7 @@ const NAV = [
   { to: '/desplegar', label: 'Desplegar' },
   { to: '/tecnico', label: 'Documentación técnica' },
   { to: '/extras', label: 'Roadmap y créditos' },
+  { to: '/soluciones', label: 'Soluciones' },
 ];
 
 export default function App() {
@@ -134,12 +137,15 @@ export default function App() {
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
         <motion.div key={location.pathname} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+          <Suspense fallback={<p className="text-sm text-frost/60">cargando soluciones…</p>}>
           {location.pathname === '/' && <Home />}
           {location.pathname === '/aprende' && <Learn />}
           {location.pathname === '/funciona' && <HowItWorks />}
           {location.pathname === '/desplegar' && <Deploy />}
           {location.pathname === '/tecnico' && <Technical />}
           {location.pathname === '/extras' && <Extras />}
+          {location.pathname === '/soluciones' && <Soluciones />}
+          </Suspense>
         </motion.div>
       </main>
 

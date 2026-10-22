@@ -18,6 +18,8 @@ export interface SessionRecord {
 class SessionManager {
   private sessions = new Map<string, SessionRecord>(); // key: playerId
   private perIp = new Map<string, Set<string>>();
+  /** nº de conexiones WS activas por playerId (0 = huérfana desalojable ya). */
+  private conns = new Map<string, number>();
   private sweeper: NodeJS.Timeout | null = null;
 
   constructor() {
@@ -27,6 +29,20 @@ class SessionManager {
 
   countForIp(ip: string): number {
     return this.perIp.get(ip)?.size ?? 0;
+  }
+
+  addConn(playerId: string): void {
+    this.conns.set(playerId, (this.conns.get(playerId) ?? 0) + 1);
+  }
+
+  removeConn(playerId: string): void {
+    const n = (this.conns.get(playerId) ?? 0) - 1;
+    if (n <= 0) this.conns.delete(playerId);
+    else this.conns.set(playerId, n);
+  }
+
+  hasConn(playerId: string): boolean {
+    return (this.conns.get(playerId) ?? 0) > 0;
   }
 
   totalSessions(): number {
@@ -52,19 +68,25 @@ class SessionManager {
     const alreadyMine = priorSet?.has(playerId) ?? false;
     if (!alreadyMine && (priorSet?.size ?? 0) >= config.maxSessionsPerIp) {
       // UX: en desarrollo/localhost es fácil acumular slots (reabrir la página,
-      // probes, etc.). Antes de rechazar, evicta la sesión MÁS inactiva del
-      // propio IP — nunca una sesión que esté activa de verdad (idle < 10 s).
-      const minIdleMs = 10_000;
-      const withIdle = [...(priorSet ?? [])]
-        .map((id) => ({ id, rec: this.sessions.get(id) }))
-        .filter((x): x is { id: string; rec: SessionRecord } => !!x.rec && x.rec.session.idleMs >= minIdleMs)
-        // la más inactiva primero
-        .sort((a, b) => b.rec.session.idleMs - a.rec.session.idleMs);
-      while ((priorSet?.size ?? 0) >= config.maxSessionsPerIp && withIdle.length) {
-        const victim = withIdle.shift()!;
+      // probes, etc.). Antes de rechazar, evicta del propio IP, en este orden:
+      // 1. sesiones SIN conexión WS activa (pestaña cerrada/recargada) —
+      //    aunque recién creadas, su jugador ya no puede usarlas;
+      // 2. sesiones conectadas pero inactivas (idle ≥ 10 s).
+      const candidates = [...(priorSet ?? [])]
+        .map((id) => ({ id, rec: this.sessions.get(id), conned: this.hasConn(id) }))
+        .filter((x): x is { id: string; rec: SessionRecord; conned: boolean } => !!x.rec);
+      const byIdle = (l: { rec: SessionRecord }, r: { rec: SessionRecord }): number =>
+        r.rec.session.idleMs - l.rec.session.idleMs;
+      const orphans = candidates.filter((c) => !c.conned).sort(byIdle);
+      const idleConnected = candidates
+        .filter((c) => c.conned && c.rec.session.idleMs >= 10_000)
+        .sort(byIdle);
+      const evictOrder = [...orphans, ...idleConnected];
+      while ((priorSet?.size ?? 0) >= config.maxSessionsPerIp && evictOrder.length) {
+        const victim = evictOrder.shift()!;
         logger.info(
-          { playerId: victim.id.slice(0, 8), idleSec: Math.round(victim.rec.session.idleMs / 1000) },
-          'evicting idle session (per-IP limit)',
+          { playerId: victim.id.slice(0, 8), idleSec: Math.round(victim.rec.session.idleMs / 1000), conned: victim.conned },
+          'evicting session (per-IP limit)',
         );
         await this.drop(victim.id, 'per-IP evict');
       }
@@ -96,6 +118,7 @@ class SessionManager {
     if (!rec) return;
     logger.info({ playerId: playerId.slice(0, 8), level: rec.level.id, why }, 'manager drop()');
     this.sessions.delete(playerId);
+    this.conns.delete(playerId);
     const set = this.perIp.get(rec.ip);
     if (set) {
       set.delete(playerId);

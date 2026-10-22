@@ -14,7 +14,9 @@ export default function App() {
   const browserOpen = useArena((s) => s.browserOpen);
   const setBrowserOpen = useArena((s) => s.setBrowserOpen);
 
-  // atajos: F11 pantalla completa del navegador · Esc sale del zoom de terminal
+  // atajos: F11 pantalla completa del navegador · Esc sale del zoom de terminal.
+  // CAPTURE phase: xterm.js hace stopPropagation() del keydown en su textarea
+  // y con un listener normal (bubble) el Esc nunca llegaría aquí.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'F11') {
@@ -22,10 +24,15 @@ export default function App() {
         if (document.fullscreenElement) void document.exitFullscreen();
         else void document.documentElement.requestFullscreen();
       }
-      if (e.key === 'Escape' && !browserOpen) setFullscreen(false);
+      if (e.key === 'Escape' && !browserOpen && useArena.getState().termFullscreen) {
+        // consume el Esc para que no llegue al shell de la terminal
+        e.preventDefault();
+        e.stopPropagation();
+        setFullscreen(false);
+      }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [browserOpen, setFullscreen]);
 
   return (
@@ -50,7 +57,9 @@ export default function App() {
         </span>
       </header>
 
-      <main className="flex-1 flex flex-col lg:flex-row gap-4 p-4 min-h-0">
+      {/* <lg el scroll vive aquí dentro (no en la página): nada de la App se
+          desborda fuera del viewport */}
+      <main className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row gap-4 p-4">
         <div className="flex-1 min-w-0 flex flex-col gap-4">
           <div className={fullscreen ? 'contents' : 'flex-1 min-h-0 flex flex-col gap-2'}>
             {/* barra de acciones de la terminal (en fullscreen es overlay) */}

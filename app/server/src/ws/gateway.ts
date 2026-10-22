@@ -84,6 +84,37 @@ export function attachGateway(wss: WebSocketServer, service: LevelsService): voi
   });
 }
 
+/**
+ * Gracia tras cerrar el WS: antes de soltar la sesión (y su slot per-IP)
+ * esperamos a ver si el jugador reconecta. Sin esto, una pestaña cerrada
+ * ocupaba un slot hasta el idle-sweep completo (15 min) y las siguientes
+ * entradas se topaban con «no se pudo iniciar la sesión».
+ */
+const wsCloseGraceMs = 120_000;
+const closeGraceTimers = new Map<string, NodeJS.Timeout>(); // playerId → timer
+
+function scheduleCloseGrace(playerId: string): void {
+  if (!sessionManager.get(playerId)) return; // sin sesión, nada que soltar
+  const prev = closeGraceTimers.get(playerId);
+  if (prev) clearTimeout(prev);
+  const t = setTimeout(() => {
+    closeGraceTimers.delete(playerId);
+    // solo si no reconectó (el hello cancela/reprograma este timer)
+    void sessionManager.drop(playerId, 'ws closed (grace vencida)');
+  }, wsCloseGraceMs);
+  if (t.unref) t.unref();
+  closeGraceTimers.set(playerId, t);
+  logger.debug({ playerId: playerId.slice(0, 8), graceMs: wsCloseGraceMs }, 'ws close grace scheduled');
+}
+
+export function cancelCloseGrace(playerId: string): void {
+  const t = closeGraceTimers.get(playerId);
+  if (t) {
+    clearTimeout(t);
+    closeGraceTimers.delete(playerId);
+  }
+}
+
 function clientIp(forwarded: string): string {
   if (!forwarded) return 'unknown';
   return forwarded.split(',')[0].trim();
@@ -93,7 +124,12 @@ async function onConnClose(ws: WebSocket, code = 1006, why = ''): Promise<void> 
   const st = connStates.get(ws);
   connStates.delete(ws);
   if (!st) return;
-  // el contenedor se mantiene un rato (reconexión); el sweeper lo mata por idle
+  // el contenedor se mantiene un rato (reconexión); con la gracia de cierre el
+  // slot per-IP se libera pronto si el jugador no vuelve (antes: 15 min colgado)
+  if (st.playerId) {
+    sessionManager.removeConn(st.playerId);
+    scheduleCloseGrace(st.playerId);
+  }
   logger.info({ playerId: st.playerId?.slice(0, 8), ip: st.ip, code, why: why || undefined }, 'ws closed');
 }
 
@@ -123,6 +159,8 @@ function handleMsg(ws: WebSocket, raw: unknown, service: LevelsService): void {
       return;
     }
     st.playerId = playerId;
+    cancelCloseGrace(playerId); // reconexión: la sesión sigue viva
+    sessionManager.addConn(playerId);
     const row = ensurePlayer(playerId);
     const rank = rankForXp(row.xp);
     // progreso por track para el sidebar y el navegador de niveles

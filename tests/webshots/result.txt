@@ -1,4 +1,4 @@
-48 ok · 0 fail
+52 ok · 0 fail
 
 terminal: prompt del nivel visible (WS → xterm)
 app: sin scroll horizontal
@@ -18,6 +18,10 @@ navegador: «jugar» de un nivel salta a su session (procesado-l1)
 terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)
 terminal: «next» tecleado avanza de nivel (procesado-l2)
 app móvil (390px): sin scroll horizontal
+docs /soluciones: catálogo completo de guías (≥190 niveles)
+docs /soluciones: la tarjeta expandida muestra pasos detallados y explicaciones
+docs /soluciones: búsqueda «awk» filtra a 13 nivel(es)
+docs /soluciones (390px): sin scroll horizontal
 docs / (1440px): sin scroll horizontal
 docs / (1440px): header sin envoltura (57px)
 docs /aprende (1440px): sin scroll horizontal

@@ -106,19 +106,29 @@ export default function TerminalPane({ fullscreen = false }: { fullscreen?: bool
     if (send) termRef.current?.focus();
   }, [send, sessionDead]);
 
-  // en pantalla completa la terminal sube a fuente mayor y re-encaja
+  // en pantalla completa la terminal sube a fuente mayor y re-encaje;
+  // el re-fit doble (30 ms + 350 ms) asegura que bash/readline queda con la
+  // medida final tras asentar el layout (mitiga ecos desfasados "raros")
   useEffect(() => {
     const term = termRef.current;
     if (!term) return;
     term.options.fontSize = fullscreen ? 16 : 14;
-    const t = setTimeout(() => {
+    const t1 = setTimeout(() => {
       try {
         fitRef.current?.fit();
       } catch {
         /* noop */
       }
     }, 30);
-    return () => clearTimeout(t);
+    const t2 = setTimeout(() => {
+      try {
+        fitRef.current?.fit();
+        term.scrollToBottom();
+      } catch {
+        /* noop */
+      }
+    }, 350);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [fullscreen]);
 
   useEffect(() => {

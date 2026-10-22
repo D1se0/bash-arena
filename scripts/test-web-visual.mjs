@@ -341,6 +341,55 @@ const browser = await chromium.launch({
 
 /* ───────────── B. docs ───────────── */
 {
+// C. página de soluciones: interacción real (expandir, buscar por comando)
+    const sctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const sp = await sctx.newPage();
+    sp.on('pageerror', (e) => fail(`pageerror docs-soluciones: ${e.message}`));
+    await sp.goto(`${DOCS_URL}soluciones`, { waitUntil: 'domcontentloaded' });
+    try {
+      await sp.waitForFunction(
+        () => document.querySelectorAll('main details').length >= 190,
+        { timeout: 20_000 },
+      );
+      ok('docs /soluciones: catálogo completo de guías (≥190 niveles)');
+    } catch {
+      fail('docs /soluciones: no apareció el catálogo completo');
+    }
+    // expandir el primer nivel y validar que muestra pasos + flags explicadas
+    await sp.locator('main details summary').first().click();
+    await sp.waitForTimeout(400);
+    const detail = await sp.evaluate(() => {
+      const d = document.querySelector('main details[open]');
+      if (!d) return null;
+      const txt = d.textContent || '';
+      return {
+        pasos: /paso 1/.test(txt),
+        flagsElec: /flag|-l|-n/.test(txt) && /revisa|man |aplica|imprime|filtro/.test(txt),
+        muchoTexto: txt.length > 400,
+      };
+    });
+    if (detail?.pasos && detail?.muchoTexto) {
+      ok('docs /soluciones: la tarjeta expandida muestra pasos detallados y explicaciones');
+    } else {
+      fail(`docs /soluciones: tarjeta sin detalle (${JSON.stringify(detail)})`);
+    }
+    // búsqueda «awk»
+    await sp.locator('input[aria-label="buscar soluciones"]').fill('awk');
+    await sp.waitForTimeout(500);
+    const awkCount = await sp.evaluate(() => document.querySelectorAll('main details').length);
+    if (awkCount > 0 && awkCount < 190) {
+      ok(`docs /soluciones: búsqueda «awk» filtra a ${awkCount} nivel(es)`);
+    } else {
+      fail(`docs /soluciones: búsqueda «awk» con ${awkCount} resultados (no filtra)`);
+    }
+    // sin scroll horizontal a ancho estrecho
+    await sp.setViewportSize({ width: 390, height: 812 });
+    await sp.waitForTimeout(600);
+    const sm = await sp.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1);
+    if (sm) ok('docs /soluciones (390px): sin scroll horizontal');
+    else fail('docs /soluciones (390px): scroll horizontal (desborde)');
+    await sp.screenshot({ path: `${SHOTS}/docs-soluciones-390.png`, fullPage: false });
+    await sctx.close();
   const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras'];
   for (const width of [1440, 1024, 390]) {
     const ctx = await browser.newContext({ viewport: { width, height: 900 } });
