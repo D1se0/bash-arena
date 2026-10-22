@@ -1,0 +1,42 @@
+id: procesado-l16
+track: procesado
+index: 16
+title: El bloque de la copia
+subtitle: sed -n con rango de patrones
+xp: 45
+difficulty: 3
+brief: inventario.txt es un registro largo. Entre las líneas del inciso COPIA-INTERNA y FIN-COPIA
+  escondió la marca.
+goal: Imprime solo el bloque entre COPIA-INTERNA y FIN-COPIA de /home/agent/inventario.txt y extrae
+  la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 16" "Procesado"
+  {
+    echo " libro 001: rutina"
+    echo "COPIA-INTERNA desde aquí"
+    echo " interna: $DOJO_FLAG"
+    echo " protégelo: frente al ruido"
+    echo "FIN-COPIA hasta aquí"
+    echo " libro 002: rutina"
+  } > /home/agent/inventario.txt
+  chown agent:agent /home/agent/inventario.txt
+  chown -R agent:agent /home/agent
+solution: sed -n '/COPIA-INTERNA/,/FIN-COPIA/p' /home/agent/inventario.txt | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - sed -n '/inicio/,/fin/p' imprime el rango entre ambos patrones (el -n silencia el resto).
+  - El bloque incluye las delimitadoras; grep -oE con la forma de la marca limpia todo.
+  - sed -n '/COPIA/,/FIN/p' f | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: El rango de patrones de sed es la "zona de interés en extracto":/logs de configuración con
+  bloques BEGIN/END son su habitat natural. awk entre triviales /pat/,/pat/ hace lo mismo con gsub…
+cheatsheet:
+  - cmd: sed -n '/a/,/b/p' f
+    desc: rango a→b
+  - cmd: awk '/a/,/b/' f
+    desc: rango con awk
+keywords:
+  - sed
+  - rango
+  - bloque
+profile: default

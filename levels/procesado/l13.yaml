@@ -1,0 +1,40 @@
+id: procesado-l13
+track: procesado
+index: 13
+title: El máximo con awk
+subtitle: acumulador con if >
+xp: 45
+difficulty: 3
+brief: ventas.csv tiene zona,importe. La fila con el importe más alto esconde la pieza en su primera
+  columna.
+goal: Encuentra la fila con mayor importe en /home/agent/ventas.csv y muéstrala entera.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Procesado"
+  {
+    echo "zona-norte,412"
+    echo "zona-sur,87"
+    echo "la clave: $DOJO_FLAG,3111"
+    echo "zona-leste,1500"
+    echo "zona-oeste,560"
+  } > /home/agent/ventas.csv
+  chown agent:agent /home/agent/ventas.csv
+  chown -R agent:agent /home/agent
+solution: awk -F, '{if ($2+0 > max) {max=$2+0; line=$0}} END {print line}' /home/agent/ventas.csv
+hints:
+  - "awk con -F, separa por comas: $1 es la zona y $2 el importe."
+  - "El truco del acumulador: if ($2 > max) {max = $2; line = $0}, luego en END print line."
+  - awk -F, '{if ($2 > max) {max=$2; line=$0}} END {print line}' /home/agent/ventas.csv
+teach: 'awk mantiene variables entre líneas: el patrón "if ($n > max) {max=$n; line=$0} END {print
+  line}" es el modo awk canónica de "máximo con su contexto" — sin sort de por medio.'
+cheatsheet:
+  - cmd: awk -F, '$2>max{max=$2; li=$0} END{print li}' f
+    desc: máximo con contexto
+  - cmd: sort -t, -k2 -r f | head -1
+    desc: lo mismo con sort
+keywords:
+  - awk
+  - max
+  - csv
+profile: default

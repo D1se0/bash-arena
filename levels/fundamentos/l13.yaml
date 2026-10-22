@@ -1,0 +1,39 @@
+id: fundamentos-l13
+track: fundamentos
+index: 13
+title: El más reciente
+subtitle: ordenar por fecha con ls -t
+xp: 30
+difficulty: 2
+brief: En ~/registro hay fichas con fechas distintas. Solo la ficha modificada más recientemente
+  lleva la marca del dojo.
+goal: Descubre qué ficha de ~/registro se tocó por última vez y muéstrala.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Fundamentos"
+  mkdir -p /home/agent/registro
+  echo "ficha antigua del lunes: sin novedades" > /home/agent/registro/lunes.txt
+  echo "ficha del martes: nada que ver" > /home/agent/registro/martes.txt
+  echo "última entrada: $DOJO_FLAG" > /home/agent/registro/hoy.txt
+  touch -d "3 days ago" /home/agent/registro/lunes.txt
+  touch -d "2 days ago" /home/agent/registro/martes.txt
+  touch -d "1 hour ago" /home/agent/registro/hoy.txt
+  chown -R agent:agent /home/agent
+solution: cat /home/agent/registro/$(ls -t /home/agent/registro | head -n1)
+hints:
+  - ls -t ordena por fecha de modificación (la más nueva primero).
+  - "Combina: cat $(ls -t | head -n1) dentro del directorio."
+  - cat /home/agent/registro/$(ls -t /home/agent/registro | head -n1)
+teach: ls -t es el modo cronológico de ls; con -t | head tienes el último fichero tocado en una sola
+  tubería. Perfecto para "¿qué cambió aquí hace un rato?".
+cheatsheet:
+  - cmd: ls -t
+    desc: ordena por fecha (nuevo→viejo)
+  - cmd: ls -rt
+    desc: orden cronológico inverso
+keywords:
+  - ls
+  - touch
+  - orden
+profile: default

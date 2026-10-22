@@ -1,0 +1,39 @@
+id: procesado-l10
+track: procesado
+index: 10
+title: Servicios por puerto
+subtitle: "awk -F: con cadena"
+xp: 45
+difficulty: 3
+brief: servicios.conf usa formato svc:puerto:dueño. La fila del puerto 8081 guarda el alias y su marca.
+goal: Imprime la línea completa cuya segunda columna sea exactamente 8081.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Procesado"
+  cat > /home/agent/servicios.conf <<FIN
+  http:80:root
+  ssh:22:root
+  dns:53:bind
+  proxy:3128:squid
+  FIN
+  echo "puente-defensa:8081:$DOJO_FLAG" >> /home/agent/servicios.conf
+  echo "cache:11211:memcached" >> /home/agent/servicios.conf
+  chown agent:agent /home/agent/servicios.conf
+solution: "awk -F: '$2 == 8081' /home/agent/servicios.conf"
+hints:
+  - El separador aquí son los DOS PUNTOS.
+  - 'Con awk puedes comparar cadenas: $2 == "8081" (o por número, sin comillas).'
+  - "awk -F: '$2 == 8081' servicios.conf"
+teach: "awk funciona igual de bien con : , ; o espacios como separador: -F define tu mundo tabular.
+  La comparación == funciona con números y cadenas sin drama."
+cheatsheet:
+  - cmd: "awk -F: '$2==22' f"
+    desc: fila cuyo campo 2 es 22
+  - cmd: "awk -F: '{print $2,$3}' f"
+    desc: dos columnas
+keywords:
+  - awk
+  - "F:"
+  - puerto
+profile: default

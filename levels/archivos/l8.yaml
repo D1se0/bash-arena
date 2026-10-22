@@ -1,0 +1,39 @@
+id: archivos-l8
+track: archivos
+index: 8
+title: El zip del corredor
+subtitle: "unzip -p: mostrar ficheros del zip"
+xp: 35
+difficulty: 2
+brief: paquete.zip firma el paso final del corredor; dentro trae una nota.txt que interesa al equipo.
+goal: Muestra el contenido de nota.txt DENTRO de /home/agent/paquete.zip sin extraerlo al disco.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Archivos"
+  mkdir -p /tmp/lvl-N8
+  cd /tmp/lvl-N8
+  echo "decoy del zip" > decoy.txt
+  echo "nota del corredor: $DOJO_FLAG" > nota.txt
+  zip -q paquete2.zip nota.txt decoy.txt
+  mv paquete2.zip /home/agent/paquete.zip
+  cd /
+  rm -rf /tmp/lvl-N8
+  chown agent:agent /home/agent/paquete.zip
+solution: unzip -p /home/agent/paquete.zip nota.txt
+hints:
+  - "unzip sin opciones extraería todo en el cwd: no es lo que se pide."
+  - unzip -p FICHERO miembro escribe ese miembro en stdout.
+  - unzip -p paquete.zip nota.txt
+teach: "unzip -p desplaza contenido al stdout sin escribir ficheros: el zcat del mundo zip. Lista
+  con -l antes para saber qué hay dentro del paquete."
+cheatsheet:
+  - cmd: unzip -l f.zip
+    desc: lista de contenido
+  - cmd: unzip -p f.zip miembro
+    desc: muestra un miembro
+keywords:
+  - zip
+  - unzip
+  - compresión
+profile: default

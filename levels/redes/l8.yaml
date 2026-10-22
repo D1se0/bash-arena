@@ -1,0 +1,52 @@
+id: redes-l8
+track: redes
+index: 8
+title: Conversación de un solo sentido
+subtitle: "nc: hablar con un servicio TCP"
+xp: 45
+difficulty: 3
+brief: "Un oráculo escucha en el TCP 9999: al conectarte, te susurra la clave y cierra."
+goal: Conéctate al servicio del puerto 9999 con netcat y recoge la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Redes"
+
+  mkdir -p /etc/arena
+
+  cat > /etc/arena/oraculo.py <<FIN
+  import socket
+  s = socket.socket()
+  s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+  s.bind(("127.0.0.1", 9999))
+  s.listen(5)
+  FLAG = "__BANDERA__"
+  while True:
+      c, a = s.accept()
+      try:
+          c.sendall((FLAG + "\n").encode())
+      finally:
+          c.close()
+  FIN
+  sed -i "s/__BANDERA__/$DOJO_FLAG/" /etc/arena/oraculo.py
+  nohup python3 /etc/arena/oraculo.py >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: nc -w 2 127.0.0.1 9999 </dev/null
+hints:
+  - "netcat es el cliente TCP mínimo: nc HOST PUERTO."
+  - "Sin stdin abierto nc esperaría prohibido el cierre: redirige /dev/null"
+  - nc -w 2 127.0.0.1 9999 </dev/null
+teach: "nc habla TCP crudo: ni HTTP ni protocolos, bytes. Es la herramienta para sondear servicios a
+  mano (banners SMTP, SSH…) y suele despejar dudas en la fase de reconocimiento."
+cheatsheet:
+  - cmd: nc HOST PUERTO
+    desc: conexión TCP simple
+  - cmd: nc -w 5 HOST PUERTO
+    desc: con timeout de 5 s
+keywords:
+  - nc
+  - netcat
+  - tcp
+  - socket
+profile: default

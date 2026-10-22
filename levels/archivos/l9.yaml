@@ -1,0 +1,41 @@
+id: archivos-l9
+track: archivos
+index: 9
+title: Diferencias validadas
+subtitle: "diff: comparar dos versiones"
+xp: 40
+difficulty: 2
+brief: nuevo.txt es la revisión del viejo.txt; además de corregir la broma que venía arrastrando, la
+  revisión incluye una línea marcada.
+goal: Muestra las DIFERENCIAS entre /home/agent/viejo.txt y /home/agent/nuevo.txt y extrae de allí
+  la clase con la marca (empieza con >).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 09" "Archivos"
+
+  printf 'linea uno\nlinea dos con typo\nlinea tres\n' > /home/agent/viejo.txt
+
+  printf 'linea uno\nlinea dos corregida\nlinea tres\nlinea nueva tabulada: $DOJO_FLAG\n' >
+  /home/agent/nuevo.txt
+
+  chown agent:agent /home/agent/viejo.txt /home/agent/nuevo.txt
+solution: diff /home/agent/viejo.txt /home/agent/nuevo.txt | cat
+hints:
+  - diff A B lista las diferencias con prefijos < y >.
+  - Las líneas que SOLO están en el segundo fichero van con >.
+  - diff viejo.txt nuevo.txt
+teach: "diff es la base de wits parecidas a `patch`. Recuerda < = fichero A, > = fichero B. La
+  salida está a la orden de wc, sort y filtered: el beam de comparaciones."
+cheatsheet:
+  - cmd: diff a b
+    desc: compara línea a línea
+  - cmd: diff -u a b
+    desc: formato unificado (git-ish)
+keywords:
+  - diff
+  - comparar
+  - versiones
+profile: default

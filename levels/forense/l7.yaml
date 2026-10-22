@@ -1,0 +1,34 @@
+id: forense-l7
+track: forense
+index: 7
+title: Mensaje blindado en b64
+subtitle: "base64 -d: decodificar"
+xp: 40
+difficulty: 2
+brief: "adjunto.b64 es texto base64: un formato clásico de correo para eludir filtros. Decodifícalo
+  en el flujo para recuperar el origen."
+goal: Decodifica /home/agent/adjunto.b64 y muestra el mensaje original (que trae la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Forense"
+  echo "adjunto normal: $DOJO_FLAG" | base64 -w0 > /home/agent/adjunto.b64
+  echo >> /home/agent/adjunto.b64
+  chown agent:agent /home/agent/adjunto.b64
+solution: base64 -d /home/agent/adjunto.b64
+hints:
+  - base64 -d decodifica en el flujo (stdout).
+  - También puedes cat fichero | base64 -d si prefieres.
+  - base64 -d adjunto.b64
+teach: "base64 codifica a 64 caracteres binarios seguros; -d deshace. Appears en logs, adjuntos,
+  tokens JWT (la parte media) y exfiltraciones: reconocerla es obligatorio en forense."
+cheatsheet:
+  - cmd: base64 -d f
+    desc: decodifica
+  - cmd: base64 -w0 f
+    desc: codifica en una línea
+keywords:
+  - base64
+  - codificar
+  - decodificar
+profile: default

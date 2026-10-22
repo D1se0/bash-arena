@@ -1,0 +1,43 @@
+id: boss-l14
+track: boss
+index: 14
+title: Caza mayor VIII — nido de comprimidos
+subtitle: file → zcat → tar flujo al stdout
+xp: 100
+difficulty: 5
+brief: En /home/agent/nido hay tres ficheros SIN extensión; SOLO uno es un tar.gz (los otros son
+  gzip planos y texto). En el tar.gz vive la marca.
+goal: Identifica el único tar.gz de /home/agent/nido con file -z y extrae su contenido al vuelo
+  (tar -xzOf) hasta la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Boss"
+  mkdir -p /home/agent/nido /tmp/nido14
+  printf 'habita texto: nada por aquí\n' > /home/agent/nido/uno
+  printf 'gz sin marca: filler del depósito\n' | gzip -c > /home/agent/nido/dos
+  printf 'gz tambien falseo: nada\n' | gzip -c > /home/agent/nido/cinco
+  printf 'la joya del nido: %s\n' "$DOJO_FLAG" > /tmp/nido14/tmpf
+  tar -czf /home/agent/nido/tres -C /tmp/nido14 tmpf
+  rm -rf /tmp/nido14
+  chown -R agent:agent /home/agent
+solution: "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar -xzOf \"$f\" | grep
+  -oE 'FLAG\\{[a-f0-9]+\\}'"
+hints:
+  - "file -z mira DENTRO de los comprimidos: solo el tar.gz sale como 'tar archive'."
+  - "cut -d: -f1 isola el nombre; tar -xzOf FICHERO imprime su contenu al stdout."
+  - "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar -xzOf \"$f\""
+teach: "file + tar -O es el par mágico forense: identificar el recipiente y verterlo sin intermediar
+  disco. Cuando hay recipiente dentro de recipiente, SEGUIR la file cadenas de comprimido hasta el
+  resultado."
+cheatsheet:
+  - cmd: file * | grep tst
+    desc: identifica entre nombres mudos
+  - cmd: tar -xzOf f.tgz
+    desc: contents al stdout
+keywords:
+  - boss
+  - tar
+  - file
+  - nido
+profile: default

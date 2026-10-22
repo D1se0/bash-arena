@@ -1,0 +1,51 @@
+id: boss-l5
+track: boss
+index: 5
+title: El rey del error
+subtitle: grep -c + bucle + cat selectivo
+xp: 80
+difficulty: 4
+brief: Cinco logs grandes en logs/. Solo el loberrimo tiene MÁS de 50 líneas ERROR; su cabecera
+  lleva el avanzado trofeo.
+goal: Encuenposition el .log de /home/agent/logs con más de 50 líneas ERROR y MUESTRA su contenido
+  (los errores Y su cabecera con el trofeo).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 05" "Boss"
+  mkdir -p /home/agent/logs
+  i=1
+  while [ $i -le 5 ]; do
+    name=$i
+    case $i in
+      1) f=a; num=20; ;;
+      2) f=b; num=35; ;;
+      3) f=c; num=48; ;;
+      4) f=d; num=60; ;;
+      5) f=e; num=25; ;;
+    esac
+    log=/home/agent/logs/runner-$f.log
+    echo "inicio del lote $name formato ESTANDAR" > "$log"
+    if [ $num -eq 60 ]; then echo "trofeo del causante: $DOJO_FLAG" >> "$log"; fi
+    j=1
+    while [ $j -le $num ]; do echo "ERROR en componente $j" >> "$log"; j=$((j+1)); done
+    i=$((i+1))
+  done
+  chown -R agent:agent /home/agent
+solution: for f in /home/agent/logs/*.log; do if [ "$(grep -c ERROR "$f")" -gt 50 ]; then cat "$f"; fi; done
+hints:
+  - grep -c ERROR f cuenta las líneas ERROR de cada log.
+  - "El número lo decide el bucle: compara la cuenta con -gt 50."
+  - for f in logs/*.log; do [ "$(grep -c ERROR "$f")" -gt 50 ] && cat "$f"; done
+teach: El combo «señuelo + grep -c + test» es el patrón estándar de auditoría por lotes. Encadenarlo
+  con head/tail te enseña las cabeceras de CADA log sospechoso sin abrir el editor.
+cheatsheet:
+  - cmd: grep -c ERROR f
+    desc: cuenta ERRORS
+  - cmd: "[ n -gt 50 ] && a"
+    desc: condición del trofeo
+keywords:
+  - grep -c
+  - bucle
+  - logs
+profile: default

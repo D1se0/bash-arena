@@ -1,0 +1,36 @@
+id: fundamentos-l16
+track: fundamentos
+index: 16
+title: Cara o cruz
+subtitle: "file: el tipo verdadero"
+xp: 35
+difficulty: 2
+brief: "En ~/cofre hay tres ficheros .txt, pero uno miente: internamente es otro formato. file
+  revela la verdad."
+goal: Identifica el fichero de ~/cofre cuyo contenido REAL es gzip y muestralo descomprimido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 16" "Fundamentos"
+  mkdir -p /home/agent/cofre
+  echo "nota normal: todo en orden" > /home/agent/cofre/a.txt
+  echo "otra nota aburrida" > /home/agent/cofre/b.txt
+  printf 'la pieza real: %s\n' "$DOJO_FLAG" | gzip > /home/agent/cofre/c.txt
+  chown -R agent:agent /home/agent
+solution: 'f=$(file /home/agent/cofre/* | grep gzip | cut -d: -f1); zcat "$f"'
+hints:
+  - file fichero dice el tipo por su contenido, no por su nombre.
+  - Filtra los que salgan como gzip y descomprímelos al stdout con zcat.
+  - 'f=$(file /home/agent/cofre/* | grep gzip | cut -d: -f1); zcat "$f"'
+teach: 'file Lee los "magic bytes" del principio del fichero: la extensión se puede fingir, los
+  primeros bytes no. Útil cuando algo "debería ser X" y no abre.'
+cheatsheet:
+  - cmd: file *
+    desc: tipo real de cada fichero
+  - cmd: zcat f.gz
+    desc: gzip al stdout sin descomprimir a disco
+keywords:
+  - file
+  - gzip
+  - magic
+profile: default

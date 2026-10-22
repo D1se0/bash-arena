@@ -1,0 +1,35 @@
+id: filtrado-l18
+track: filtrado
+index: 18
+title: Espacios dobles
+subtitle: "tr -s: exprimir espacios"
+xp: 40
+difficulty: 3
+brief: folleto.txt tiene la pieza pixelada por espacios múltiples entre palabra y palabra. Al
+  exprimirlos, la marca reaparece.
+goal: Exprime los espacios (tr -s (squeeze) repetidos) de /home/agent/folleto.txt y extrae la marca
+  con grep.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Filtrado"
+  printf 'El    folleto   del    dojo\ndeclara   que  la   pieza\nesta   marcada   como:   %s\nimporta   leer   con   calma\n' "$DOJO_FLAG" > /home/agent/folleto.txt
+  chown agent:agent /home/agent/folleto.txt
+  chown -R agent:agent /home/agent
+solution: tr -s ' ' < /home/agent/folleto.txt | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - tr -s " " sustituye cada racha de espacios por UNO solo (squeeze).
+  - Después grep -oE con la forma de la marca extrae solo el trozo importante.
+  - tr -s ' ' < /home/agent/folleto.txt | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: "tr -s exprime repeticiones (espacios, tabs, saltos): limpiar columnas desalineadas antes de
+  cut/awk es su hora de gloria. tr NO acepta ficheros como argumento: redirige con <."
+cheatsheet:
+  - cmd: tr -s ' ' < f
+    desc: un espacio por racha
+  - cmd: tr 'a-z' 'A-Z' < f
+    desc: mayúsculas
+keywords:
+  - tr
+  - squeeze
+  - grep
+profile: default

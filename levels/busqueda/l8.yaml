@@ -1,0 +1,46 @@
+id: busqueda-l8
+track: busqueda
+index: 8
+title: Purga de basura
+subtitle: find -name + -delete
+xp: 35
+difficulty: 2
+brief: work/ está lleno de ficheros .tmp que ocultan los reales a simple vista. Limpia primero,
+  busca después.
+goal: Borra todos los .tmp de /home/agent/work y muestra la línea de la clave que queda.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 08" "Búsqueda"
+
+  mkdir -p /home/agent/work
+
+  i=1
+
+  while [ $i -le 12 ]; do echo "ruido temporal $i" > /home/agent/work/sesion-$i.tmp; i=$((i+1));
+  done
+
+  echo "el resto no es basura: $DOJO_FLAG" > /home/agent/work/nota-real-01.txt
+
+  echo "otra nota real de trabajo" > /home/agent/work/nota-real-02.txt
+
+  chown -R agent:agent /home/agent/work
+solution: find /home/agent/work -name '*.tmp' -delete; grep -r 'FLAG{' /home/agent/work
+hints:
+  - find -name "*.tmp" selecciona por patrón de nombre.
+  - La acción -delete elimina lo que casa (haz un ls antes para confirmar).
+  - find work -name '*.tmp' -delete && grep -r FLAG work
+teach: "find + -delete es la escoba quirúrgica: muy potente, así que previsualiza el listado sin
+  ella antes. Tras la limpieza, los nombres verdaderos emergen."
+cheatsheet:
+  - cmd: find d -name '*.tmp'
+    desc: previsualiza qué borrarás
+  - cmd: find d -name '*.tmp' -delete
+    desc: borra lo casado
+keywords:
+  - find -delete
+  - limpieza
+  - xargs
+profile: default

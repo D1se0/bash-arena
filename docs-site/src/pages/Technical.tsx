@@ -5,7 +5,7 @@ const WS_MSGS = [
   ['← levelState', 'nivel público (brief, goal, cheatsheet, hintsCount…), startedAt'],
   ['→ input', '{ data } — keystrokes crudos hacia el shell (retención de prefijos reservados según el gateway)'],
   ['← data', '{ data } — salida cruda del shell (para xterm)'],
-  ['→ resize', '{ cols, rows } — recolicita del TTY'],
+  ['→ resize', '{ cols, rows } — resolicita del TTY'],
   ['→ submitFlag / ← submitResult', '{ flag } → passed, xpGained, totalXp, rank, nextLevelId'],
   ['→ hintRequest / ← hint', 'pista progresiva (−10 XP) con índice y total'],
   ['→ solutionRequest / ← solution', 'solución de referencia (desbloqueada con 2 pistas o 5 fallos)'],
@@ -52,7 +52,7 @@ export default function Technical() {
 {`app/
   server/   backend: ws + dockerode + motor de niveles + SQLite (strict TS)
   client/   frontend: React + Vite + xterm.js (fit, web-links)
-levels/     un YAML por nivel (11 tracks, 53 niveles) — sin código de motor
+levels/     un YAML por nivel (11 tracks, 194 niveles) — sin código de motor
 docker/     ubuntu-dojo.Dockerfile · server/client Dockerfiles · compose · nginx · arena-prompt
 scripts/    deploy · stop · backup · restore · status · logs · update · test-levels · security-tests · e2e
 tests/      unitarios (vitest) · informes generados

@@ -1,0 +1,37 @@
+id: redes-l7
+track: redes
+index: 7
+title: Nombre que no existe
+subtitle: /etc/hosts como DNS local
+xp: 45
+difficulty: 3
+brief: "El dominio tesoro.interno no existe en ninguna DNS: el administrador lo ruteó a localhost en
+  /etc/hosts. El servidor ya escucha en el 80."
+goal: Muestra la entrada de /etc/hosts de tesoro.interno y descarga http://tesoro.interno/
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Redes"
+  echo "127.0.0.1 tesoro.interno" >> /etc/hosts
+  mkdir -p /var/www/tesoro
+  echo "bandera del dominio interno: $DOJO_FLAG" > /var/www/tesoro/index.html
+  nohup python3 -m http.server 80 --directory /var/www/tesoro >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: grep tesoro.interno /etc/hosts; curl -s http://tesoro.interno/
+hints:
+  - grep tesoro.interno /etc/hosts te enseña a qué IP responde el nombre.
+  - curl acepta el nombre de dominio igual que una IP (usa la resolución del sistema).
+  - curl -s http://tesoro.interno/
+teach: "/etc/hosts es la resolución local que se consulta ANTES que la DNS: la técnica clásica para
+  entornos de laboratorio (y para secuestrar dominios, ojo)."
+cheatsheet:
+  - cmd: cat /etc/hosts
+    desc: mapeo local de nombres
+  - cmd: curl -s http://nombre/
+    desc: consulta por nombre
+keywords:
+  - hosts
+  - dns
+  - curl
+profile: default

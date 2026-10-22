@@ -1,0 +1,40 @@
+id: procesado-l14
+track: procesado
+index: 14
+title: Informe censurado
+subtitle: sed de sustitución
+xp: 45
+difficulty: 3
+brief: El censor pasó por informe.txt y tachó lo que importa con la palabra REDACTADO justo delante.
+  Quita los tachones.
+goal: Elimina todas las ocurrencias de REDACTADO (con sus espacios) de /home/agent/informe.txt y
+  extrae la marca que reaparece.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Procesado"
+  {
+    echo "informe mensual del dojo"
+    echo "actividad normal en zona A REDACTADO sigue en calma"
+    echo "hallazgo: REDACTADO $DOJO_FLAG"
+    echo "recomendaciones: REDACTADO vigilancia de rutina"
+  } > /home/agent/informe.txt
+  chown agent:agent /home/agent/informe.txt
+  chown -R agent:agent /home/agent
+solution: sed 's/REDACTADO //g' /home/agent/informe.txt | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - sed s/viejo/nuevo/ cambia la 1ª ocurrencia por línea; /g lo hace en todas.
+  - Cambia REDACTADO+espacio por vacío, luego grep -oE con la forma de la marca.
+  - sed 's/REDACTADO //g' f | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: "sed s/viejo/nuevo/g es el reemplazo de texto por excelencia. Para informes censurados,
+  quitar la máscara revela lo que quedó detrás: el censor borra palabras, no datos."
+cheatsheet:
+  - cmd: sed 's/viejo/nuevo/g' f
+    desc: reemplaza todas
+  - cmd: sed -i 's/v/n/g' f
+    desc: edita en sitio
+keywords:
+  - sed
+  - censura
+  - sustitucion
+profile: default

@@ -1,0 +1,39 @@
+id: filtrado-l15
+track: filtrado
+index: 15
+title: El menor de todos
+subtitle: sort -n sobre números
+xp: 35
+difficulty: 2
+brief: cuenta.csv lista codigosnuméricos desordenados. La fila con el número más pequeño lleva la pieza.
+goal: Ordena numéricamente /home/agent/cuenta.csv y muestra la primera fila (el menor).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Filtrado"
+  {
+    echo "412 nota: nada aquí"
+    echo "87 nota: nada aquí"
+    echo "3 nota: $DOJO_FLAG"
+    echo "1500 nota: nada aquí"
+    echo "56 nota: nada aquí"
+  } > /home/agent/cuenta.csv
+  chown agent:agent /home/agent/cuenta.csv
+  chown -R agent:agent /home/agent
+solution: sort -n /home/agent/cuenta.csv | head -n1
+hints:
+  - "sort sin flags ordena LEXICOGRÁFICAMENTE: 1500 quedará antes que 87."
+  - sort -n compara la cabecera numérica de cada línea.
+  - sort -n /home/agent/cuenta.csv | head -n1
+teach: 'sort -n ordena por valor numérico (sort -h entiende sufijos 2K/3M). Sin -n, "10" < "9": el
+  bug clásico de los informes mal ordenados.'
+cheatsheet:
+  - cmd: sort -n f
+    desc: orden numérico
+  - cmd: sort -u f
+    desc: ordenado y sin duplicados
+keywords:
+  - sort
+  - numericos
+  - head
+profile: default

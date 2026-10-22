@@ -1,0 +1,42 @@
+id: scripting-l10
+track: scripting
+index: 10
+title: Solo los ejecutables
+subtitle: funciones + test -x
+xp: 45
+difficulty: 3
+brief: "En caja/ hay ficheros mixtos: la mayoría ni siquiera es ejecutable. El que sí, guarda la marca."
+goal: Define una función (o usa test -x) para recorrer /home/agent/caja/* y imprimir SOLO los
+  ficheros con permiso de ejecución.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Scripting"
+  mkdir -p /home/agent/caja
+  echo "uno apagado" > /home/agent/caja/a.txt
+  chmod 644 /home/agent/caja/a.txt
+  echo "dos apagado" > /home/agent/caja/b.txt
+  chmod 644 /home/agent/caja/b.txt
+  echo "ejecutable: $DOJO_FLAG" > /home/agent/caja/dinamo.sh
+  chmod 755 /home/agent/caja/dinamo.sh
+  echo "tres apagado" > /home/agent/caja/c.txt
+  chmod 644 /home/agent/caja/c.txt
+  chown -R agent:agent /home/agent
+solution: for f in /home/agent/caja/*; do if [ -x "$f" ]; then cat "$f"; fi; done
+hints:
+  - test -x FICHERO responde ¿es ejecutable?
+  - Un bucle for sobre caja/* te recorre los ficheros de a uno.
+  - for f in caja/*; do [ -x "$f" ] && cat "$f"; done
+teach: "Las funciones en bash (nombre() { … }) reutilizan lógica en el mismo shell. El test
+  -x/-r/-f/-d responde propiedades de ficheros: la combinación script = filtro perfectro para
+  lotes."
+cheatsheet:
+  - cmd: mi_fn() { …; }; mi_fn
+    desc: definir y llamar
+  - cmd: "[ -x f ] && a"
+    desc: if corto si ejecutable
+keywords:
+  - funciones
+  - test -x
+  - bucle
+profile: default

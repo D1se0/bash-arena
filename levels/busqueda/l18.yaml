@@ -1,0 +1,39 @@
+id: busqueda-l18
+track: busqueda
+index: 18
+title: Configuraciones escondidas
+subtitle: find -name + -exec
+xp: 45
+difficulty: 3
+brief: El árbol /etc/dojo está lleno de subdirectorios con ficheros .conf. Uno de ellos lleva la
+  pieza en una línea de comentario.
+goal: Recorre los .conf de /etc/dojo con find y muestra la marca que hay en alguno de ellos.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Busqueda"
+  mkdir -p /etc/dojo/d1 /etc/dojo/d2/nested
+  rm -f /etc/dojo/*.conf /etc/dojo/d1/*.conf /etc/dojo/d2/*.conf /etc/dojo/d2/nested/*.conf
+  echo "servicio=base" > /etc/dojo/base.conf
+  echo "medida=mordaza" > /etc/dojo/d1/regla.conf
+  printf '# rastro del dojo\n# marca: %s\n' "$DOJO_FLAG" > /etc/dojo/d2/nested/legado.conf
+  echo "otro=salio" > /etc/dojo/d2/test.conf
+  chmod -R a+rX /etc/dojo
+  chown -R agent:agent /home/agent
+solution: find /etc/dojo -name '*.conf' -exec grep -hoE 'FLAG\{[a-f0-9]+\}' {} \;
+hints:
+  - "find -exec corre un comando por cada fichero que pasa el filtro: {} es el nombre del fichero."
+  - grep -h NO imprime el nombre del fichero, solo la línea con la marca.
+  - find /etc/dojo -name '*.conf' -exec grep -hoE 'FLAG\{[a-f0-9]+\}' {} \;
+teach: "find -exec te ahorra el bucle for: cada hallazgo es un {} al cimiento del comando. Con ;
+  ejecuta por fichero y con + los agrupa: ambos son legítimos, el + es más barato."
+cheatsheet:
+  - cmd: find d -name "*.conf" -exec cmd {} \;
+    desc: por fichero
+  - cmd: find d -type f -exec cat {} +
+    desc: agrupado
+keywords:
+  - find
+  - exec
+  - conf
+profile: default

@@ -1,0 +1,38 @@
+id: procesos-l12
+track: procesos
+index: 12
+title: El portero y su llave
+subtitle: "/proc/PID/cmdline: leer el comando del proceso"
+xp: 55
+difficulty: 4
+brief: Un portero dejó pasada su llave en la línea de comandos con la que arrancó. La carpeta /proc
+  lo cuenta todo.
+goal: Lee /proc/<PID>/cmdline del portero, extrae la ruta /etc/arena/... y muestra ese fichero.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Procesos"
+  mkdir -p /etc/arena/final
+  echo "la llave del portero: $DOJO_FLAG" > /etc/arena/final/llave.txt
+  chmod 644 /etc/arena/final/llave.txt
+  nohup bash -c 'while true; do sleep 5; done' portero-guardian /etc/arena/final/llave.txt >/dev/null 2>&1 &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: r=$(tr '\0' ' ' < /proc/$(pgrep -f portero-guardian | head -n1)/cmdline | grep -oE
+  '/etc/arena/[^ ]+' | head -n1); cat "$r"
+hints:
+  - Cada proceso tiene /proc/PID/cmdline separado por bytes NUL (\\0).
+  - tr "\0" " " convierte los separadores en espacios para poder extraer rutas.
+  - r=$(tr "\0" " " < /proc/PID/cmdline | grep -oE "/etc/arena/[^ ]+"); cat "$r"
+teach: "/proc es un espejo del kernel: cmdline, environ, status, fd… todo proceso vive ahí. Leer
+  cmdline de otros procesos revela con qué fueron arrancados."
+cheatsheet:
+  - cmd: tr "\0" " " < /proc/PID/cmdline
+    desc: comando del proceso
+  - cmd: pgrep -f x
+    desc: PID de lo buscado
+keywords:
+  - /proc
+  - cmdline
+  - tr
+profile: default

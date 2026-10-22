@@ -34,7 +34,7 @@ hints:
   - "nc 127.0.0.1 9696"
 teach: >
   `ss` es el sucesor de netstat: `-t` TCP, `-l` LISTEN, `-n` sin resolver
-  nombres. Para осмотiatrico rueda memoria mental: en el dojo hay un
+  nombres. Para anclar el recuerdo: en el dojo hay un
   servicio solo en loopback. Nada peor que un servicio abierto a todos
   por descuido.
 cheatsheet:

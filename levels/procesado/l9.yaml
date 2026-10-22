@@ -1,0 +1,40 @@
+id: procesado-l9
+track: procesado
+index: 9
+title: Dos ficheros emparejados
+subtitle: paste + grep
+xp: 45
+difficulty: 3
+brief: ids.txt y secretos.txt están alineados línea a línea. La ficha «0042» guarda una relación con
+  el donante.
+goal: Junta ambas fichas por líneas y muestra la fila cuyo ID es 0042 (ID y su secreto).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 09" "Procesado"
+
+  printf '0001\n0002\n0042\n0007\n0011\n' > /home/agent/ids.txt
+
+  printf 'cero-calce\ndos-calce\nficha especial: $DOJO_FLAG\ncuatro-calce\nocho-calce\n' >
+  /home/agent/secretos.txt
+
+  chown agent:agent /home/agent/ids.txt /home/agent/secretos.txt
+solution: paste /home/agent/ids.txt /home/agent/secretos.txt | grep '^0042'
+hints:
+  - paste coloca fichero 1 y fichero 2 en columnas separadas por tabulador.
+  - El ancla ^0042 evita casar el 042 de otra ficha.
+  - paste ids.txt secretos.txt | grep '^0042'
+teach: paste une ficheros en columnas; cuando dos ficheros están alineados por filas, el índice de
+  una línea ES la clave. El grep con ancla evita hallazgos falsos.
+cheatsheet:
+  - cmd: paste a b
+    desc: une ficheros por líneas
+  - cmd: paste a b | awk '$1==42'
+    desc: elige por columna
+keywords:
+  - paste
+  - alinear
+  - join
+profile: default

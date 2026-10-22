@@ -1,0 +1,45 @@
+id: procesos-l9
+track: procesos
+index: 9
+title: El descriptor abierto
+subtitle: "lsof: quién tiene abierto qué"
+xp: 50
+difficulty: 3
+brief: Un guardián (corriendo como tu usuario) mantiene un fichero legado abierto… visible con lsof.
+goal: Descubre con lsof el fichero que el guardián tiene abierto y muéstralo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Procesos"
+  mkdir -p /etc/arena
+  echo "caso guardado: $DOJO_FLAG" > /etc/arena/vault.txt
+  chmod 644 /etc/arena/vault.txt
+  cat > /tmp/guardian.sh <<FIN
+  #!/bin/bash
+  echo \$\$ > /tmp/guardian.pid
+  exec 3< /etc/arena/vault.txt
+  while true; do sleep 1; done
+  FIN
+  chmod 755 /tmp/guardian.sh
+  sudo -u agent /tmp/guardian.sh >/dev/null 2>&1 </dev/null &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: p=$(cat /tmp/guardian.pid); f=$(lsof -b -p "$p" 2>/dev/null | grep -oE '/etc/arena/[^ ]+' | head -n1); if [ -z "$f" ]; then f=$(readlink /proc/$p/fd/3); fi; cat "$f"
+hints:
+  - lsof lista ficheros abiertos por cada proceso (como agente solo ves los tuyos).
+  - "El guardián deja su PID en /tmp/guardian.pid; pregúntale solo a ese: lsof -b -p PID (el flag -b evita bloqueos sin privilegios)."
+  - p=$(cat /tmp/guardian.pid); cat $(lsof -b -p $p | grep -oE "/etc/arena/[^ ]+" | head -n1)
+teach: "lsof responde «quién tiene abierto qué»: ficheros borrados a medias, sockets, descriptores…
+  La combinación pgrep → lsof -b -p PID es un diagnóstico mínimo eficaz (en contenedores sin
+  privilegios usa -b para que lsof no se bloquee escaneando el kernel)."
+cheatsheet:
+  - cmd: lsof -b -p PID
+    desc: ficheros abiertos de un PID (-b evita bloqueos sin privilegios)
+  - cmd: lsof +D dir
+    desc: todo lo abierto bajo un árbol
+keywords:
+  - lsof
+  - fd
+  - proceso
+  - pgrep
+profile: default

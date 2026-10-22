@@ -1,0 +1,36 @@
+id: scripting-l7
+track: scripting
+index: 7
+title: La edad y la puerta
+subtitle: if/condiciones numericas
+xp: 35
+difficulty: 2
+brief: "El sistema decide con la edad del fichero edad.txt qué fichero entregar: adulto o menor."
+goal: "Con tee logic: si edad.txt >= 18, muestra adulto/clave.txt; si no, muestra menor/broma.txt."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Scripting"
+  echo "21" > /home/agent/edad.txt
+  mkdir -p /home/agent/adulto /home/agent/menor
+  echo "broma del menor: dulzura gratis" > /home/agent/menor/broma.txt
+  echo "puerta del adulto: $DOJO_FLAG" > /home/agent/adulto/clave.txt
+  chown -R agent:agent /home/agent
+solution: if [ "$(cat /home/agent/edad.txt)" -ge 18 ]; then cat /home/agent/adulto/clave.txt; else
+  cat /home/agent/menor/broma.txt; fi
+hints:
+  - "La condición numérica en bash usa test: [ valor -ge 18 ]."
+  - Sacar el valor del fichero con $(cat edad.txt) evita que quede con salto de línea.
+  - if [ "$(cat edad.txt)" -ge 18 ]; then cat adulto/clave.txt; fi
+teach: "El test [ ] compara: -eq, -ne, -gt, -ge, -lt, -le para números; = para cadenas. Si el if no
+  entra, else (o elif) dan la alternativa."
+cheatsheet:
+  - cmd: "[ x -ge 18 ] && a || b"
+    desc: if corto en una línea
+  - cmd: if [ cond ]; then ... fi
+    desc: estructura clásica
+keywords:
+  - if
+  - test
+  - condicional
+profile: default

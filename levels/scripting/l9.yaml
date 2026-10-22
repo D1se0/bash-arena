@@ -1,0 +1,39 @@
+id: scripting-l9
+track: scripting
+index: 9
+title: Lee tu itinerario
+subtitle: while read + campos al vuelo
+xp: 45
+difficulty: 3
+brief: itinerario lista pares host puerto. Solo la fila localhost 4242 corresponde a un fichero real
+  en rutas/.
+goal: Recorre itinerario.txt línea a línea (while read) y cuando la fila sea localhost 4242, muestra
+  /home/agent/rutas/4242.txt
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Scripting"
+  printf 'gateway 3000\nlocalhost 4242\nforaneo 5000\n' > /home/agent/itinerario.txt
+  mkdir -p /home/agent/rutas
+  echo "ruta foranea inexistente" > /home/agent/rutas/5000.txt
+  echo "ruta local exacta: $DOJO_FLAG" > /home/agent/rutas/4242.txt
+  echo "ruta del gateway relleno" > /home/agent/rutas/3000.txt
+  chown -R agent:agent /home/agent
+solution: while read -r h p; do if [ "$h" = "localhost" ] && [ "$p" = "4242" ]; then cat
+  /home/agent/rutas/4242.txt; fi; done < /home/agent/itinerario.txt
+hints:
+  - while read -r a b; do ...; done < fichero lee campo a campo.
+  - "Es la forma idiomática de procesar líneas con campos: NO uses for sobre la salida de cat."
+  - while read -r h p; do echo "$h"; done < itinerario.txt
+teach: "while read parsea cada línea en variables: para procesar ficheros columna a columna es EL
+  patrón. for sobre $() rompe en espacios y come los saltos: read es la vía fiel."
+cheatsheet:
+  - cmd: while read -r a b; do …; done < f
+    desc: lee dos campos por línea
+  - cmd: wc -l itinerario.txt
+    desc: verifica el recorrido
+keywords:
+  - while read
+  - bucle
+  - campos
+profile: default

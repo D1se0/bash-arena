@@ -1,0 +1,47 @@
+id: scripting-l8
+track: scripting
+index: 8
+title: El menú por parámetros
+subtitle: posicionales $1 $2 y case
+xp: 40
+difficulty: 3
+brief: "menu.sh acepta un ACCION y una CLAVE: hay que invocarlo correctamente para que lea el
+  fichero que interesa."
+goal: Invoca /home/agent/menu.sh (con bash) con acción "mostrar" y clave "centro-2" para leer la
+  ficha correcta.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Scripting"
+  mkdir -p /home/agent/menus
+  echo "decoy del lado 1" > /home/agent/menus/izquierda-1.txt
+  echo "ficha correcta: $DOJO_FLAG" > /home/agent/menus/centro-2.txt
+  echo "decoy del lado 3" > /home/agent/menus/derecha-3.txt
+  cat > /home/agent/menu.sh <<FIN
+  #!/bin/bash
+  case \$1 in
+    mostrar) cat "/home/agent/menus/\$2.txt"; ;;
+    lista) ls /home/agent/menus; ;;
+    *) echo "accion desconocida"; ;;
+  esac
+  FIN
+  chmod 755 /home/agent/menu.sh
+  chown -R agent:agent /home/agent
+solution: bash /home/agent/menu.sh mostrar centro-2
+hints:
+  - Dentro del script, $1 y $2 son el primer y segundo parámetro que le pasas.
+  - El case $1 ejecuta la rama cuyo patrón case la acción.
+  - bash menu.sh mostrar centro-2
+teach: "$0 $1 $2… son los argumentos posicionales de un script (como argv de C). case sobre $1 es el
+  switch de bash: la forma idiomática de depender del parámetro a ser."
+cheatsheet:
+  - cmd: ./script a b
+    desc: invoca con parámetros
+  - cmd: case $1 in a) ...;; esac
+    desc: switch bash
+keywords:
+  - case
+  - posicionales
+  - $1
+  - script
+profile: default

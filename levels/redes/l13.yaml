@@ -1,0 +1,37 @@
+id: redes-l13
+track: redes
+index: 13
+title: Ese nombre no existe
+subtitle: "/etc/hosts: DNS casero"
+xp: 40
+difficulty: 2
+brief: El dojo sirve una web en el 8000, pero solo la alcanza por IP…oten. Su alias dojo.local mapea
+  en /etc/hosts.
+goal: Resuelve el alias de /etc/hosts y descarga http://dojo.local:8000/pieza.html.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Redes"
+  mkdir -p /etc/arena /var/www/locale
+  echo "127.0.0.1 dojo.local" >> /etc/hosts
+  echo "<html>Desde el alias: $DOJO_FLAG</html>" > /var/www/locale/pieza.html
+  nohup python3 -m http.server 8000 --directory /var/www/locale >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: curl -s http://dojo.local:8000/pieza.html
+hints:
+  - "./etc/hosts es la tabla de resolución local: se consulta ANTES que el DNS."
+  - grep dojo.local /etc/hosts te enseña el alias; curl por nombre en lugar de 127.0.0.1.
+  - curl -s http://dojo.local:8000/pieza.html
+teach: "/etc/hosts es el DNS de bolsillo: alias internos, docker-compose sobrescribe IPs, machines
+  frente a entornos. curl por hostname ya no va por IP: pasing de DNS a nombre."
+cheatsheet:
+  - cmd: grep nombre /etc/hosts
+    desc: alias local
+  - cmd: curl http://alias:puerto/
+    desc: descarga por nombre
+keywords:
+  - hosts
+  - alias
+  - curl
+profile: default

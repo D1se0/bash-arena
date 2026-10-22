@@ -1,0 +1,36 @@
+id: fundamentos-l11
+track: fundamentos
+index: 11
+title: Leer la leeme
+subtitle: seguir una pista escrita a mano
+xp: 35
+difficulty: 2
+brief: Alguien dejó instrucciones en un fichero oculto .leeme que apunta al escondite de la clave.
+goal: Lee el fichero oculto .leeme de tu home, sigue la ruta que anota y muestra ese fichero.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Fundamentos"
+  mkdir -p /home/agent/aula/aula-01 /home/agent/aula/aula-07
+  echo "deja aqui una nota trampa" > /home/agent/aula/aula-01/nota.txt
+  echo "ve directo a /home/agent/aula/aula-07/nota.txt y no te entretengas" > /home/agent/.leeme
+  echo "secuencia valida: $DOJO_FLAG" > /home/agent/aula/aula-07/nota.txt
+  chown -R agent:agent /home/agent
+solution: cat "$(grep -oE '/home/agent/[^ ]+' /home/agent/.leeme | head -n1)"
+hints:
+  - "Los ficheros que empiezan por punto no aparecen en un ls normal: usa ls -a."
+  - La nota menciona una ruta absoluta; extráela con grep -oE.
+  - cat "$(grep -oE "/home/agent/[^ ]+" .leeme | head -n1)"
+teach: "Los ficheros ocultos (punto inicial) guardan configuraciones y notas. La sustitución $(…)
+  mete la salida de un comando dentro de otro: el patrón «localiza → actúa» que usarás todos los
+  días."
+cheatsheet:
+  - cmd: ls -a
+    desc: lista incluidos los ocultos
+  - cmd: cat $(comando)
+    desc: salida como argumento
+keywords:
+  - ocultos
+  - ls -a
+  - sustitución de comandos
+profile: default

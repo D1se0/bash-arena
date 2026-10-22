@@ -1,0 +1,40 @@
+id: forense-l10
+track: forense
+index: 10
+title: El intruso en el log
+subtitle: grep en sucesos.log
+xp: 45
+difficulty: 3
+brief: 'un caso: en sucesos.log se registra un "intruso" con su clave entre colegas legales y ruido
+  administrativo.'
+goal: Localiza en /home/agent/sucesos.log la línea del intruso y extrae de ella solo la FLAG que aparece.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Forense"
+  cat > /home/agent/sucesos.log <<FIN
+  01:02:03 admin reviso el panel
+  01:05:11 rotacion de claves programada
+  02:11:33 login aceptado: usuario intruso clave= $DOJO_FLAG
+  02:12:01 escaneo de puertos desde la web
+  03:00:00 rotación de turnos
+  FIN
+  chown agent:agent /home/agent/sucesos.log
+solution: grep -oE 'FLAG\{[^}]*\}' /home/agent/sucesos.log
+hints:
+  - Primero grep intruso sucesos.log para leer el contexto.
+  - "Luego te queda SOLO la flag: grep -oE FLAG con la clase [^}]*"
+  - grep intruso sucesos.log | grep -oE 'FLAG\{[^}]*\}'
+teach: "La revisión de logs con grep en dos fases: primero identifica al actor sospechoso, después
+  extrae el trozo exacto con la clase [^}]*. Leer primero y extraer después reduce el ruido a cero."
+cheatsheet:
+  - cmd: grep 'actor' f | grep -oE 'x'
+    desc: actor + extraer
+  - cmd: tail -n 20 sucesos.log
+    desc: últimos sucesos
+keywords:
+  - grep
+  - log
+  - intruso
+  - sucesos
+profile: default

@@ -1,0 +1,37 @@
+id: redes-l15
+track: redes
+index: 15
+title: Recogida física
+subtitle: wget como cliente de descarga
+xp: 40
+difficulty: 2
+brief: La web del dojo reparte un fichero. wget salva un fichero local (a diferencia de curl, que
+  por defecto lo imprime).
+goal: Descarga http://127.0.0.1:8000/reparto.txt con wget y muestra su contenido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Redes"
+  mkdir -p /etc/arena /var/www/reparto
+  echo "entrega directa: $DOJO_FLAG" > /var/www/reparto/reparto.txt
+  nohup python3 -m http.server 8000 --directory /var/www/reparto >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: wget -q -O /tmp/recogida.txt http://127.0.0.1:8000/reparto.txt; cat /tmp/recogida.txt
+hints:
+  - wget URL guarda el fichero con su nombre. -O ruta llama distinto al resultado. -q silencia por
+    completo.
+  - Después de descargar, el cat es tuyo.
+  - wget -q -O f http://127.0.0.1:8000/reparto.txt; cat f
+teach: "wget es el capataz de descargas: reintentos, recursividad (--mirror). curl es de copiar al
+  stdout, wget de ir a cacharrar fichero. Dos sabores del mismo café."
+cheatsheet:
+  - cmd: wget URL
+    desc: descarga al nombre igual
+  - cmd: wget -qO- URL
+    desc: al stdout, como curl
+keywords:
+  - wget
+  - descarga
+  - http
+profile: default

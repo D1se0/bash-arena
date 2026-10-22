@@ -1,0 +1,35 @@
+id: permisos-l7
+track: permisos
+index: 7
+title: Copias contenidas
+subtitle: "umask: permisos por defecto al crear"
+xp: 45
+difficulty: 3
+brief: El protocolo interno exige que TODO lo copiado en tu home sea privado (600). El secreto está
+  en la umask del proceso.
+goal: Copia credencial.txt a tu home con umask 077 y muéstrala (la copia debe quedar como -rw-------).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Permisos"
+  echo "credencial del operador: $DOJO_FLAG" > /home/agent/credencial.txt
+  chmod 644 /home/agent/credencial.txt
+  chown agent:agent /home/agent/credencial.txt
+solution: umask 077; cp /home/agent/credencial.txt /home/agent/credencial-copia.txt; cat
+  /home/agent/credencial-copia.txt; stat -c '%a' /home/agent/credencial-copia.txt
+hints:
+  - umask define qué permisos se QUITAN al crear ficheros.
+  - Con umask 077 los ficheros nuevos quedan 600.
+  - umask 077; cp credencial.txt ~/ ; cat ~/credencial.txt
+teach: "umask ENMASCARA los permisos de creación (0666 & ~umask en ficheros). En un subshell
+  (paréntesis) la cambia solo para ese comando: el entorno decide la herencia de permisos."
+cheatsheet:
+  - cmd: umask 077
+    desc: creación privada
+  - cmd: umask
+    desc: muestra la actual
+keywords:
+  - umask
+  - cp
+  - permisos privados
+profile: default

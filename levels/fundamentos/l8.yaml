@@ -1,0 +1,37 @@
+id: fundamentos-l8
+track: fundamentos
+index: 8
+title: Wildcards en la fábrica
+subtitle: "globbing: * y ? sobre rutas"
+xp: 35
+difficulty: 2
+brief: En exports/ hay años y meses mezclados. Solo el CSV de octubre de 2024 lleva la clave dentro.
+goal: Muestra el contenido del fichero llamado data_2024_10.csv dentro de /home/agent/exports.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Fundamentos"
+  mkdir -p /home/agent/exports
+  echo "id;concepto" > /home/agent/exports/data_2023_10.csv
+  echo "id;concepto" > /home/agent/exports/data_2024_09.csv
+  echo "export del operador" > /home/agent/exports/data_2024_11.csv
+  echo "clave del trimestre: $DOJO_FLAG" > /home/agent/exports/data_2024_10.csv
+  chown -R agent:agent /home/agent
+solution: cat /home/agent/exports/data_2024_10.csv
+hints:
+  - Con ls /home/agent/exports comparas los nombres letra a letra.
+  - "Los comodines ahorran tecleado: * casa cualquier texto, ? casa un solo carácter."
+  - cat /home/agent/exports/data_*_10.csv (y fija la mirada en la fila de 2024)
+teach: El globbing (* y ?) lo expande la shell ANTES de ejecutar el comando; sirve para filtrar por
+  nombre sin abrir ficheros. Verifica siempre con ls qué va a casar.
+cheatsheet:
+  - cmd: ls exports/data*
+    desc: previsualiza qué expande el *
+  - cmd: cat data_2024_10.csv
+    desc: nombre exacto, cero sorpresas
+keywords:
+  - globbing
+  - wildcards
+  - ls
+  - cat
+profile: default

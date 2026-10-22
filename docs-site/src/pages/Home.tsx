@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import TermDemo from '../components/TermDemo';
 
 const FEATURES = [
-  { icon: '🖥️', title: 'Terminal real de Ubuntu', desc: 'no un emulador: un contenedor Docker efímero por sesión con coreutils, grep, awk, sed, tar… vía WebSocket con xterm.js' },
-  { icon: '🏁', title: '11 tracks progresivos', desc: 'de ls a awk/forense… y boss levels cronometrados. ~53 niveles con curva de dificultad real' },
+  { icon: '🖥️', title: 'Terminal real de Ubuntu', desc: 'no es un emulador: un contenedor Docker efímero por sesión con coreutils, grep, awk, sed, tar… vía WebSocket con xterm.js' },
+  { icon: '🏁', title: '11 tracks progresivos', desc: 'de ls hasta awk, forense y niveles boss cronometrados: más de 120 niveles con curva de dificultad real' },
   { icon: '🔐', title: 'Flags por sesión', desc: 'HMAC-SHA256 con tu sessionId: la flag de tu vecino no te sirve; validación siempre en servidor' },
   { icon: '🛡️', title: 'Aislamiento real', desc: 'sin red externa, cap-drop ALL, no-new-privileges, límites de CPU/mem/pids, sin socket Docker montado' },
   { icon: '💾', title: 'Progreso persistente', desc: 'SQLite en volumen Docker: niveles, XP, rachas y pistas sobreviven a los reinicios; export/import JSON' },
@@ -22,9 +22,9 @@ export default function Home() {
             <br />con una terminal <span className="text-morado">real</span> en tu navegador
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 text-frost/80 leading-relaxed">
-            <strong className="text-nord6">bash-arena</strong> te lanza un contenedor Ubuntu efímero por sesión
-            y te pide atrapar flags con las herramientas del track. Cada nivel es una missión
-            declarativa (YAML) con escenas generadas al vuelo: logs, permisos, demonios y logs sospechosos…
+            <strong className="text-ice">bash-arena</strong> lanza un contenedor Ubuntu efímero por sesión
+            y te pide atrapar flags con las herramientas del track. Cada nivel es una misión
+            declarativa (YAML) con escenas generadas al vuelo: logs, permisos, demonios y ficheros sospechosos…
           </motion.p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="https://github.com/D1se0/bash-arena"
@@ -71,8 +71,8 @@ cd bash-arena
         <h2 className="text-xl font-semibold mb-2">¿Para quién es?</h2>
         <p className="text-frost/80 text-sm leading-relaxed">
           Estudiantes que arrancan en Linux, administradores que quieren repasar tuberías y permisos,
-          myszkacÿ kazanacja aspirantes a SOC/forense aprendiendo a leer logs sin miedo — y curiosos que
-          prefieren practicar con retos de verdad sobre leer otro tutorial.
+          aspirantes a SOC/forense que aprenden a leer logs sin miedo — y curiosos que prefieren
+          practicar con retos de verdad antes que leer otro tutorial.
         </p>
       </section>
     </div>

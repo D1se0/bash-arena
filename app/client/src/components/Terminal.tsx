@@ -13,6 +13,12 @@ export default function TerminalPane() {
   const theme = useArena((s) => s.theme);
   const sessionDead = useArena((s) => s.sessionDead);
 
+  // el send del store llega DESPUÉS del mount; guardamos siempre el último
+  // valor en un ref para que onData/onResize nunca cierren sobre un `send`
+  // null (bug histórico: «escribo y no se ve nada»).
+  const sendRef = useRef(send);
+  sendRef.current = send;
+
   useEffect(() => {
     if (!hostRef.current) return;
     const term = new Terminal({
@@ -43,9 +49,9 @@ export default function TerminalPane() {
     term.loadAddon(new WebLinksAddon());
     term.open(hostRef.current);
     term.onResize(({ cols, rows }) =>
-      send?.({ type: 'resize', payload: { cols, rows } }),
+      sendRef.current?.({ type: 'resize', payload: { cols, rows } }),
     );
-    term.onData((data) => send?.({ type: 'input', payload: { data } }));
+    term.onData((data) => sendRef.current?.({ type: 'input', payload: { data } }));
     term.write('\x1b[90mconectando con el contenedor de sesión…\x1b[0m\r\n');
     termRef.current = term;
     setSink((s: string) => term.write(s));
@@ -58,7 +64,7 @@ export default function TerminalPane() {
       }
     });
     ro.observe(hostRef.current);
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       try {
         fit.fit();
       } catch {
@@ -68,10 +74,24 @@ export default function TerminalPane() {
 
     return () => {
       ro.disconnect();
+      clearTimeout(timeout);
       term.dispose();
       setSink(null);
     };
   }, []);
+
+  // foco en cuanto hay `send` (la conexión acaba de abrir) y al volver al tab
+  useEffect(() => {
+    if (send) termRef.current?.focus();
+  }, [send, sessionDead]);
+
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible' && send) termRef.current?.focus();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, [send]);
 
   useEffect(() => {
     if (sessionDead) {
@@ -81,9 +101,10 @@ export default function TerminalPane() {
 
   return (
     <div
-      className={`arena-terminal ${theme === 'crt' ? 'crt' : ''} rounded-xl bg-[#161a20] shadow-glow p-3 h-full min-h-[420px]`}
+      className={`arena-terminal ${theme === 'crt' ? 'crt' : ''} rounded-xl bg-[#161a20] shadow-glow p-3 h-full min-h-[420px] w-full overflow-hidden`}
+      onClick={() => termRef.current?.focus()}
     >
-      <div ref={hostRef} className="h-full" aria-label="terminal del dojo" />
+      <div ref={hostRef} className="h-full w-full" aria-label="terminal del dojo" />
     </div>
   );
 }

@@ -5,7 +5,7 @@ export default function LevelPanel() {
   const level = useArena((s) => s.level);
   const send = useArena((s) => s.send);
   const submit = async () => {
-    // la UI abre un mini prompt (evita interceptación por terminal para)localObject flags largas
+    // mini prompt nativo (evita que la terminal capture la flag larga)
     const flag = window.prompt('pega tu flag (FLAG{...})');
     if (flag) send?.({ type: 'submitFlag', payload: { flag } });
   };

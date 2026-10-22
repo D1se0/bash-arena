@@ -1,0 +1,40 @@
+id: scripting-l11
+track: scripting
+index: 11
+title: El script cojo
+subtitle: "sed -i: editar ficheros en sitio"
+xp: 50
+difficulty: 4
+brief: "repara.sh debería ejecutar el echo de la flag, pero SU ecos línea perfilalı quedó comentada.
+  Medicina: quitar el # avant de ejecutar."
+goal: Descomenta la línea ejecutable de /home/agent/repara.sh (sed -i), ejecútalo y muestra lo que
+  imprime.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Scripting"
+  cat > /home/agent/repara.sh <<FIN
+  #!/bin/bash
+  echo "primero la calibración"
+  # echo "la marca del parche: $DOJO_FLAG"
+  echo "fin del fichero"
+  FIN
+  chmod 755 /home/agent/repara.sh
+  chown agent:agent /home/agent/repara.sh
+solution: sed -i 's|^# ||' /home/agent/repara.sh && bash /home/agent/repara.sh
+hints:
+  - sed -i edita el fichero directamente (sin volcar a otro).
+  - El patrón ^# (comentario al inicio) seguido de espacio es lo que dejó la línea comentada.
+  - sed -i 's/^# //' repara.sh && bash repara.sh
+teach: "sed -i es la edición en el sitio (in-place) que usan los scripters para toques quirúrgicos.
+  La / la puedes depender: s|a|b| con cualquier carácter evita fugas con la propia ele."
+cheatsheet:
+  - cmd: sed -i 's/a/b/' f
+    desc: sustituye y guarda
+  - cmd: sed -i 's|^#!|#!' f
+    desc: con delimitador alterno
+keywords:
+  - sed -i
+  - in-place
+  - descomentar
+profile: default

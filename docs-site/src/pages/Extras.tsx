@@ -1,5 +1,6 @@
 const ROADMAP = [
-  { tag: 'v0.1 — publicado', items: ['11 tracks / 53 niveles verificados', 'terminal real xterm.js ↔ dockerode', 'flags HMAC por sesión', 'progreso SQLite + export/import', 'web de documentación en Pages'] },
+  { tag: 'v0.1 — publicado', items: ['11 tracks verificados (tanda inicial)', 'terminal real xterm.js ↔ dockerode', 'flags HMAC por sesión', 'progreso SQLite + export/import', 'web de documentación en Pages'] },
+  { tag: 'v0.2 — publicado', items: ['expansión a 194 niveles verificados (l13..l18 por track + boss l11..l14)', 'arreglos de robustez de niveles y gateway (eco local del terminal)', 'corrección de textos de la web de documentación'] },
   { tag: 'v0.2 — próximo', items: ['modo Sandbox libre con escenarios aleatorios', 'reto diario (seed por fecha)', 'tabla de clasificación local', 'insignias visibles y racha diaria'] },
   { tag: 'v0.3 — explorando', items: ['export de progreso → tarjeta compartible', 'modo pantalla completa a doble panel (man-page lateral)', 'tema Matrix/Dracula seleccionable en runtime', 'grabación de sesiones (replay)'] },
   { tag: 'v1.0 — ideas', items: ['multi-jugador local (ligas)', 'plugin de niveles externos (zip)', 'audit log de comandos con gráficas', 'docker rootless opcional'] },
@@ -33,7 +34,7 @@ export default function Extras() {
         <div className="grid sm:grid-cols-2 gap-3 text-sm text-frost/80">
           {[
             ['xterm.js', 'la terminal de verdad en el navegador'],
-            ['dockerode', 'la存 API Docker desde Node'],
+            ['dockerode', 'la API Docker desde Node'],
             ['React + Vite + Tailwind + Framer Motion', 'front y esta web'],
             ['better-sqlite3', 'progreso local fiable'],
             ['Ubuntu 24.04', 'la base del dojo'],

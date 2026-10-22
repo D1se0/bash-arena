@@ -1,0 +1,40 @@
+id: procesado-l17
+track: procesado
+index: 17
+title: Coincidencia awk
+subtitle: regex con ~ en awk
+xp: 45
+difficulty: 3
+brief: schemas.txt lista esquemas con su versión. El registro cuyo segundo campo empieza por 9
+  esconde la pieza.
+goal: Encuentra en /home/agent/schemas.txt la línea cuyo segundo campo empieza por 9 y muéstrala.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Procesado"
+  {
+    echo "dns     105 v3"
+    echo "kem     8.2 v2"
+    echo "subtotal 9-esquema: $DOJO_FLAG"
+    echo "kda     7.0 v1"
+    echo "kig     2.1 v4"
+  } > /home/agent/schemas.txt
+  chown agent:agent /home/agent/schemas.txt
+  chown -R agent:agent /home/agent
+solution: awk '$2 ~ /^9/ {print}' /home/agent/schemas.txt
+hints:
+  - 'El operador ~ de awk es "encaje de patrón": $2 ~ /^9/ significa "el 2º campo empieza por 9".'
+  - El ^ ancla al inicio del campo.
+  - awk '$2 ~ /^9/ {print}' /home/agent/schemas.txt
+teach: "awk permite regex per columna: '/pat/' filtra por la línea completa pero $n ~ /pat/ es
+  selectivo por field: precisión quirúrgica en logs anchos."
+cheatsheet:
+  - cmd: awk '$1 ~ /^9/ {print}' f
+    desc: regex sobre campo
+  - cmd: awk '$2 !~ /b/ {print}' f
+    desc: negación con !~
+keywords:
+  - awk
+  - regex
+  - campo
+profile: default

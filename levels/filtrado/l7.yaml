@@ -1,0 +1,42 @@
+id: filtrado-l7
+track: filtrado
+index: 7
+title: CSV de servidores
+subtitle: grep fila + cut columna
+xp: 35
+difficulty: 2
+brief: "servidores.csv guarda notas por columnas: nombre, rol, comentario. Las filas de backup traen
+  un comentario especial."
+goal: De las filas cuyo ROL sea "backup", imprime solo el COMENTARIO (tercera columna).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Filtrado"
+  cat > /home/agent/servidores.csv <<FIN
+  nombre,rol,comentario
+  web01,frontend,balanceador principal
+  web02,frontend,respaldo frio
+  db01,backend,replicas en marcha
+  db02,backup,nota de boveda: $DOJO_FLAG
+  cache01,frontend,memoria en calentamiento
+  file01,backup,nas secundario
+  FIN
+  chown agent:agent /home/agent/servidores.csv
+solution: grep ',backup,' /home/agent/servidores.csv | cut -d, -f3
+hints:
+  - "Primero selecciona filas: grep backup servidores.csv."
+  - "Luego corta la tercera columna: cut -d, -f3 (el delimitador es la coma)."
+  - grep backup servidores.csv | cut -d, -f3
+teach: cut descuartiza cada línea por un delimitador (-d) y elige campos con -f. Encadenar grep
+  (filas) + cut (columnas) resuelve la mayoría de tablas CSV del mundo real.
+cheatsheet:
+  - cmd: cut -d, -f3 f
+    desc: tercera columna separada por comas
+  - cmd: grep patron f
+    desc: filtra líneas
+keywords:
+  - cut
+  - csv
+  - delimitador
+  - grep
+profile: default

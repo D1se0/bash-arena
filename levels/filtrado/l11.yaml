@@ -1,0 +1,41 @@
+id: filtrado-l11
+track: filtrado
+index: 11
+title: La franja horaria
+subtitle: grep -E con regex de hora
+xp: 40
+difficulty: 3
+brief: El registro de intentos usa formato HH:MM. Todo lo salido entre las 15:00 y las 15:59 es
+  investigación legítima.
+goal: Imprime las líneas cuyo campo de hora empiece por "15:".
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Filtrado"
+  cat > /home/agent/intentos.log <<FIN
+  09:00 prueba desde la web
+  13:45 sincronización menor
+  17:10 apagar radio
+  22:05 comunicado final
+  FIN
+  echo "15:20 baliza registrada: $DOJO_FLAG" >> /home/agent/intentos.log
+  echo "15:47 segunda baliza confirmada" >> /home/agent/intentos.log
+  chown agent:agent /home/agent/intentos.log
+solution: grep -E '^15:' /home/agent/intentos.log
+hints:
+  - El ancla ^ fija el patrón al principio de cada línea.
+  - grep -E activa expresiones regulares extendidas.
+  - grep -E '^15:' intentos.log
+teach: "grep -E abre el repertorio de regex: ^ ancla al inicio, $ al final, [] clases de caracteres.
+  Anclar evita falsos positivos en cualquier parte del texto."
+cheatsheet:
+  - cmd: grep -E '^17:' f
+    desc: filtra por prefijo
+  - cmd: grep -c patron f
+    desc: solo cuenta ocurrencias
+keywords:
+  - grep -E
+  - regex
+  - ancla
+  - log
+profile: default

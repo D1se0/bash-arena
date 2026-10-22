@@ -1,0 +1,39 @@
+id: busqueda-l11
+track: busqueda
+index: 11
+title: Pesados con escondite
+subtitle: find -size + la cola del fichero
+xp: 45
+difficulty: 3
+brief: En block/ hay ficheros gordos de relleno; en la cola de uno de ellos se guarda la clave.
+goal: Localiza los ficheros de más de 100 KB y muestra los últimos 90 bytes de cada uno.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Búsqueda"
+  mkdir -p /home/agent/block
+  head -c 200000 /dev/zero | tr '\0' 'x' > /home/agent/block/relleno-a.dat
+  head -c 150000 /dev/zero | tr '\0' 'y' > /home/agent/block/relleno-b.dat
+  head -c 120000 /dev/zero | tr '\0' 'z' > /home/agent/block/relleno-c.dat
+  echo "escondite de 100k" > /home/agent/block/gordo-d.dat
+  head -c 130000 /dev/zero | tr '\0' 'w' >> /home/agent/block/gordo-d.dat
+  printf '\nclave final: %s\n' "$DOJO_FLAG" >> /home/agent/block/gordo-d.dat
+  echo "pequenio e inofensivo" > /home/agent/block/chico.dat
+  chown -R agent:agent /home/agent/block
+solution: for f in $(find /home/agent/block -size +100k); do tail -c 90 "$f"; echo; done
+hints:
+  - find -size +100k filtra por tamaño (k=kilobytes) y descarta lotes menores.
+  - La cola del fichero se lee con tail -c N (número de bytes).
+  - for f in $(find block -size +100k); do tail -c 90 "$f"; echo; done
+teach: "find -size clasifica por tamaño real (c, k, M…); tail -c lee bytes, no líneas. Muchos
+  troyanos anexan su carga al final de ficheros legítimos: mirar la cola es rutina forense."
+cheatsheet:
+  - cmd: find d -size +100k
+    desc: ficheros de más de 100 KB
+  - cmd: tail -c 90 f
+    desc: últimos 90 bytes
+keywords:
+  - find -size
+  - tail -c
+  - bytes
+profile: default

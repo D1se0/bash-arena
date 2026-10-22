@@ -1,0 +1,38 @@
+id: permisos-l8
+track: permisos
+index: 8
+title: Bóveda cerrada a cal y canto
+subtitle: recuperar un directorio con chmod
+xp: 45
+difficulty: 3
+brief: "vault/ quedó sin ningún permiso (000): ni listar, ni entrar. Eres el dueño; el remedio está
+  en tus manos."
+goal: Recupera el acceso a /home/agent/vault (permisos 700) y muestra llave.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Permisos"
+  mkdir -p /home/agent/vault
+  echo "la boveda se abre: $DOJO_FLAG" > /home/agent/vault/llave.txt
+  chown agent:agent /home/agent/vault /home/agent/vault/llave.txt
+  chmod 000 /home/agent/vault
+  chmod 000 /home/agent/vault/llave.txt
+solution: chmod 700 /home/agent/vault && chmod 600 /home/agent/vault/llave.txt && cat
+  /home/agent/vault/llave.txt
+hints:
+  - Aun con permisos 000, el DUEÑO puede cambiarlos (chmod es del propietario).
+  - Los directorios necesitan x para ENTRAR y r para LISTAR; 700 cubre ambos.
+  - chmod 700 vault && chmod 600 vault/llave.txt && cat vault/llave.txt
+teach: "Un directorio sin x no se puede recorrer aunque los ficheros dentro sean legibles. El dueño
+  puede SIEMPRE cambiar permisos: por eso los fallos de permisos propios no necesitan sudo."
+cheatsheet:
+  - cmd: chmod 700 dir
+    desc: solo el dueño entra
+  - cmd: chmod 600 f
+    desc: privado total
+keywords:
+  - chmod
+  - directorio
+  - x
+  - "700"
+profile: default

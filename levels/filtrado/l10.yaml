@@ -1,0 +1,47 @@
+id: filtrado-l10
+track: filtrado
+index: 10
+title: El eco de la palabra
+subtitle: rev + paste para detectar espejos
+xp: 45
+difficulty: 3
+brief: "En frases.txt una línea es un espejo perfecto (palíndromo). La marca no está EN el espejo:
+  está en la línea siguiente."
+goal: Encuentra la línea palíndromo de /home/agent/frases.txt e imprime la línea CONSECUTIVA (la que
+  va después).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Filtrado"
+  cat > /home/agent/frases.txt <<FIN
+  el radar de la mañana
+  el pensionista pide cafe
+  una frase de relleno
+  os salta del ratón al timbre
+  FIN
+  echo "somos" >> /home/agent/frases.txt
+  echo "marca espejada: $DOJO_FLAG" >> /home/agent/frases.txt
+  echo "otro relleno final" >> /home/agent/frases.txt
+  chown agent:agent /home/agent/frases.txt
+solution: sed -n "$(rev /home/agent/frases.txt | paste /home/agent/frases.txt - | awk -F'\t'
+  '$1==$2{print NR+1; exit}')p" /home/agent/frases.txt
+hints:
+  - rev le da la vuelta a cada línea; paste une dos ficheros columna a columna (el guión es stdin).
+  - "Compara la original con su invertida: solo el palíndromo coincide. awk marca el número de esa
+    línea."
+  - n linde=$(rev frases.txt | paste frases.txt - | awk -F"\t" "$1==$2{print NR; exit}"); sed -n
+    "$((n+1))p" frases.txt
+teach: "rev invierte el texto y paste fusiona columnas (el símbolo - representa stdin). La
+  comparación por campos de awk localiza el espejo; una vez localizado, el sigiente renglón esconde
+  el premio: primero ENCOTRRA, luego MUEVE."
+cheatsheet:
+  - cmd: rev f
+    desc: invierte cada línea
+  - cmd: paste a -
+    desc: une fichero y stdin en columnas
+keywords:
+  - rev
+  - paste
+  - palindromo
+  - awk
+profile: default

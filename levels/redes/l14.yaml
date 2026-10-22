@@ -1,0 +1,37 @@
+id: redes-l14
+track: redes
+index: 14
+title: El fichero sin nombre
+subtitle: listing HTTP y URL-encoding
+xp: 40
+difficulty: 2
+brief: Un directorio web lista su contenido. Un fichero lleva en su NOMBRE la marca… nacelados
+  símbolos se viajan como %7B y %7D.
+goal: Mira el listado de http://127.0.0.1:8000/ y decodifica el nombre del fichero que escapa los llaves.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Redes"
+  mkdir -p /etc/arena /var/www/baul
+  touch "/var/www/baul/$DOJO_FLAG"
+  echo "solo mirando: el nombre ES el secreto" > /var/www/baul/lectures.txt
+  nohup python3 -m http.server 8000 --directory /var/www/baul >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: curl -s http://127.0.0.1:8000/ | sed 's/%7B/{/g; s/%7D/}/g' | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - python -m http.server lista el directorio en HTML con los ficheros.
+  - "En URLs los llaves escapar: %7B es { y %7D es }; sed los devuelve."
+  - curl -s http://127.0.0.1:8000/ | sed 's/%7B/{/g; s/%7D/}/g' | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: 'El URL-encoding transforma todo lo "raro" para que viaje en una URL: { → %7B. Saber
+  decodificar (y encodear con --data-urlencode) es lectura básica de URLs.'
+cheatsheet:
+  - cmd: sed 's/%7B/{/g'
+    desc: descodificar llaves
+  - cmd: curl --data-urlencode
+    desc: encodear al enviar
+keywords:
+  - listing
+  - url
+  - encode
+profile: default

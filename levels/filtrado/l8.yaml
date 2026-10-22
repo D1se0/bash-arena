@@ -1,0 +1,42 @@
+id: filtrado-l8
+track: filtrado
+index: 8
+title: Ranking de puntuaciones
+subtitle: sort numérico descendente
+xp: 35
+difficulty: 2
+brief: puntuaciones.txt lista jugadores y puntos desordenados. El campeón (el que más suma) lleva un
+  premio especial en su renglón.
+goal: Ordena por puntos de mayor a menor y muestra la primera línea.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Filtrado"
+  cat > /home/agent/puntuaciones.txt <<FIN
+  nova 820
+  fang 1290
+  kali 640
+  zap 901
+  miso 455
+  hex 1110
+  rune 733
+  campeon 1600 nota del orgullo: $DOJO_FLAG
+  FIN
+  chown agent:agent /home/agent/puntuaciones.txt
+solution: sort -k2 -nr /home/agent/puntuaciones.txt | head -n 1
+hints:
+  - sort necesita saber que la columna 2 es numérica.
+  - -k2 elige el campo, -n lo trata por valor y -r invierte el orden.
+  - sort -k2 -nr puntuaciones.txt | head -n 1
+teach: sort ordena líneas completas por defecto; -k2 -nr ordena por el segundo campo numéricamente y
+  en descenso. head -n 1 toma el campeón.
+cheatsheet:
+  - cmd: sort -k2 -nr f
+    desc: mayor a menor por columna 2
+  - cmd: sort -u f
+    desc: ordena y quita repetidos
+keywords:
+  - sort
+  - ranking
+  - numérico
+profile: default

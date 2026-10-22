@@ -1,0 +1,41 @@
+id: forense-l14
+track: forense
+index: 14
+title: strings reveladoras
+subtitle: binario con texto enterrado
+xp: 45
+difficulty: 3
+brief: mechero.bin es un binario auténtico con los stamp de la marca enterreado entre bytes que no
+  son texto.
+goal: Extrae con strings las cadenas legibles de /home/agent/mechero.bin y pescar la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Forense"
+  { printf '\x00\x01\x02\x03'
+    printf 'segmento de pais\n'
+    printf '\x04\x05\x06'
+    printf 'la marca de fondo: %s\n' "$DOJO_FLAG"
+    printf '\x07\x08\x09\x00'
+    printf 'relleno final del mechero\n'
+    printf '\x00\x0a'; } > /home/agent/mechero.bin
+  chown agent:agent /home/agent/mechero.bin
+  chown -R agent:agent /home/agent
+solution: cat /home/agent/mechero.bin | tr -c '[:print:]\n' '\n' | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - "tr -c '[:print:]' '\\n' sustituye todo lo NO imprimible por saltos de línea: deja solo el texto limpio."
+  - Después, grep -oE con la forma de la marca saca el hallazgo.
+  - "tr -c '[:print:]' '\\n' < f.bin | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
+teach: 'En binarios con NUL y bytes raros hay que dest textar: tr -c [:print:] los limpia a saltos y
+  el texto true resalta. (Si binutils está instalada, strings hace lo mismo: filtra "lo que
+  parece texto".)'
+cheatsheet:
+  - cmd: "tr -c '[:print:]' '\\n' < f.bin"
+    desc: solo el texto imprimible
+  - cmd: strings -n 4 f.bin
+    desc: mínimo 4 chars
+keywords:
+  - strings
+  - binario
+  - forense
+profile: default

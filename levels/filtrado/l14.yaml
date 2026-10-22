@@ -1,0 +1,39 @@
+id: filtrado-l14
+track: filtrado
+index: 14
+title: Desde la línea doce
+subtitle: "tail -n +N: leer desde una línea"
+xp: 35
+difficulty: 2
+brief: bitacora.txt tiene una cabecera de once líneas de rutina. La primera línea ÚTIL (la doce)
+  lleva la marca.
+goal: Muestra únicamente la línea 12 de /home/agent/bitacora.txt (desde la 12, una sola).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Filtrado"
+  {
+    echo "bitácora del dojo · versión 3"
+    for i in $(seq 2 11); do echo "entrada de rutina $i: nada destacable"; done
+    echo "entrada útil: $DOJO_FLAG"
+    echo "entrada 13: rutina"; echo "entrada 14: rutina"
+  } > /home/agent/bitacora.txt
+  chown agent:agent /home/agent/bitacora.txt
+  chown -R agent:agent /home/agent
+solution: tail -n +12 /home/agent/bitacora.txt | head -n1
+hints:
+  - tail -n +12 imprime DESDE la línea 12 hasta el final (¡el + cambia el significado!).
+  - Encadena con head -n1 para quedarte solo la primera.
+  - tail -n +12 /home/agent/bitacora.txt | head -n1
+teach: 'tail -n +N es "desde la línea N": el + invierte el papel de tail. La pareja tail -n +N |
+  head -nM es la ventana de lectura clásica de logs gigantes.'
+cheatsheet:
+  - cmd: tail -n +12 f
+    desc: desde la línea 12
+  - cmd: sed -n 12p f
+    desc: exactamente la 12
+keywords:
+  - tail
+  - head
+  - lineas
+profile: default

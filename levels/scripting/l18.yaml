@@ -1,0 +1,44 @@
+id: scripting-l18
+track: scripting
+index: 18
+title: La cadena de pasos
+subtitle: "&&, || y códigos de salida"
+xp: 50
+difficulty: 3
+brief: "Los pasos corren en orden: solo si el paso1 pasa (exit 0), el paso2 corre y entrega la
+  pieza; si no, el ruido."
+goal: "Ejecuta en cadena: si /home/agent/paso1.sh pasa, corre paso2.sh y muestra la marca querena
+  escrita en /tmp/corredor.txt."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Scripting"
+  cat > /home/agent/paso1.sh <<FIN
+  #!/bin/bash
+  # paso 1 del corredor: válido +' exit 0 siempre'
+  exit 0
+  FIN
+  cat > /home/agent/paso2.sh <<FIN
+  #!/bin/bash
+  echo "corredor en su muelle: $DOJO_FLAG" > /tmp/corredor.txt
+  FIN
+  chmod 755 /home/agent/paso1.sh /home/agent/paso2.sh
+  chown -R agent:agent /home/agent
+solution: /home/agent/paso1.sh && /home/agent/paso2.sh && cat /tmp/corredor.txt
+hints:
+  - cmd1 && cmd2 ejecuta cmd2 solo si cmd1 salió con 0.
+  - A la inversa, || corre SOLO si el anterior falla.
+  - paso1.sh && paso2.sh && cat /tmp/corredor.txt
+teach: '&& y || son los "and / or" de comandos encasquetados: exit 0 = TRUE, resto = FALSE. La
+  cadena cmd1 && cmd2 && cmd3 es un flujo de puerta: falla al primero, para. Escondido en todos los
+  CI.'
+cheatsheet:
+  - cmd: cmd1 && cmd2
+    desc: si pasa, si no, no
+  - cmd: cmd1 || cmd2
+    desc: si falla, el plan B
+keywords:
+  - exit
+  - cadena
+  - codigos
+profile: default

@@ -1,0 +1,39 @@
+id: permisos-l13
+track: permisos
+index: 13
+title: El despacho cerrado
+subtitle: chmod +x para ejecutar
+xp: 40
+difficulty: 2
+brief: El run del despacho está congelado (sin permiso de ejecución). Reapuningo con el bit x y córrelo.
+goal: Da permiso de ejecución a /home/agent/despacho.sh y ejecútalo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Permisos"
+  cat > /home/agent/despacho.sh <<FIN
+  #!/bin/bash
+  echo "el despacho confirma: $DOJO_FLAG"
+  FIN
+  chmod 644 /home/agent/despacho.sh
+  chown agent:agent /home/agent/despacho.sh
+  chown -R agent:agent /home/agent
+solution: chmod u+x /home/agent/despacho.sh && /home/agent/despacho.sh
+hints:
+  - chmod u+x añade el bit de ejecución al propietario; chmod +x lo añade a todos.
+  - "Es un script de shell: bash despacho.sh también correría… pero el nivel pide ejecutarlo como
+    program."
+  - chmod +x /home/agent/despacho.sh && /home/agent/despacho.sh
+teach: Sin x, un script es texto (así lo trata bash y el kernel). El bit x + el shebang lo
+  convierten en comando utilizable. Diferencia entre "bash script" (interénte del corazón de bash) y
+  "./script" (proceso propio).
+cheatsheet:
+  - cmd: chmod u+x f
+    desc: ejecución del dueño
+  - cmd: chmod +x f
+    desc: "todos: dueño/grupo/otros"
+keywords:
+  - chmod
+  - ejecutar
+  - script
+profile: default

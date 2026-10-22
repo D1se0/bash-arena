@@ -1,0 +1,33 @@
+id: archivos-l11
+track: archivos
+index: 11
+title: Compresión moderna
+subtitle: "xz: descomprimir con -d -c"
+xp: 40
+difficulty: 3
+brief: volcado.xz es un fichero comprimido con el algoritmo moderno de alto ratio. Su contenido
+  lleva la marca.
+goal: Descomprime /home/agent/volcado.xz en el flujo y muestra su contenido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Archivos"
+  echo "papel volcado con marca: $DOJO_FLAG" | xz > /home/agent/volcado.xz
+  chown agent:agent /home/agent/volcado.xz
+solution: xz -dc /home/agent/volcado.xz
+hints:
+  - "xz comprime con mucho mejor ratio que gzip: una opción -d descomprime."
+  - Para NO perder el original, -c escribe la salida en stdout.
+  - xz -dc volcado.xz
+teach: "xz supera a gzip en ratio al precio de más CPU. La trilogía -x/-d/-c funciona igual en gzip,
+  bzip2 y xz: una sola sintaxis para tres compresores."
+cheatsheet:
+  - cmd: xz -dc f.xz
+    desc: descomprime a stdout
+  - cmd: xz -l f.xz
+    desc: muestra estadísticas
+keywords:
+  - xz
+  - compresión
+  - fluxo
+profile: default

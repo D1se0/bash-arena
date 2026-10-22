@@ -1,0 +1,40 @@
+id: busqueda-l12
+track: busqueda
+index: 12
+title: Configuración filtrada
+subtitle: grep -r --include
+xp: 50
+difficulty: 4
+brief: En /etc/arena/ hay ficheros .conf, .log y .bak mezclados. Solo los .conf cuentan para la
+  validación.
+goal: Busca la clave SOLO dentro de los ficheros *.conf de /etc/arena.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Búsqueda"
+  mkdir -p /etc/arena
+  echo "puerto 4040" > /etc/arena/servicio.conf
+  echo "cache false" > /etc/arena/perf.conf
+  echo "registro de ruido FLAG{decoy-01}" > /etc/arena/servicio.log
+  echo "historial innecesario" > /etc/arena/historico.bak
+  echo "nitro = $DOJO_FLAG" > /etc/arena/llave.conf
+  chmod -R a+r /etc/arena
+  chown -R agent:agent /home/agent
+solution: grep -rn 'FLAG{' /etc/arena --include='*.conf'
+hints:
+  - grep -r recorre el árbol; --include="*.conf" acota los nombres que inspecciona.
+  - "La marca puede estar en cualquier fichero: el include evita confusiones."
+  - grep -rn 'FLAG{' /etc/arena --include='*.conf'
+teach: "--include (y su contrario --exclude) en grep -r filtra POR NOMBRE de fichero mientras el -r
+  recorre el árbol: la pareja ideal para auditorías de configuración."
+cheatsheet:
+  - cmd: grep -rn x d --include='*.conf'
+    desc: solo .conf, indicando línea
+  - cmd: grep -rn x d --exclude='*.log'
+    desc: descarta ruido
+keywords:
+  - grep
+  - include
+  - exclude
+  - conf
+profile: default

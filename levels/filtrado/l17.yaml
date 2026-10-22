@@ -1,0 +1,41 @@
+id: filtrado-l17
+track: filtrado
+index: 17
+title: El dominio único
+subtitle: cut -d@ + sort -u
+xp: 40
+difficulty: 3
+brief: correo.txt lista direcciones del mismo proveedor… salvo una. Ese dominio único lleva la pieza
+  en la propia dirección.
+goal: Extrae los dominios (lo que va tras @) de /home/agent/correo.txt y muestra el que solo aparece
+  una vez.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Filtrado"
+  {
+    echo "ana@dojo-interno.test"
+    echo "bruno@dojo-interno.test"
+    echo "pieza@$DOJO_FLAG"
+    echo "carla@dojo-interno.test"
+    echo "diego@dojo-interno.test"
+  } > /home/agent/correo.txt
+  chown agent:agent /home/agent/correo.txt
+  chown -R agent:agent /home/agent
+solution: cut -d@ -f2 /home/agent/correo.txt | sort -u | head -n1
+hints:
+  - cut -d@ -f2 corta por el separador @ y se queda con el segundo campo.
+  - sort -u deja solo los valores únicos; habrá exactamente uno.
+  - cut -d@ -f2 /home/agent/correo.txt | sort -u
+teach: cut es el cortador de columnas por delimitador (-d) y por campo (-f); awk $2 hace lo mismo
+  con más músculo. Para listas enormes, cut es más barato que awk.
+cheatsheet:
+  - cmd: cut -d@ -f2 f
+    desc: campo tras el @
+  - cmd: sort -u
+    desc: desduplicar
+keywords:
+  - cut
+  - dominios
+  - sort
+profile: default

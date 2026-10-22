@@ -1,0 +1,37 @@
+id: fundamentos-l6
+track: fundamentos
+index: 6
+title: Nombres traicioneros
+subtitle: espacios, paréntesis y comillas
+xp: 30
+difficulty: 2
+brief: "Un informe quedó guardado con un nombre casi imposible: espacios, paréntesis y una palabra
+  final que lo delata."
+goal: Muestra el contenido del fichero "informe (copia) final.txt" que está en tu home.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Fundamentos"
+  echo "informe de rutina, nada por aqui" > '/home/agent/informe final.txt'
+  echo "secreto del informe: $DOJO_FLAG" > '/home/agent/informe (copia) final.txt'
+  mkdir -p /home/agent/informes
+  echo "copia de trabajo vieja" > /home/agent/informes/copia.txt
+  chown -R agent:agent /home/agent
+solution: cat '/home/agent/informe (copia) final.txt'
+hints:
+  - "ls /home/agent te enseña los nombres EXACTOS: los espacios y paréntesis cuentan."
+  - Un nombre con espacios debe ir entrecomillado para que la shell no lo parta.
+  - cat "/home/agent/informe (copia) final.txt"
+teach: "Cuando un nombre contiene espacios o paréntesis, la shell lo parte en palabras: hay que
+  protegerlo con comillas. El tabulador (autocompletado) te salva de escribirlo mal."
+cheatsheet:
+  - cmd: cat "archivo con espacios"
+    desc: lee rutas con espacios
+  - cmd: cat 'archivo (uno).txt'
+    desc: comillas simples evitan expansiones
+keywords:
+  - cat
+  - espacios
+  - comillas
+  - quoting
+profile: default

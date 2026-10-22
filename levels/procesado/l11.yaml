@@ -1,0 +1,43 @@
+id: procesado-l11
+track: procesado
+index: 11
+title: Partición de un gigante
+subtitle: split + grep en trozos
+xp: 50
+difficulty: 4
+brief: "grande.log es demasiado para editores: dividir por trozos y filtrar es más rápido que
+  abrirlo entero."
+goal: Divide grande.log en 5 trozos por líneas con prefijo trozo_ y muestra las líneas de la clave
+  entre todos.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 11" "Procesado"
+
+  i=1
+
+  while [ $i -le 500 ]; do
+    if [ $i -eq 333 ]; then echo "linea 333 ancla: $DOJO_FLAG"; else echo "linea $i ruido de relleno"; fi
+    i=$((i+1))
+  done > /home/agent/grande.log
+
+  chown agent:agent /home/agent/grande.log
+solution: split -n l/5 /home/agent/grande.log trozo_ && grep -h 'FLAG{' trozo_*
+hints:
+  - "Hazlo en tu home: cd ~ antes de dividir (los trozos se quedan junto a ti)."
+  - split -n l/5 divide en 5 trozos por líneas (sin romper líneas).
+  - grep -h busca en los trozos sin mostrar el nombre de fichero.
+teach: "split trocea ficheros gigantes por tamaño (-b) o por líneas (-n l/K). Filtrar en trozos es
+  lo que hacen las herramientas de streaming: menos memoria, más paralelismo."
+cheatsheet:
+  - cmd: split -n l/5 f pre_
+    desc: cinco trozos por líneas
+  - cmd: grep -h x pre_*
+    desc: busca sin nombres de fichero
+keywords:
+  - split
+  - grande.log
+  - trozo
+profile: default

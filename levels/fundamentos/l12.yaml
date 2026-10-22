@@ -1,0 +1,36 @@
+id: fundamentos-l12
+track: fundamentos
+index: 12
+title: Una clave en dos mitades
+subtitle: cat multiplica argumentos
+xp: 40
+difficulty: 3
+brief: "Por protocolo administrativo la clave se guardó partida: la primera mitad en parte_a.txt y
+  el resto en parte_b.txt."
+goal: Imprime las dos mitades en orden (primero A, luego B) formando una sola línea.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Fundamentos"
+  t="$DOJO_FLAG"
+  mitad=$(( $(echo -n "$t" | wc -c) / 2 ))
+  echo -n "$t" | head -c "$mitad" > /home/agent/parte_a.txt
+  echo -n "$t" | tail -c "+$((mitad+1))" > /home/agent/parte_b.txt
+  chown -R agent:agent /home/agent
+solution: cat /home/agent/parte_a.txt /home/agent/parte_b.txt
+hints:
+  - cat acepta varios ficheros y los imprime en el orden que los des.
+  - "Ojo: la primera mitad NO termina en salto de línea, por eso ambas mitades se pegan."
+  - cat parte_a.txt parte_b.txt
+teach: "cat concatena todos sus argumentos en el orden dado. Si un fichero no termina en salto de
+  línea, la salida se pega al siguiente: así las mitades forman una sola línea."
+cheatsheet:
+  - cmd: cat a b c
+    desc: une ficheros en orden
+  - cmd: cat a b > unido
+    desc: redirige la unión a otro fichero
+keywords:
+  - cat
+  - concatenar
+  - redirección
+profile: default

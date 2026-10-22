@@ -1,0 +1,41 @@
+id: scripting-l14
+track: scripting
+index: 14
+title: Línea a línea
+subtitle: while read en un bucle
+xp: 45
+difficulty: 3
+brief: El manifiesto lista exactamente UNA ruta "es bueno". Con un while read línea a línea puedes
+  inspeccionar cada fichero sin recorrer a mano.
+goal: Recorre /home/agent/manifiesto.txt con while read y muesta la primera ficha cuyo contenido
+  menciona la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Scripting"
+  mkdir -p /home/agent/plataformas
+  for n in 1 2 3 4; do echo "ficha $n: rutina del dojo" > /home/agent/plataformas/f$n.txt; done
+  printf 'marca: %s\n' "$DOJO_FLAG" > /home/agent/plataformas/f3.txt
+  { echo "/home/agent/plataformas/f1.txt"
+    echo "/home/agent/plataformas/f2.txt"
+    echo "/home/agent/plataformas/f3.txt"
+    echo "/home/agent/plataformas/f4.txt"; } > /home/agent/manifiesto.txt
+  chown -R agent:agent /home/agent
+solution: while read -r f; do if grep -qE 'FLAG\{[a-f0-9]+\}' "$f" 2>/dev/null; then grep -oE
+  'FLAG\{[a-f0-9]+\}' "$f"; break; fi; done < /home/agent/manifiesto.txt
+hints:
+  - while read -r línea lee un fichero línea a línea con redirección < fichero.
+  - "La condición de grep -q: si uno matchea, imprime la marca y break detiene el bucle."
+  - while read -r f; do grep -oE 'FLAG\{[a-f0-9]+\}' "$f" && break; done < manifiesto.txt
+teach: while read -r es EL bucle de líneas en bash (xargs -I es el primo). La -r cuesta nada y evita
+  que el backslash se coma los datos. Con < fichero al final, el bucle lee del fichero.
+cheatsheet:
+  - cmd: while read -r f; do …; done < f
+    desc: línea a línea
+  - cmd: grep -q patrón f
+    desc: silencioso para ifs
+keywords:
+  - while
+  - read
+  - bucle
+profile: default

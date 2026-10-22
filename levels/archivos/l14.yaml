@@ -1,0 +1,38 @@
+id: archivos-l14
+track: archivos
+index: 14
+title: Cofre con clave
+subtitle: zip + unzip -P
+xp: 45
+difficulty: 3
+brief: "El cofre.zip está cifrado con unzip: la contraseña está impresa en la nota de al lado."
+goal: Lee la contraseña de /home/agent/nota.txt y muestra el contenido de cofre.zip al stdout (unzip -p).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Archivos"
+  mkdir -p /tmp/cofre14
+  echo "guardada: $DOJO_FLAG" > /tmp/cofre14/interior.txt
+  ( cd /tmp/cofre14 && zip -P dojocofre cofre.zip interior.txt >/dev/null )
+  mv /tmp/cofre14/cofre.zip /home/agent/cofre.zip
+  printf 'la clave del cofre ES: dojocofre\n' > /home/agent/nota.txt
+  rm -rf /tmp/cofre14
+  chown agent:agent /home/agent/cofre.zip /home/agent/nota.txt
+  chown -R agent:agent /home/agent
+solution: p=$(grep -oE 'dojocofre' /home/agent/nota.txt | head -n1); unzip -p -P "$p" /home/agent/cofre.zip
+hints:
+  - unzip -p imprime el contenido SIN extraerlo al disco (a difference of unzip normal).
+  - La clave está en nota.txt; usa grep -oE para casi es crunch.
+  - unzip -p -P CLAVE /home/agent/cofre.zip
+teach: 'zip/unzip con cifrado Clásico (ZipCrypto) o AES según versión. unzip -p es el "cat" de los
+  zips: manda a stdout y manejable en pipelines.'
+cheatsheet:
+  - cmd: zip -P clave cofre.zip f
+    desc: cifrar al crear
+  - cmd: unzip -p -P clave f.zip
+    desc: cat del interior cifrado
+keywords:
+  - zip
+  - unzip
+  - password
+profile: default

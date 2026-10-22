@@ -1,0 +1,45 @@
+id: boss-l8
+track: boss
+index: 8
+title: La persistencia del planificador
+subtitle: infiltración en /etc/cron.d
+xp: 90
+difficulty: 4
+brief: "Un atacante inyectó persistencia en /etc/cron.d: la tarea apunta a un script que a su vez
+  señala un destinario final."
+goal: "Sigue sendera ficheros: /etc/cron.d (el fichero del planificador) → el script apuntado → el
+  destinario que él señala. Muestra ese último con la marca."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Boss"
+  mkdir -p /etc/cron.d /var/lib/tam /home/agent/.tam
+  echo "# man/scripts legítima de backups del sistema" > /etc/cron.d/limpieza
+  echo "15 3 * * * root find /tmp -mtime +7 -delete" >> /etc/cron.d/limpieza
+  echo "# nota del operador: segura" > /etc/cron.d/backup
+  echo "45 * * * * root path=/var/lib/tam/accion.sh" >> /etc/cron.d/backup
+  printf 'run.success\n' > /var/lib/tam/accion.sh
+  echo "destino=/home/agent/.tam/llave.txt" >> /var/lib/tam/accion.sh
+  echo "la marca de la persistedencia: $DOJO_FLAG" > /home/agent/.tam/llave.txt
+  chmod 644 /etc/cron.d/* /var/lib/tam/accion.sh /home/agent/.tam/llave.txt
+  chown -R agent:agent /home/agent
+solution: p=$(grep -oE 'path=[^ ]+' /etc/cron.d/backup | head -n1 | cut -d= -f2); q=$(grep -oE
+  'destino=[^ ]+' "$p" | head -n1 | cut -d= -f2); cat "$q"
+hints:
+  - "Los ficheros de /etc/cron.d apuntan a un script: le el fichero del planificador primero."
+  - Extrae el path= del FICHERO script y después el destino= de jóin script.
+  - p=$(grep -oE "path=[^ ]+" /etc/cron.d/backup | cut -d= -f2); q=$(grep -oE "destino=[^ ]+" "$p" |
+    cut -d= -f2); cat "$q"
+teach: "La persistencia vía cron es una técnica clásica de los atacantes: SIEMPRE revisa /etc/cron.d
+  en una investigación. Seguir la cadena fichero→script→destino flujo es la forma de reconstruir el
+  plan del atacante."
+cheatsheet:
+  - cmd: ls /etc/cron.d
+    desc: persistencia programada
+  - cmd: cut -d= -f2
+    desc: extrae el valor k=v
+keywords:
+  - cron.d
+  - persistencia
+  - cadena
+profile: default

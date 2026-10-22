@@ -1,0 +1,39 @@
+id: filtrado-l12
+track: filtrado
+index: 12
+title: Basura de Windows
+subtitle: "tr: limpiar CR y espacios repetidos"
+xp: 45
+difficulty: 3
+brief: Un fichero importado de Windows trae retornos de carro (\\r) y espacios dobles; la línea de
+  la clave está enterrada ahí, deformada.
+goal: Limpia /home/agent/importado.txt (quita \\r y comprime espacios múltiples a uno) y muestra la
+  línea de la clave.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 12" "Filtrado"
+
+  printf 'clave  maestra:\x20\x20$DOJO_FLAG\r\nnota  normal del
+  sistema\r\nespacios   y   mas   espacios\r\n' > /home/agent/importado.txt
+
+  chown agent:agent /home/agent/importado.txt
+solution: tr -d '\r' < /home/agent/importado.txt | tr -s ' ' | grep 'clave'
+hints:
+  - La \\r (retorno de carro de Windows) se borra con tr -d '\\r'.
+  - tr -s ' ' aprieta las repeticiones del espacio a una sola.
+  - tr -d '\\r' < importado.txt | tr -s ' ' | grep clave
+teach: "tr traduce o borra caracteres de stdin: -d borra, -s comprime repeticiones. Normalizar la
+  entrada (CRLF, espacios, mayúsculas) antes de filtrar evita falsos negativos."
+cheatsheet:
+  - cmd: tr -d '\\r'
+    desc: borra retorno de carro
+  - cmd: tr -s ' '
+    desc: aprieta espacios repetidos
+keywords:
+  - tr
+  - CRLF
+  - normalizar
+profile: default

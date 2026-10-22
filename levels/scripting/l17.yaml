@@ -1,0 +1,35 @@
+id: scripting-l17
+track: scripting
+index: 17
+title: El invocador
+subtitle: expansiones ${var^^} y ${var:0:n}
+xp: 45
+difficulty: 3
+brief: "La pista fichada llegó en minúsculas: la expansión de parámetros la arregla en el propio
+  shell, con MAYÚSCULAS y sin sed."
+goal: Pon en MAYÚSCULAS el contenido de /home/agent/id_doc.txt y muéstralo (expansión ${v^^}).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Scripting"
+  V="$DOJO_FLAG"
+  printf 'código bajo y en minúscula: %s\n' "$V" | tr 'A-Z' 'a-z' > /home/agent/id_doc.txt
+  chown agent:agent /home/agent/id_doc.txt
+  chown -R agent:agent /home/agent
+solution: v=$(grep -ioE 'flag\{[a-f0-9]+\}' /home/agent/id_doc.txt | head -n1); echo "${v/flag/FLAG}"
+hints:
+  - "Extracto el trozo y arregla solo el prefijo: ${v/flag/FLAG} cambia 'flag' por 'FLAG' sin tocar el resto."
+  - Extrae primero la forma en minúscula con grep -oE (y la -i).
+  - v=$(grep -ioE 'flag\{[a-f0-9]+\}' f); echo "${v/flag/FLAG}"
+teach: 'Las expansiones de parámetros son el "pozo" de bash: ${v^^} (MAYÚSCULAS), ${v:0:5}
+  (substring), ${v%.txt} (quitar sufijo). Sin sed ni tr manipulas cadenas en la misma línea.'
+cheatsheet:
+  - cmd: echo "${v^^}"
+    desc: MAYÚSCULAS
+  - cmd: echo "${v:0:5}"
+    desc: primeros 5
+keywords:
+  - expansion
+  - bash
+  - mayusculas
+profile: default

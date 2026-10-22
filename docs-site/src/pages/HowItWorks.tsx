@@ -14,7 +14,7 @@ const SECURITY = [
   { t: 'no-new-privileges', d: 'El agente no obtiene más privilegios por setuid (excepto niveles de permisos, donde el nivel lo exige explícitamente).' },
   { t: 'Límites duros', d: '256MB RAM, 0.5 CPU, pids-limit 128: fork bombs y mineros mueren solos (verificado en scripts/security-tests.mjs).' },
   { t: 'Sin socket Docker', d: 'Solo el backend monta /var/run/docker.sock; los contenedores de usuario nunca lo ven.' },
-  { t: 'Timeouts de sesión', d: '15 min de inactividad o 90 min totales — y el(dto sweeper mata contenedores huérfanos en cada arranque.' },
+  { t: 'Timeouts de sesión', d: '15 min de inactividad o 90 min totales — y el sweeper mata contenedores huérfanos en cada arranque.' },
 ]
 
 export default function HowItWorks() {
@@ -81,7 +81,7 @@ export default function HowItWorks() {
         <div className="rounded-xl bg-panel/60 border border-edge/50 p-5 text-sm text-frost/80 leading-relaxed space-y-2">
           <p><strong className="text-nord6">Declarativo</strong>: cada nivel es un YAML en <code className="font-mono">{'levels/<track>/lN.yaml'}</code> con briefing, setup (bash), pistas progresivas, cheatsheet, solución de referencia y explicación post-nivel.</p>
           <p><strong className="text-nord6">Flag por sesión</strong>: el setup recibe <code className="font-mono">$DOJO_FLAG</code> (HMAC de sessionId+nivel) y la esconde donde haga falta; dos jugadores JAMÁS tienen la misma flag.</p>
-          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 53/53 verificados.</p>
+          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 194/194 verificados.</p>
         </div>
       </section>
     </div>

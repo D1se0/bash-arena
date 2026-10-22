@@ -1,0 +1,43 @@
+id: boss-l12
+track: boss
+index: 12
+title: Caza mayor VI — el cofre cifrado
+subtitle: contraseña en pista + unzip + tar
+xp: 90
+difficulty: 5
+brief: "fortin.zip pide clave; la pista par a la izquierda da su valor exacto (no la adivines:
+  léela). Dentro hay un tar.gz con la marca."
+goal: Extrae la clave de /home/agent/fortin.clave, abre fortin.zip con ella (unzip -p) y de ahí
+  extrae el tar.gz embebido con la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Boss"
+  mkdir -p /tmp/fortin12/interior /etc/arena
+  printf 'rota del fortin: %s\n' "$DOJO_FLAG" > /tmp/fortin12/interior/marca.txt
+  tar -czf /tmp/fortin12/fortin.tgz -C /tmp/fortin12/interior marca.txt
+  ( cd /tmp/fortin12 && zip -P claveDelFortin12 fortin.zip fortin.tgz >/dev/null )
+  mv /tmp/fortin12/fortin.zip /home/agent/fortin.zip
+  printf 'la clave EXACTA del fortin es: claveDelFortin12\n' > /home/agent/fortin.clave
+  rm -rf /tmp/fortin12
+  chown agent:agent /home/agent/fortin.zip /home/agent/fortin.clave
+  chown -R agent:agent /home/agent
+solution: p=$(grep -oE 'claveDelFortin12' /home/agent/fortin.clave | head -n1); unzip -p -P "$p"
+  /home/agent/fortin.zip | tar -xzOf - | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - "La clave completa es una cadena impresa en fortin.clave: grep para sacarla limpia."
+  - unzip -p -P CLAVE imprime el tar.gz al stdout; tar -xzOf - lo lee de ahí.
+  - unzip -p -P KEY fortin.zip | tar -xzOf - | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: "flujos sin tocar disco: unzip -p manda el BINARIO interior al stdout y tar -xzOf - lo
+  consume: la cadena de compresores se descuelga sin ficheros temporales. Limpio y auditable."
+cheatsheet:
+  - cmd: unzip -p -P K f.zip
+    desc: el interior al stdout
+  - cmd: tar -xzOf -
+    desc: tar de stdin al stdout
+keywords:
+  - boss
+  - zip
+  - tar
+  - clave
+profile: default

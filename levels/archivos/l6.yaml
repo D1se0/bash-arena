@@ -1,0 +1,34 @@
+id: archivos-l6
+track: archivos
+index: 6
+title: Reunion del compresor
+subtitle: "gzip/zcat: descomprimir en el pipe"
+xp: 35
+difficulty: 1
+brief: comprimido.gz contiene una nota importante en texto plano, comprimida. Solo falta leerla sin
+  archivo intermedio.
+goal: Descomprime /home/agent/comprimido.gz en el flujo (sin borrar el fichero) y muestra su contenido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Archivos"
+  echo "nota comprimida: $DOJO_FLAG" | gzip > /home/agent/comprimido.gz
+  echo "decoy suelto sin relevancia" > /home/agent/decoy.txt
+  chown -R agent:agent /home/agent
+solution: zcat /home/agent/comprimido.gz
+hints:
+  - "gzip -d reemplazaría el fichero: no es lo que se pide."
+  - zcat (o gzip -dc) descomprime AL PIPE sin tocar el fichero.
+  - zcat comprimido.gz
+teach: "zcat/gzip -dc descomprime a stdout manteniendo el original: el flujo se puede encadenar
+  directamente con grafiteo o filtrado. Sustituye descentralizar pistas sin ensuciar el disco."
+cheatsheet:
+  - cmd: zcat f.gz
+    desc: descomprime a stdout
+  - cmd: gzip -d f.gz
+    desc: descomprime en sitio
+keywords:
+  - gzip
+  - zcat
+  - compresión
+profile: default

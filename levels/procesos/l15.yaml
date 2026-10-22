@@ -1,0 +1,42 @@
+id: procesos-l15
+track: procesos
+index: 15
+title: La señal de usuario
+subtitle: kill -USR1 y trap personalizado
+xp: 45
+difficulty: 3
+brief: "El cubridor solo contesta a una señal de usuario (USR1): su trap escribe la confesión en
+  fichero como regalo."
+goal: Envía SIGUSR1 al proceso con PID en /tmp/cubridor.pid y muestra su confesión en
+  /tmp/confesion-usr.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Procesos"
+  cat > /tmp/cubridor.sh <<FIN
+  #!/bin/bash
+  echo \$\$ > /tmp/cubridor.pid
+  trap 'echo "confesion USR1: $DOJO_FLAG" > /tmp/confesion-usr.txt; exit 0' USR1
+  while true; do sleep 1; done
+  FIN
+  chmod 755 /tmp/cubridor.sh
+  sudo -u agent /tmp/cubridor.sh >/dev/null 2>&1 </dev/null &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: kill -USR1 $(cat /tmp/cubridor.pid); sleep 1; cat /tmp/confesion-usr.txt
+hints:
+  - "SIGUSR1 es una señal definida por el usuario: kill -USR1 PID la envía sin teclado."
+  - El trap USR1 del proceso escribe al fichero antes de salir; dale 1 segundo.
+  - kill -USR1 $(cat /tmp/cubridor.pid); sleep 1; cat /tmp/confesion-usr.txt
+teach: "Señales trappables: TERM (la educada), INT (Ctrl+C) y las de usuario USR1/USR2, pensadas
+  para acciones del programa. kill SIN sufijo es TERM. KILL no es trappable: el kernel mata."
+cheatsheet:
+  - cmd: kill -USR1 PID
+    desc: señal de usuario 1
+  - cmd: kill -USR2 PID
+    desc: señal de usuario 2
+keywords:
+  - kill
+  - usr1
+  - trap
+profile: default

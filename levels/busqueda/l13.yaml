@@ -1,0 +1,46 @@
+id: busqueda-l13
+track: busqueda
+index: 13
+title: Recorrido recursivo
+subtitle: grep -r en un árbol
+xp: 40
+difficulty: 3
+brief: El árbol ~/proyecto tiene archivos .js, .md y .txt anidados en profundidad. La pieza está en
+  UNO, en cualquier nivel.
+goal: Busca recursivamente la marca en todo /home/agent/proyecto y extráela.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 13" "Busqueda"
+
+  mkdir -p /home/agent/proyecto/src/lib/legacy /home/agent/proyecto/docs/old
+
+  echo "const version = 3;" > /home/agent/proyecto/src/app.js
+
+  echo "utilidad de sitio: sin novedades" > /home/agent/proyecto/src/lib/legacy/util.txt
+
+  echo "docs antiguos del dojo" > /home/agent/proyecto/docs/old/README.md
+
+  printf 'init(): carga modulo\nmarca: %s\n' "$DOJO_FLAG" >
+  /home/agent/proyecto/src/lib/legacy/core.js
+
+  chown -R agent:agent /home/agent
+solution: grep -r -oE 'FLAG\{[a-f0-9]+\}' /home/agent/proyecto | head -n1
+hints:
+  - grep -r recorre directorios en profundidad sin que tengas que listarlos.
+  - Añade -oE con la forma de la marca para quedarte solo el trozo útil.
+  - grep -r -oE 'FLAG\{[a-f0-9]+\}' /home/agent/proyecto
+teach: 'grep -r es el "buscar en todo el árbol" de un repo: con -nñades números de línea y con -E
+  patrones. En proyectos reales es la primera pasada del code review forense.'
+cheatsheet:
+  - cmd: grep -r patrón dir
+    desc: busca recursiva
+  - cmd: grep -rn patrón dir
+    desc: con línea y fichero
+keywords:
+  - grep
+  - find
+  - recursivo
+profile: default

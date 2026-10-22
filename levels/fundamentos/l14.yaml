@@ -1,0 +1,37 @@
+id: fundamentos-l14
+track: fundamentos
+index: 14
+title: La séptima marca
+subtitle: dirigirse a una línea exacta
+xp: 30
+difficulty: 2
+brief: salas.txt tiene una marca por línea, tantas como salas. La de la séptima línea es la buena;
+  el resto son señuelos.
+goal: Muestra únicamente la séptima línea de /home/agent/salas.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Fundamentos"
+  { echo "sala 1: cerrada"; echo "sala 2: cerrada"; echo "sala 3: cerrada"
+    echo "sala 4: cerrada"; echo "sala 5: cerrada"; echo "sala 6: cerrada"
+    echo "sala 7: $DOJO_FLAG"
+    echo "sala 8: cerrada"; echo "sala 9: cerrada"; } > /home/agent/salas.txt
+  chown agent:agent /home/agent/salas.txt
+  chown -R agent:agent /home/agent
+solution: sed -n 7p /home/agent/salas.txt
+hints:
+  - sed -n Np fichero imprime exactamente la línea N.
+  - "También vale: head -n7 | tail -n1."
+  - sed -n 7p /home/agent/salas.txt
+teach: "Dirigirse a una línea exacta evita imprimir ficheros enormes: sed -n 12p, head | tail o
+  NR==7 de awk son tres caminos al mismo punto."
+cheatsheet:
+  - cmd: sed -n 7p f
+    desc: imprime la línea 7
+  - cmd: head -n7 f | tail -n1
+    desc: lo mismo con head/tail
+keywords:
+  - sed
+  - lineas
+  - wc
+profile: default

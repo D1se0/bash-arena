@@ -1,0 +1,37 @@
+id: permisos-l11
+track: permisos
+index: 11
+title: El escritor sin permiso
+subtitle: copiar requiere permisos del directorio
+xp: 50
+difficulty: 3
+brief: "salida/ existe pero es de solo lectura (555): ni cp ni touch pueden escribir en ella. La
+  salvación es devolverle la w al dueño."
+goal: Recupera permisos de salida/, copia hito.txt dentro y muestra la copia.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Permisos"
+  mkdir -p /home/agent/salida
+  echo "hito de auditoria: $DOJO_FLAG" > /home/agent/hito.txt
+  chown agent:agent /home/agent/salida /home/agent/hito.txt
+  chmod 555 /home/agent/salida
+  chmod 644 /home/agent/hito.txt
+solution: chmod u+w /home/agent/salida && cp /home/agent/hito.txt /home/agent/salida/ && cat
+  /home/agent/salida/hito.txt
+hints:
+  - El Permission denied al copiar sale del DIRECTORIO, no del fichero.
+  - La creación dentro de un directorio requiere w en el propio directorio.
+  - chmod u+w salida && cp hito.txt salida/
+teach: Los permisos que importan al COPIAR son los del DIRECTORIO destino (w) y los del FICHERO
+  origen (r). Si cp falla escribiendo, mira el directorio, no el fichero.
+cheatsheet:
+  - cmd: chmod u+w dir
+    desc: permite crear dentro
+  - cmd: ls -ld dir
+    desc: permisos del directorio
+keywords:
+  - permisos
+  - directorio
+  - cp
+profile: default

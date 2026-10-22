@@ -1,0 +1,33 @@
+id: archivos-l15
+track: archivos
+index: 15
+title: El tercer compresor
+subtitle: "xz: el de ratio más alto"
+xp: 45
+difficulty: 3
+brief: xiles.txt.xz usa xz (extension .xz) — no gzip ni zip. xz -dc lo decodifica al stdout.
+goal: Decodifica /home/agent/xiles.txt.xz y extrae la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Archivos"
+  printf 'ka la marca en xz: %s\n' "$DOJO_FLAG" | xz > /home/agent/xiles.txt.xz
+  chown agent:agent /home/agent/xiles.txt.xz
+  chown -R agent:agent /home/agent
+solution: xz -dc /home/agent/xiles.txt.xz | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - xz -d descomprime; añade -c para mandar el resultado al stdout (xz -dc).
+  - La forma de la marca con grep -oE escribes poco que filtrar.
+  - xz -dc f.xz | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: gzip (rápido), bzip2 (mejor ratio), xz (lo mejor ratio, más lento) y zstd (el equilibrado
+  moderno). El sufijo .xz señala realmente Adventisten del juego; -c manda salida al stdout.
+cheatsheet:
+  - cmd: xz -dc f.xz
+    desc: al stdout
+  - cmd: zstd -d f.zst
+    desc: el moderno
+keywords:
+  - xz
+  - compresion
+  - stdout
+profile: default

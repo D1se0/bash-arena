@@ -1,0 +1,40 @@
+id: procesado-l18
+track: procesado
+index: 18
+title: Solo en la segunda
+subtitle: comm -13 sin sort visible
+xp: 45
+difficulty: 3
+brief: "Dos listas casi idénticas: listas.txt y firmadas.txt. La única línea que está SOLO en la
+  segunda esconde la pieza."
+goal: Compara /home/agent/listas.txt y /home/agent/firmadas.txt y muestra la línea que aparece solo
+  en la segunda (comm -13).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Procesado"
+  {
+    echo " teammate-1"; echo " teammate-2"; echo " teammate-3"; echo " teammate-4"
+  } > /home/agent/listas.txt
+  {
+    echo " teammate-1"; echo " teammate-2"; echo " teammate-3"; echo " comun4: $DOJO_FLAG"
+  } > /home/agent/firmadas.txt
+  chown agent:agent /home/agent/listas.txt /home/agent/firmadas.txt
+  chown -R agent:agent /home/agent
+solution: comm -13 <(sort /home/agent/listas.txt) <(sort /home/agent/firmadas.txt)
+hints:
+  - "comm exige ambos ficheros ordenados: pasa por sort si hace falta."
+  - "comm -13 oculta la 1ª y la 3ª columna: deja las líneas exclusivas de la 2ª."
+  - comm -13 <(sort a) <(sort b)
+teach: 'comm es el comparador de SETS con columnas: -1, -2 y -3 esconden columnas; -13 = "solo en la
+  2ª". diff muestra diferencias CONTEXTUALES; comm muestra diferencias de PERTENENCIA.'
+cheatsheet:
+  - cmd: comm -12 a b
+    desc: intersección
+  - cmd: comm -13 a b
+    desc: solo en b
+keywords:
+  - comm
+  - diff
+  - sets
+profile: default

@@ -1,0 +1,41 @@
+id: procesos-l8
+track: procesos
+index: 8
+title: El que come la memoria
+subtitle: "ps --sort=-rss: el más pesado"
+xp: 45
+difficulty: 3
+brief: "Un proceso está bebiendo la RAM: es el más pesado de la máquina y quedó bautizado con la
+  marca en sus argumentos."
+goal: Lista los procesos ordenados por consumo de memoria y extrae la marca del más pesado.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 08" "Procesos"
+
+  nohup python3 -c "d=[0]*15000000; import time; time.sleep(1000)" "gloton-memoria" "$DOJO_FLAG"
+  >/dev/null 2>&1 &
+
+  sleep 1
+
+  chown -R agent:agent /home/agent
+solution: ps aux --sort=-rss | head -n 5 | grep -oE 'FLAG\{[^}]*\}' | head -n 1
+hints:
+  - ps aux --sort=<campo> ordena por RSS (memoria residente).
+  - Con -rss y el modo descendente, el primero de la lista es el más gordo.
+  - ps aux --sort=-rss | grep -oE 'FLAG\{[^}]*\}' | head -n 1
+teach: "ps aux --sort=-rss expone a los devoradores de memoria. Ordenar procesos por consumo es lo
+  que hacen los sysadmins antes de matar nada: medir primero, actuar después."
+cheatsheet:
+  - cmd: ps aux --sort=-rss | head
+    desc: top en consumo de RAM
+  - cmd: ps -eo pid,comm,%mem
+    desc: tabla compacta
+keywords:
+  - ps
+  - sort
+  - rss
+  - memoria
+profile: default

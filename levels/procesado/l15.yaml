@@ -1,0 +1,40 @@
+id: procesado-l15
+track: procesado
+index: 15
+title: El último campo
+subtitle: awk NF y $(NF)
+xp: 45
+difficulty: 3
+brief: registro.log tiene líneas con NÚMERO de campos variable. La marca está en el ÚLTIMO campo de
+  la línea del envío.
+goal: Filtra las líneas con "envio" en /home/agent/registro.log e imprime su último campo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Procesado"
+  {
+    echo "09:01 login user=ana"
+    echo "09:02 envio depot=odega-2 ruta=listo destino=1F"
+    echo "09:03 envio confidencial completado: $DOJO_FLAG"
+    echo "09:04 envio depot=odega-3 ruta=res retardo=no detalle= WrestleStudio"
+    echo "09:05 login user=bruno"
+  } > /home/agent/registro.log
+  chown agent:agent /home/agent/registro.log
+  chown -R agent:agent /home/agent
+solution: grep 'envio confidencial' /home/agent/registro.log | awk '{print $NF}' | head -n1
+hints:
+  - awk NF es el número de campos de la línea actual; $NF es el último.
+  - Primero grep "envio confidencial", luego awk "{print $NF}".
+  - grep 'envio confidencial' f | awk '{print $NF}'
+teach: "$NF es la joya de awk para logs con anchura variable: da igual que mida 3 o 13 campos; el
+  último es SIEMPRE el último. awk NR es el número de línea, NF es el de campos."
+cheatsheet:
+  - cmd: awk '{print $NF}' f
+    desc: último campo
+  - cmd: awk '{print $(NF-1)}' f
+    desc: penúltimo
+keywords:
+  - awk
+  - NF
+  - logs
+profile: default

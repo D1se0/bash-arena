@@ -1,0 +1,37 @@
+id: archivos-l16
+track: archivos
+index: 16
+title: El salto del faro
+subtitle: "readlink -f: resolver cadenas de symlinks"
+xp: 45
+difficulty: 3
+brief: "En ~/faro cuatro enlaces simbólicos se recogen como bengalas lazos: lazo1 → lazo2 → lazo3 →
+  … hasta la pieza."
+goal: Resuelve la cadena de symlinks desde /home/agent/faro/lazo1 y muestra el fichero final.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 16" "Archivos"
+  mkdir -p /home/agent/faro/piedra
+  echo "la masa del faro: $DOJO_FLAG" > /home/agent/faro/piedra/nucleo.txt
+  ln -s /home/agent/faro/lazo2 /home/agent/faro/lazo1
+  ln -s /home/agent/faro/lazo3 /home/agent/faro/lazo2
+  ln -s /home/agent/faro/piedra/nucleo.txt /home/agent/faro/lazo3
+  chown -R agent:agent /home/agent
+solution: cat "$(readlink -f /home/agent/faro/lazo1)"
+hints:
+  - readlink -p resuelve UN salto; readlink -f resuelve TODA la cadena hasta el fichero real.
+  - readlink -f lazo1 imprime el destino real; cat $(readlink -f lazo1) lo muestra.
+  - cat "$(readlink -f /home/agent/faro/lazo1)"
+teach: "Un symlink es un puntero: readlink -f lo data el destino ABSOLUTO final a(disfraz de
+  infinite loops). Comprobar enlaces rotos es find -L -type l."
+cheatsheet:
+  - cmd: readlink -f f
+    desc: destino absoluto final
+  - cmd: ls -l
+    desc: flecchas de los links
+keywords:
+  - symlink
+  - readlink
+  - cadena
+profile: default

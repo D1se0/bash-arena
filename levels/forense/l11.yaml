@@ -1,0 +1,34 @@
+id: forense-l11
+track: forense
+index: 11
+title: Cola del exfiltrado
+subtitle: "tail -c: los últimos bytes de un binario"
+xp: 45
+difficulty: 3
+brief: cargo.bin es un binario de exportación (relleno a decenas de KB). La exfiltración anexó la
+  marca justo al final del fichero.
+goal: Muestra los últimos 90 bytes de /home/agent/cargo.bin para recoger la marca anexada.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Forense"
+  head -c 150000 /dev/urandom > /home/agent/cargo.bin
+  printf '\nmarca exfiltrada: %s\n' "$DOJO_FLAG" >> /home/agent/cargo.bin
+  chown agent:agent /home/agent/cargo.bin
+solution: tail -c 90 /home/agent/cargo.bin
+hints:
+  - tail -c N imprime los últimos N BYTES (no líneas).
+  - "El relleno binario puede romper la pantalla: -c es la forma acotada de mirar."
+  - tail -c 90 cargo.bin
+teach: "El patrón «relleno + carga útil al final» es una técnica de steganografía trivial: los
+  ficheros siguen siendo válidos pero la cola lleva secretos. tail -c es el bisturí."
+cheatsheet:
+  - cmd: tail -c 100 f
+    desc: últimos 100 bytes
+  - cmd: head -c 100 f
+    desc: primeros 100 bytes
+keywords:
+  - tail -c
+  - bytes
+  - exfiltración
+profile: default

@@ -2,20 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── paleta conmutable por tema (tripletas rgb para alpha de Tailwind) ── */
+:root,
+html.dark {
+  --c-base: 25 29 36;      /* #191D24 */
+  --c-panel: 34 38 46;     /* #22262E */
+  --c-panel2: 42 46 55;    /* #2A2E37 */
+  --c-edge: 59 66 82;      /* #3B4252 */
+  --c-ice: 136 192 208;    /* #88C0D0 */
+  --c-frost: 129 161 193;  /* #81A1C1 */
+  --c-deep: 94 129 172;    /* #5E81AC */
+  --c-morado: 180 142 173; /* #B48EAD */
+  --c-verde: 163 190 140;  /* #A3BE8C */
+  --c-arena: 235 203 139;  /* #EBCB8B */
+  --c-coral: 191 97 106;   /* #BF616A */
+  --c-naranja: 208 135 112; /* #D08770 */
+  --c-nord0: 46 52 64;     /* #2E3440 */
+  --c-nord1: 59 66 82;     /* #3B4252 */
+  --c-nord4: 216 222 233;  /* #D8DEE9 */
+  --c-nord6: 236 239 244;  /* #ECEFF4 */
+  --c-text: 216 222 233;
+  --c-bg-blob1: 94, 129, 172;
+  --c-bg-blob2: 180, 142, 173;
+}
+
+html.light {
+  --c-base: 235 237 241;   /* gris muy claro */
+  --c-panel: 255 255 255;
+  --c-panel2: 246 248 250;
+  --c-edge: 200 208 218;
+  --c-ice: 94 129 172;     /* #5E81AC azul nord legible sobre claro */
+  --c-frost: 76 86 106;    /* #4C566A */
+  --c-deep: 129 161 193;
+  --c-morado: 146 84 146;  /* violeta legible sobre claro */
+  --c-verde: 94 129 62;    /* verde oscuro */
+  --c-arena: 158 118 26;
+  --c-coral: 167 58 70;
+  --c-naranja: 191 108 62;
+  --c-nord0: 216 222 233;
+  --c-nord1: 200 208 218;
+  --c-nord4: 59 66 82;
+  --c-nord6: 46 52 64;     /* títulos oscuros */
+  --c-text: 59 66 82;
+  --c-bg-blob1: 129, 161, 193;
+  --c-bg-blob2: 146, 84, 146;
+}
+
 html, body, #root { height: 100%; }
+
 body {
   background:
-    radial-gradient(1100px 500px at 80% -10%, rgba(94,129,172,0.16), transparent 70%),
-    radial-gradient(900px 420px at 5% 110%, rgba(180,142,173,0.14), transparent 60%),
-    #191D24;
-  color: #D8DEE9;
+    radial-gradient(1100px 500px at 80% -10%, rgba(var(--c-bg-blob1), 0.16), transparent 70%),
+    radial-gradient(900px 420px at 5% 110%, rgba(var(--c-bg-blob2), 0.14), transparent 60%),
+    rgb(var(--c-base));
+  color: rgb(var(--c-text));
+  /* bloquea el scroll horizontal accidental en móvil/escritorio */
+  overflow-x: hidden;
+  word-break: break-word;
 }
+
+/* ── anti-desborde global: tablas/código/urls largas ── */
+main :is(pre, table) { max-width: 100%; }
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+table { display: block; overflow-x: auto; }
+img, video, iframe { max-width: 100%; height: auto; }
 
 /* scrollbars discretos */
 *::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: #3B4252; border-radius: 8px; }
+*::-webkit-scrollbar-thumb { background: rgb(var(--c-edge)); border-radius: 8px; }
 *::-webkit-scrollbar-track { background: transparent; }
 
-:focus-visible { outline: 2px solid #88C0D0; outline-offset: 2px; }
+:focus-visible { outline: 2px solid rgb(var(--c-ice)); outline-offset: 2px; }
 
-::selection { background: rgba(180,142,173,0.35); }
+::selection { background: rgba(180, 142, 173, 0.35); }

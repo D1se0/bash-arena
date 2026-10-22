@@ -1,0 +1,36 @@
+id: forense-l6
+track: forense
+index: 6
+title: Caza en el binario
+subtitle: "grep -a: buscar texto dentro de bytes"
+xp: 40
+difficulty: 3
+brief: blob.bin es un fichero binario (basura aleatoria). Entre los bytes, la cadena de la marca
+  sobrevive.
+goal: Extrae TODAS las ocurrencias de la marca (patrón FLAG{...}) dentro del binario
+  /home/agent/blob.bin.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Forense"
+  head -c 10000 /dev/urandom > /home/agent/blob.bin
+  printf 'coincidencia embebida: %s\n' "$DOJO_FLAG" >> /home/agent/blob.bin
+  head -c 8000 /dev/urandom >> /home/agent/blob.bin
+  chown agent:agent /home/agent/blob.bin
+solution: grep -a -oE 'FLAG\{[^}]*\}' /home/agent/blob.bin
+hints:
+  - "grep sin -a te dirá Binary file matches: -a proporciona el modo texto."
+  - -o imprime solo el trozo casado, muy útil en binarios.
+  - grep -a -oE 'FLAG\{[^}]*\}' blob.bin
+teach: "grep -a trata los ficheros binarios como texto (binary→text). La pareja -a -o es el kit
+  forense para extraer cadenas sin instolar strings:"
+cheatsheet:
+  - cmd: grep -a -oE 'x' f.bin
+    desc: extrae cadenas de un binario
+  - cmd: xxd f | head
+    desc: mira los bytes crudos
+keywords:
+  - grep -a
+  - binario
+  - strings
+profile: default

@@ -1,0 +1,52 @@
+id: boss-l13
+track: boss
+index: 13
+title: Caza mayor VII — el log del traidor
+subtitle: exclusiones + strings + rot13
+xp: 90
+difficulty: 5
+brief: traidor.log mezcla líneas de señuelo, líneas de test y UNA línea legible con texto rotado
+  (rot13) que esconde la marca.
+goal: Filtra /home/agent/traidor.log quitando las líneas con señuelo o test, extrae su texto con
+  rot13 y pescá la marca.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 13" "Boss"
+
+  printf 'la confesion del traidor: %s\n' "$DOJO_FLAG" | tr 'A-Za-z' 'N-ZA-Mn-za-m' >
+  /tmp/traidor13.txt
+
+  {
+    echo "señuelo: FLAG{aaaaaaaaaaaaaaaaaaaaaaaa} ruido de distracción"
+    echo "test: FLAG{bbbbbbbbbbbbbbbbbbbbbbbb} resultado de test"
+    cat /tmp/traidor13.txt
+    echo "señuelo final: basura sin marca"
+  } > /home/agent/traidor.log
+
+  rm -f /tmp/traidor13.txt
+
+  chown agent:agent /home/agent/traidor.log
+
+  chown -R agent:agent /home/agent
+solution: grep -viE 'señuelo|test' /home/agent/traidor.log | tr 'A-Za-z' 'N-ZA-Mn-za-m' | grep -oE
+  'FLAG\{[a-f0-9]+\}'
+hints:
+  - Primero grep -viE 'señuelo|test' para excluir las trampas por nombre.
+  - "La línea restante está rotada +13: tr A-Za-z N-ZA-Mn-za-m la deshace (es simétrica)."
+  - grep -vE 'señuelo|test' traidor.log | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+teach: '"rot13 el log" es el truco de ofuscación núm 1 de logs mal protegidos: simétrico, sin clave,
+  sin software. Tu contramedida es generar texto limpio + auditoría por anomalías de frecuencias.'
+cheatsheet:
+  - cmd: tr 'A-Za-z' 'N-ZA-Mn-za-m'
+    desc: rot13 ida y vuelta
+  - cmd: grep -viE 'a|b' f
+    desc: excluir por case-insensitive
+keywords:
+  - boss
+  - rot13
+  - log
+  - excluir
+profile: default

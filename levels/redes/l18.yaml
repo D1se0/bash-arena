@@ -1,0 +1,37 @@
+id: redes-l18
+track: redes
+index: 18
+title: El registro TXT
+subtitle: dnsmasq + dig TXT en puerto propio
+xp: 45
+difficulty: 3
+brief: Un DNS minúsculo lleva la pieza como registro TXT en el dominio marca.dojo, en 127.0.0.1:5354.
+goal: Consulta el TXT de marca.dojo al DNS del puerto 5354.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Redes"
+  mkdir -p /etc/arena
+  printf 'txt-record=marca.dojo,"%s"\n' "$DOJO_FLAG" > /etc/arena/dns18.conf
+  setsid /usr/sbin/dnsmasq --no-daemon --port=5354 --listen-address=127.0.0.1 \
+    --conf-file=/etc/arena/dns18.conf --no-hosts --no-resolv \
+    --log-facility=/tmp/dns18.log >/dev/null 2>&1 &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: dig @127.0.0.1 -p 5354 +short TXT marca.dojo
+hints:
+  - "Los TXT llevan texto suelto entre comillas: la marca entera viaja en el registro."
+  - dig @127.0.0.1 -p 5354 +short TXT marca.dojo — el +short deja la respuesta pelada.
+  - dig @127.0.0.1 -p 5354 +short TXT marca.dojo
+teach: "Los registros TXT cargan texto libre (DKIM, verificación dominio…). dig -p habla a un puerto
+  NO estándar: la manera de testear DNS no en el 53 de siempre."
+cheatsheet:
+  - cmd: dig @host -p puerto TXT dom
+    desc: TXT a puerto custom
+  - cmd: dig +short
+    desc: solo la respuesta
+keywords:
+  - dig
+  - txt
+  - dns
+profile: default

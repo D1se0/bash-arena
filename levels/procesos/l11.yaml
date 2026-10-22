@@ -1,0 +1,38 @@
+id: procesos-l11
+track: procesos
+index: 11
+title: El alijo del pesado
+subtitle: "du: encontrar la carpeta que pesa"
+xp: 55
+difficulty: 4
+brief: En workspace/ hay varios contenedores; uno pesa más que todos por su relleno y guardó la
+  clave dentro.
+goal: Localiza el CONTENEDOR más pesado con du y muestra su fichero clave.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Procesos"
+  mkdir -p /workspace/lite /workspace/media
+  dd if=/dev/zero of=/workspace/lite/relleno bs=1024 count=60 2>/dev/null
+  dd if=/dev/zero of=/workspace/media/relleno bs=1024 count=180 2>/dev/null
+  mkdir -p /workspace/grueso
+  echo "aqui estoy: $DOJO_FLAG" > /workspace/grueso/clave.txt
+  dd if=/dev/zero of=/workspace/grueso/relleno bs=1024 count=400 2>/dev/null
+  chown -R agent:agent /workspace
+solution: m=$(du -sk /workspace/* | sort -rn | head -n1 | cut -f2); cat "$m/clave.txt"
+hints:
+  - du -sk lista cada contenedor con su tamaño EN KILOBYTES (k).
+  - Ordenando por el número, el primero es el más pesado; la ruta queda en la 2ª columna.
+  - m=$(du -sk /workspace/* | sort -rn | head -n1 | cut -f2); cat "$m/clave.txt"
+teach: du -sk + sort -rn es la rutina clásica de «quién llena el disco». El -k normaliza unidades
+  para que el orden numérico no traicione nada mezclando Mega y Kilo.
+cheatsheet:
+  - cmd: du -sk dir/* | sort -rn | head
+    desc: mayores por KB
+  - cmd: cut -f2
+    desc: columna 2 (tabulado)
+keywords:
+  - du
+  - sort
+  - espacio
+profile: default

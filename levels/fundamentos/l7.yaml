@@ -1,0 +1,44 @@
+id: fundamentos-l7
+track: fundamentos
+index: 7
+title: El historial delator
+subtitle: bash_history como pista forense
+xp: 30
+difficulty: 2
+brief: El operador anterior tecleó el comando exacto que revela la sala secreta… y quedó anotado en
+  su historial de bash.
+goal: Descubre el fichero secreto a partir de /home/agent/.bash_history y muestra su contenido.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 07" "Fundamentos"
+
+  mkdir -p /etc/arena
+
+  echo "$DOJO_FLAG" > /etc/arena/sala-secreta.txt
+
+  chmod 644 /etc/arena/sala-secreta.txt
+
+  printf 'ls /home/agent\nexport TERM=xterm-256color\ncat /etc/arena/sala-secreta.txt\n' >
+  /home/agent/.bash_history
+
+  chown agent:agent /home/agent/.bash_history
+solution: secret=$(grep -oE '/etc/arena/[^ ]+' /home/agent/.bash_history | head -n1); cat "$secret"
+hints:
+  - Los comandos del usuario anterior están en .bash_history (fichero oculto, empieza por punto).
+  - "En el historial hay una ruta /etc/arena/…: extráela con grep -oE."
+  - secret=$(grep -oE "/etc/arena/[^ ]+" /home/agent/.bash_history | head -n1); cat "$secret"
+teach: "El historial (~/.bash_history) es memoria forense: sirve para reconstruir lo que otro hizo.
+  Y es el motivo por el que NUNCA debes teclear secretos: quedan grabados."
+cheatsheet:
+  - cmd: cat ~/.bash_history
+    desc: mira el historial de comandos
+  - cmd: grep -oE 'patron' f
+    desc: imprime solo lo que casa
+keywords:
+  - history
+  - bash_history
+  - grep -o
+profile: default

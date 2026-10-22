@@ -1,0 +1,41 @@
+id: boss-l7
+track: boss
+index: 7
+title: Caza en los comprimidos
+subtitle: find + xargs zcat/gunzip
+xp: 85
+difficulty: 4
+brief: En caja/ hay un árbol de ficheros .gz y decoys sueltos. Todas las marcas interesantes están
+  DENTRO de los comprimidos.
+goal: Encuentra candidatos .gz en /home/agent/caja con find, descomprímelos de una pasada (xargs
+  zcat) y extrae la marca real.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Boss"
+  mkdir -p /home/agent/caja/sala1 /home/agent/caja/sala2/sala3
+  echo "decoy suelto con FLAG{decoy-cero}" > /home/agent/caja/suelto.txt
+  echo "nota blandita sin relevancia" | gzip > /home/agent/caja/sala1/una.gz
+  echo "más mullido" | gzip > /home/agent/caja/sala2/dos.gz
+  echo "última pieza: $DOJO_FLAG" | gzip > /home/agent/caja/sala2/sala3/tres.gz
+  echo "lleno de vacío" > /home/agent/caja/blanco.txt
+  chown -R agent:agent /home/agent/caja
+solution: find /home/agent/caja -name '*.gz' -exec zcat {} \; | grep -oE 'FLAG\{[^}]*\}'
+hints:
+  - find -name "*.gz" localiza TODOS los comprimidos del árbol.
+  - "zcat no acepta múltiples slots? sí: puedes lanzarlo con xargs o por -exec."
+  - find caja -name '*.gz' -exec zcat {} \;… con grep -oE extraes SOLO la marca.
+teach: "find + xargs/-exec es la dupla clásica de bash para procesar hallazgos en lote. Descomprimir
+  en el flujo (zcat) permite encadenar pipes sin ensuciar disco: caza de la marca sin archivos
+  intermedios."
+cheatsheet:
+  - cmd: find d -name '*.gz' | xargs zcat
+    desc: descomprimir lote
+  - cmd: zcat f | grep -oE x
+    desc: marca en el flujo
+keywords:
+  - find
+  - zcat
+  - xargs
+  - lote
+profile: default

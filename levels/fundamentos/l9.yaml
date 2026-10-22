@@ -1,0 +1,38 @@
+id: fundamentos-l9
+track: fundamentos
+index: 9
+title: Línea 111
+subtitle: recortar líneas sin editor
+xp: 30
+difficulty: 2
+brief: "La agenda tiene 120 compromisos. La marca quedó caída en la línea 111: ni antes, ni después."
+goal: Imprime exactamente la línea 111 de /home/agent/agenda.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Fundamentos"
+  i=1
+  while [ $i -le 120 ]; do
+    if [ $i -eq 111 ]; then echo "linea 111 hallazgo clave: $DOJO_FLAG"
+    else echo "linea $i evento rutinario"; fi
+    i=$((i+1))
+  done > /home/agent/agenda.txt
+  chown agent:agent /home/agent/agenda.txt
+solution: head -n 111 /home/agent/agenda.txt | tail -n 1
+hints:
+  - wc -l /home/agent/agenda.txt confirma el tamaño del fichero.
+  - Puedes cortar por el principio con head y por la cola con tail; encadenados recortan una ventana.
+  - head -n 111 agenda.txt | tail -n 1
+teach: "head y tail encadenados recortan cualquier ventana de líneas: primeras N y últimas M. wc -l
+  y nl te ayudan a localizar la que buscas."
+cheatsheet:
+  - cmd: head -n N f | tail -n 1
+    desc: línea N exacta
+  - cmd: wc -l f
+    desc: cuenta líneas
+keywords:
+  - head
+  - tail
+  - wc
+  - líneas
+profile: default

@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       grep sed gawk findutils diffutils patch \
       tar gzip bzip2 xz-utils zip unzip p7zip-full \
       curl wget netcat-openbsd iproute2 telnet bind9-host dnsutils \
-      procps psmisc lsof psmisc sysstat \
+      procps psmisc lsof sysstat binutils \
       dnsmasq-base libxml2-utils \
       jq gawk bc time colordiff \
       sudo locales iputils-ping \

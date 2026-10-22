@@ -1,0 +1,43 @@
+id: boss-l10
+track: boss
+index: 10
+title: La caja de seguridad final
+subtitle: "dos capas: base64 + tr rotación"
+xp: 100
+difficulty: 5
+brief: "ultimis.b64 guarda (pista: rotación +13 de las letras dentro de una codificación base64)
+  la marca final. Ambas capas deben deshacerse EN ORDEN."
+goal: Decodifica /home/agent/ultimis.b64 con base64 y DESPUÉS deshaz la rotación +13 (rot13) de las
+  letras ya extraídas.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 10" "Boss"
+
+  printf 'la hospitalaria terminal: %s\n' "$DOJO_FLAG" | tr 'A-Za-z' 'N-ZA-Mn-za-m' | base64 -w0 >
+  /home/agent/ultimis.b64
+
+  echo >> /home/agent/ultimis.b64
+
+  chown agent:agent /home/agent/ultimis.b64
+solution: base64 -d /home/agent/ultimis.b64 | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+hints:
+  - "Primero quita la codificación: base64 -d trae la cadena rotada."
+  - "La rotación +13 es simétrica: la misma tr la deshace."
+  - base64 -d ultimis.b64 | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+teach: "Los encadenamientos (rot13+base64, hex+rot…) son una evasión típica de
+  DLP. Deshacer CAPAS EN ORDEN es la disciplina del oficio: primero transforma la capa de
+  transporte, luego recupera el texto original."
+cheatsheet:
+  - cmd: base64 -d f | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+    desc: decodifica + rot13
+  - cmd: xxd -r f.hex
+    desc: otro imposible reversible
+keywords:
+  - base64
+  - rot13
+  - capas
+  - boss
+profile: default

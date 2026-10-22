@@ -1,0 +1,38 @@
+id: boss-l9
+track: boss
+index: 9
+title: El tar sin tocar disco
+subtitle: "tar -O: contenido del comprimido al stdout"
+xp: 90
+difficulty: 4
+brief: "archivo.tar.gz guarda un fichero NOTA.txt con la marca. La directiva del dojo: la marca debe
+  sacarse SIN extraer nada al disco."
+goal: Muestra el contenido del fichero guardado dentro de /home/agent/archivo.tar.gz SIN extraer al
+  disco (lee el tar en el copia) y extrae la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Boss"
+  mkdir -p /tmp/lvl-B9/paquete
+  echo "la marca viaja en el bulto: $DOJO_FLAG" > /tmp/lvl-B9/paquete/NOTA.txt
+  echo "rellena falzar" > /tmp/lvl-B9/paquete/relleno.txt
+  tar -czf /home/agent/archivo.tar.gz -C /tmp/lvl-B9 paquete
+  rm -rf /tmp/lvl-B9
+  chown agent:agent /home/agent/archivo.tar.gz
+solution: tar -xzOf /home/agent/archivo.tar.gz | grep -oE 'FLAG\{[^}]*\}'
+hints:
+  - tar -f es el fichero; añade x, z y -O (O mayúscula = escribir al stdout, no disco).
+  - "La salida tar va a stdout: encadénala con grep."
+  - tar -xzOf archivo.tar.gz | grep -oE "FLAG\{[^}]*\}"
+teach: "tar -O (mayúscula) escribe TODO el contenido AL stdout: el modo «cat del tar» sin extraer al
+  disco. Es la forma forense de analizar un archivo sin contaminar la evidencia."
+cheatsheet:
+  - cmd: tar -tzf f.tar.gz
+    desc: lista sin extraer
+  - cmd: tar -xzOf f.tar.gz
+    desc: todo el contenido al stdout
+keywords:
+  - tar -O
+  - stdout
+  - forense
+profile: default

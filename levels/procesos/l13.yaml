@@ -1,0 +1,35 @@
+id: procesos-l13
+track: procesos
+index: 13
+title: El renombrado
+subtitle: "exec -a: el argv0 manda en ps"
+xp: 45
+difficulty: 3
+brief: "Un proceso camina disfrazado: su argv0 ES la marca. ps la revela, pgrep no te dice nada útil
+  aquí."
+goal: Encuentra el proceso cuyo nombre (argv0) es la marca y muéstralo con ps.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Procesos"
+  sudo -u agent bash -c "exec -a '$DOJO_FLAG' sleep 600" >/dev/null 2>&1 </dev/null &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: ps -eo args | grep -F 'FLAG{' | grep -v grep | head -n1
+hints:
+  - ps -eo args imprime SOLO la línea de argumentos de cada proceso (sin cabecera).
+  - El primer grep -F no se auto-pillar porque pgrep no está de por medio; el grep -v grep limpia al
+    propio ps.
+  - ps -eo args | grep -F 'FLAG{' | grep -v grep
+teach: "exec -a reescribe argv[0]: es el truco de cambiapieles de los procesos (y de los rootkits).
+  ps -eo args — y en kernels modernos /proc/PID/cmdline — son la contramedida."
+cheatsheet:
+  - cmd: ps -eo args
+    desc: linea de comando de todos
+  - cmd: ps -o args= -p PID
+    desc: argv de un PID
+keywords:
+  - ps
+  - argv
+  - exec
+profile: default

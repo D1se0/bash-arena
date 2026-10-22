@@ -34,6 +34,7 @@ interface ConnState {
   withheld: string | null;   // buffer de línea retenida (prefijo reservado), null en passthrough
   atPrompt: boolean;
   connectedAt: number;
+  lastNoSessionAt: number;   // throttle del aviso «sin sesión»
 }
 
 const connStates = new Map<WebSocket, ConnState>();
@@ -75,7 +76,7 @@ export function attachGateway(wss: WebSocketServer, service: LevelsService): voi
       ws.close(4299, 'rate limited');
       return;
     }
-    connStates.set(ws, { ip, playerId: null, session: null, engine: null, withheld: '', atPrompt: false, connectedAt: Date.now() });
+    connStates.set(ws, { ip, playerId: null, session: null, engine: null, withheld: '', atPrompt: false, connectedAt: Date.now(), lastNoSessionAt: 0 });
     ws.on('message', (raw) => handleMsg(ws, raw, service));
     ws.on('close', () => void onConnClose(ws));
     ws.on('error', () => undefined);
@@ -284,6 +285,11 @@ function onInput(ws: WebSocket, st: ConnState, data: string): void {
   st.session?.session.touch();
   if (!st.atPrompt || !st.session) {
     st.session?.session.write(data);
+    // sin sesión activa el input se pierde: aviso con throttle (no una línea por tecla)
+    if (!st.session && Date.now() - st.lastNoSessionAt > 2500) {
+      st.lastNoSessionAt = Date.now();
+      sendText(ws, '\r\n\x1b[38;5;203msin sesión de terminal — escribe start o pulsa Reanudar\x1b[0m\r\n');
+    }
     return;
   }
   // procesa el stream por líneas, con retención por prefijo
@@ -292,22 +298,25 @@ function onInput(ws: WebSocket, st: ConnState, data: string): void {
     if (ch === '\r' || ch === '\n') {
       commitEnter(ws, st, ch);
     } else if (st.withheld !== null) {
+      // ECO LOCAL: en retención el shell no ve (ni ecoa) nada, así que dibujamos
+      // a mano para que el jugador siempre vea lo que teclea.
       if (ch === '\x7f') {
-        // backspace en retención: no había eco del shell, nada que borrar en pantalla
         st.withheld = st.withheld.slice(0, -1);
+        sendText(ws, '\b \b');
         if (st.withheld.length === 0) {
-          // pasa a passthrough
           st.withheld = null;
         }
       } else if (ch === '\t') {
-        flushWithheld(st, st.withheld + '\t');
+        flushWithheld(ws, st, st.withheld + '\t');
       } else if (ch === '\x03') {
         st.withheld = null; // Ctrl+C cancela retención
+        sendText(ws, '^C\r\n');
         st.session.session.write('\x03');
       } else if (st.withheld.length < RESERVE_WORDS_MAX_PREFIX && isReservedPrefix(st.withheld + ch)) {
         st.withheld += ch;
+        if (ch >= ' ') sendText(ws, ch); // eco visible (ignora controles raros)
       } else {
-        flushWithheld(st, st.withheld + ch);
+        flushWithheld(ws, st, st.withheld + ch);
       }
     } else {
       st.session.session.write(ch);
@@ -315,9 +324,14 @@ function onInput(ws: WebSocket, st: ConnState, data: string): void {
   }
 }
 
-/** suelta lo retenido y vuelve a passthrough (el terminal ya lo vió). */
-function flushWithheld(st: ConnState, text: string): void {
+/**
+ * suelta lo retenido y vuelve a passthrough. Como la línea ya se pintó con
+ * eco local, la borramos (\x1b[2K\r) antes: el shell la re-ecoa con su
+ * comportamiento normal y no queda duplicado.
+ */
+function flushWithheld(ws: WebSocket, st: ConnState, text: string): void {
   st.withheld = null; // passthrough
+  sendText(ws, '\x1b[2K\r');
   const session = st.session?.session;
   if (session && text) session.write(text);
 }
@@ -334,10 +348,13 @@ function commitEnter(ws: WebSocket, st: ConnState, newline: string): void {
     }
     const cmd = reservedOf(trimmed);
     if (!cmd) {
-      // no era un comando completo: lo entrega al shell tal cual
+      // no era un comando completo: limpia el eco local y lo entrega al shell,
+      // que lo ecoa con su comportamiento normal
+      sendText(ws, '\x1b[2K\r');
       st.session?.session.write(withheld + newline);
       return;
     }
+    sendText(ws, '\r\n'); // cierra visualmente la línea ecoada
     handleCommand(ws, st, trimmed);
     return;
   }

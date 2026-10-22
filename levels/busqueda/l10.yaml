@@ -1,0 +1,37 @@
+id: busqueda-l10
+track: busqueda
+index: 10
+title: "Mindepth: el pozo"
+subtitle: solo ficheros en niveles profundos
+xp: 45
+difficulty: 3
+brief: El maze/ reparte ficheros en todos los niveles, pero el tesoro está solo en la capa 3 o más
+  profunda.
+goal: Muestra los ficheros que están a profundidad 3 o más dentro de /home/agent/maze.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Búsqueda"
+  mkdir -p /home/agent/maze/a/b/c/d /home/agent/maze/a/b2 /home/agent/maze/nivel1
+  echo "nivel intermedio" > /home/agent/maze/a/b/c/medio.txt
+  echo "sombra de nivel 1" > /home/agent/maze/nivel1/trampa.txt
+  echo "en el fondo del pozo: $DOJO_FLAG" > /home/agent/maze/a/b/c/d/fondo.txt
+  echo "otra sombra" > /home/agent/maze/a/b2/decoy.txt
+  chown -R agent:agent /home/agent/maze
+solution: find /home/agent/maze -mindepth 3 -type f -exec cat {} \;
+hints:
+  - find gradúa la profundidad con -mindepth N (la carpeta raíz cuenta con el nivel 0).
+  - -type f deja solo ficheros, no directorios.
+  - find maze -mindepth 3 -type f -exec cat {} \\;
+teach: "-mindepth/-maxdepth acotan la profundidad de la búsqueda: imprescindible cuando el árbol
+  tiene capas de señuelos. La raíz cuenta como nivel 0."
+cheatsheet:
+  - cmd: find d -mindepth 2 -name x
+    desc: desde el nivel 2 hacia abajo
+  - cmd: find d -maxdepth 1 -type d
+    desc: solo capas directas
+keywords:
+  - find
+  - mindepth
+  - profundidad
+profile: default

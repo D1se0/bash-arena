@@ -1,0 +1,41 @@
+id: redes-l6
+track: redes
+index: 6
+title: Tres puertos, un secreto
+subtitle: recorrer puertos con curl
+xp: 40
+difficulty: 3
+brief: Hay tres servicios asomados en los puertos 9000, 9001 y 9002. Solo uno devuelve la clave; el
+  resto da señuelos.
+goal: Consulta los tres puertos y muestra la respuesta que contiene la clave.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Redes"
+  mkdir -p /var/www/p9000 /var/www/p9001 /var/www/p9002
+  echo "<html>señuelo prudente del puerto 9000</html>" > /var/www/p9000/index.html
+  echo "<html>respuesta de sobra: $DOJO_FLAG</html>" > /var/www/p9001/index.html
+  echo "<html>otro señuelo del puerto 9002</html>" > /var/www/p9002/index.html
+  nohup python3 -m http.server 9000 --directory /var/www/p9000 >/dev/null 2>&1 &
+  nohup python3 -m http.server 9001 --directory /var/www/p9001 >/dev/null 2>&1 &
+  nohup python3 -m http.server 9002 --directory /var/www/p9002 >/dev/null 2>&1 &
+  sleep 2
+  chown -R agent:agent /home/agent
+solution: for p in 9000 9001 9002; do curl -s http://127.0.0.1:$p/; echo; done
+hints:
+  - ss -tln te enseña qué puertos están a la escucha (y confirma los tres).
+  - Un bucle for sobre los puertos nos ahorra tres comandos iguales.
+  - for p in 9000 9001 9002; do curl -s http://127.0.0.1:$p/; echo; done
+teach: "ss -tln lista sockets TCP a la escucha: la foto del lado servidor. Cuando hay varios
+  puertos, un bucle for con curl barre la fábrica sin repetir código."
+cheatsheet:
+  - cmd: ss -tln
+    desc: puertos a la escucha
+  - cmd: curl -s http://127.0.0.1:PORT/
+    desc: consulta un puerto
+keywords:
+  - ss
+  - puertos
+  - curl
+  - for
+profile: default

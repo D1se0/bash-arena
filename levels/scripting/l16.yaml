@@ -1,0 +1,37 @@
+id: scripting-l16
+track: scripting
+index: 16
+title: Dos mitades, un todo
+subtitle: paste -d'' + printf
+xp: 45
+difficulty: 3
+brief: "La marca está partida: la mitad izquierda en parteA.txt, la derecha en parteB.txt. Sin
+  espacios entre ellas, el todo ES la marca."
+goal: Concatena la primera línea de ambas partes (paste sin delimitador) y muéstrala como una sola
+  cadena.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 16" "Scripting"
+  F="$DOJO_FLAG"
+  printf '%s\n' "${F:0:17}" > /home/agent/parteA.txt
+  printf '%s\n' "${F:17}" > /home/agent/parteB.txt
+  chown agent:agent /home/agent/parteA.txt /home/agent/parteB.txt
+  chown -R agent:agent /home/agent
+solution: cat /home/agent/parteA.txt /home/agent/parteB.txt | tr -d '\n'
+hints:
+  - "cat A B concatena: la línea de la 1ª parte y la de la 2ª."
+  - "tr -d '\\n' quita los saltos de línea: las dos mitades quedan pegadas."
+  - cat parteA.txt parteB.txt | tr -d '\n'
+teach: "cat une ficheros y tr -d '\\n' elimina los saltos: el pegado de mitades sin herramientas
+  sofisticadas. (GNU paste con delimitador vacío es quisquilloso: queda como dato curioso.)"
+cheatsheet:
+  - cmd: "cat a b | tr -d '\\n'"
+    desc: pegar sin saltos
+  - cmd: paste a b
+    desc: unidos con TAB
+keywords:
+  - paste
+  - concatenar
+  - printf
+profile: default

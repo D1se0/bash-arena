@@ -40,18 +40,18 @@ export default function TermDemo() {
   return (
     <div className="rounded-xl bg-[#161a20] border border-edge/60 shadow-[0_0_24px_rgba(136,192,208,0.15)] p-4 font-mono text-sm h-[240px] overflow-hidden">
       {history.slice(-3).map((l, i) => (
-        <div key={`${l?.cmd}-${i}`} className="opacity-60">
+        <div key={`${l?.cmd}-${i}`} className="opacity-60 break-all">
           <p><span className="text-ice">$</span> {l?.cmd}</p>
-          {l?.out && <p className="text-frost/70">{l.out}</p>}
+          {l?.out && <p className="text-frost/70 break-all">{l.out}</p>}
         </div>
       ))}
-      <div className="mt-1">
+      <div className="mt-1 break-all">
         <p>
           <span className="text-ice">$</span> {current.cmd.slice(0, chars)}
           <span className="animate-pulse">▌</span>
         </p>
         {showOut && (
-          <p className={current.out.startsWith('✓') ? 'text-verde' : 'text-frost/80'}>{current.out}</p>
+          <p className={current.out.startsWith('✓') ? 'text-verde break-all' : 'text-frost/80 break-all'}>{current.out}</p>
         )}
       </div>
     </div>

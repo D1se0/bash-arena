@@ -1,0 +1,49 @@
+id: procesos-l17
+track: procesos
+index: 17
+title: El escolta que confiesa
+subtitle: pidfiles numerados + trap
+xp: 50
+difficulty: 3
+brief: "Tres escoltas esperan con sus pidfiles. Solo el Nº3 deja un despacho al licenciarse
+  (SIGTERM): los otros dos ratones de campo."
+goal: Manda SIGTERM al escolta Nº3 (pidfile /tmp/escolta.3.pid) y muestra su /tmp/despacho.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Procesos"
+  cat > /tmp/escolta.sh <<FIN
+  #!/bin/bash
+  n=\$1
+  echo \$\$ > /tmp/escolta.\$n.pid
+  if [ "\$n" = "3" ]; then
+    trap 'echo "despacho del escolta: $DOJO_FLAG" > /tmp/despacho.txt; exit 0' TERM
+  else
+    trap '' TERM
+  fi
+  while true; do sleep 1; done
+  FIN
+  chmod 755 /tmp/escolta.sh
+  sudo -u agent /tmp/escolta.sh 1 >/dev/null 2>&1 </dev/null &
+  sudo -u agent /tmp/escolta.sh 2 >/dev/null 2>&1 </dev/null &
+  sudo -u agent /tmp/escolta.sh 3 >/dev/null 2>&1 </dev/null &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: kill $(cat /tmp/escolta.3.pid); sleep 2; cat /tmp/despacho.txt
+hints:
+  - Los tres ficheros /tmp/escolta.N.pid discriminan a cada escolta; solo el 3 tiene trap de
+    escritura.
+  - kill TERM al PID del pidfile Nº3; el trap escribe el fichero y sale.
+  - kill $(cat /tmp/escolta.3.pid); sleep 2; cat /tmp/despacho.txt
+teach: Los pidfiles numerados son un patrón aún útil (systemd generó el patrón). Cuando hay procesos
+  homónimos, apuntar su PID te salvan de la matanza indiscriminada de pkill.
+cheatsheet:
+  - cmd: kill $(cat f.pid)
+    desc: "pidfile: apunta y dispara"
+  - cmd: for f in *.pid; do kill $(cat $f); done
+    desc: varios a la vez
+keywords:
+  - pidfile
+  - term
+  - kill
+profile: default

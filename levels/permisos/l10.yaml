@@ -1,0 +1,38 @@
+id: permisos-l10
+track: permisos
+index: 10
+title: Mundo escribible
+subtitle: "find -perm: cazar ficheros expuestos"
+xp: 50
+difficulty: 3
+brief: "Alguien dejó ficheros con permiso de escritura para TODOS (666): una de esas exposiciones
+  esconde la marca."
+goal: Encuentra los ficheros world-writable de /home/agent/reinado y muestra su contenido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Permisos"
+  mkdir -p /home/agent/reinado
+  echo "nota normal 644" > /home/agent/reinado/normal1.txt
+  echo "mas notas normales 644" > /home/agent/reinado/normal2.txt
+  echo "exposicion: $DOJO_FLAG" > /home/agent/reinado/partida.txt
+  chmod 644 /home/agent/reinado/*.txt
+  chown -R agent:agent /home/agent/reinado
+  chmod 666 /home/agent/reinado/partida.txt
+solution: find /home/agent/reinado -perm -o+w -type f -exec cat {} \;
+hints:
+  - find -perm -o+w casa ficheros que al menos tienen escritura para otros.
+  - "La acción pueden combinarse: ! -perm daría lo contrario."
+  - find dir -perm -o+w -type f -exec cat {} \\;
+teach: "Los ficheros escribibles por el mundo son una vulnerabilidad clásica: cualquiera puede
+  modificarlos. find -perm te los caza sin abrirlos uno a uno."
+cheatsheet:
+  - cmd: find d -perm -o+w
+    desc: world-writable
+  - cmd: find d -perm -u+s
+    desc: SUID (aviso de riesgo)
+keywords:
+  - find -perm
+  - world writable
+  - auditoría
+profile: default

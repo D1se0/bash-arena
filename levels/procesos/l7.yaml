@@ -1,0 +1,42 @@
+id: procesos-l7
+track: procesos
+index: 7
+title: El obediente delator
+subtitle: kill TERM + trap en bash
+xp: 45
+difficulty: 3
+brief: "Un vigilante debe morir CORTESMENTE (SIGTERM): esa señal dispara su confesión escrita en el
+  disco."
+goal: Termina el proceso vigilante con SIGTERM y muestra la marca que deja en /tmp/marca-vigilante.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Procesos"
+  cat > /tmp/vigilante.sh <<FIN
+  #!/bin/bash
+  echo \$\$ > /tmp/vigilante.pid
+  trap 'echo "confesion del vigilante: $DOJO_FLAG" > /tmp/marca-vigilante.txt' TERM
+  while true; do sleep 1; done
+  FIN
+  chmod 755 /tmp/vigilante.sh
+  sudo -u agent /tmp/vigilante.sh >/dev/null 2>&1 </dev/null &
+  sleep 1
+  chown -R agent:agent /home/agent
+solution: pid=$(cat /tmp/vigilante.pid); kill "$pid"; sleep 2; cat /tmp/marca-vigilante.txt
+hints:
+  - "El vigilante deja su PID en /tmp/vigilante.pid (haz un pgrep -f vigilante y verás lo mismo)."
+  - kill PID manda SIGTERM (la señal por defecto NO es -9).
+  - kill $(cat /tmp/vigilante.pid); sleep 2; cat /tmp/marca-vigilante.txt
+teach: "SIGTERM es la señal educada: da al proceso la oportunidad de cerrar bien (trap la
+  intercepta). kill -9 (SIGKILL) mata sin ninguna última palabra: úsala solo como último recurso."
+cheatsheet:
+  - cmd: kill PID
+    desc: pide cierre correcto
+  - cmd: pgrep -f x
+    desc: PIDs que casan (vigilante de PID en /tmp/vigilante.pid)
+keywords:
+  - kill
+  - trap
+  - SIGTERM
+  - pgrep
+profile: default

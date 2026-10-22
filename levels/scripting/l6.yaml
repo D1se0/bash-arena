@@ -1,0 +1,37 @@
+id: scripting-l6
+track: scripting
+index: 6
+title: Conf en el entorno
+subtitle: "source: cargar un fichero de variables"
+xp: 35
+difficulty: 2
+brief: config.env define la ruta del depósito con una variable. Las variables del shell NO están
+  cargadas por defecto.
+goal: Carga /home/agent/config.env en el shell y con la variable que define úsala para mostrar
+  /home/agent/buzon/<DEPOSITO>/clave.txt
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Scripting"
+  mkdir -p /home/agent/buzon/lateral-3 /home/agent/buzon/lateral-4
+  echo "decoy del buzon 4" > /home/agent/buzon/lateral-4/clave.txt
+  echo "buzón confirmado: $DOJO_FLAG" > /home/agent/buzon/lateral-3/clave.txt
+  printf "DEPOSITO=lateral-3\nZONA=agreste\n" > /home/agent/config.env
+  chown -R agent:agent /home/agent
+solution: . /home/agent/config.env && cat /home/agent/buzon/$DEPOSITO/clave.txt
+hints:
+  - El fichero config.env tiene líneas variable=valor.
+  - "source (o .) ejecuta un fichero EN el shell actual: las variables quedan cargadas."
+  - . config.env && cat buzon/$DEPOSITO/clave.txt
+teach: "source (o el punto) ejecuta un script SIN crear subshell: las variables que define quedan en
+  TU shell. Es el mecanismo con el que TODO el mundo carga configuraciones (.bashrc incluido)."
+cheatsheet:
+  - cmd: . fichero.env
+    desc: carga variables en el shell
+  - cmd: env | sort
+    desc: lista el entorno actual
+keywords:
+  - source
+  - variables
+  - env
+profile: default

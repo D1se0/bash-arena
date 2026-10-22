@@ -1,0 +1,44 @@
+id: redes-l5
+track: redes
+index: 5
+title: Primer saludo HTTP
+subtitle: curl contra un servidor local
+xp: 35
+difficulty: 2
+brief: La máquina no tiene salida a internet, pero un servidor web corre en el puerto 8000 (solo
+  local). Su página de bandera lleva la clave.
+goal: Descarga con curl la página http://127.0.0.1:8000/flag.html y muéstrala.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 05" "Redes"
+
+  mkdir -p /var/www/flag
+
+  echo "<html><body><h1>Area clasificada</h1><p>clave de acceso: $DOJO_FLAG</p></body></html>" >
+  /var/www/flag/flag.html
+
+  nohup python3 -m http.server 8000 --directory /var/www/flag >/dev/null 2>&1 &
+
+  sleep 2
+
+  chown -R agent:agent /home/agent
+solution: curl -s http://127.0.0.1:8000/flag.html
+hints:
+  - "El servidor solo atiende en localhost: la máquina no tiene internet, no busques fuera."
+  - curl -s descarga sin barra de progreso.
+  - curl -s http://127.0.0.1:8000/flag.html
+teach: "curl es el cuchillo suizo de HTTP. En contenedores de práctica sin red externa, 127.0.0.1
+  (loopback) sigue siendo el terreno de juego: ideal para simular servicios internos."
+cheatsheet:
+  - cmd: curl -s URL
+    desc: GET silencioso
+  - cmd: curl -i URL
+    desc: incluye cabeceras
+keywords:
+  - curl
+  - http
+  - localhost
+profile: default

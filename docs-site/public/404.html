@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <script>
+      // GitHub Pages sirve 404.html en cualquier deep-link de la SPA;
+      // guardamos el sub-path y redirigimos a la base del repo.
+      (function () {
+        try {
+          var segs = location.pathname.split('/');
+          if (segs.length > 2) {
+            var suffix = segs.slice(2).join('/') + location.search + location.hash;
+            sessionStorage.setItem('ba-redirect', suffix);
+          }
+          location.replace('/' + segs[1] + '/');
+        } catch (e) {
+          location.replace('/');
+        }
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

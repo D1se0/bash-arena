@@ -1,0 +1,40 @@
+id: procesado-l7
+track: procesado
+index: 7
+title: Movimientos gordos
+subtitle: awk -F, con filtro numérico
+xp: 40
+difficulty: 3
+brief: movs.txt anota conceptos e importes separados por comas. Los movimientos mayores de 900
+  llevan una nota en la primera columna.
+goal: Imprime el CONCEPTO (columna 1) de las filas cuyo IMPORTE (columna 2) supere 900.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Procesado"
+  cat > /home/agent/movs.txt <<FIN
+  compra-papel,320
+  salida-fibra,870
+  entrada-liquidos,1450
+  reparacion,600
+  auditoria-junio,120
+  FIN
+  echo "nota-especial: $DOJO_FLAG,1499" >> /home/agent/movs.txt
+  chown agent:agent /home/agent/movs.txt
+solution: awk -F, '$2 > 900 {print $1}' /home/agent/movs.txt
+hints:
+  - awk -F, define la coma como separador de campos.
+  - El patrón compara $2 con un número; la acción imprime $1.
+  - awk -F, '$2 > 900 {print $1}' movs.txt
+teach: "El bloque patrón→acción de awk (patrón { acción }) filtra y transforma en un solo paso:
+  filas con -F, campos con $n, salida con print. Es el sustituto ligero de mil scripts."
+cheatsheet:
+  - cmd: awk -F, '$2>900 {print $1}'
+    desc: concepto de filas caras
+  - cmd: awk '{s+=$2} END{print s}'
+    desc: suma de una columna
+keywords:
+  - awk
+  - campo
+  - filtro numérico
+profile: default

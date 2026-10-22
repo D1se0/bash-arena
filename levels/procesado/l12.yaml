@@ -1,0 +1,38 @@
+id: procesado-l12
+track: procesado
+index: 12
+title: Solo lo nuevo
+subtitle: "comm: diferencia de listas ordenadas"
+xp: 50
+difficulty: 4
+brief: v1.sorted y v2.sorted son inventarios ordenados. Todo lo que añadimos en v2 merece revisión,
+  y una de esas altas es la marca.
+goal: Muestra las líneas presentes SOLO en v2.sorted (que no están en v1.sorted).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Procesado"
+  printf 'anillo\nbotas\ncandado\nsombrero\n' > /home/agent/v1.sorted
+  printf 'anillo\nbotas\ncandado\nmartillo\nreloj\nsombrero\n' > /home/agent/v2.sorted
+  printf 'insignia nueva con marca: $DOJO_FLAG\n' >> /home/agent/v2.sorted
+  LC_ALL=C sort -o /home/agent/v1.sorted /home/agent/v1.sorted
+  LC_ALL=C sort -o /home/agent/v2.sorted /home/agent/v2.sorted
+  chown agent:agent /home/agent/v1.sorted /home/agent/v2.sorted
+solution: comm -13 /home/agent/v1.sorted /home/agent/v2.sorted
+hints:
+  - "comm compara DOS ficheros ya ordenados y saca 3 columnas: solo-1, solo-2, ambos."
+  - "Las banderas -1 -2 -3 ocultan columnas: -13 deja solo la 2."
+  - comm -13 v1.sorted v2.sorted
+teach: "comm es el hermano fino de diff para LISTAS: sus columnas son solo-A, solo-B y común, y cada
+  una se suprime con -1/-2/-3. Requiere ficheros ordenados con el mismo orden."
+cheatsheet:
+  - cmd: comm -12 a b
+    desc: elementos comunes
+  - cmd: comm -13 a b
+    desc: solo en el segundo
+keywords:
+  - comm
+  - diferencia
+  - orden
+  - sets
+profile: default

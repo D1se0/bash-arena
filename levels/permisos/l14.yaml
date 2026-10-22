@@ -1,0 +1,45 @@
+id: permisos-l14
+track: permisos
+index: 14
+title: El 777 del dojo
+subtitle: "find -perm: buscar por permisos"
+xp: 40
+difficulty: 2
+brief: En ~/caja hay ficheros con permisos tripatas. Solo uno tiene modo 777 — y es ejecutable por
+  cualquiera… como tú (es tuyo).
+goal: Encuentra el fichero 777 de /home/agent/caja y ejecútalo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Permisos"
+  mkdir -p /home/agent/caja
+  echo "toast-A: nada" > /home/agent/caja/A.txt; chmod 644 /home/agent/caja/A.txt
+  echo "toast-B: nada" > /home/agent/caja/B.txt; chmod 600 /home/agent/caja/B.txt
+  cat > /home/agent/caja/llamada.sh <<FIN
+  #!/bin/bash
+  echo "la llamada: $DOJO_FLAG"
+  FIN
+  cat > /home/agent/caja/exec.sh <<FIN
+  #!/bin/bash
+  echo "lo ejecutable: $DOJO_FLAG"
+  FIN
+  chmod 777 /home/agent/caja/exec.sh
+  chmod 700 /home/agent/caja/llamada.sh
+  chown -R agent:agent /home/agent
+solution: f=$(find /home/agent/caja -perm 777 | head -n1); "$f"
+hints:
+  - find -perm 777 casco exacto con todos los bits rwx para todos.
+  - Ejecutalo llamándolo con su ruta tal cual.
+  - f=$(find /home/agent/caja -perm 777 | head -n1); "$f"
+teach: 'find -perm busca por bits de permisos te los ordena: /777 (cualquiera de los bits), -777 (al
+  menos los bits) y 777 (exacto). Útil en auditoría: "¿qué es 777 por ahí?"'
+cheatsheet:
+  - cmd: find d -perm 777
+    desc: modo exacto
+  - cmd: find d -perm -777
+    desc: al menos
+keywords:
+  - find
+  - perm
+  - "777"
+profile: default

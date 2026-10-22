@@ -1,0 +1,39 @@
+id: archivos-l10
+track: archivos
+index: 10
+title: La cadena de enlaces
+subtitle: "readlink -f: llegar al real"
+xp: 40
+difficulty: 2
+brief: acceso es un enlace simbólico que conduce (a través de otro enlace) al fichero real con la
+  clave. Los decoys pululan.
+goal: Resuelve la cadena de enlaces de /home/agent/acceso (real f) y muestra el fichero REAL.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Archivos"
+  mkdir -p /home/agent/caja/real /home/agent/caja/decoy
+  echo "decoy primera" > /home/agent/caja/decoy/a.txt
+  echo "desvio 1" > /home/agent/caja/decoy/llave-b.txt
+  echo "el auténtico: $DOJO_FLAG" > /home/agent/caja/real/llave.txt
+  ln -s /home/agent/caja/decoy/a.txt /home/agent/acceso-trampa
+  ln -s /home/agent/caja/decoy/llave-b.txt /home/agent/acceso-directo
+  ln -s /home/agent/caja/real/llave.txt /home/agent/acceso
+  chown -R agent:agent /home/agent
+solution: cat "$(readlink -f /home/agent/acceso)"
+hints:
+  - ls -l muestra las flechas -> de cada enlace.
+  - readlink -f RUTA resuelve TODA la cadena hasta el fichero real.
+  - cat $(readlink -f acceso)
+teach: "Un enlace simbólico es un puntero textual que se resuelve al abrir. readlink -f desmonta la
+  cadena entera: útil para scripts (no te fies del nombre del fichero que recibes)."
+cheatsheet:
+  - cmd: readlink -f ruta
+    desc: ruta real del enlace
+  - cmd: ln -s objetivo nombre
+    desc: crea enlace simbólico
+keywords:
+  - enlaces
+  - symlink
+  - readlink
+profile: default

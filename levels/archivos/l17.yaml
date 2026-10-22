@@ -1,0 +1,45 @@
+id: archivos-l17
+track: archivos
+index: 17
+title: Remiendo aplicado
+subtitle: patch < fix.diff
+xp: 45
+difficulty: 3
+brief: La pieza es invisible hasta que alguien APLIQUé el remiendo fix.diff sobre pieza.txt — revela
+  la línea oculta.
+goal: Aplica /home/agent/fix.diff sobre /home/agent/pieza.txt (cd + patch) y muestra el resultado.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Archivos"
+  mkdir -p /home/agent/taller
+  printf 'linea uno\n GuiA pendiente de remiendo\nlinea tres\n' > /home/agent/taller/pieza.txt
+  cat > /home/agent/taller/fix.diff <<DIFF
+  --- pieza.txt
+  +++ pieza.txt
+  @@ -1,3 +1,4 @@
+   linea uno
+  - GuiA pendiente de remiendo
+  +la pieza remendada: $DOJO_FLAG
+  +fecha del remiendo: tanda tres
+   linea tres
+  DIFF
+  chown -R agent:agent /home/agent
+solution: cd /home/agent/taller && patch pieza.txt < /home/agent/taller/fix.diff && cat
+  /home/agent/taller/pieza.txt
+hints:
+  - "Herramienta: cd al taller; patch fichero < remiendo.diff."
+  - Si el remiendo queja por los paths del header, prueba -p0 o -p1.
+  - cd /home/agent/taller && patch pieza.txt < fix.diff; cat pieza.txt
+teach: "diff COMPARA y patch APLICA: el par que rige el flujo de parcheos (kernel, git apply). Saber
+  generar (diff -u a b > f.diff) y aplicar (patch < f.diff) es lengüeta de mantenedor."
+cheatsheet:
+  - cmd: diff -u a b > rem.diff
+    desc: generar remiendo
+  - cmd: patch f < rem.diff
+    desc: aplicar
+keywords:
+  - patch
+  - diff
+  - remiendo
+profile: default

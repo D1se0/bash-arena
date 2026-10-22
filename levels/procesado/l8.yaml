@@ -1,0 +1,39 @@
+id: procesado-l8
+track: procesado
+index: 8
+title: Captura de grupo
+subtitle: sed -n s/…/\\1/p
+xp: 45
+difficulty: 3
+brief: datos.txt mezcla frases normales con pares clave=VALOR. El válido es único y está en mitad de
+  una línea cualquiera.
+goal: Imprime únicamente el valor del par que empieza por clave= (sin el prefijo), solo de la marca real.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Procesado"
+  cat > /home/agent/datos.txt <<FIN
+  el operador dos reviso la sala a las 9
+  esto es relleno de calidad media: clave=nada-importa-1
+  auditoria pendiente de aprobacion
+  la marca final != clave=$DOJO_FLAG y sigue la frase
+  FIN
+  echo "temporada cerrada" >> /home/agent/datos.txt
+  chown agent:agent /home/agent/datos.txt
+solution: grep -oE 'clave=FLAG\{[^}]*\}' /home/agent/datos.txt | grep -oE 'FLAG\{[^}]*\}'
+hints:
+  - grep -o imprime solo la parte casada, no la línea entera.
+  - El patrón clave=FLAG con la clase [^}]* acota la marca de principio a fin.
+  - grep -oE 'clave=FLAG\{[^}]*\}' datos.txt | grep -oE 'FLAG\{[^}]*\}'
+teach: "La extracción en dos pasos (casa el CONTEXTO, luego casa solo el TROZO) es la alternativa
+  sin sed a la captura de grupos: primero delimita, luego purifica. práctica forense de cada día."
+cheatsheet:
+  - cmd: grep -oE 'k=v' f
+    desc: extrae pares campo=valor
+  - cmd: sed 's/viejo/nuevo/g' f
+    desc: sustitución global
+keywords:
+  - grep -o
+  - captura
+  - par clave
+profile: default

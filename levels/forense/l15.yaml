@@ -1,0 +1,40 @@
+id: forense-l15
+track: forense
+index: 15
+title: El turno de las 09:42
+subtitle: grep por marca horaria
+xp: 45
+difficulty: 3
+brief: turno.log lista millones de líneas por HH:MM. Solo las del minuto 09:42 reportan el hallazgo.
+goal: Filtra de /home/agent/turno.log solo las líneas de la hora 09:42 y extrae la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Forense"
+  {
+    echo "09:40 nota: rutina la observación"
+    echo "09:41 nota: rutina"
+    echo "09:42 hallazgo del turno: $DOJO_FLAG"
+    echo "09:42 nota: rutina secundaria"
+    echo "09:43 nota: rutina"
+    echo "10:00 cierre del turno"
+  } > /home/agent/turno.log
+  chown agent:agent /home/agent/turno.log
+  chown -R agent:agent /home/agent
+solution: grep '^09:42' /home/agent/turno.log | grep -oE 'FLAG\{[a-f0-9]+\}'
+hints:
+  - El ancla ^ obliga a que el patrón esté al INICIO de línea (la marca horaria).
+  - grep "^09:42" fichero filtra el minuto; el segundo grep extrae la marca.
+  - grep '^09:42' f | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: 'Los logs estructurados se filtran mejor que se buscan: si la fecha es el primer campo, grep
+  "^HH:MM" y awk $1=="HH:MM" son equivalentes. Elige el que dé menos falsos positivos en cada log.'
+cheatsheet:
+  - cmd: grep '^09:42' f
+    desc: por hora al inicio
+  - cmd: awk '$1=="09:42"' f
+    desc: por campo
+keywords:
+  - logs
+  - timestamp
+  - grep
+profile: default

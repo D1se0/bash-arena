@@ -1,0 +1,38 @@
+id: permisos-l15
+track: permisos
+index: 15
+title: Gremio con llave
+subtitle: "usermod -aG: entrar en el grupo"
+xp: 45
+difficulty: 3
+brief: Un fichero es rw para el grupo solegado (ronda) y root le pertenece. Ya Formisteas pero no
+  activó tu afiliación.
+goal: Apunta al usuario agent al grupo ronda y muestra /var/local/gremio/llave.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Permisos"
+  groupadd -f ronda
+  mkdir -p /var/local/gremio
+  echo "la llave del gremio: $DOJO_FLAG" > /var/local/gremio/llave.txt
+  chown root:ronda /var/local/gremio/llave.txt
+  chmod 640 /var/local/gremio/llave.txt
+  chown -R agent:agent /home/agent
+solution: sudo usermod -aG ronda agent; sudo -g ronda cat /var/local/gremio/llave.txt
+hints:
+  - "El sudo del dojo está sin contraseña: usermod -aG ronda agent."
+  - "La lectura del fichero solo exige que el grupo sea ronda: usa sudo -g ronda para el cat."
+  - sudo usermod -aG ronda agent; sudo -g ronda cat /var/local/gremio/llave.txt
+teach: "El grupo segundo de acceso parte del usuario: /etc/group manda; en ejecución (proc eco), el
+  agente solo pega si su sesida tiene RONDA en el libro: newgrp re-arrastré la sesión con el GRUPO
+  nuevo sin cerrar la terminal."
+cheatsheet:
+  - cmd: usermod -aG grupo u
+    desc: añadir usuario al grupo
+  - cmd: groups
+    desc: tus grupos de esta sesión
+keywords:
+  - groupadd
+  - usermod
+  - grupo
+profile: sudo

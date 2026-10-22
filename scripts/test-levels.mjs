@@ -53,20 +53,25 @@ async function execCapture(container, opts, timeoutMs = 60_000) {
     AttachStdout: true,
     AttachStderr: true,
   });
-  const acc = { out: '' };
+  const acc = { out: '', err: '' };
   const stdout = new PassThrough();
   stdout.on('data', (d) => { acc.out += d.toString(); });
+  const stderr = new PassThrough();
+  stderr.on('data', (d) => { acc.err += d.toString(); });
   const stream = await exec.start({ hijack: true, stdin: false });
-  docker.modem.demuxStream(stream, stdout, new PassThrough());
-  const res = await Promise.race([
-    new Promise((res, rej) => {
-      stream.on('end', res);
-      stream.on('error', rej);
-    }),
-    new Promise((res) => setTimeout(() => res('timeout'), timeoutMs)),
-  ]);
-  const inspect = await exec.inspect();
-  return { out: acc.out, exitCode: inspect.ExitCode, timedOut: res === 'timeout' };
+  docker.modem.demuxStream(stream, stdout, stderr);
+  // el stream del exec NO se cierra si el setup dejó procesos de fondo vivos:
+  // esperamos el ExitCode real con inspect (poll), no el cierre del stream.
+  const t0 = Date.now();
+  let exitCode = null;
+  while (Date.now() - t0 < timeoutMs) {
+    const ins = await exec.inspect();
+    if (ins.ExitCode !== null && ins.ExitCode !== undefined) { exitCode = ins.ExitCode; break; }
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  await new Promise((r) => setTimeout(r, 250));
+  const res = exitCode === null ? 'timeout' : 'ok';
+  return { out: acc.out, err: acc.err, exitCode: exitCode ?? -1, timedOut: res === 'timeout' };
 }
 
 async function runLevel({ track, file, name }) {
@@ -120,7 +125,7 @@ async function runLevel({ track, file, name }) {
       Tty: false,
     }, 90_000);
     if (setupRun.exitCode !== 0) {
-      return { name, ok: false, exitCode: setupRun.exitCode, abs: `setup falló: ${setupRun.out.slice(-400)}`, secs: 0 };
+      return { name, ok: false, exitCode: setupRun.exitCode, abs: `setup falló (exit ${setupRun.exitCode}): ${setupRun.out.slice(-600)}`, secs: 0 };
     }
     if (setupRun.timedOut) {
       return { name, ok: false, exitCode: null, abs: 'setup agotó el tiempo (90s)', secs: 0 };
@@ -134,7 +139,7 @@ async function runLevel({ track, file, name }) {
     }, 90_000);
     const secs = Math.round((Date.now() - t0) / 1000);
     if (solRun.exitCode !== 0) {
-      return { name, ok: false, exitCode: solRun.exitCode, abs: `solución exit!=0: ${solRun.out.slice(-400)}`, secs };
+      return { name, ok: false, exitCode: solRun.exitCode, abs: `solución exit!=0: ${solRun.out.slice(-400)} |ERR: ${solRun.err.slice(-400)}`, secs };
     }
     if (!solRun.out.includes(flag)) {
       return { name, ok: false, exitCode: solRun.exitCode, abs: `la solución NO reveló la flag (${def.id}): ${solRun.out.trimEnd().slice(-300)}`, secs };

@@ -1,0 +1,39 @@
+id: procesado-l6
+track: procesado
+index: 6
+title: Campos exactos
+subtitle: "awk NF: contar columnas"
+xp: 40
+difficulty: 3
+brief: En inventario.txt casi todas las filas están mal formadas; solo las filas de 7 campos son
+  válidas y UNA de ellas trae la marca.
+goal: Imprime las filas de inventario.txt que tienen exactamente 7 campos.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Procesado"
+  cat > /home/agent/inventario.txt <<FIN
+  caja tornillo hierro
+  estante madera hierro roble pintura
+  estante puente hierro roble pintura barniz cinta
+  cofre llave marca $DOJO_FLAG zinc cobre tornillo
+  armario madera tornillo hierro pintura zinc
+  FIN
+  chown agent:agent /home/agent/inventario.txt
+solution: awk 'NF == 7' /home/agent/inventario.txt
+hints:
+  - awk cuenta los campos de cada línea en la variable NF.
+  - "El patrón se escribe sin / /: NF == 7 es una comparación numérica."
+  - awk 'NF == 7' inventario.txt
+teach: awk evalúa un patrón por línea y ejecuta la acción por defecto (imprimir la línea) si casa.
+  NF, NR, $1… son variables internas que hacen del awk un mini-lenguaje de relatórios.
+cheatsheet:
+  - cmd: awk 'NF == 7' f
+    desc: líneas de 7 campos
+  - cmd: awk '{print $1}' f
+    desc: primera columna
+keywords:
+  - awk
+  - NF
+  - campos
+profile: default
