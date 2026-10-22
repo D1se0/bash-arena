@@ -51,7 +51,26 @@ class SessionManager {
     const priorSet = this.perIp.get(ip);
     const alreadyMine = priorSet?.has(playerId) ?? false;
     if (!alreadyMine && (priorSet?.size ?? 0) >= config.maxSessionsPerIp) {
-      throw new Error('per-IP session limit reached');
+      // UX: en desarrollo/localhost es fácil acumular slots (reabrir la página,
+      // probes, etc.). Antes de rechazar, evicta la sesión MÁS inactiva del
+      // propio IP — nunca una sesión que esté activa de verdad (idle < 10 s).
+      const minIdleMs = 10_000;
+      const withIdle = [...(priorSet ?? [])]
+        .map((id) => ({ id, rec: this.sessions.get(id) }))
+        .filter((x): x is { id: string; rec: SessionRecord } => !!x.rec && x.rec.session.idleMs >= minIdleMs)
+        // la más inactiva primero
+        .sort((a, b) => b.rec.session.idleMs - a.rec.session.idleMs);
+      while ((priorSet?.size ?? 0) >= config.maxSessionsPerIp && withIdle.length) {
+        const victim = withIdle.shift()!;
+        logger.info(
+          { playerId: victim.id.slice(0, 8), idleSec: Math.round(victim.rec.session.idleMs / 1000) },
+          'evicting idle session (per-IP limit)',
+        );
+        await this.drop(victim.id, 'per-IP evict');
+      }
+      if ((priorSet?.size ?? 0) >= config.maxSessionsPerIp) {
+        throw new Error('per-IP session limit reached');
+      }
     }
 
     await this.drop(playerId, 're-create');

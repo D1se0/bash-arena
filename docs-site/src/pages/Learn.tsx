@@ -9,7 +9,7 @@ const TRACKS = [
   { icon: '📦', name: 'Archivos y compresión', color: '#B48EAD', n: 18, tools: 'tar · gzip · zip · diff · patch · enlaces simbólicos', boss: 'Cadena de symlinks con trampas' },
   { icon: '📜', name: 'Scripting Bash', color: '#A3BE8C', n: 18, tools: 'for · case · funciones · $@ · getopts · base64', boss: 'Rearmar una flag fragmentada en base64' },
   { icon: '🕵️', name: 'Forense/CTF de logs', color: '#EBCB8B', n: 18, tools: 'grep -v · base64 · grep -a · xxd · rot13 · zcat', boss: 'Exfiltración en base64+gzip' },
-  { icon: '⚔️', name: 'Boss / Cronometrado', color: '#BF616A', n: 18, tools: 'find+grep+base64 · mtime · pkill+decode · tar+zip+base64', boss: 'Muñeca rusa de empaquetados' },
+  { icon: '⚔️', name: 'Boss / Cronometrado', color: '#BF616A', n: 14, tools: 'find+grep+base64 · mtime · pkill+decode · tar+zip+base64', boss: 'Muñeca rusa de empaquetados' },
 ];
 
 export default function Learn() {

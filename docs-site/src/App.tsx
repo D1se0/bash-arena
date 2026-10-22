@@ -43,23 +43,23 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 backdrop-blur bg-base/80 border-b border-edge/50">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-4">
-          <Link to="/" className="font-mono text-nord6 shrink-0">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3 sm:gap-4 min-w-0">
+          <Link to="/" className="font-mono text-nord6 shrink-0 whitespace-nowrap">
             <span className="text-morado">[</span>bash-arena<span className="text-morado">]</span>
             <span className="text-frost/60 text-xs ml-2 hidden sm:inline">docs</span>
           </Link>
-          <nav className="hidden md:flex gap-1 ml-4">
+          <nav className="hidden xl:flex gap-1 ml-2 overflow-x-auto">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className={`px-2 py-1 rounded text-sm ${location.pathname === n.to ? 'bg-edge/60 text-ice' : 'text-frost/80 hover:text-ice'}`}
+                className={`px-2 py-1 rounded text-sm whitespace-nowrap ${location.pathname === n.to ? 'bg-edge/60 text-ice' : 'text-frost/80 hover:text-ice'}`}
               >
                 {n.label}
               </Link>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-2 min-w-0">
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2 min-w-0 flex-nowrap">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -79,7 +79,7 @@ export default function App() {
               onClick={() => setMenuOpen((v) => !v)}
               aria-expanded={menuOpen}
               aria-label="abrir menú"
-              className="md:hidden rounded-lg border border-edge/60 px-2.5 py-1.5 text-lg leading-none text-ice"
+              className="xl:hidden rounded-lg border border-edge/60 px-2.5 py-1.5 text-lg leading-none text-ice"
             >
               {menuOpen ? '✕' : '☰'}
             </button>
@@ -115,7 +115,7 @@ export default function App() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden overflow-hidden border-t border-edge/40"
+              className="xl:hidden overflow-hidden border-t border-edge/40"
             >
               <nav className="flex flex-col gap-0.5 p-3">
                 {NAV.map((n) => (

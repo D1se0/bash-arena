@@ -1,5 +1,35 @@
 import { motion } from 'framer-motion';
 
+function DiagramBox({ title, subtitle, chips, accentClass }: { title: string; subtitle: string; chips: string[]; accentClass: string }) {
+  return (
+    <div className={`rounded-xl bg-[#161a20] border ${accentClass} p-4`}>
+      <h3 className={`font-bold text-base ${accentClass.split(' ')[0]}`}>{title}</h3>
+      <p className="text-[11px] text-frost/60 font-mono mt-0.5">{subtitle}</p>
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {chips.map((c) => (
+          <span key={c} className="rounded-full bg-panel2/80 border border-edge/50 px-2.5 py-1 text-[11px] text-frost/85">
+            {c}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DiagramArrow({ label, up, down }: { label: string; up: string; down: string }) {
+  return (
+    <div className="flex items-center justify-center gap-3 py-1">
+      <span className="text-lg text-edge" aria-hidden>▲</span>
+      <div className="flex-1 max-w-xs text-center">
+        <p className="text-[11px] font-mono text-frost/70 leading-tight">{up} ▲</p>
+        <p className="text-xs font-semibold text-nord4">{label}</p>
+        <p className="text-[11px] font-mono text-frost/70 leading-tight">▼ {down}</p>
+      </div>
+      <span className="text-lg text-edge" aria-hidden>▼</span>
+    </div>
+  );
+}
+
 const FLOW = [
   { step: '1', title: 'hello + start', desc: 'El navegador abre un WebSocket a /ws y se presenta con un playerId local (localStorage). El servidor contesta con XP, rango y catálogo; el front pide el nivel actual o uno concreto.' },
   { step: '2', title: 'Contenedor efímero', desc: 'El backend crea vía dockerode un contenedor Ubuntu hardened: --network none, cap-drop ALL (+caps mínimos), no-new-privileges, pids/mem/cpu limitados. Un script de setup (inyectado como tar y ejecutado como root) genera el escenario del nivel con la flag HMAC del jugador.' },
@@ -30,19 +60,32 @@ export default function HowItWorks() {
 
       <section>
         <h2 className="text-xl font-semibold mb-4">Diagrama de arquitectura</h2>
-        <div className="rounded-xl bg-[#161a20] border border-edge/60 p-5 font-mono text-[13px] leading-relaxed overflow-x-auto">
-{`┌──────────────────────────┐       WebSocket (/ws)      ┌────────────────────────────┐
-│  Navegador                │ ◄────────────────────────► │  Backend Node.js + TS      │
-│  React + xterm.js         │  data · levelState · hint  │  ws + motor de niveles      │
-│  menu · XP · pistas       │  submitResult · exit       │  flags HMAC · SQLite        │
-└──────────────────────────┘                            │  dockerode                  │
-                                                        └─────────────┬───────────────┘
-                                                                      │ docker API (socket)
-                                                                      ▼
-                        ┌─────────────────────────────────── Contenedor Ubuntu efímero ─────────────┐
-                        │ 1 por sesión · --network none · cap-drop ALL (+5 caps) · no-new-privileges │
-                        │ pids 128 · mem 256MB · cpu 0.5 · setup del nivel como root · shell como agent │
-                        └──────────────────────────────────────────────────────────────────────────┘`}
+        <div className="rounded-xl bg-panel/40 border border-edge/50 p-4 sm:p-6">
+          <div className="max-w-2xl mx-auto flex flex-col items-stretch gap-2">
+            {/* frontal */}
+            <DiagramBox
+              title="Navegador"
+              subtitle="React · xterm.js · WebSocket client"
+              chips={['menú de tracks', 'XP y rangos', 'pistas/cheatsheet', 'terminal interactiva']}
+              accentClass="text-ice border-ice/40"
+            />
+            <DiagramArrow up="input · resize · submitFlag · hintRequest" down="data · levelState · hint · submitResult" label="WebSocket /ws (JSON bidireccional)" />
+            {/* server */}
+            <DiagramBox
+              title="Backend Node.js + TypeScript"
+              subtitle="gateway WS · motor de niveles · persistencia"
+              chips={['flags HMAC por sesión', 'SQLite con progreso', 'rate limiting por IP', 'sesiones y reanudación']}
+              accentClass="text-morado border-morado/40"
+            />
+            <DiagramArrow up="create · exec (tty)" down="stream stdout / stderr" label="Docker API — socket /var/run/docker.sock" />
+            {/* container */}
+            <DiagramBox
+              title="Contenedor Ubuntu efímero"
+              subtitle="1 por sesión · hardening completo"
+              chips={['--network none', 'cap-drop ALL (+5 mínimas)', 'no-new-privileges', 'pids 128 · mem 256MB · cpu 0.5', 'setup del nivel como root', 'shell como agent']}
+              accentClass="text-verde border-verde/40"
+            />
+          </div>
         </div>
       </section>
 

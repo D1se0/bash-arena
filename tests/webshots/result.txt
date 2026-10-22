@@ -1,0 +1,40 @@
+38 ok · 0 fail
+
+terminal: prompt del nivel visible (WS → xterm)
+app: sin scroll horizontal
+app: sidebar sin contenido recortado (scroll interno ok)
+app: «Sesión activa» dentro del viewport
+terminal: teclado real capturado y eco visible
+terminal: FLAG capturada con cat ~/.secreto
+flag: submiteada por la UI nueva → «flag correcta» con diseño ✓
+app móvil (390px): sin scroll horizontal
+docs / (1440px): sin scroll horizontal
+docs / (1440px): header sin envoltura (57px)
+docs /aprende (1440px): sin scroll horizontal
+docs /aprende (1440px): header sin envoltura (57px)
+docs /funciona (1440px): sin scroll horizontal
+docs /funciona (1440px): header sin envoltura (57px)
+docs /desplegar (1440px): sin scroll horizontal
+docs /desplegar (1440px): header sin envoltura (57px)
+docs /tecnico (1440px): sin scroll horizontal
+docs /tecnico (1440px): header sin envoltura (57px)
+docs /extras (1440px): sin scroll horizontal
+docs /extras (1440px): header sin envoltura (57px)
+docs / (1024px): sin scroll horizontal
+docs / (1024px): header sin envoltura (57px)
+docs /aprende (1024px): sin scroll horizontal
+docs /aprende (1024px): header sin envoltura (57px)
+docs /funciona (1024px): sin scroll horizontal
+docs /funciona (1024px): header sin envoltura (57px)
+docs /desplegar (1024px): sin scroll horizontal
+docs /desplegar (1024px): header sin envoltura (57px)
+docs /tecnico (1024px): sin scroll horizontal
+docs /tecnico (1024px): header sin envoltura (57px)
+docs /extras (1024px): sin scroll horizontal
+docs /extras (1024px): header sin envoltura (57px)
+docs / (390px): sin scroll horizontal
+docs /aprende (390px): sin scroll horizontal
+docs /funciona (390px): sin scroll horizontal
+docs /desplegar (390px): sin scroll horizontal
+docs /tecnico (390px): sin scroll horizontal
+docs /extras (390px): sin scroll horizontal

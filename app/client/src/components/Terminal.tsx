@@ -101,7 +101,7 @@ export default function TerminalPane() {
 
   return (
     <div
-      className={`arena-terminal ${theme === 'crt' ? 'crt' : ''} rounded-xl bg-[#161a20] shadow-glow p-3 h-full min-h-[420px] w-full overflow-hidden`}
+      className={`arena-terminal ${theme === 'crt' ? 'crt' : ''} rounded-xl bg-[#161a20] shadow-glow p-3 h-full min-h-[280px] w-full overflow-hidden`}
       onClick={() => termRef.current?.focus()}
     >
       <div ref={hostRef} className="h-full w-full" aria-label="terminal del dojo" />

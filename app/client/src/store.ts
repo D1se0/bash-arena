@@ -125,7 +125,10 @@ export const useArena = create<ArenaState>((set) => ({
         useArena.getState().onTerminalData?.(m.payload.data);
         break;
       case 'levelState':
-        set({ level: m.payload.level, startedAt: m.payload.startedAt, lastSubmit: null });
+        // el «flag correcta» es la recompensa: persiste aunque el engine sirva
+        // ya el nivel siguiente; se limpia con resetLevelFx (✕ del banner,
+        // siguiente nivel, start o reset)
+        set({ level: m.payload.level, startedAt: m.payload.startedAt });
         break;
       case 'submitResult':
         if (m.payload.passed && m.payload.totalXp !== undefined) {

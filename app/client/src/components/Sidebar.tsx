@@ -20,7 +20,7 @@ export default function Sidebar() {
   const sessionDead = useArena((s) => s.sessionDead);
 
   return (
-    <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4">
+    <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:self-start lg:max-h-full lg:overflow-y-auto lg:pr-1">
       <section className="rounded-xl bg-panel/80 border border-edge/60 p-4 shadow-glowP">
         <div className="flex items-center justify-between">
           <div>
@@ -62,7 +62,7 @@ export default function Sidebar() {
       {welcome && (
         <section className="rounded-xl bg-panel/80 border border-edge/60 p-4">
           <p className="text-[11px] uppercase tracking-widest text-frost/70 mb-2">Progreso por track</p>
-          <ul className="space-y-1.5 max-h-64 overflow-auto pr-1">
+          <ul className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
             {welcome.tracks.map((t) => (
               <li key={t.id} className="flex items-center gap-2 text-sm">
                 <span aria-hidden>{t.icon}</span>
@@ -80,7 +80,7 @@ export default function Sidebar() {
         </section>
       )}
 
-      <section className="rounded-xl bg-panel/80 border border-edge/60 p-4 flex flex-col gap-2">
+      <section className="rounded-xl bg-panel/80 border border-edge/60 p-4 flex flex-col gap-2 shrink-0">
         <div className="flex items-center justify-between text-xs">
           <span className={`inline-flex items-center gap-1.5 ${connected ? 'text-verde' : 'text-coral'}`}>
             <span className={`w-2 h-2 rounded-full ${connected ? 'bg-verde' : 'bg-coral'} animate-pulse-slow`} />

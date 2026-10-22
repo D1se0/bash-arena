@@ -4,7 +4,7 @@ import TermDemo from '../components/TermDemo';
 
 const FEATURES = [
   { icon: '🖥️', title: 'Terminal real de Ubuntu', desc: 'no es un emulador: un contenedor Docker efímero por sesión con coreutils, grep, awk, sed, tar… vía WebSocket con xterm.js' },
-  { icon: '🏁', title: '11 tracks progresivos', desc: 'de ls hasta awk, forense y niveles boss cronometrados: más de 120 niveles con curva de dificultad real' },
+  { icon: '🏁', title: '11 tracks progresivos', desc: 'de ls hasta awk, forense y niveles boss cronometrados: 194 niveles con curva de dificultad real' },
   { icon: '🔐', title: 'Flags por sesión', desc: 'HMAC-SHA256 con tu sessionId: la flag de tu vecino no te sirve; validación siempre en servidor' },
   { icon: '🛡️', title: 'Aislamiento real', desc: 'sin red externa, cap-drop ALL, no-new-privileges, límites de CPU/mem/pids, sin socket Docker montado' },
   { icon: '💾', title: 'Progreso persistente', desc: 'SQLite en volumen Docker: niveles, XP, rachas y pistas sobreviven a los reinicios; export/import JSON' },

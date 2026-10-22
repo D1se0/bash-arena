@@ -68,6 +68,17 @@ body {
   animation: arena-pop 0.32s ease-out both;
 }
 
+/* sacudida del input de flag cuando va vacía */
+@keyframes arena-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+}
+.arena-shake {
+  animation: arena-shake 0.38s ease-in-out both;
+}
+
 /* mini accesibilidad: skip-links y focus visible */
 :focus-visible {
   outline: 2px solid var(--arena-ice);
