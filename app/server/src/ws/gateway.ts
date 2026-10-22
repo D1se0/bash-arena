@@ -24,14 +24,12 @@ import { ensurePlayer, getPlayer, getProgress } from '../progress/db.js';
  * Así no hay artefactos ni ^C extra en la terminal.
  */
 
-const RESERVE_WORDS_MAX_PREFIX = Math.max(...RESERVED_COMMANDS.map((c) => c.length)) + 1;
-
 interface ConnState {
   ip: string;
   playerId: string | null;
   session: SessionRecord | null;
   engine: GameEngine | null;
-  withheld: string | null;   // buffer de línea retenida (prefijo reservado), null en passthrough
+  withheld: string;          // línea en curso retenida (eco local); '' = vacía
   atPrompt: boolean;
   connectedAt: number;
   lastNoSessionAt: number;   // throttle del aviso «sin sesión»
@@ -51,7 +49,10 @@ function send(ws: WebSocket, msg: ServerToClientMsgs): void {
 }
 
 function sendText(ws: WebSocket, text: string): void {
-  send(ws, { type: 'data', payload: { data: text } });
+  // La terminal muestra \n como «baja de línea manteniendo la columna»: sin
+  // \r previo los banners del dojo quedan escalonados hacia la derecha. Todo
+  // el texto generado por el dojo se normaliza aquí a \r\n.
+  send(ws, { type: 'data', payload: { data: text.replace(/\r?\n/g, '\r\n') } });
 }
 
 export function attachGateway(wss: WebSocketServer, service: LevelsService): void {
@@ -78,7 +79,7 @@ export function attachGateway(wss: WebSocketServer, service: LevelsService): voi
     }
     connStates.set(ws, { ip, playerId: null, session: null, engine: null, withheld: '', atPrompt: false, connectedAt: Date.now(), lastNoSessionAt: 0 });
     ws.on('message', (raw) => handleMsg(ws, raw, service));
-    ws.on('close', () => void onConnClose(ws));
+    ws.on('close', (code, reason) => void onConnClose(ws, code, reason.toString('utf8')));
     ws.on('error', () => undefined);
   });
 }
@@ -88,12 +89,12 @@ function clientIp(forwarded: string): string {
   return forwarded.split(',')[0].trim();
 }
 
-async function onConnClose(ws: WebSocket): Promise<void> {
+async function onConnClose(ws: WebSocket, code = 1006, why = ''): Promise<void> {
   const st = connStates.get(ws);
   connStates.delete(ws);
   if (!st) return;
   // el contenedor se mantiene un rato (reconexión); el sweeper lo mata por idle
-  logger.info({ playerId: st.playerId?.slice(0, 8), ip: st.ip }, 'ws closed');
+  logger.info({ playerId: st.playerId?.slice(0, 8), ip: st.ip, code, why: why || undefined }, 'ws closed');
 }
 
 function handleMsg(ws: WebSocket, raw: unknown, service: LevelsService): void {
@@ -271,9 +272,6 @@ function onShellData(ws: WebSocket, st: ConnState, chunk: string): void {
   send(ws, { type: 'data', payload: { data: chunk } });
 }
 
-function isReservedPrefix(line: string): boolean {
-  return RESERVED_COMMANDS.some((c) => c.startsWith(line));
-}
 
 function reservedOf(line: string): string | null {
   const first = line.split(/\s+/, 1)[0];
@@ -283,54 +281,63 @@ function reservedOf(line: string): string | null {
 function onInput(ws: WebSocket, st: ConnState, data: string): void {
   if (!st.playerId) return;
   st.session?.session.touch();
-  if (!st.atPrompt || !st.session) {
-    st.session?.session.write(data);
+  if (!st.session) {
     // sin sesión activa el input se pierde: aviso con throttle (no una línea por tecla)
-    if (!st.session && Date.now() - st.lastNoSessionAt > 2500) {
+    if (Date.now() - st.lastNoSessionAt > 2500) {
       st.lastNoSessionAt = Date.now();
       sendText(ws, '\r\n\x1b[38;5;203msin sesión de terminal — escribe start o pulsa Reanudar\x1b[0m\r\n');
     }
     return;
   }
-  // procesa el stream por líneas, con retención por prefijo
+  if (!st.atPrompt) {
+    // El gateway perdió el rastro del prompt (reconexión WS, salida del comando
+    // anterior aún llegando…). En passthrough tal cual: el shell sigue dueño.
+    // (La retención por línea con interceptación de comandos dojo se hace en
+    // el branch de atPrompt; cuando el OSC 133;A del prompt de arena-prompt
+    // llegue, la siguiente línea ya pasa por retención.)
+    st.withheld = '';
+    st.session.session.write(data);
+    return;
+  }
+  // procesa el stream por líneas con retención SIEMPRE activa (eco local):
+  // el shell no recibe nada hasta el Enter/flush de línea completa. Así no hay
+  // caracteres a medio camino con estado desincronizado del readline (causa
+  // del «la 'l' de ls desaparece» y «bash: next: command not found»).
   for (let i = 0; i < data.length; i++) {
     const ch = data[i];
     if (ch === '\r' || ch === '\n') {
       commitEnter(ws, st, ch);
-    } else if (st.withheld !== null) {
-      // ECO LOCAL: en retención el shell no ve (ni ecoa) nada, así que dibujamos
-      // a mano para que el jugador siempre vea lo que teclea.
-      if (ch === '\x7f') {
-        st.withheld = st.withheld.slice(0, -1);
-        sendText(ws, '\b \b');
-        if (st.withheld.length === 0) {
-          st.withheld = null;
-        }
-      } else if (ch === '\t') {
-        flushWithheld(ws, st, st.withheld + '\t');
-      } else if (ch === '\x03') {
-        st.withheld = null; // Ctrl+C cancela retención
-        sendText(ws, '^C\r\n');
-        st.session.session.write('\x03');
-      } else if (st.withheld.length < RESERVE_WORDS_MAX_PREFIX && isReservedPrefix(st.withheld + ch)) {
-        st.withheld += ch;
-        if (ch >= ' ') sendText(ws, ch); // eco visible (ignora controles raros)
-      } else {
-        flushWithheld(ws, st, st.withheld + ch);
-      }
-    } else {
+    } else if (ch === '\x03') {
+      // Ctrl+C: cancela la línea en curso y aborta lo que bash tenga colgado
+      st.withheld = '';
+      sendText(ws, '^C\r\n');
+      st.session.session.write('\x03');
+    } else if (ch === '\x7f') {
+      st.withheld = st.withheld.slice(0, -1);
+      sendText(ws, '\b \b');
+    } else if (ch === '\x1b' || ch < ' ') {
+      // secuencias de escape (↑/↓, home…) y controles varios: al shell
+      // (readline los interpreta) y cancela la línea en curso del buffer
+      st.withheld = '';
       st.session.session.write(ch);
+    } else if (st.withheld.length < 512) {
+      st.withheld += ch;
+      sendText(ws, ch); // eco local visible
     }
+  }
+  if (st.withheld.length > 512) {
+    st.withheld = '';
+    sendText(ws, '\r\n\x1b[38;5;203mlínea demasiado larga: se cancela, reintenta\x1b[0m\r\n');
   }
 }
 
 /**
- * suelta lo retenido y vuelve a passthrough. Como la línea ya se pintó con
- * eco local, la borramos (\x1b[2K\r) antes: el shell la re-ecoa con su
- * comportamiento normal y no queda duplicado.
+ * suelta lo retenido y lo entrega al shell COMO BLOQUE: primero borra la línea
+ * del eco local (\x1b[2K\r) en la terminal del jugador y luego escribe el
+ * bloque en el stdin del shell, que lo ecoa completo (como un pegado).
  */
 function flushWithheld(ws: WebSocket, st: ConnState, text: string): void {
-  st.withheld = null; // passthrough
+  st.withheld = '';
   sendText(ws, '\x1b[2K\r');
   const session = st.session?.session;
   if (session && text) session.write(text);
@@ -339,19 +346,17 @@ function flushWithheld(ws: WebSocket, st: ConnState, text: string): void {
 /** Enter: si la línea era un comando del dojo, se maneja con el motor en vez del shell. */
 function commitEnter(ws: WebSocket, st: ConnState, newline: string): void {
   const withheld = st.withheld;
-  if (withheld !== null) {
+  st.withheld = '';
+  {
     const trimmed = withheld.trim();
-    st.withheld = null;
     if (withheld.length === 0) {
       st.session?.session.write(newline);
       return;
     }
     const cmd = reservedOf(trimmed);
     if (!cmd) {
-      // no era un comando completo: limpia el eco local y lo entrega al shell,
-      // que lo ecoa con su comportamiento normal
-      sendText(ws, '\x1b[2K\r');
-      st.session?.session.write(withheld + newline);
+      // no era un comando del dojo: el bloque va al shell, que lo ecoa completo
+      flushWithheld(ws, st, withheld + newline);
       return;
     }
     sendText(ws, '\r\n'); // cierra visualmente la línea ecoada
@@ -383,6 +388,9 @@ function handleCommand(ws: WebSocket, st: ConnState, line: string): void {
     case 'next':
       void startLevel(ws, st, playerId, undefined, levelsSvc!, { explicitNext: true });
       return;
+    case 'start':
+      void startLevel(ws, st, playerId, args || undefined, levelsSvc!, {});
+      return;
     case 'reset':
       void startLevel(ws, st, playerId, st.session?.level.id, levelsSvc!, { label: 'regenerando escenario…' });
       return;
@@ -410,7 +418,12 @@ async function doHint(ws: WebSocket, st: ConnState): Promise<void> {
   const engine = st.engine;
   if (!engine) return void sendText(ws, '\r\nsin nivel activo\r\n');
   const h = engine.hint();
-  send(ws, { type: 'hint', payload: { text: null, index: h.index, total: h.total } });
+  // al panel le llega el texto de la pista en plano (sin ANSI ni cabecera:
+  // ese texto lo pinta la UI) y a la terminal el original con color
+  // eslint-disable-next-line no-control-regex -- la regex necesita el control char ESC por diseño (strip ANSI)
+  const ANSI = new RegExp('\\x1b\\[[0-9;]*m', 'g');
+  const plain = h.text === null ? null : h.text.replace(ANSI, '').split('\n').slice(1).join(' ').trim();
+  send(ws, { type: 'hint', payload: { text: plain, index: h.index, total: h.total } });
   sendText(ws, h.text === null ? '\r\n\x1b[38;5;203mno hay más pistas. ¡A por él!\x1b[0m\r\n' : '\r\n' + h.text + '\r\n');
 }
 

@@ -70,5 +70,5 @@ export type ClientToServerMsgs = {
 }[keyof ClientToServer];
 
 /** Palabras reservadas del dojo (interceptadas servidor-side). */
-export const RESERVED_COMMANDS = ['submit', 'hint', 'goal', 'status', 'next', 'reset', 'solution', 'help'] as const;
+export const RESERVED_COMMANDS = ['submit', 'hint', 'goal', 'status', 'next', 'reset', 'solution', 'start', 'help'] as const;
 export type ReservedCommand = (typeof RESERVED_COMMANDS)[number];

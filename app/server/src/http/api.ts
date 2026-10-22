@@ -1,4 +1,6 @@
 import express, { type Request, type Response } from 'express';
+import fs from 'node:fs';
+import path from 'node:path';
 import { config } from '../config.js';
 import { logger } from '../log.js';
 import type { LevelsService } from '../levels/service.js';
@@ -113,6 +115,22 @@ export function buildApi(service: LevelsService): express.Express {
     const { imported } = importState(id, state);
     res.status(200).json({ ok: true, imported });
   });
+
+  // Cliente estático (opcional): si existe app/client/dist, se sirve con SPA
+  // fallback desde el MISMO servidor HTTP de /ws — así el navegador habla con
+  // un solo origen (sin proxy intermedio) igual que en producción con nginx.
+  // Las rutas /api y /ws están registradas antes, no colisionan.
+  const clientDir = path.resolve(process.cwd(), 'app/client/dist');
+  if (fs.existsSync(path.join(clientDir, 'index.html'))) {
+    app.use(express.static(clientDir, { index: 'index.html', maxAge: '1h' }));
+    app.use((req, res, next) => {
+      if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/ws')) {
+        res.sendFile(path.join(clientDir, 'index.html'));
+        return;
+      }
+      next();
+    });
+  }
 
   return app;
 }

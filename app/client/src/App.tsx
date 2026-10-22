@@ -33,7 +33,7 @@ export default function App() {
           terminal real · Ubuntu en Docker · flags validadas en servidor
         </span>
         <span className="ml-auto text-[11px] text-frost/40 hidden md:block">
-          comandos del dojo: submit · hint · goal · status · next · reset · solution · help (F11 = pantalla completa)
+          submit · hint · goal · status · next · reset · solution · start · help — Ctrl+C copia lo marcado (F11 = pantalla completa)
         </span>
       </header>
 

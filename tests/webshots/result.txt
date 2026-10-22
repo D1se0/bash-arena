@@ -1,4 +1,4 @@
-38 ok · 0 fail
+41 ok · 0 fail
 
 terminal: prompt del nivel visible (WS → xterm)
 app: sin scroll horizontal
@@ -7,6 +7,9 @@ app: «Sesión activa» dentro del viewport
 terminal: teclado real capturado y eco visible
 terminal: FLAG capturada con cat ~/.secreto
 flag: submiteada por la UI nueva → «flag correcta» con diseño ✓
+panel: la pista aparece en la UI en texto plano tras un clic
+terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)
+terminal: «next» tecleado avanza de nivel (fundamentos-l2)
 app móvil (390px): sin scroll horizontal
 docs / (1440px): sin scroll horizontal
 docs / (1440px): header sin envoltura (57px)

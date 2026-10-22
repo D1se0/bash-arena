@@ -150,18 +150,30 @@ function countStreaklessHints(_xp: number): boolean {
   return true;
 }
 
+/**
+ * Banner de nivel superado. Todas las líneas usan el mismo ancho interior
+ * (44 columnas) y el gateway normaliza los saltos a \r\n, así el bloque se
+ * ve alineado en cualquier terminal del dojo.
+ */
 function successBanner(title: string, xp: number, timeS: number, hints: number): string {
+  const W = 46; // ancho interior de la caja (sin contar bordes)
+  const row = (s: string): string => `│  ${pad(s, W - 4)}  │`;
   const lines = [
     '',
-    `${COLORS.green}${COLORS.bold}╭────────────────────────────────────────────╮${COLORS.reset}`,
-    `${COLORS.green}${COLORS.bold}│  ✓ FLAG CORRECTA — nivel superado          │${COLORS.reset}`,
-    `${COLORS.green}${COLORS.bold}╰────────────────────────────────────────────╯${COLORS.reset}`,
+    `${COLORS.green}${COLORS.bold}╭${'─'.repeat(W + 2)}╮${COLORS.reset}`,
+    COLORS.green + COLORS.bold + row('  ✓ FLAG CORRECTA') + COLORS.reset,
+    COLORS.green + COLORS.bold + row('    nivel superado') + COLORS.reset,
+    `${COLORS.green}${COLORS.bold}╰${'─'.repeat(W + 2)}╯${COLORS.reset}`,
     `  ${COLORS.blue}${title}${COLORS.reset}`,
-    `  ${COLORS.purple}+${xp} XP${COLORS.reset}   tiempo: ${COLORS.blue}${fmtTime(timeS)}${COLORS.reset}   pistas: ${COLORS.blue}${hints}${COLORS.reset}`,
-    `  escribe ${COLORS.yellow}next${COLORS.reset} para continuar con el siguiente nivel`,
+    `  ${COLORS.purple}+${xp} XP${COLORS.reset} · tiempo ${COLORS.blue}${fmtTime(timeS)}${COLORS.reset} · pistas ${COLORS.blue}${hints}${COLORS.reset}`,
+    `  escribe ${COLORS.yellow}next${COLORS.reset} para el siguiente nivel (o pulsa Continuar)`,
     '',
   ];
   return lines.join('\n');
+}
+
+function pad(s: string, n: number): string {
+  return s.length >= n ? s : s + ' '.repeat(n - s.length);
 }
 
 function failMsg(text: string): string {
@@ -179,12 +191,13 @@ const CMD_COLOR = COLORS.yellow;
 export function engineHelp(): string {
   return [
     '',
-    `${COLORS.bold}Nos comandos del dojo:${COLORS.reset}`,
+    `${COLORS.bold}Comandos del dojo:${COLORS.reset}`,
     `  ${CMD_COLOR}submit FLAG{...}${COLORS.reset}   valida tu flag`,
     `  ${CMD_COLOR}goal${COLORS.reset}              objetivo del nivel actual`,
     `  ${CMD_COLOR}hint${COLORS.reset}              siguiente pista (−10 XP)`,
     `  ${CMD_COLOR}status${COLORS.reset}            tu XP, rango y progreso`,
     `  ${CMD_COLOR}next${COLORS.reset}              avanzar al siguiente nivel (tras resolver el actual)`,
+    `  ${CMD_COLOR}start${COLORS.reset} [nivel]      iniciar el nivel actual o uno concreto por id`,
     `  ${CMD_COLOR}reset${COLORS.reset}             regenerar el escenario del nivel`,
     `  ${CMD_COLOR}solution${COLORS.reset}          solución de referencia (requiere 2 pistas o 5 intentos)`,
     `  ${CMD_COLOR}help${COLORS.reset}              esta ayuda`,

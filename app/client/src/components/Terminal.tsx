@@ -47,6 +47,20 @@ export default function TerminalPane() {
     const fit = new FitAddon();
     term.loadAddon(fit);
     term.loadAddon(new WebLinksAddon());
+    // Copiar selección con Ctrl+C / Ctrl+Shift+C / Cmd+C. Con texto marcado
+    // estos atajos copian y NO mandan SIGINT; sin selección, Ctrl+C sigue
+    // abortando el comando en curso como un terminal normal. (Ctrl+Shift+C
+    // sin selección no se puede capturar: el navegador abre DevTools.)
+    term.attachCustomKeyEventHandler((ev) => {
+      if (ev.type !== 'keydown') return true;
+      const keyC = ev.key?.toLowerCase?.() === 'c' || ev.code === 'KeyC';
+      if (!keyC || !(ev.ctrlKey || ev.metaKey)) return true;
+      const sel = term.getSelection();
+      if (!sel) return true; // SIGINT clásico
+      void navigator.clipboard.writeText(sel).catch(() => undefined);
+      term.write('\r\n\x1b[90m— selección copiada (Ctrl+V pega) —\x1b[0m\r\n');
+      return false; // no pasa al shell
+    });
     term.open(hostRef.current);
     term.onResize(({ cols, rows }) =>
       sendRef.current?.({ type: 'resize', payload: { cols, rows } }),
@@ -55,6 +69,9 @@ export default function TerminalPane() {
     term.write('\x1b[90mconectando con el contenedor de sesión…\x1b[0m\r\n');
     termRef.current = term;
     setSink((s: string) => term.write(s));
+    // handle de tests (visual/e2e): selección programática en la terminal.
+    // Siempre disponible: el test visual corre contra el build de producción.
+    (window as unknown as { __arenaTerm?: Terminal }).__arenaTerm = term;
 
     const ro = new ResizeObserver(() => {
       try {
@@ -75,6 +92,7 @@ export default function TerminalPane() {
     return () => {
       ro.disconnect();
       clearTimeout(timeout);
+      delete (window as unknown as { __arenaTerm?: Terminal }).__arenaTerm;
       term.dispose();
       setSink(null);
     };

@@ -7,7 +7,7 @@
  * Salida: TEST-VISUAL-OK / FAIL + capturas en tests/webshots/.
  * Uso: node scripts/test-web-visual.mjs [urlApp] [urlDocs]
  */
-/* global window, document */
+/* global window, document, navigator */
 import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -29,13 +29,18 @@ const browser = await chromium.launch({
 
 /* ───────────── A. app local ───────────── */
 {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => fail(`pageerror app: ${e.message}`));
 
   // sniffer de WS: guarda todos los «data» que llegan a la terminal en __arenaData
   await page.addInitScript(() => {
     window.__arenaData = '';
+    window.__arenaLevel = null;
+    window.__arenaHint = null;
     const OrigWS = window.WebSocket;
     const wrapped = function (url) {
       const ws = new OrigWS(url);
@@ -43,6 +48,8 @@ const browser = await chromium.launch({
         try {
           const m = JSON.parse(ev.data);
           if (m.type === 'data') window.__arenaData += m.payload.data;
+          if (m.type === 'levelState') window.__arenaLevel = m.payload?.level?.id ?? window.__arenaLevel;
+          if (m.type === 'hint') window.__arenaHint = m.payload?.text ?? null;
         } catch {
           /* no JSON */
         }
@@ -97,7 +104,11 @@ const browser = await chromium.launch({
   await page.keyboard.type('ls -l /home/agent', { delay: 30 });
   await page.keyboard.press('Enter');
   await page.waitForTimeout(1400);
-  const echoed = (await page.evaluate(() => window.__arenaData)).includes('ls -l /home/agent');
+  // el gateway puede intercalar borrados de retención (\x1b[2K\r al hacer flush):
+  // se limpian los escapes antes de comparar el eco literario
+  const echoed = (await page.evaluate(() => window.__arenaData))
+    .replace(/\x1b\[[0-9;?]*/g, '').replace(/\x1b\][^\x07]*\x07/g, '')
+    .includes('ls -l /home/agent');
   if (echoed) {
     ok('terminal: teclado real capturado y eco visible');
   } else {
@@ -135,9 +146,56 @@ const browser = await chromium.launch({
       fail(
         `flag: no apareció «flag correcta» tras submitear — streamHasPass=${dbg.streamHasPass} arenaLen=${dbg.arenaLen} statusEls=${dbg.statusEls} inputs=${dbg.inputs} body: ${dbg.body}`,
       );
+    }    }
+
+    // — pista en el panel: un clic y el texto de la pista llega en claro
+    await page.getByRole('button', { name: /pista/i }).first().click();
+    try {
+      await page.waitForFunction(
+        () => typeof window.__arenaHint === 'string' && window.__arenaHint.length > 0 &&
+              document.body.innerText.toLowerCase().includes('pista'),
+        { timeout: 10_000 },
+      );
+      ok('panel: la pista aparece en la UI en texto plano tras un clic');
+    } catch {
+      fail('panel: la pista no llegó al panel de nivel tras el clic');
     }
-  }
-  await page.screenshot({ path: `${SHOTS}/app-desktop.png`, fullPage: true });
+
+    // — Ctrl+C con selección: copia al portapapeles sin SIGINT
+    await page.locator('.xterm').click();
+    await page.evaluate(() => window.__arenaTerm?.selectAll());
+    await page.keyboard.press('Control+c');
+    await page.waitForTimeout(500);
+    const clip = await page.evaluate(() => navigator.clipboard.readText().catch(() => ''));
+    const stream = await page.evaluate(() => window.__arenaData);
+    if (clip.includes('FLAG{') && !stream.includes('^C')) {
+      ok('terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)');
+    } else {
+      fail(`terminal: Ctrl+C no copió la selección (clipboard.len=${clip.length} ^C=${stream.includes('^C')})`);
+    }
+
+    // — «next» tecleado en la terminal: cambia de nivel sin caer en bash
+    const prevLevel = await page.evaluate(() => window.__arenaLevel);
+    await page.locator('.xterm').click();
+    await page.keyboard.type('next', { delay: 35 });
+    await page.keyboard.press('Enter');
+    try {
+      await page.waitForFunction(
+        (prev) => Boolean(window.__arenaLevel) && window.__arenaLevel !== prev,
+        prevLevel,
+        { timeout: 40_000 },
+      );
+      const raw = await page.evaluate(() => window.__arenaData);
+      if (raw.includes('bash: next')) {
+        fail('terminal: «next» se coló a bash (bash: next: command not found)');
+      } else {
+        ok(`terminal: «next» tecleado avanza de nivel (${await page.evaluate(() => window.__arenaLevel)})`);
+      }
+    } catch {
+      fail('terminal: «next» no cambió de nivel en 40 s');
+    }
+
+    await page.screenshot({ path: `${SHOTS}/app-desktop.png`, fullPage: true });
 
   // layout móvil
   const m = await ctx.newPage();
