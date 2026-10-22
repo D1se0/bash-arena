@@ -125,12 +125,17 @@ function handleMsg(ws: WebSocket, raw: unknown, service: LevelsService): void {
     st.playerId = playerId;
     const row = ensurePlayer(playerId);
     const rank = rankForXp(row.xp);
+    // progreso por track para el sidebar y el navegador de niveles
+    const solvedSet = new Set(getProgress(playerId).filter((p) => p.solved === 1).map((p) => p.level_id));
     const trackCounts = service.tracks.map((t) => ({
       id: t.id,
       name: t.name,
       icon: t.icon,
       color: t.color,
-      totalCount: service.ordered.filter((l) => l.track === t.id).length,
+      description: t.description,
+      order: t.order,
+      levels: service.ordered.filter((l) => l.track === t.id).length,
+      solved: service.ordered.filter((l) => l.track === t.id && solvedSet.has(l.id)).length,
     }));
     send(ws, {
       type: 'welcome',
@@ -419,24 +424,22 @@ async function doHint(ws: WebSocket, st: ConnState): Promise<void> {
   if (!engine) return void sendText(ws, '\r\nsin nivel activo\r\n');
   const h = engine.hint();
   // al panel le llega el texto de la pista en plano (sin ANSI ni cabecera:
-  // ese texto lo pinta la UI) y a la terminal el original con color
-  // eslint-disable-next-line no-control-regex -- la regex necesita el control char ESC por diseño (strip ANSI)
-  const ANSI = new RegExp('\\x1b\\[[0-9;]*m', 'g');
-  const plain = h.text === null ? null : h.text.replace(ANSI, '').split('\n').slice(1).join(' ').trim();
-  send(ws, { type: 'hint', payload: { text: plain, index: h.index, total: h.total } });
+  // ese texto lo pinta la UI) y a la terminal el bloque renderizado
+  send(ws, { type: 'hint', payload: { text: h.plain, index: h.index, total: h.total } });
   sendText(ws, h.text === null ? '\r\n\x1b[38;5;203mno hay más pistas. ¡A por él!\x1b[0m\r\n' : '\r\n' + h.text + '\r\n');
 }
 
 async function doSolution(ws: WebSocket, st: ConnState): Promise<void> {
   const engine = st.engine;
   if (!engine) return void sendText(ws, '\r\nsin nivel activo\r\n');
-  const text = engine.solutionText();
-  send(ws, { type: 'solution', payload: { text } });
-  if (text === null) {
+  const plain = engine.solutionPlain();
+  send(ws, { type: 'solution', payload: { text: plain } });
+  if (plain === null) {
     sendText(ws, '\r\n\x1b[38;5;203msolution bloqueada:\x1b[0m usa 2 pistas (hint) o 5 intentos fallidos (submit).\r\n');
     return;
   }
-  sendText(ws, `\r\n\x1b[38;5;140m[solución de referencia]\x1b[0m\n${text}\r\n`);
+  // a la terminal el bloque completo ya renderizado (color incluido)
+  sendText(ws, '\r\n' + engine.solutionText() + '\r\n');
 }
 
 async function doStatus(ws: WebSocket, st: ConnState): Promise<void> {

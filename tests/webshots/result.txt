@@ -1,4 +1,4 @@
-41 ok · 0 fail
+48 ok · 0 fail
 
 terminal: prompt del nivel visible (WS → xterm)
 app: sin scroll horizontal
@@ -8,8 +8,15 @@ terminal: teclado real capturado y eco visible
 terminal: FLAG capturada con cat ~/.secreto
 flag: submiteada por la UI nueva → «flag correcta» con diseño ✓
 panel: la pista aparece en la UI en texto plano tras un clic
+panel: la solución desbloqueada se muestra en bloque limpio (2 pistas → desbloqueo)
+app: terminal ampliada a pantalla completa sobre el resto de la página
+app: Esc sale de la pantalla completa y la página vuelve
+navegador: abre con el catálogo de niveles por sesión/tracks
+navegador: búsqueda por término devuelve niveles relevantes (11 filas, 2 jugables)
+navegador: la búsqueda muestra también niveles bloqueados (🔒 visible)
+navegador: «jugar» de un nivel salta a su session (procesado-l1)
 terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)
-terminal: «next» tecleado avanza de nivel (fundamentos-l2)
+terminal: «next» tecleado avanza de nivel (procesado-l2)
 app móvil (390px): sin scroll horizontal
 docs / (1440px): sin scroll horizontal
 docs / (1440px): header sin envoltura (57px)

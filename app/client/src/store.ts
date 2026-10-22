@@ -63,14 +63,23 @@ interface ArenaState {
   nextRankAt: number | null;
   lastSubmit: { passed: boolean; xpGained?: number; totalXp?: number; rank?: string } | null;
   hintFlash: { text: string | null; index: number; total: number } | null;
+  solutionFlash: { text: string } | null;
   lastError: string | null;
   sessionDead: string | null;
   theme: 'dark' | 'crt';
+  /** terminal en pantalla completa (zoom sobre el resto de la UI) */
+  termFullscreen: boolean;
+  /** navegador de niveles (modal); browserTrack prefiltrado al abrir */
+  browserOpen: boolean;
+  browserTrack: string | null;
   onTerminalData: ((s: string) => void) | null;
   send: SendFn | null;
   setTerminalSink: (fn: ((s: string) => void) | null) => void;
   setSend: (fn: SendFn | null) => void;
   setTheme: (t: 'dark' | 'crt') => void;
+  setTermFullscreen: (v: boolean) => void;
+  setBrowserOpen: (v: boolean, track?: string | null) => void;
+  setConnected: (c: boolean) => void;
   ingest: (m: Msg) => void;
   setConnected: (c: boolean) => void;
   resetLevelFx: () => void;
@@ -97,9 +106,13 @@ export const useArena = create<ArenaState>((set) => ({
   nextRankAt: null,
   lastSubmit: null,
   hintFlash: null,
+  solutionFlash: null,
   lastError: null,
   sessionDead: null,
   theme: (localStorage.getItem('arena-theme') as 'dark' | 'crt') ?? 'dark',
+  termFullscreen: false,
+  browserOpen: false,
+  browserTrack: null,
   onTerminalData: null,
   send: null,
   setTerminalSink: (fn) => set({ onTerminalData: fn }),
@@ -108,8 +121,10 @@ export const useArena = create<ArenaState>((set) => ({
     localStorage.setItem('arena-theme', t);
     set({ theme: t });
   },
+  setTermFullscreen: (v) => set({ termFullscreen: v }),
+  setBrowserOpen: (v, track) => set({ browserOpen: v, browserTrack: track ?? null }),
   setConnected: (c) => set({ connected: c }),
-  resetLevelFx: () => set({ lastSubmit: null, hintFlash: null }),
+  resetLevelFx: () => set({ lastSubmit: null, hintFlash: null, solutionFlash: null }),
   ingest: (m) => {
     switch (m.type) {
       case 'welcome':
@@ -141,6 +156,7 @@ export const useArena = create<ArenaState>((set) => ({
         set({ hintFlash: m.payload });
         break;
       case 'solution':
+        set({ solutionFlash: m.payload.text ? { text: m.payload.text } : null });
         break;
       case 'status':
         set({ xp: m.payload.xp, rank: m.payload.rank });

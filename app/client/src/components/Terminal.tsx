@@ -5,9 +5,10 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 import '@xterm/xterm/css/xterm.css';
 import { useArena } from '../store';
 
-export default function TerminalPane() {
+export default function TerminalPane({ fullscreen = false }: { fullscreen?: boolean }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const termRef = useRef<Terminal | null>(null);
+  const fitRef = useRef<FitAddon | null>(null);
   const send = useArena((s) => s.send);
   const setSink = useArena((s) => s.setTerminalSink);
   const theme = useArena((s) => s.theme);
@@ -46,6 +47,7 @@ export default function TerminalPane() {
     });
     const fit = new FitAddon();
     term.loadAddon(fit);
+    fitRef.current = fit;
     term.loadAddon(new WebLinksAddon());
     // Copiar selección con Ctrl+C / Ctrl+Shift+C / Cmd+C. Con texto marcado
     // estos atajos copian y NO mandan SIGINT; sin selección, Ctrl+C sigue
@@ -92,6 +94,7 @@ export default function TerminalPane() {
     return () => {
       ro.disconnect();
       clearTimeout(timeout);
+      fitRef.current = null;
       delete (window as unknown as { __arenaTerm?: Terminal }).__arenaTerm;
       term.dispose();
       setSink(null);
@@ -102,6 +105,21 @@ export default function TerminalPane() {
   useEffect(() => {
     if (send) termRef.current?.focus();
   }, [send, sessionDead]);
+
+  // en pantalla completa la terminal sube a fuente mayor y re-encaja
+  useEffect(() => {
+    const term = termRef.current;
+    if (!term) return;
+    term.options.fontSize = fullscreen ? 16 : 14;
+    const t = setTimeout(() => {
+      try {
+        fitRef.current?.fit();
+      } catch {
+        /* noop */
+      }
+    }, 30);
+    return () => clearTimeout(t);
+  }, [fullscreen]);
 
   useEffect(() => {
     const onVis = () => {

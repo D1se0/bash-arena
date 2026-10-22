@@ -39,7 +39,16 @@ export interface ServerToClient {
     rankIndex: number;
     nextRankAt: number | null;
     levelId: string | null;
-    tracks: { id: string; name: string; icon: string; color: string; totalCount: number }[];
+    tracks: {
+      id: string;
+      name: string;
+      icon: string;
+      color: string;
+      description: string;
+      order: number;
+      levels: number;
+      solved: number;
+    }[];
     tip?: string;
   };
   data: { data: string };

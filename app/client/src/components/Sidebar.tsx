@@ -18,6 +18,7 @@ export default function Sidebar() {
   const setTheme = useArena((s) => s.setTheme);
   const send = useArena((s) => s.send);
   const sessionDead = useArena((s) => s.sessionDead);
+  const setBrowserOpen = useArena((s) => s.setBrowserOpen);
 
   return (
     <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:self-start lg:max-h-full lg:overflow-y-auto lg:pr-1">
@@ -54,26 +55,46 @@ export default function Sidebar() {
           <p className="mt-2 text-xs text-verde/90">+{level.xp} XP al resolverlo</p>
         </section>
       ) : (
-        <section className="rounded-xl bg-panel/80 border border-edge/60 p-4 text-sm text-frost/70">
-          elige un track en el menú para empezar
+        <section className="rounded-xl bg-panel/80 border border-edge/60 p-4 text-sm text-frost/70 flex flex-col gap-2">
+          <span>elige una sección y empieza a practicar</span>
+          <button
+            onClick={() => setBrowserOpen(true)}
+            className="rounded-lg bg-deep hover:bg-ice hover:text-[#0d1117] px-3 py-2 text-sm font-medium text-nord6 text-left"
+          >
+            🗂 ver todos los niveles
+          </button>
         </section>
       )}
 
       {welcome && (
         <section className="rounded-xl bg-panel/80 border border-edge/60 p-4">
-          <p className="text-[11px] uppercase tracking-widest text-frost/70 mb-2">Progreso por track</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[11px] uppercase tracking-widest text-frost/70">Progreso por sección</p>
+            <button
+              onClick={() => setBrowserOpen(true)}
+              className="text-[11px] text-ice/80 hover:text-ice underline underline-offset-2"
+            >
+              ver niveles
+            </button>
+          </div>
           <ul className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
             {welcome.tracks.map((t) => (
-              <li key={t.id} className="flex items-center gap-2 text-sm">
-                <span aria-hidden>{t.icon}</span>
-                <span className="flex-1 truncate" title={t.name}>{t.name}</span>
-                <span className="text-xs text-frost/60">{t.solved}/{t.levels}</span>
-                <span className="w-16 h-1 rounded bg-nord1 overflow-hidden">
-                  <span
-                    className="block h-full"
-                    style={{ width: `${(t.solved / Math.max(t.levels, 1)) * 100}%`, background: t.color }}
-                  />
-                </span>
+              <li key={t.id}>
+                <button
+                  onClick={() => setBrowserOpen(true, t.id)}
+                  title={`ver los ${t.levels} niveles de ${t.name}`}
+                  className="w-full flex items-center gap-2 text-sm hover:bg-panel2/70 rounded px-1 py-0.5 -mx-1 transition-colors"
+                >
+                  <span aria-hidden>{t.icon}</span>
+                  <span className="flex-1 truncate text-left">{t.name}</span>
+                  <span className="text-xs text-frost/60">{t.solved}/{t.levels}</span>
+                  <span className="w-16 h-1 rounded bg-nord1 overflow-hidden">
+                    <span
+                      className="block h-full transition-all duration-500"
+                      style={{ width: `${((t.solved ?? 0) / Math.max(t.levels ?? 1, 1)) * 100}%`, background: t.color }}
+                    />
+                  </span>
+                </button>
               </li>
             ))}
           </ul>

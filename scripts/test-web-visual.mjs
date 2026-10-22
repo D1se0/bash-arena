@@ -7,7 +7,7 @@
  * Salida: TEST-VISUAL-OK / FAIL + capturas en tests/webshots/.
  * Uso: node scripts/test-web-visual.mjs [urlApp] [urlDocs]
  */
-/* global window, document, navigator */
+/* global window, document, navigator, getComputedStyle */
 import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -156,10 +156,135 @@ const browser = await chromium.launch({
               document.body.innerText.toLowerCase().includes('pista'),
         { timeout: 10_000 },
       );
-      ok('panel: la pista aparece en la UI en texto plano tras un clic');
+      const hint = await page.evaluate(() => window.__arenaHint);
+      if (!hint.includes('\u001b[')) {
+        ok('panel: la pista aparece en la UI en texto plano tras un clic');
+      } else {
+        fail('panel: la pista llega con códigos ANSI a la UI');
+      }
     } catch {
       fail('panel: la pista no llegó al panel de nivel tras el clic');
     }
+
+    // — segunda pista + solución: el bloque en la UI sin ANSI ni lienzos raros
+    await page.getByRole('button', { name: /pista/i }).first().click();
+    await page.waitForTimeout(500);
+    await page.getByRole('button', { name: /solution/i }).first().click();
+    try {
+      await page.waitForFunction(
+        () => document.body.innerText.includes('solución de referencia'),
+        { timeout: 10_000 },
+      );
+      const raw = await page.evaluate(() => window.__arenaData);
+      const bad = raw.includes('contradición') || raw.includes('[ix]') || raw.includes('undefined');
+      if (!bad) {
+        ok('panel: la solución desbloqueada se muestra en bloque limpio (2 pistas → desbloqueo)');
+      } else {
+        fail('panel: el bloque de solución sale con texto sucio (revisar renderSolution)');
+      }
+    } catch {
+      fail('panel: «solution» no se desbloqueó/vio tras 2 pistas');
+    }
+
+    // — pantalla completa de la terminal: botón ves→ fija overlay, Esc vuelve
+    await page.getByRole('button', { name: /pantalla completa/ }).first().click();
+    await page.waitForTimeout(400);
+    let fs = await page.evaluate(() => {
+      const pane = document.querySelector('.arena-terminal');
+      let fixed = false;
+      if (pane) {
+        const pos = getComputedStyle(pane).position;
+        fixed = pos === 'fixed' || pos === 'static' && pane.closest('.fixed') !== null;
+        if (pos !== 'fixed') fixed = getComputedStyle(pane.parentElement).position === 'fixed';
+      }
+      const aside = document.querySelector('aside');
+      const covered = aside ? getComputedStyle(aside.parentElement).position : '';
+      return { fixed, visible: !!pane };
+    });
+    if (fs.visible && fs.fixed) {
+      ok('app: terminal ampliada a pantalla completa sobre el resto de la página');
+    } else {
+      fail(`app: pantalla completa de terminal no activó overlay (${JSON.stringify(fs)})`);
+    }
+    await page.screenshot({ path: `${SHOTS}/app-fullscreen.png` });
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(400);
+    fs = await page.evaluate(() => ({
+      fixed: getComputedStyle(document.querySelector('.arena-terminal')?.parentElement || document.body).position === 'fixed',
+    }));
+    if (!fs.fixed) {
+      ok('app: Esc sale de la pantalla completa y la página vuelve');
+    } else {
+      fail('app: Esc no salió de la pantalla completa');
+    }
+
+    // — navegador de niveles: abre, busca «awk», ya y salta
+    await page.getByRole('button', { name: /niveles/ }).first().click();
+    try {
+      await page.waitForSelector('[data-testid="level-browser-list"]', { timeout: 10_000 });
+      const rows = await page.evaluate(() =>
+        document.querySelector('[data-testid="level-browser-list"]')?.textContent || '');
+      if (rows.includes('-l1')) {
+        ok('navegador: abre con el catálogo de niveles por sesión/tracks');
+      } else {
+        fail('navegador: no muestra el catálogo de niveles');
+      }
+    } catch {
+      fail('navegador: no abrió el modal de niveles');
+    }
+    await page.locator('input[aria-label*="buscar"]').fill('awk');
+    let awkRows = [];
+    try {
+      await page.waitForFunction(
+        () => {
+          const list = document.querySelector('[data-testid="level-browser-list"]');
+          if (!list) return false;
+          return [...list.querySelectorAll(':scope > div')].some((c) =>
+            /awk/i.test(c.textContent || ''));
+        },
+        { timeout: 5_000 },
+      );
+      awkRows = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-testid="level-browser-list"] > div')]
+          .map((c) => ({ txt: (c.textContent || '').replace(/\s+/g, ' ').trim(), locked: /🔒/.test(c.textContent || '') }))
+          .filter((r) => /awk/i.test(r.txt)));
+    } catch {
+      /* sin resultados con «awk»: probamos con «grep» (keyword universal) */
+      await page.locator('input[aria-label*="buscar"]').fill('grep');
+      await page.waitForTimeout(600);
+      awkRows = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-testid="level-browser-list"] > div')]
+          .map((c) => ({ txt: (c.textContent || '').replace(/\s+/g, ' ').trim(), locked: /🔒/.test(c.textContent || '') }))
+          .filter((r) => /grep/i.test(r.txt)));
+    }
+    if (awkRows.length > 0) {
+      ok(`navegador: búsqueda por término devuelve niveles relevantes (${awkRows.length} filas, ${awkRows.filter((r) => !r.locked).length} jugables)`);
+      if (awkRows.some((r) => r.locked)) {
+        ok('navegador: la búsqueda muestra también niveles bloqueados (🔒 visible)');
+      }
+    } else {
+      fail('navegador: ni «awk» ni «grep» devolvieron resultados');
+    }
+    await page.screenshot({ path: `${SHOTS}/app-browser-busqueda.png` });
+    // jugar el primer nivel disponible de la búsqueda (o de la sección si no hubo)
+    const played = await page.evaluate(() => {
+      const btn = [...document.querySelectorAll('[data-testid="level-browser-list"] button')]
+        .find((b) => !b.disabled && /jugar|volver/.test(b.textContent || ''));
+      if (btn) { window.__prePlayLevel = window.__arenaLevel; btn.click(); return true; }
+      return false;
+    });
+    try {
+      await page.waitForFunction(
+        () => Boolean(window.__arenaLevel) && window.__arenaLevel !== window.__prePlayLevel,
+        undefined,
+        { timeout: 60_000 },
+      );
+      await page.waitForTimeout(2_000);
+      ok(`navegador: «jugar» de un nivel salta a su session (${await page.evaluate(() => window.__arenaLevel)})`);
+    } catch {
+      fail(played ? 'navegador: «jugar» no cambió de nivel en 60 s' : 'navegador: ningún nivel jugable en la búsqueda');
+    }
+    await page.locator('.xterm').click();
 
     // — Ctrl+C con selección: copia al portapapeles sin SIGINT
     await page.locator('.xterm').click();

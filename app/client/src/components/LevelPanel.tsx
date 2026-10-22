@@ -10,6 +10,7 @@ export default function LevelPanel() {
   const [shake, setShake] = useState(false);
   const lastSubmit = useArena((s) => s.lastSubmit);
   const hintFlash = useArena((s) => s.hintFlash);
+  const solutionFlash = useArena((s) => s.solutionFlash);
   const resetLevelFx = useArena((s) => s.resetLevelFx);
 
   // al acertar la flag el formulario se cierra (el banner '=' es el feedback) y
@@ -142,12 +143,49 @@ export default function LevelPanel() {
         </div>
       )}
 
-      {hintFlash?.text && (
-        <div className="arena-pop rounded-lg bg-ice/10 border border-ice/30 p-3 text-sm text-ice">
-          <span className="text-[11px] uppercase tracking-widest text-frost/70 mr-2">
-            pista {hintFlash.index}/{hintFlash.total}
-          </span>
-          {hintFlash.text}
+      {hintFlash && (
+        <div
+          className="arena-pop rounded-lg border border-ice/30 bg-ice/5 p-3"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono text-xs text-ice font-semibold">◆ pista {hintFlash.index}/{hintFlash.total}</span>
+            {hintFlash.text && (
+              <span className="text-[11px] text-frost/50">−10 XP usada {hintFlash.index === hintFlash.total ? '· última pista' : `· quedan ${hintFlash.total - hintFlash.index}`}</span>
+            )}
+          </div>
+          {hintFlash.text ? (
+            <p className="text-sm text-frost/90 leading-relaxed whitespace-pre-line">{hintFlash.text}</p>
+          ) : (
+            <p className="text-sm text-coral">no quedan más pistas — con 2 pistas o 5 intentos, «solution» se desbloquea</p>
+          )}
+        </div>
+      )}
+
+      {solutionFlash && (
+        <div className="arena-pop rounded-lg border border-morado/40 bg-morado/5 p-3" role="status">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="font-mono text-xs text-morado font-semibold">☖ solución de referencia</span>
+            <button
+              onClick={() => void navigator.clipboard.writeText(solutionFlash.text).catch(() => undefined)}
+              className="ml-auto rounded bg-panel2 hover:bg-edge px-2 py-0.5 text-[11px]"
+              title="copiar el comando"
+            >
+              copiar
+            </button>
+            <button
+              onClick={() => useArena.setState({ solutionFlash: null })}
+              className="rounded bg-panel2 hover:bg-edge px-2 py-0.5 text-[11px]"
+              aria-label="ocultar solución"
+            >
+              ✕
+            </button>
+          </div>
+          <pre className="text-xs font-mono text-nord6 bg-[#161a20] rounded p-2.5 overflow-x-auto whitespace-pre-wrap">{solutionFlash.text}</pre>
+          <p className="text-[11px] text-frost/60 mt-1.5 leading-snug">
+            reproduce el comando, extrae la flag y valida con <span className="font-mono text-morado">submit FLAG{'{…}'}</span> (no puntúa automático)
+          </p>
         </div>
       )}
 

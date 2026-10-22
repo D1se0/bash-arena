@@ -27,6 +27,7 @@ const COLORS = {
   blue: '\x1b[38;5;110m',
   purple: '\x1b[38;5;140m',
   bold: '\x1b[1m',
+  faint: '\x1b[2m',
   reset: '\x1b[0m',
 };
 
@@ -115,21 +116,22 @@ export class GameEngine {
   }
 
   /** Siguiente pista (con penalización de XP). */
-  hint(): { text: string | null; index: number; total: number; penalty: number } {
+  hint(): { text: string | null; plain: string | null; index: number; total: number; penalty: number } {
     if (this.hintsUsed < this.level.hints.length) {
       this.hintsUsed++;
       recordHints(this.playerId, this.level.id, this.level.track, this.hintsUsed);
       bumpStat(this.playerId, 'hints_used', 1);
+      const hintText = this.level.hints[this.hintsUsed - 1];
       const last = this.hintsUsed === this.level.hints.length;
       return {
-        text: `${COLORS.yellow}HINT ${this.hintsUsed}/${this.level.hints.length} (−${HINT_PENALTY} XP):${COLORS.reset}\n${this.level.hints[this.hintsUsed - 1]}` +
-          (last ? `\n(última pista disponible)` : ''),
+        text: renderHint(this.hintsUsed, this.level.hints.length, hintText, last),
+        plain: hintText,
         index: this.hintsUsed,
         total: this.level.hints.length,
         penalty: HINT_PENALTY,
       };
     }
-    return { text: null, index: this.hintsUsed, total: this.level.hints.length, penalty: 0 };
+    return { text: null, plain: null, index: this.hintsUsed, total: this.level.hints.length, penalty: 0 };
   }
 
   /** ¿El comando `solution` está desbloqueado? (2 pistas o 5 intentos fallidos) */
@@ -139,6 +141,12 @@ export class GameEngine {
 
   /** Devuelve la solución de referencia en modo texto (tras desbloqueo). */
   solutionText(): string | null {
+    if (!this.solutionUnlocked()) return null;
+    return renderSolution(this.level.solution, this.level.id);
+  }
+
+  /** Solución en plano (sin ANSI): para la UI del panel. */
+  solutionPlain(): string | null {
     if (!this.solutionUnlocked()) return null;
     return this.level.solution;
   }
@@ -170,6 +178,48 @@ function successBanner(title: string, xp: number, timeS: number, hints: number):
     '',
   ];
   return lines.join('\n');
+}
+
+/**
+ * Pista en bloque: cabecera con número/penal + separador cifrado que la
+ * normalización \r\n del gateway mantiene alineado, y el texto sin recortes.
+ */
+function renderHint(index: number, total: number, text: string, last: boolean): string {
+  const head = `${COLORS.faint}  ${'─'.repeat(58)}${COLORS.reset}`;
+  const title = `  ${COLORS.yellow}${COLORS.bold}◆ pista ${index}/${total}${COLORS.reset}` +
+    `${COLORS.faint}  ·  −${HINT_PENALTY} XP${COLORS.reset}`;
+  const body = text
+    .split('\n')
+    .map((l) => `  ${l}`)
+    .join('\r\n');
+  const foot = last
+    ? `  ${COLORS.faint}(era la última pista; con otra falla, ${COLORS.reset}${COLORS.faint}solution${COLORS.reset}${COLORS.faint} se desbloquea)${COLORS.reset}`
+    : `  ${COLORS.faint}quedan ${total - index} pista(s) más con ${COLORS.reset}${COLORS.faint}hint${COLORS.reset}`;
+  return ['', head, title, body, foot, head, ''].join('\r\n');
+}
+
+/**
+ * Solución de referencia: bloque muy visible con el comando listo para
+ * copiar, la pista del nivel que lo requiere, y el aviso de que hay que
+ * escribir el flag (no se auto-sube el nivel).
+ */
+function renderSolution(solution: string, levelId: string): string {
+  const rule = (s: string): string => `${COLORS.faint}  ${s}${COLORS.reset}`;
+  const head = `${COLORS.blue}${COLORS.bold}  ☖ solución de referencia${COLORS.reset}`;
+  const cmd = solution
+    .split('\n')
+    .map((l) => `  ${COLORS.yellow}${l}${COLORS.reset}`)
+    .join('\r\n');
+  return [
+    '',
+    rule('─'.repeat(58)),
+    head,
+    cmd,
+    rule('─'.repeat(58)),
+    `  ${COLORS.faint}este comando resuelve ${COLORS.reset}${COLORS.faint}${levelId}${COLORS.reset}`,
+    `  ${COLORS.faint}reproduce la salida, extrae la flag y ${COLORS.reset}${COLORS.faint}submit FLAG{...}${COLORS.reset}${COLORS.faint} para puntuar${COLORS.reset}`,
+    '',
+  ].join('\r\n');
 }
 
 function pad(s: string, n: number): string {
