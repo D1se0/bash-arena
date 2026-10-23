@@ -37,7 +37,7 @@ docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
 # → plataforma en http://localhost:8091 · API en http://localhost:18080
 ```
 
-sha256: (se commita al empaquetar el tarball)
+sha256: (ver releases/bash-arena-v0.2.0.tar.gz.sha256)
 
 ---
 
