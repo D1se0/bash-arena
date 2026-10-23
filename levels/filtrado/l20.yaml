@@ -1,0 +1,39 @@
+id: filtrado-l20
+track: filtrado
+index: 20
+title: "La fracción exacta"
+subtitle: "head + tail apilados"
+xp: 35
+difficulty: 2
+brief: >
+  > La coral del dojo ensaya una canción de 12 trenzas. El maestro dice:
+  > "El secreto está en el compás final, pero solo en su primer verso".
+  > Si sabes cortar por el final y luego por el principio, lo tendrás.
+goal: >
+  Muestra la única línea que contiene la flag: es la 10.ª línea del fichero ~/cancion.txt (cuenta desde el final: la tercera contando desde atrás, pero la primera del tramo final).
+hints:
+  - "tail -n N fichero entrega las N últimas líneas."
+  - "alto ahí: con head -n 1 te quedas con la primera de ese tramo."
+  - "tail -n 3 ~/cancion.txt | head -n 1"
+teach: >
+  Se combinan dos "tijeras": tail corta por el final y head por el principio.
+  
+      tail -n 3 fichero     # el tramo de las 3 últimas líneas
+      | head -n 1           # de ese tramo, la primera
+  
+  Ese es el verso escondido —donde vive la flag—.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Filtrado"
+  printf 'verso 01\nverso 02\nverso 03\nverso 04\nverso 05\nverso 06\nverso 07\nverso 08\nverso 09\n%s\nverso 11\nverso 12\n' "$DOJO_FLAG" > /home/agent/cancion.txt
+  chown agent:agent /home/agent/cancion.txt
+solution: |
+  tail -n 3 ~/cancion.txt | head -n 1
+cheatsheet:
+  - {cmd: "tail -n N", desc: "últimas N líneas"}
+  - {cmd: "head -n M", desc: "primeras M líneas"}
+keywords:
+  - "tail"
+  - "head"
+profile: default

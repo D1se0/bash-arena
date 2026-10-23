@@ -1,0 +1,46 @@
+id: forense-l20
+track: forense
+index: 20
+title: "Hexagonal"
+subtitle: "xxd: bytes a texto"
+xp: 65
+difficulty: 5
+brief: >
+  > El técnico volcó un intercambio en forma hexadecimal en ~/rastro.hex:
+  > cada byte son dos caracteres hex. Laっても flag viaja ahí dentro en
+  > plano... pero no lo verás con cat. Los hex tienen que Volver a bytes.
+goal: >
+  Convierte ~/rastro.hex con xxd -r -p (reverse + plain hex) y verifica que la flag asoma en la salida.
+hints:
+  - "xxd -p convierte a hex; xxd -r -p hace lo inverso (hex → bytes)."
+  - "El fichero .hex puede llevar saltos de línea: xxd -r -p los tolera."
+  - "echo $(cat rastro.hex) | xxd -r -p"
+teach: >
+  xxd trabaja con "hexdumps". Para invertir un fichero de hex plano:
+  
+      echo $(cat ~/rastro.hex) | xxd -r -p
+  
+  -p interpreta entrada/salida como hex plano y -r revierte al binario.
+  El grep final confirma que la flag está dentro:
+  
+      ... | grep -o 'FLAG{[^}]*}'
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Forense"
+  printf 'día 2024-01-01: volcado de la sesión\n' > /tmp/cx_header
+  printf 'día 2024-01-01: fin\n' >> /tmp/cx_header
+  # cuerpo: la flag + relleno, todo en hex con saltos de línea
+  payload=$(printf 'sesión abierta. %s fin de sesión\n' "$DOJO_FLAG" | xxd -p | tr -d '\n')
+  echo "$payload" > /home/agent/rastro.hex
+  chown agent:agent /home/agent/rastro.hex
+solution: |
+  echo $(cat ~/rastro.hex) | xxd -r -p | grep -o 'FLAG{[^}]*}'
+cheatsheet:
+  - {cmd: "xxd -p fich", desc: "vuelca el fichero en hex plano"}
+  - {cmd: "xxd -r -p", desc: "convierte hex plano de nuevo a bytes"}
+  - {cmd: "strings fich", desc: "alternativa: extrae texto de un binario"}
+keywords:
+  - "xxd"
+  - "strings"
+profile: default

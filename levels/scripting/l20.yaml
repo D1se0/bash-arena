@@ -1,0 +1,48 @@
+id: scripting-l20
+track: scripting
+index: 20
+title: "El bucle de la tropa"
+subtitle: "for + globbing"
+xp: 60
+difficulty: 4
+brief: >
+  > El sargento repartió la contrapartida entre la tropa: fragmentos
+  > pequeños en ~/tropa/*.txt. Ninguno lleva la flag entera. Para
+  > recomponer el mensaje hay que UNIR todos los fragmentos: el bucle for
+  > con tilde-glob es la herramienta del sargento.
+goal: >
+  Concatena en orden TODOS los ficheros ~/tropa/*.txt (usa for f in … con cat "$f") y muestra el mensaje completo con la flag.
+hints:
+  - "for f in ~/tropa/*.txt; do … done itera los ficheros del patrón."
+  - "cat \"$f\" imprime cada fichero: al concatenar todos sale el mensaje."
+  - "El globbing (*.txt) se expande en orden alfabético."
+teach: >
+  Un for con glob recorre ficheros:
+  
+      for f in ~/tropa/*.txt; do
+        cat "$f"
+      done
+  
+  Cada iteración imprime un fragmento; en conjunto la flag completa queda
+  reconstruida (y ordenada, porque el globbing ordena alfabéticamente).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Scripting"
+  rm -rf /home/agent/tropa
+  mkdir -p /home/agent/tropa
+  flag="$DOJO_FLAG"
+  half=$(( ${#flag} / 2 ))
+  printf '%s' "${flag:0:half}"     > /home/agent/tropa/01_parte.txt
+  printf '%s' "${flag:half}"       > /home/agent/tropa/02_parte.txt
+  printf 'fin de la contrapartida\n' > /home/agent/tropa/03_fin.txt
+  chown -R agent:agent /home/agent/tropa
+solution: |
+  for f in ~/tropa/*.txt; do cat "$f"; done; echo
+cheatsheet:
+  - {cmd: "for f in FILES; do …; done", desc: "bucle sobre un patrón de ficheros"}
+  - {cmd: "*.txt", desc: "globbing: se expande a la lista ordenada"}
+keywords:
+  - "for"
+  - ".txt"
+profile: default

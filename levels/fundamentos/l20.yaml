@@ -1,0 +1,42 @@
+id: fundamentos-l20
+track: fundamentos
+index: 20
+title: "La guía invertida"
+subtitle: "tac + rev: leer al revés"
+xp: 30
+difficulty: 2
+brief: >
+  > Un vendedor callejero te entrega su libreta de contactos, pero está
+  > escrita al revés: las líneas van de abajo a arriba y cada línea está
+  > volteada letra a letra. La única línea con :FLAGVEZ: al secundar
+  > (con su contenido también volteado) es la que buscas.
+goal: >
+  Muestra la flag del fichero ~/guia.txt tal como se escribió originalmente (deshaz el orden de líneas y el de letras de cada línea).
+hints:
+  - "tac imprime las líneas en orden inverso (cat al revés)."
+  - "rev invierte los caracteres de cada línea."
+  - "Encadena ambos: tac fichero | rev — y observa qué línea queda limpia."
+teach: >
+  tac es cat con las líneas en orden inverso; rev voltea los caracteres de cada
+  línea. Combinados deshacen cualquier "escritura al revés":
+  
+      tac ~/guia.txt | rev
+  
+  La línea que contiene el texto de la flag quedará legible en la salida.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Fundamentos"
+  printf '%s\n' "$(printf 'señuelo del tejado' | rev)" > /home/agent/guia.txt
+  printf '%s\n' "$(printf '%s' "$DOJO_FLAG" | rev)" >> /home/agent/guia.txt
+  printf '%s\n' "$(printf 'señuelo del sótano' | rev)" >> /home/agent/guia.txt
+  chown agent:agent /home/agent/guia.txt
+solution: |
+  tac ~/guia.txt | rev
+cheatsheet:
+  - {cmd: "tac", desc: "imprime el fichero con las líneas invertidas"}
+  - {cmd: "rev", desc: "invierte los caracteres de cada línea"}
+keywords:
+  - "tac"
+  - "rev"
+profile: default

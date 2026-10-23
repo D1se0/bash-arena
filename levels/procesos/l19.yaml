@@ -1,0 +1,54 @@
+id: procesos-l19
+track: procesos
+index: 19
+title: "El candado de la señal"
+subtitle: "usr1 a un proceso en espera"
+xp: 55
+difficulty: 4
+brief: >
+  > Un "celador" del dojo duerme agarrado a un candado. Solo si le envías
+  > la señal USR1 depositará la llave (la flag) en ~/candado.listo.
+  > Encuéntralo con pgrep y despíertalo con la señal correcta.
+goal: >
+  El proceso que contiene "celador" en su línea de comando aún duerme; envíale la señal SIGUSR1 y lee ~/candado.listo (se crea al recibir la señal).
+hints:
+  - "pgrep -f PATRÓN lista los PID cuyo comando completo encaja con PATRÓN."
+  - "kill -USR1 PID envía SIGUSR1 (las señales USR1/USR2 son \"de usuario\")."
+  - "kill -USR1 $(pgrep -f \"[c]elador\") && sleep 2 && cat ~/candado.listo"
+teach: >
+  pgrep -f busca en TODA la línea de comando (no solo el nombre):
+  
+      pgrep -f '[c]elador'    # imprime el PID (el corchete evita auto-coincidir)
+  
+  Con kill -USR1 se le avisa; el proceso tiene un trap que, al recibir la señal,
+  escribe la llave en disco. Después solo hay que leerla:
+  
+      kill -USR1 $(pgrep -f '[c]elador') && sleep 2 && cat ~/candado.listo
+  
+  El corchete importa: pgrep -f busca en TODA la línea de comando —
+  incluida la de tu propia invocación, que contiene la palabra — y sin el
+  [ c ] te matarías a ti mismo con la señal. (sleep 2 deja tiempo al trap).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 19" "Procesos"
+  cat > /tmp/celador.sh <<'CEL'
+  #!/bin/bash
+  trap 'echo "$DOJO_FLAG" > /home/agent/candado.listo' USR1
+  while :; do sleep 1; done
+  CEL
+  chmod +x /tmp/celador.sh
+  (su -s /bin/bash agent -c 'setsid /tmp/celador.sh' &) 
+  for i in 1 2 3 4 5 6 7 8 9 10; do pgrep -f 'celador' >/dev/null && break; sleep 0.3; done
+solution: |
+  kill -USR1 $(pgrep -f '[c]elador') && sleep 2 && cat ~/candado.listo
+cheatsheet:
+  - {cmd: "pgrep -f texto", desc: "PIDs whose command line matches"}
+  - {cmd: "pgrep -f '[c]lave'", desc: "truco: el corchete evita auto-coincidir con tu propia cmdline"}
+  - {cmd: "kill -USR1 PID", desc: "envía la señal de usuario 1"}
+  - {cmd: "trap CMD SIto", desc: "en un script: qué hacer al recibir una señal"}
+keywords:
+  - "pgrep"
+  - "kill"
+  - "trap"
+profile: default

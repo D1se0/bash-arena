@@ -1,0 +1,49 @@
+id: boss-l19
+track: boss
+index: 19
+title: "El mayor del caso"
+subtitle: "pipeline: uniq + sort -n + xargs"
+xp: 90
+difficulty: 5
+brief: >
+  > El archivo de cierre del caso (diario.txt) registra a quién se llamó
+  > por canal: la ÚLTIMA palabra de cada línea es el "ciudadano". El
+  > ciudadano que más repite es el jefe de la banda; guarda su expediente
+  > en ~/casos/<ciudadano>.txt… con la flag dentro.
+goal: >
+  Analiza diario.txt, descubre qué ciudadano (última columna) aparece MÁS veces y muestra su expediente ~/casos/<ciudadano>.txt.
+hints:
+  - "awk '{print $NF}' toma la ÚLTIMA columna de cada línea."
+  - "sort | uniq -c cuenta repeticiones; sort -n ordena por ese conteo numérico."
+  - "tail -n 1 se queda con el mayor; el campo 2.º es el nombre."
+teach: >
+  Pipeline de análisis (el clásico de "word count"):
+  
+      awk '{print $NF}' ~/diario.txt   # la última palabra de cada línea
+      | sort | uniq -c                 # cuenta repeticiones
+      | sort -n                        # de menor a mayor frecuencia
+      | tail -n 1                      # el ganador: "  N ciudadano"
+      | awk '{print $2}'               # el nombre del ganador
+      | xargs -I{} cat ~/casos/{}.txt  # lee SU expediente
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 19" "Boss"
+  rm -rf /home/agent/diario.txt /home/agent/casos
+  { printf 'ch1 lobo\nch2 lobo\nch3 lobo\nch4 zorro\nch5 zorro\nch6 lobo\n'; } > /home/agent/diario.txt
+  mkdir -p /home/agent/casos
+  printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /home/agent/casos/lobo.txt
+  printf 'expediente zorro: vacío\n' > /home/agent/casos/zorro.txt
+  printf 'expediente tejón: vacío\n' > /home/agent/casos/tejon.txt
+  chown -R agent:agent /home/agent/diario.txt /home/agent/casos
+solution: |
+  awk '{print $NF}' ~/diario.txt | sort | uniq -c | sort -n | tail -n 1 | awk '{print $2}' | xargs -I{} cat ~/casos/{}.txt
+cheatsheet:
+  - {cmd: "awk '{print $NF}'", desc: "última columna (NF = nº de campos)"}
+  - {cmd: "sort -n | uniq -c | sort -n", desc: "frecuencia par línea: lo clásico"}
+  - {cmd: "xargs -I{} CMD {}", desc: "COLÓN la salida en un marcador de posición"}
+keywords:
+  - "awk"
+  - "sort"
+  - "xargs"
+profile: default

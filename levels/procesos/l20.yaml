@@ -1,0 +1,44 @@
+id: procesos-l20
+track: procesos
+index: 20
+title: "Nombre en la lista"
+subtitle: "ps -eo args"
+xp: 55
+difficulty: 4
+brief: >
+  > Un doberman del dojo circula con un disfraz obsesivo: su línea de
+  > comando (los "args") lleva escondida la flag en texto plano. /proc
+  > tiene poco espacio, así que quien esconde cosas ahí es porque confía
+  > en que nadie mire las columnas.
+goal: >
+  Lista las líneas de comando completas de todos los procesos con ps -eo args y usa grep con el patrón FLAG{…} para incautar la flag.
+hints:
+  - "ps -eo args imprime la última columna de los procesos: su comando completo."
+  - "Un grep -o patrón extrae CADA coincidencia (no la línea entera)."
+  - "El patrón FLAG{…} sirve para localizarla sin exponer la entrada completa."
+teach: >
+  ps -eo args muestra el COMANDO COMPLETO con argumentos de cada proceso; es
+  otra forma de leer /proc/*/cmdline. Con grep se incauta:
+  
+      ps -eo args | grep -o 'FLAG{[^}]*}'
+  
+  grep -o imprime solo la parte que encaja con el patrón —la flag, entera.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Procesos"
+  printf '#!/bin/bash\nwhile sleep 7; do :; done\n' > /tmp/doberman.sh
+  chmod +x /tmp/doberman.sh
+  (setsid /tmp/doberman.sh "$DOJO_FLAG" &)
+  for i in 1 2 3 4 5 6 7 8 9 10; do pgrep -f 'doberman' >/dev/null && break; sleep 0.3; done
+solution: |
+  ps -eo args | grep -o 'FLAG{[^}]*}'
+cheatsheet:
+  - {cmd: "ps -eo args", desc: "lista los comandos completos de los procesos"}
+  - {cmd: "pgrep -f", desc: "versión reducida: solo PIDs"}
+  - {cmd: "grep -o PATRÓN", desc: "muestra solo la parte que encaja"}
+keywords:
+  - "ps"
+  - "pgrep"
+  - "grep"
+profile: default

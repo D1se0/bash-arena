@@ -1,0 +1,42 @@
+id: permisos-l20
+track: permisos
+index: 20
+title: "La maleta del inspector"
+subtitle: "chown con sudo"
+xp: 50
+difficulty: 4
+brief: >
+  > El inspector invitado dejó su maletín en tu cueva… pero lo cerró con
+  > llave: el fichero es DE ÉL (propietario inspector) y tú no puedes
+  > leerlo. Tienes sudo: recupera la propiedad y la lee.
+goal: >
+  Cambia el propietario de ~/cueva/maletin.txt para que seas tú y muestra su contenido.
+hints:
+  - "ls -l muestra el propietario en la 3.ª columna."
+  - "sudo chown agent FICHERO transfiere la propiedad."
+  - "Después de apropiarte, cat ya funciona."
+teach: >
+  chown cambia el dueño; solo root (o sudo) puede dárselo a otro. Después de
+  apropiarte del maletín, leer es trivial:
+  
+      ls -l ~/cueva/maletin.txt          # quien es el dueño
+      sudo chown agent ~/cueva/maletin.txt
+      cat ~/cueva/maletin.txt
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Permisos"
+  mkdir -p /home/agent/cueva
+  useradd -M inspector 2>/dev/null || true
+  printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /home/agent/cueva/maletin.txt
+  chown inspector:inspector /home/agent/cueva/maletin.txt
+  chmod 600 /home/agent/cueva/maletin.txt
+solution: |
+  ls -l ~/cueva/maletin.txt && sudo chown agent ~/cueva/maletin.txt && cat ~/cueva/maletin.txt
+cheatsheet:
+  - {cmd: "sudo chown user F", desc: "transfiere la propiedad a user"}
+  - {cmd: "ls -l", desc: "ve quién es el dueño y los permisos"}
+keywords:
+  - "sudo"
+  - "ls"
+profile: sudo

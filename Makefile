@@ -33,7 +33,7 @@ test: ## Tests unitarios + integración (requiere Docker)
 	@npm run test:unit
 
 test:levels ## Verifica solución de cada nivel
-	@./scripts/test-levels.sh
+	@node scripts/test-levels.mjs
 
 clean: ## Limpia build de node/vite
 	@rm -rf app/*/dist docs-site/dist coverage node_modules/.cache
