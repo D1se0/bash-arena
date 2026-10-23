@@ -61,16 +61,12 @@ export default function App() {
           desborda fuera del viewport */}
       <main className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row gap-4 p-4">
         <div className="flex-1 min-w-0 flex flex-col gap-4">
-          {/* SIN min-h-0 aquí: la min-height natural de la rama (barra +
-              terminal con su min-h-[280px]) es el piso del flexbox; el panel
-              inferior — con min-h-0 y overflow-y-auto — es quien se encoge
-              con scroll cuando el form/cheat sheet engordan. Con min-h-0 en
-              la rama podía encogerse por debajo de sus 280px y la terminal
-              desbordaba pintando sobre el panel. */}
-          {/* shrink-0 también: en <lg el scroll lo lleva el main (los hijos no
-              se encogen); en lg el piso lo da la min-height natural de la rama
-              (barra + terminal 280px) y el panel inferior es quien cede */}
-          <div className={fullscreen ? 'contents' : 'flex-1 shrink-0 flex flex-col gap-2'}>
+          {/* min-h-0: la rama puede encogerse — el piso del trade-off no es
+              la terminal sino el panel (max-h 46vh con scroll propio), que
+              nunca desaparece ni solapa; la terminal se queda con lo que
+              sobra y si se queda corta, ⛶ fullscreen. En <lg el scroll lo
+              lleva el main (shrink-0 evita colapso de los hijos). */}
+          <div className={fullscreen ? 'contents' : 'flex-1 min-h-0 shrink-0 flex flex-col gap-2'}>
             {/* barra de acciones de la terminal (en fullscreen es overlay) */}
             <div
               className={
@@ -99,12 +95,11 @@ export default function App() {
                 <span aria-hidden>🗂</span> niveles
               </button>
             </div>
-            {/* min-h garantizado EN el wrapper (no en la caja interior): así
-                flexbox nunca encoge la terminal por debajo de 280px y el panel
-                inferior es quien cede espacio (scroll interno) — sin este
-                wrapper la terminal desbordaba y solapaba el panel cuando el
-                formulario de flag + cheat sheet engordan */}
-            <div className={fullscreen ? 'fixed inset-x-1 top-9 bottom-1 z-40 min-h-0' : 'flex-1 min-h-[280px]'}>
+            {/* piso de 280px SOLO <lg (el main escrollea y la terminal debe
+                medir algo); en lg sin piso: el wrapper encaja en el espacio
+                que deja el panel (h-full) y así el panel NUNCA queda fuera
+                de pantalla por culpa de la terminal */}
+            <div className={fullscreen ? 'fixed inset-x-1 top-9 bottom-1 z-40 min-h-0' : 'flex-1 min-h-[280px] lg:min-h-0'}>
               <TerminalPane fullscreen={fullscreen} />
             </div>
           </div>

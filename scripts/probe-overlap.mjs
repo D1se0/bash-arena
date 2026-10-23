@@ -51,6 +51,13 @@ function checkOut(m, mode) {
     if (horizontalOverlap && verticalOverlap) {
       problems.push(`${m.label}: la terminal SOLAPA el panel del nivel (term.bottom=${m.term.bottom} panel.y=${m.panel.y})`);
     } else oklog.push(`${m.label}: sin solape (term.bottom=${Math.round(m.term.bottom)}, panel.y=${Math.round(m.panel.y)})`);
+    // el panel debe SER VISIBLE y usable: ni colapsado ni recortado fuera
+    // de la caja del main (regresión: el panel reducido a 34px invisibles)
+    if (m.panel.height < 150) problems.push(`${m.label}: el panel está COLAPSADO (h=${Math.round(m.panel.height)} < 150) — invisible para el usuario`);
+    else oklog.push(`${m.label}: panel visible (h=${Math.round(m.panel.height)})`);
+    if (m.main && m.panel.bottom > m.main.y + m.main.height + 1) {
+      problems.push(`${m.label}: el panel queda RECORTADO fuera del main (panel.bottom=${Math.round(m.panel.bottom)} > main.bottom=${Math.round(m.main.y + m.main.height)})`);
+    }
   } else {
     // columna: el panel no debe invadir la caja visual del terminal…
     const coversTerm = m.panel.y < m.term.bottom - 4 && m.panel.y > m.term.y + 8;
