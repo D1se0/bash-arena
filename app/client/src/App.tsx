@@ -61,7 +61,16 @@ export default function App() {
           desborda fuera del viewport */}
       <main className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row gap-4 p-4">
         <div className="flex-1 min-w-0 flex flex-col gap-4">
-          <div className={fullscreen ? 'contents' : 'flex-1 min-h-0 flex flex-col gap-2'}>
+          {/* SIN min-h-0 aquí: la min-height natural de la rama (barra +
+              terminal con su min-h-[280px]) es el piso del flexbox; el panel
+              inferior — con min-h-0 y overflow-y-auto — es quien se encoge
+              con scroll cuando el form/cheat sheet engordan. Con min-h-0 en
+              la rama podía encogerse por debajo de sus 280px y la terminal
+              desbordaba pintando sobre el panel. */}
+          {/* shrink-0 también: en <lg el scroll lo lleva el main (los hijos no
+              se encogen); en lg el piso lo da la min-height natural de la rama
+              (barra + terminal 280px) y el panel inferior es quien cede */}
+          <div className={fullscreen ? 'contents' : 'flex-1 shrink-0 flex flex-col gap-2'}>
             {/* barra de acciones de la terminal (en fullscreen es overlay) */}
             <div
               className={
@@ -90,7 +99,12 @@ export default function App() {
                 <span aria-hidden>🗂</span> niveles
               </button>
             </div>
-            <div className={fullscreen ? 'fixed inset-x-1 top-9 bottom-1 z-40 min-h-0' : 'flex-1 min-h-0'}>
+            {/* min-h garantizado EN el wrapper (no en la caja interior): así
+                flexbox nunca encoge la terminal por debajo de 280px y el panel
+                inferior es quien cede espacio (scroll interno) — sin este
+                wrapper la terminal desbordaba y solapaba el panel cuando el
+                formulario de flag + cheat sheet engordan */}
+            <div className={fullscreen ? 'fixed inset-x-1 top-9 bottom-1 z-40 min-h-0' : 'flex-1 min-h-[280px]'}>
               <TerminalPane fullscreen={fullscreen} />
             </div>
           </div>

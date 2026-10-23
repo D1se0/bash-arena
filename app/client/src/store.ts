@@ -81,7 +81,6 @@ interface ArenaState {
   setBrowserOpen: (v: boolean, track?: string | null) => void;
   setConnected: (c: boolean) => void;
   ingest: (m: Msg) => void;
-  setConnected: (c: boolean) => void;
   resetLevelFx: () => void;
 }
 

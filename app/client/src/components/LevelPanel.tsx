@@ -34,11 +34,14 @@ export default function LevelPanel() {
     setShake(false);
   };
 
+  // sin shrink-0 en el section: si aparece el form + cheat sheet, es este
+  // panel quien se encoge (con su propio scroll) y no empuja a la terminal
+  // fuera de su caja — el solape de la info con lo de abajo iba por aquí.
   return (
-    <section
-      className="rounded-xl bg-panel/80 border border-edge focus:ring-0 p-4 flex flex-col gap-3 min-h-0 overflow-y-auto lg:max-h-[46vh] shrink-0"
-      aria-label="panel del nivel"
-    >
+      <section
+        className="rounded-xl bg-panel/80 border border-edge focus:ring-0 p-4 flex flex-col gap-3 min-h-0 overflow-y-auto shrink-0 lg:shrink lg:max-h-[46vh]"
+        aria-label="panel del nivel"
+      >
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="text-lg font-semibold text-nord6 truncate">
           <span className="text-morado">{level.track}</span> · {level.title}
