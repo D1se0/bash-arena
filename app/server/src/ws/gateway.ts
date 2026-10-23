@@ -29,8 +29,25 @@ interface ConnState {
   playerId: string | null;
   session: SessionRecord | null;
   engine: GameEngine | null;
-  withheld: string;          // línea en curso retenida (eco local); '' = vacía
+  // ── mini-readline del gateway ──────────────────────────────────────────
+  // En modo retención (en el prompt del dojo) el buffer propio del gateway
+  // sustituye al de bash: si reenviáramos teclas de edición al shell tal
+  // cual, bash tendría su línea vacía (retención = nada llega Enter)
+  // y las flechas/historial se desincronizarían. El gateway implementa el
+  // editor completo y al Enter entrega SOLO el bloque final al shell.
+  buf: string;              // línea en edición (eco local)
+  pos: number;              // posición del cursor en buf (0..buf.length)
+  esc: string;              // secuencia escape a medio parsear (puede partirse entre chunks)
+  histIdx: number;          // índice en history; -1 = línea actual
+  draft: string;            // lo que se estaba tecleando al entrar en historial
+  history: string[];        // historial de líneas Enter-committeadas (sesión WS)
+  promptRaw: string;        // bytes del prompt de la ÚLTIMA línea (para Ctrl+L)
+  promptCols: number;       // ancho visible del prompt anterior
+  cols: number;             // columnas reportadas por el cliente (resize)
   atPrompt: boolean;
+  hold: string;             // teclas retenidas mientras el prompt del dojo no llegó aún
+  holdTimer: NodeJS.Timeout | null; // pase-through retardado (p. ej. subshell sin OSC)
+  holdDrained: boolean;     // true = ya se soltó el hold como passthrough (no reenviar)
   connectedAt: number;
   lastNoSessionAt: number;   // throttle del aviso «sin sesión»
 }
@@ -77,7 +94,7 @@ export function attachGateway(wss: WebSocketServer, service: LevelsService): voi
       ws.close(4299, 'rate limited');
       return;
     }
-    connStates.set(ws, { ip, playerId: null, session: null, engine: null, withheld: '', atPrompt: false, connectedAt: Date.now(), lastNoSessionAt: 0 });
+    connStates.set(ws, { ip, playerId: null, session: null, engine: null, buf: '', pos: 0, esc: '', histIdx: -1, draft: '', history: [], promptRaw: '', promptCols: 0, cols: 80, atPrompt: false, hold: '', holdTimer: null, holdDrained: false, connectedAt: Date.now(), lastNoSessionAt: 0 });
     ws.on('message', (raw) => handleMsg(ws, raw, service));
     ws.on('close', (code, reason) => void onConnClose(ws, code, reason.toString('utf8')));
     ws.on('error', () => undefined);
@@ -124,6 +141,7 @@ async function onConnClose(ws: WebSocket, code = 1006, why = ''): Promise<void> 
   const st = connStates.get(ws);
   connStates.delete(ws);
   if (!st) return;
+  cancelHold(st); // sin timer colgando tras el cierre
   // el contenedor se mantiene un rato (reconexión); con la gracia de cierre el
   // slot per-IP se libera pronto si el jugador no vuelve (antes: 15 min colgado)
   if (st.playerId) {
@@ -207,6 +225,7 @@ async function routeMsg(ws: WebSocket, st: ConnState, msg: ClientToServerMsgs, s
     }
     case 'resize': {
       const p = msg.payload as { cols: number; rows: number };
+      st.cols = Math.max(20, Math.min(500, Math.round(p.cols) || 80));
       st.session?.session.resize(p.cols, p.rows);
       return;
     }
@@ -276,7 +295,8 @@ async function startLevel(
     send(ws, { type: 'error', payload: { message: 'no hay nivel disponible' } });
     return;
   }
-  st.withheld = '';
+  cancelHold(st); // el nivel nuevo empieza limpio: sin teclas retenidas
+  resetEdit(st);
   st.atPrompt = false;
   if (opts.label) sendText(ws, `\r\n\x1b[38;5;110m${opts.label}\x1b[0m\r\n`);
   try {
@@ -306,15 +326,180 @@ async function startLevel(
   }
 }
 
-function onShellData(ws: WebSocket, st: ConnState, chunk: string): void {
-  if (chunk.includes('\x1b]133;A')) {
-    st.atPrompt = true;
-  } else if (!st.atPrompt && /(?:^|\n)\s*[$#] ?$/.test(chunk)) {
-    st.atPrompt = true;
-  }
-  send(ws, { type: 'data', payload: { data: chunk } });
+function drainHoldAsPassthrough(ws: WebSocket, st: ConnState): void {
+  if (st.holdTimer) { clearTimeout(st.holdTimer); st.holdTimer = null; }
+  const pending = st.hold;
+  st.hold = '';
+  st.holdDrained = true;
+  if (pending) st.session?.session.write(pending);
 }
 
+function cancelHold(st: ConnState): void {
+  if (st.holdTimer) { clearTimeout(st.holdTimer); st.holdTimer = null; }
+  st.hold = '';
+  st.holdDrained = false;
+}
+
+function onShellData(ws: WebSocket, st: ConnState, chunk: string): void {
+  // estado del hold ANTES de procesar este chunk (el flush del marcador lo usa)
+  const holdPending = st.holdDrained ? '' : st.hold;
+  const wasDrained = st.holdDrained;
+  cancelHold(st);
+  const marker = chunk.indexOf('\x1b]133;A');
+  if (marker !== -1) {
+    st.atPrompt = true;
+    resetEdit(st);
+    // prompt visible de la ÚLTIMA línea del prompt (arena-prompt es de 2 líneas):
+    // todo lo que va del salto de línea anterior al marcador OSC, ya sin ANSI
+    const ps1 = chunk.slice(0, marker);
+    const nl = ps1.lastIndexOf('\n');
+    const tail = ps1.slice(nl + 1);
+    st.promptRaw = tail
+      // eslint-disable-next-line no-control-regex -- parsear ANSI exige bytes de control
+      .replace(/\x1b\][^\x07]*(?:\x07|\x1b\\)/g, '')
+      // eslint-disable-next-line no-control-regex -- idem: secuencia CSI
+      .replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
+    st.promptCols = st.promptRaw.length;
+  } else if (!st.atPrompt && /(?:^|\n)\s*[$#] ?$/.test(chunk)) {
+    st.atPrompt = true;
+    resetEdit(st);
+    st.promptRaw = '';
+    st.promptCols = 0;
+  }
+  if (st.atPrompt) {
+    // sincroniza el readline del bash: si las teclas anticipadas ya se
+    // soltaron como passthrough (holdDrained), bash puede tener una línea a
+    // medio construir delante del prompt que llega ahora — Ctrl+U la limpia
+    // antes de que el editor del gateway tome el control. Hacerlo SIEMPRE es
+    // seguro: en un prompt recién pintado la línea de bash está vacía y el
+    // Ctrl+U no es más que un no-op.
+    if (wasDrained) st.session?.session.write('\x15');
+  }
+  // el chunk del browser SIEMPRE: contiene la salida del shell (banner, prompt)
+  send(ws, { type: 'data', payload: { data: chunk } });
+  // las teclas retenidas se entregan al editor DESPUÉS de que el cliente pinta
+  // el prompt (mismo procesado que si acabaran de llegar).
+  if (st.atPrompt && holdPending) onInput(ws, st, holdPending);
+}
+
+
+// ── primitivas de render del mini-readline ─────────────────────────────────
+// El prompt de bash es desconocido para el gateway (ancho variable), así que
+// TODOS los redibujos se limitan a la región que el propio gateway ecoó: se
+// avanza al final de la región, se retrocede buf.length columnas (región
+// propia) y se borra desde ahí. El prompt nunca se toca.
+
+const CUR = (n: number, dir: 'C' | 'D'): string => (n > 0 ? `\x1b[${n}${dir}` : '');
+
+function resetEdit(st: ConnState): void {
+  st.buf = '';
+  st.pos = 0;
+  st.esc = '';
+  st.histIdx = -1;
+  st.draft = '';
+}
+
+/** Reemplaza toda la línea ecoada (sobrescribe la región propia y apenas el prompt). */
+function replaceLine(ws: WebSocket, st: ConnState, line: string, pos = line.length): void {
+  if (st.buf.length > 0) {
+    const tail = CUR(st.buf.length - st.pos, 'C');
+    sendText(ws, tail + CUR(st.buf.length, 'D') + '\x1b[K');
+  }
+  st.buf = line;
+  st.pos = Math.max(0, Math.min(pos, line.length));
+  sendText(ws, line + CUR(line.length - st.pos, 'D'));
+}
+
+function insertText(ws: WebSocket, st: ConnState, text: string): void {
+  if (!text) return;
+  const tail = st.buf.slice(st.pos);
+  st.buf = st.buf.slice(0, st.pos) + text + tail;
+  st.pos += text.length;
+  sendText(ws, text + tail + CUR(tail.length, 'D'));
+}
+
+/** Borra el carácter anterior al cursor (Backspace). */
+function backspace(ws: WebSocket, st: ConnState): void {
+  if (st.pos === 0) return void sendText(ws, '\x07');
+  const tail = st.buf.slice(st.pos);
+  st.buf = st.buf.slice(0, st.pos - 1) + tail;
+  st.pos--;
+  if (tail.length === 0) sendText(ws, '\b \b');
+  else sendText(ws, '\x1b[D' + tail + ' ' + CUR(tail.length + 1, 'D'));
+}
+
+/** Borra el carácter bajo el cursor (Delete). */
+function deleteChar(ws: WebSocket, st: ConnState): void {
+  if (st.pos >= st.buf.length) return void sendText(ws, '\x07');
+  const tail = st.buf.slice(st.pos + 1);
+  st.buf = st.buf.slice(0, st.pos) + tail;
+  if (tail.length === 0) sendText(ws, ' \b');
+  else sendText(ws, tail + ' ' + CUR(tail.length + 1, 'D'));
+}
+
+function moveHome(ws: WebSocket, st: ConnState): void { if (st.pos > 0) { sendText(ws, CUR(st.pos, 'D')); st.pos = 0; } }
+function moveEnd(ws: WebSocket, st: ConnState): void { if (st.pos < st.buf.length) { sendText(ws, CUR(st.buf.length - st.pos, 'C')); st.pos = st.buf.length; } }
+
+/** Ctrl+L: borra pantalla y repinta prompt+línea (el prompt se conoce desde OSC 133;A). */
+function clearScreen(ws: WebSocket, st: ConnState): void {
+  sendText(ws, '\x1b[2J\x1b[H' + st.promptRaw + st.buf.slice(0, st.pos) + st.buf.slice(st.pos));
+}
+
+type HistDir = 'up' | 'down';
+function historyNav(ws: WebSocket, st: ConnState, dir: HistDir): void {
+  if (st.history.length === 0) return void sendText(ws, '\x07');
+  if (st.histIdx === -1) {
+    if (dir === 'down') return void sendText(ws, '\x07');
+    st.draft = st.buf;
+    st.histIdx = st.history.length - 1;
+  } else if (dir === 'up') {
+    if (st.histIdx > 0) st.histIdx--;
+    else return void sendText(ws, '\x07');
+  } else {
+    st.histIdx++;
+    if (st.histIdx >= st.history.length) {
+      st.histIdx = -1;
+      return void replaceLine(ws, st, st.draft);
+    }
+  }
+  replaceLine(ws, st, st.history[st.histIdx]);
+}
+
+function pushHistory(st: ConnState, line: string): void {
+  const t = line.trim();
+  if (!t) return;
+  if (st.history[st.history.length - 1] === t) return; // dedupe consecutivos
+  st.history.push(t);
+  if (st.history.length > 200) st.history.shift();
+}
+
+/** Tab: completado real vía exec en el contenedor (compgen), LCP + bell. */
+async function complete(ws: WebSocket, st: ConnState): Promise<void> {
+  const before = st.buf.slice(0, st.pos);
+  const m = /(^|[\s|;&(])(\S*)$/.exec(before);
+  const word = m?.[2] ?? '';
+  const firstWord = m?.[1] === '' || m?.[1] === undefined;
+  let cands: string[] = firstWord
+    ? [...RESERVED_COMMANDS].filter((c) => c.startsWith(word))
+    : [];
+  if (word.length > 0) {
+    try {
+      const got = await st.session?.session.complete(word, firstWord) ?? [];
+      cands = [...new Set([...cands, ...got])].sort();
+    } catch { /* sin completado del contenedor: nos quedamos con lo local */ }
+  }
+  if (cands.length === 0) return void sendText(ws, '\x07');
+  let lcp = cands[0];
+  for (const c of cands) {
+    let i = 0;
+    while (i < lcp.length && i < c.length && lcp[i] === c[i]) i++;
+    lcp = lcp.slice(0, i);
+  }
+  if (cands.length === 1 && !lcp.endsWith('/') && !lcp.endsWith('=')) lcp += ' ';
+  if (lcp.length <= word.length) return void sendText(ws, '\x07');
+  const added = lcp.slice(word.length);
+  insertText(ws, st, added);
+}
 
 function reservedOf(line: string): string | null {
   const first = line.split(/\s+/, 1)[0];
@@ -332,82 +517,149 @@ function onInput(ws: WebSocket, st: ConnState, data: string): void {
     }
     return;
   }
-  if (!st.atPrompt) {
-    // El gateway perdió el rastro del prompt (reconexión WS, salida del comando
-    // anterior aún llegando…). En passthrough tal cual: el shell sigue dueño.
-    // (La retención por línea con interceptación de comandos dojo se hace en
-    // el branch de atPrompt; cuando el OSC 133;A del prompt de arena-prompt
-    // llegue, la siguiente línea ya pasa por retención.)
-    st.withheld = '';
+  if (!st.atPrompt && st.holdDrained) {
+    // El hold ya se soltó (no hay prompt OSC a la vista: subshell, paginador,
+    // proceso interactivo…): passthrough directo, el shell sigue dueño.
     st.session.session.write(data);
     return;
   }
-  // procesa el stream por líneas con retención SIEMPRE activa (eco local):
-  // el shell no recibe nada hasta el Enter/flush de línea completa. Así no hay
-  // caracteres a medio camino con estado desincronizado del readline (causa
-  // del «la 'l' de ls desaparece» y «bash: next: command not found»).
+  // procesa el stream con retención SIEMPRE activa (mini-readline propio con
+  // eco local): el shell no recibe nada hasta el Enter. Las flechas, el
+  // historial y la edición viven AQUÍ (la retención deja el readline de bash
+  // con una línea vacía: reenviarle edición cruda lo desincronizaba — causa
+  // del «error de bash» al leer ficheros y de que ↑/↓/←/→ no hicieran nada).
   for (let i = 0; i < data.length; i++) {
     const ch = data[i];
-    if (ch === '\r' || ch === '\n') {
-      commitEnter(ws, st, ch);
-    } else if (ch === '\x03') {
-      // Ctrl+C: cancela la línea en curso y aborta lo que bash tenga colgado
-      st.withheld = '';
+    if (st.esc.length > 0) {
+      escFeed(ws, st, ch);
+      continue;
+    }
+    if (ch === '\x03') {
+      // Ctrl+C: cancelda línea/hold y avisa al shell (SIGINT). Va directo.
+      cancelHold(st);
+      resetEdit(st);
       sendText(ws, '^C\r\n');
       st.session.session.write('\x03');
-    } else if (ch === '\x7f') {
-      st.withheld = st.withheld.slice(0, -1);
-      sendText(ws, '\b \b');
-    } else if (ch === '\x1b' || ch < ' ') {
-      // secuencias de escape (↑/↓, home…) y controles varios: al shell
-      // (readline los interpreta) y cancela la línea en curso del buffer
-      st.withheld = '';
-      st.session.session.write(ch);
-    } else if (st.withheld.length < 512) {
-      st.withheld += ch;
-      sendText(ws, ch); // eco local visible
+      continue;
     }
-  }
-  if (st.withheld.length > 512) {
-    st.withheld = '';
-    sendText(ws, '\r\n\x1b[38;5;203mlínea demasiado larga: se cancela, reintenta\x1b[0m\r\n');
+    if (!st.atPrompt) {
+      // Retención anticipada: el prompt OSC 133;A aún no llegó. Si fuera
+      // passthrough crudo, bash absorbería estas teclas mientras dibuja su
+      // prompt y la línea del editor quedaría partida (carrera que produce
+      // «cat.profile: command not found» y flechas muertas). Se retiene y al
+      // arribo del marcador se procesa como entrada normal del editor. Si el
+      // marcador nunca llega, el timer lo suelta como passthrough.
+      st.hold += ch;
+      if (st.hold.length > 2048) {
+        drainHoldAsPassthrough(ws, st);
+        continue;
+      }
+      if (!st.holdTimer) {
+        st.holdTimer = setTimeout(() => drainHoldAsPassthrough(ws, st), 300);
+      }
+      continue;
+    }
+    if (ch === '\r' || ch === '\n') {
+      commitEnter(ws, st, ch);
+    } else if (ch === '\x7f') {
+      backspace(ws, st);
+    } else if (ch === '\t') {
+      void complete(ws, st);
+    } else if (ch === '\x15') {
+      replaceLine(ws, st, ''); // Ctrl+U: vacía la línea
+    } else if (ch === '\x0b') {
+      sendText(ws, '\x1b[K'); // Ctrl+K: mata hasta el final
+      st.buf = st.buf.slice(0, st.pos);
+    } else if (ch === '\x17') {
+      // Ctrl+W: borra la palabra anterior al cursor
+      let p = st.pos;
+      while (p > 0 && st.buf[p - 1] === ' ') p--;
+      while (p > 0 && st.buf[p - 1] !== ' ') p--;
+      replaceLine(ws, st, st.buf.slice(0, p) + st.buf.slice(st.pos), p);
+    } else if (ch === '\x0c') {
+      clearScreen(ws, st); // Ctrl+L
+    } else if (ch === '\x01') {
+      moveHome(ws, st); // Ctrl+A
+    } else if (ch === '\x05') {
+      moveEnd(ws, st); // Ctrl+E
+    } else if (ch === '\x1b') {
+      st.esc = '\x1b';
+    } else if (ch >= ' ') {
+      if (st.buf.length < 1024) insertText(ws, st, ch);
+      else sendText(ws, '\x07');
+    }
+    // resto de controles (\x00-\x1f no mapeados): se ignoran sin ensuciar el buffer
   }
 }
 
-/**
- * suelta lo retenido y lo entrega al shell COMO BLOQUE: primero borra la línea
- * del eco local (\x1b[2K\r) en la terminal del jugador y luego escribe el
- * bloque en el stdin del shell, que lo ecoa completo (como un pegado).
- */
-function flushWithheld(ws: WebSocket, st: ConnState, text: string): void {
-  st.withheld = '';
-  sendText(ws, '\x1b[2K\r');
-  const session = st.session?.session;
-  if (session && text) session.write(text);
+/** Parsea secuencias CSI/ESC-O partidas entre chunks (1 byte y hasta órgano final). */
+function escFeed(ws: WebSocket, st: ConnState, ch: string): void {
+  st.esc += ch;
+  const e = st.esc;
+  if (e.length === 2) {
+    if (e[1] === '[' || e[1] === 'O') return; // queda el byte final fuera
+    st.esc = ''; // ESC suelto (Meta): descartado
+    return;
+  }
+  const fb = e[e.length - 1];
+  if (e[1] === '[') {
+    if (fb < '@' || fb > '~') {
+      if (e.length > 16) st.esc = ''; // secuencia corrupta: descartar
+      return;
+    }
+    st.esc = '';
+    const params = e.slice(2, -1);
+    if (fb === 'A') historyNav(ws, st, 'up');
+    else if (fb === 'B') historyNav(ws, st, 'down');
+    else if (fb === 'C' && st.pos < st.buf.length) { st.pos++; sendText(ws, '\x1b[C'); }
+    else if (fb === 'D' && st.pos > 0) { st.pos--; sendText(ws, '\x1b[D'); }
+    else if (fb === 'H') moveHome(ws, st);
+    else if (fb === 'F') moveEnd(ws, st);
+    else if (fb === '~') {
+      if (params === '3') deleteChar(ws, st);
+      else if (params === '1' || params === '7') moveHome(ws, st);
+      else if (params === '4' || params === '8') moveEnd(ws, st);
+    }
+    return;
+  }
+  st.esc = '';
+  if (fb === 'A') historyNav(ws, st, 'up');
+  else if (fb === 'B') historyNav(ws, st, 'down');
+  else if (fb === 'C' && st.pos < st.buf.length) { st.pos++; sendText(ws, '\x1b[C'); }
+  else if (fb === 'D' && st.pos > 0) { st.pos--; sendText(ws, '\x1b[D'); }
+  else if (fb === 'H') moveHome(ws, st);
+  else if (fb === 'F') moveEnd(ws, st);
 }
 
 /** Enter: si la línea era un comando del dojo, se maneja con el motor en vez del shell. */
 function commitEnter(ws: WebSocket, st: ConnState, newline: string): void {
-  const withheld = st.withheld;
-  st.withheld = '';
-  {
-    const trimmed = withheld.trim();
-    if (withheld.length === 0) {
-      st.session?.session.write(newline);
-      return;
-    }
-    const cmd = reservedOf(trimmed);
-    if (!cmd) {
-      // no era un comando del dojo: el bloque va al shell, que lo ecoa completo
-      flushWithheld(ws, st, withheld + newline);
-      return;
-    }
-    sendText(ws, '\r\n'); // cierra visualmente la línea ecoada
-    handleCommand(ws, st, trimmed);
+  const line = st.buf;
+  const trimmed = line.trim();
+  const hadText = trimmed.length > 0;
+  // borramos la región ecoada (el prompt se conserva) y el editor queda limpio
+  if (hadText) {
+    const tail = CUR(st.buf.length - st.pos, 'C');
+    sendText(ws, tail + CUR(st.buf.length, 'D') + '\x1b[K');
+  }
+  st.buf = '';
+  st.pos = 0;
+  st.esc = '';
+  st.histIdx = -1;
+  st.draft = '';
+  if (!hadText) {
+    // línea vacía: el propio shell ecoa el Enter y pinta el prompt siguiente
+    st.session?.session.write(newline);
     return;
   }
-  // passthrough: solo el Enter
-  st.session?.session.write(newline);
+  pushHistory(st, trimmed);
+  const cmd = reservedOf(trimmed);
+  if (!cmd) {
+    // no era un comando del dojo: el bloque va al shell, que lo ecoa completo
+    st.session?.session.write(trimmed + (newline === '\n' ? '\n' : '\r'));
+    return;
+  }
+  sendText(ws, '\r\n'); // cierra visualmente la línea ecoada
+  handleCommand(ws, st, trimmed);
 }
 
 function handleCommand(ws: WebSocket, st: ConnState, line: string): void {

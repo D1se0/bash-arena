@@ -150,11 +150,100 @@ export class ArenaSession {
     }
   }
 
+  /** Fichero con el PID del shell interactivo del agente (cd /proc/PID/cwd para el cwd real). */
+  private static readonly SHELL_PID_FILE = '/tmp/.arena-bash.pid';
+
+  /**
+   * Completado de Tab vía exec en el contenedor: primer token = comandos del
+   * PATH (compgen -A command), resto = ficheros del cwd ACTUAL del shell
+   * interactivo (su cwd se lee de /proc/<pid>/cwd, PID marcado al arrancar).
+   */
+  async complete(word: string, firstWord: boolean): Promise<string[]> {
+    if (!this.container) return [];
+    const pidFile = ArenaSession.SHELL_PID_FILE;
+    const shq = (s: string): string => `'${s.replaceAll("'", `'\\''`)}'`;
+    const script = firstWord
+      ? `compgen -A command -- ${shq(word)} 2>/dev/null`
+      : `p=$(cat ${pidFile} 2>/dev/null); cd /proc/"$p"/cwd 2>/dev/null && compgen -f -- ${shq(word)} 2>/dev/null`;
+    const exec = await this.container.exec({
+      Cmd: ['bash', '-c', script],
+      User: 'agent',
+      AttachStdout: true,
+      AttachStderr: false,
+      Tty: false,
+    });
+    try {
+      const stream = await exec.start({ hijack: true, stdin: false });
+      const out = await this.drainExecStream(exec, stream, 2000);
+      const lines = out
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0 && l.startsWith(word));
+      logger.debug({ session: this.id, word, firstWord, n: lines.length }, 'tab complete');
+      return lines;
+    } catch (e) {
+      logger.debug({ err: (e as Error).message, word }, 'tab exec failed');
+      return [];
+    } finally {
+      try {
+        (exec as unknown as { close?: () => void }).close?.();
+      } catch { /* ignora */ }
+    }
+  }
+
+  /**
+   * Lee la salida de un exec con deadline y settle por inactividad. Con exec
+   * hijack el stream NO dispara 'end' al morir el proceso (la conexión HTTP
+   * queda abierta): esperamos (a) silencio de 80 ms tras el último dato o
+   * (b) el hard timeout. Todo el path resuelve SIEMPRE con lo acumulado.
+   */
+  private drainExecStream(exec: Docker.Exec, stream: NodeJS.ReadableStream, timeoutMs: number): Promise<string> {
+    return new Promise((resolve) => {
+      const parts: Buffer[] = [];
+      const done = (why: string) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        clearTimeout(quiet);
+        stream.unpipe(demux);
+        (stream as unknown as { destroy?: () => void }).destroy?.();
+        resolve(Buffer.concat(parts).toString('utf8'));
+        logger.debug({ session: this.id, why }, 'complete exec done');
+      };
+      let settled = false;
+      let quiet: NodeJS.Timeout | undefined;
+      const timer = setTimeout(() => done('timeout'), timeoutMs);
+      const demux = new PassThrough();
+      const stderrSink = new PassThrough();
+      docker.modem.demuxStream(stream, demux, stderrSink);
+      demux.on('data', (c: Buffer) => {
+        parts.push(c);
+        // settle: tras 80 ms sin datos nuevos damos por terminado el exec
+        clearTimeout(quiet);
+        quiet = setTimeout(() => void this.execDone(exec).then(() => done('settle')), 80);
+      });
+      demux.on('error', () => done('error'));
+      stream.resume(); // nada escucha el stream crudo: evita backpressure
+    });
+  }
+
+  /** TRUE si el exec ya terminó (Running=false). */
+  private async execDone(exec: Docker.Exec): Promise<boolean> {
+    try {
+      const st = await exec.inspect();
+      return typeof st.Running === 'boolean' && !st.Running;
+    } catch {
+      return true; // exec muerto: no sigue esperando
+    }
+  }
+
   /** Conecta el shell del agente (bash login + TTY). */
   private async attachUserShell(): Promise<void> {
     if (!this.container) throw new Error('container missing');
+    // wrapper: marca el PID del shell interactivo (exec NO cambia el PID) para
+    // que el completado de Tab pueda hacer cd al cwd real del agente
     const exec = await this.container.exec({
-      Cmd: ['bash', '--login'],
+      Cmd: ['bash', '-c', `echo $$ > ${ArenaSession.SHELL_PID_FILE} && exec bash --login`],
       User: 'agent',
       AttachStdin: true,
       AttachStdout: true,
