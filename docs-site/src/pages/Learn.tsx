@@ -12,6 +12,8 @@ const TRACKS = [
   { icon: '⚔️', name: 'Boss / Cronometrado', color: '#BF616A', n: 14, tools: 'find+grep+base64 · mtime · pkill+decode · tar+zip+base64', boss: 'Muñeca rusa de empaquetados' },
   { icon: '🧲', name: 'Grep (especialización)', color: '#8FBCBB', n: 14, tools: 'grep -i · -v · -n · -o · -E · -F · -r · -w · -A/-B · anclas y clases · --include · -x', boss: 'Cadena forense -rh + -oE sobre un árbol de intrusión' },
   { icon: '📐', name: 'Awk (especialización)', color: '#88C0D0', n: 14, tools: 'awk $N · $NF · NF · NR · -F: · comparaciones · regex ~ · máximo+END · asociativos · join FNR==NR · match()', boss: 'Firma del operador: doble filtro + acumulador + END' },
+  { icon: '🥇', name: 'Grep Maestro', color: '#5EBA97', n: 24, tools: 'grep -oE (correo/IP/fechas) · -c · -ic · -v en cadena · -rl/-L · -m 1 · -f · -A/-B/-C asimétrico · -E anclado · --include/--exclude · -xF exacto', boss: 'Boss triple filtro: trig sin noise anclado por fecha' },
+  { icon: '🏅', name: 'Awk Maestro', color: '#EBCB8B', n: 24, tools: 'awk -F · $2>N umbrales · suma/máximo/promedio · NR y rangos · regex ~ por campo · length · substr/index/split · sub/gsub · printf/sprintf · BEGIN/FS · OFS · arrays dedup/histograma · FNR==NR · match()+RSTART', boss: 'Boss: join con exclusión de lista negra + total con END' },
 ];
 
 export default function Learn() {
@@ -20,9 +22,9 @@ export default function Learn() {
       <header>
         <h1 className="text-3xl font-bold">Qué se aprende</h1>
         <p className="mt-2 text-frost/75 max-w-3xl">
-          13 tracks y 244 niveles declarativos. Cada nivel genera su propio escenario en el
-          contenedor: nada de lecturas estáticas ni listas de comandos para memorizar —
-          tú investigas, encuentras la flag y subes de rango.
+        15 tracks y 292 niveles declarativos. Cada nivel genera su propio escenario en el
+        contenedor: nada de lecturas estáticas ni listas de comandos para memorizar —
+        tú investigas, encuentras la flag y subes de rango.
         </p>
       </header>
       <section className="grid md:grid-cols-2 gap-4">

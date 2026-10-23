@@ -14,6 +14,8 @@ export const TRACKS = [
   { id: 'boss', name: 'Boss / Cronometrado', icon: '⚔️', color: '#BF616A', order: 11, description: 'desafíos que combinan varias herramientas' },
   { id: 'grep', name: 'Grep (especialización)', icon: '🧲', color: '#8FBCBB', order: 12, description: 'solo grep a fondo: -i -v -n -o -E -F -r -w, contexto -A/-B, anclas, clases, --include, -x y boss en cadena' },
   { id: 'awk', name: 'Awk (especialización)', icon: '📐', color: '#88C0D0', order: 13, description: 'solo awk a fondo: campos, NF/NR, -F:, comparaciones, regex por campo, máximo+END, concatenación, asociativos, join FNR==NR y match()' },
+  { id: 'grep-pro', name: 'Grep Maestro', icon: '🥇', color: '#5EBA97', order: 14, description: '24 niveles de experto SOLO grep: extracción -oE, -c/-l/-L, límite -m, patrones -f, contexto -A/-B/-C asimétrico, alternancia anclada, --include/--exclude, IPs y fechas y boss triple-filtro' },
+  { id: 'awk-pro', name: 'Awk Maestro', icon: '🏅', color: '#EBCB8B', order: 15, description: '24 niveles de experto SOLO awk: -F, umbrales numéricos, suma/máximo, NR y rangos, regex por campo, length/substr/index/split, sub/gsub, printf/sprintf, BEGIN/FS, OFS, arrays dedup e histograma, join FNR==NR y match()' },
 ] as const;
 
 export interface CheatsheetEntry {

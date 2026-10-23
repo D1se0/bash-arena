@@ -1,0 +1,45 @@
+id: grep-pro-l24
+track: grep-pro
+index: 24
+title: "Boss: triple filtro encadenado"
+subtitle: 3 greps en tubería
+xp: 175
+difficulty: 5
+brief: "El log de tuna.log tiene eventos de 4 tipos: trig, span, offs y noise. Se quiere
+  algo estricto."
+goal: De tuna.log imprime SOLO las líneas que contengas trig PERO no noise Y QUE EMPIECE
+  CON el timestamp 2026-10-25.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Grep-Pro"
+  cat > /home/agent/tuna.log <<EOF
+  2026-10-25 08:01 trig sin más
+  2026-10-25 08:02 span sin acierto
+  2026-10-25 08:03 trig con ruido noise
+  ruido span offs por el medio
+  2026-10-25 09:01 offs solitario
+  2026-10-25 09:02 trig limpio
+  2026-10-25 10:00 trig música de fondo
+  2026-10-25 11:07 trig con la marca: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/tuna.log
+solution: grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'
+hints:
+  - "Encadenas tuberías: filtrar trig; excluir noise; conservar los timestamps ISO que
+    empiezan por el año 2026."
+  - Un grep puede tanto INCLUIR (default) como EXCLUIR con -v, y ANCLA con ^
+  - grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'
+teach: "El triple-encadenado es el trabajo diario de los ingenieros de logs: filtra,
+  excluye el ruido, y añade una ancla de fecha. El resultado final limpio."
+cheatsheet:
+  - cmd: grep a f | grep -v b
+    desc: filtra + excluye
+  - cmd: grep -E '^2026' f
+    desc: ancla año inicio
+keywords:
+  - grep
+  - boss
+  - cadena
+  - filtro
+profile: default

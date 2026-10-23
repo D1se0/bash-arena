@@ -1,0 +1,37 @@
+id: awk-pro-l5
+track: awk-pro
+index: 5
+title: La línea n exacta
+subtitle: awk NR == N
+xp: 60
+difficulty: 4
+brief: El fichero lineas.log tiene la marca en la LÍNEA 7 (y SOLO esa).
+goal: De lineas.log imprime EXACTAMENTE la línea 7.
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 05" "Awk-Pro"
+
+  { for i in $(seq 1 10); do
+      if [ "$i" -eq 7 ]; then echo "línea-7 al adicion: $DOJO_FLAG"; else echo "línea $i: ruido"; fi
+    done; } > /home/agent/lineas.log
+  chown agent:agent /home/agent/lineas.log
+solution: awk 'NR == 7' /home/agent/lineas.log
+hints:
+  - "NR es el contador de línea leídas (1-based): NR == 7 selecciona esa."
+  - Con solo la condición, awk imprime la LÍNEA entera por defecto.
+  - awk 'NR == 7' /home/agent/lineas.log
+teach: "awk NR cuenta las líneas procesadas: NR == 7 es un selector directo. Ante archivos
+  enormes, es más rápido que sed -n 7p."
+cheatsheet:
+  - cmd: awk 'NR == 7' f
+    desc: solo la línea 7
+  - cmd: awk 'NR % 2 == 0' f
+    desc: solo las líneas pares
+keywords:
+  - awk
+  - NR
+  - línea
+profile: default

@@ -1,3 +1,46 @@
+# bash-arena v0.2.0 — tracks de experto: grep-pro y awk-pro (292 niveles)
+
+Dos tracks nuevos de nivel experto **solo con una herramienta**: 48 niveles con
+soluciones verificadas dentro de contenedores reales.
+
+## Qué añade esta release
+
+- **Track neuronal grep-pro (24 niveles)**: extracción con `-oE` (correos, IPs,
+  fechas ISO), contadores `-c`/`-ic`, limpieza `-v` en dos pasadas, `-rl`/`-L`,
+  límite `-m 1`, patrones desde fichero `-f`, contexto `-A`/`-B`/`-C`
+  (incluido el corte asimétrico `-B 3 -A 1`), alternancia anclada, rangos
+  `{n}`, `--include`/`--exclude` recursivo, pipelines grep+cut y boss de
+  triple filtro encadenado.
+- **Track neuronal awk-pro (24 niveles)**: delimitadores `-F` y `BEGIN{FS}`
+  simétrico, umbrales numéricos por columna, suma/máximo/promedio con
+  acumulador y `END`, selección por `NR` y rangos, regex por campo con
+  `length`, `substr`/`index`/`split`, `sub`/`gsub`, `printf`/`sprintf`,
+  reconstrucción con `OFS`, arrays (histograma y dedup `!a[$0]++`), join de
+  dos ficheros con `FNR==NR`, extracción con `match()`+`RSTART`/`RLENGTH` y
+  boss de exclusión+total (el «SQL del shell»).
+- **Soluciones única-verificadas**: cada solución imprime la marca y sale
+  exit 0 ejecutada con bash+awk+dentro de su contenedor del nivel
+  (scripts/test-levels.mjs); lint de niveles integrado en CI.
+- **Docs al día**: 292 guías paso a paso regeneradas, contadores
+  (15 tracks / 292 niveles) actualizados en Home/Técnico/Funciona/README y
+  las dos fichas nuevas en «Aprender» y «Soluciones».
+- **Modo claro pulido en la web**: superficie de código y marco de terminal
+  adaptables, sin bloques oscuros fijados a mano ni scroll horizontal
+  (pasada visual automatizada en las páginas del docs-site).
+
+## Despliegue rápido (igual que v0.1.x)
+
+```bash
+tar -xzf bash-arena-v0.2.0.tar.gz && cd bash-arena-v0.2.0
+docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
+./scripts/deploy.sh
+# → plataforma en http://localhost:8091 · API en http://localhost:18080
+```
+
+sha256: (se commita al empaquetar el tarball)
+
+---
+
 # bash-arena v0.1.1 — terminal estable y 216 niveles
 
 Parche de robustez de la terminal y ampliación del dojo a **216 niveles**.

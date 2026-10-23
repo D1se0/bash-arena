@@ -1,0 +1,44 @@
+id: grep-pro-l14
+track: grep-pro
+index: 14
+title: La IP del incidente
+subtitle: grep -oE de IPs IPv4
+xp: 70
+difficulty: 5
+brief: El registro guarda muchas IPs, pero solo una es de la subred 10.0. Extraela LIMPIA
+  (solo la IP, sin el resto del texto).
+goal: Del registro connexion.log, extrae TODAS las IPs de la subred 10.0.X.X (formato
+  D.D.D.D, una por línea); la línea del testigo (sin IP) sale aparte con su marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Grep-Pro"
+  cat > /home/agent/connexion.log <<EOF
+  conn desde 192.168.1.1 puerto 443
+  pin externo 10.0.4.23 port 22
+  intento de admin en 127.0.0.1 local
+  $DOJO_FLAG
+  pin 10.0d.4.23 MAL FORMADO
+  host con texto 10.0.255.200 sobresaliente
+  EOF
+  chown agent:agent /home/agent/connexion.log
+solution: grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{'
+  /home/agent/connexion.log
+hints:
+  - Para extraer LIMPIO usa -oE; con clases 10[.]0[...[0-9]+ evitas escapar el punto.
+  - El patrón casa solo la subred 10.0 y deja fuera la IP mal formada 10.0d...
+  - La línea del testigo (sin IP) sale aparte con grep 'FLAG{'.
+  - grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{'
+    /home/agent/connexion.log
+teach: "Extraccion de IPs: \\b10\\.[0-9]+\\.[0-9]+\\b con -oE es el patrón más solicitado.
+  No necesitas validar el rango 0-255 en logs normales."
+cheatsheet:
+  - cmd: grep -oE 'IP_pattern' f
+    desc: extrae IPs limpias
+  - cmd: grep -oE '\\b(\\d{1,3}\\.){3}\\d{1,3}\\b' f
+    desc: todas las IP IPv4
+keywords:
+  - grep
+  - -oE
+  - IP
+profile: default

@@ -1,0 +1,47 @@
+id: grep-pro-l4
+track: grep-pro
+index: 4
+title: El despertador del ruido
+subtitle: "grep -v: excluir comentarios y líneas vacías"
+xp: 65
+difficulty: 4
+brief: El fichero tomcat.conf es 80% comentarios y líneas en blanco. Se lee bien cuando limpías.
+goal: "Imprime del fichero tomcat.conf únicamente las líneas de configuración real: quita
+  los comentarios (# al principio) y las líneas vacías, EN DOS PASADAS."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 04" "Grep-Pro"
+  cat > /home/agent/tomcat.conf <<EOF
+  # titulo del conf
+  # ajustes del buffer
+  buffer = 16
+
+  modo = estricto
+  EOF
+  echo "usuario = agent" >> /home/agent/tomcat.conf
+  echo "# fin" >> /home/agent/tomcat.conf
+  echo "puerto = 8080 $DOJO_FLAG" >> /home/agent/tomcat.conf
+  echo "" >> /home/agent/tomcat.conf
+  chown agent:agent /home/agent/tomcat.conf
+solution: grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'
+hints:
+  - "Primera pasada: -v '^#' quita los comentarios."
+  - Las líneas vacías son '^$' (ancla inicio + ancla fin, nada en medio). Con espacios
+    antes puede usar '\s*' o [[:space:]]*.
+  - grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'
+teach: "Los greps -v encadenados son el patrón clásico de limpieza. El ^ y el $ son
+  impacrables: ^# solo casa SI la línea ARRANCA con #, y ^$ solo si está vacía."
+cheatsheet:
+  - cmd: grep -v '^#' f
+    desc: descarta comentarios de línea
+  - cmd: grep -v '^[[:space:]]*$' f
+    desc: descarta vacías/blancas
+  - cmd: grep -E -v '^(#|$)' f
+    desc: ambas en una regex
+keywords:
+  - grep
+  - -v
+  - limpieza
+  - conf
+profile: default

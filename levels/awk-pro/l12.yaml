@@ -1,0 +1,38 @@
+id: awk-pro-l12
+track: awk-pro
+index: 12
+title: Primera sustitución
+subtitle: awk sub()
+xp: 70
+difficulty: 5
+brief: "Sus líneas mezclan dominios con puntos. La clave: sub() con el punto escapado y
+  una sola sustitución. Una de las líneas lleva la marca."
+goal: De dominios.txt imprime cada línea con su PRIMER punto sustituido por guion bajo
+  (solo la PRIMERA ocurrencia).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Awk-Pro"
+  cat > /home/agent/dominios.txt <<EOF
+  mail.dominio.presto.es
+  web.dominio.secundaria.es
+  otro.dato.con.puntos: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/dominios.txt
+solution: awk '{ sub(/\./, "_"); print }' /home/agent/dominios.txt
+hints:
+  - sub(regex, reemplazo) sustituye SOLO la primera aparición del regex en la línea actual.
+  - "El punto hay que escaparlo: en regex casa cualquier carácter ( /\\./ )."
+  - awk '{ sub(/\./, "_"); print }' /home/agent/dominios.txt
+teach: "sub(regex, valor) cambia la PRIMERA coincidencia. Es la awk-equivalencia de sed
+  s/…/…/ (1 vez). Usela cuando ya hay awk: así evitas una tubería adicional."
+cheatsheet:
+  - cmd: awk '{ sub(/a/, "b"); print }' f
+    desc: sustituye la PRIMERA a por b
+  - cmd: awk '{ x = sub(/a/, "b"); print x }' f
+    desc: 1 si hizo sustituciones, 0 si no
+keywords:
+  - awk
+  - sub
+  - sustitución
+profile: default

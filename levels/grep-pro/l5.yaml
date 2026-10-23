@@ -1,0 +1,52 @@
+id: grep-pro-l5
+track: grep-pro
+index: 5
+title: Solo los nombres de ficheros con señal
+subtitle: "grep -rl: nombres, no contenido"
+xp: 65
+difficulty: 4
+brief: La auditoría sobre el árbol de negocio no quiere el detalle, solo SABER EN QUÉ
+  ficheros aparece la señal.
+goal: Del árbol negocio/, da la lista de ficheros que contienen «confidencial» (solo
+  nombres) y deja a la vista la línea del testigo que lleva la marca.
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 05" "Grep-Pro"
+
+  mkdir -p /home/agent/negocio/clientes /home/agent/negocio/proveedores
+
+  echo "factura común" > /home/agent/negocio/facturas.txt
+
+  echo "confidencial: el testigo $DOJO_FLAG" > /home/agent/negocio/secretos.txt
+
+  echo "nada relevante aquí" > /home/agent/negocio/clientes/lista.txt
+
+  echo "confidencial en acta de consejo" > /home/agent/negocio/clientes/nota.txt
+
+  echo "memorando confidencial de compras" >
+  /home/agent/negocio/proveedores/suministro.csv
+
+  echo "sin rastro" > /home/agent/negocio/proveedores/vacio.csv
+
+  chown -R agent:agent /home/agent/negocio
+solution: grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio
+hints:
+  - "-l cambia la salida: muestra SOLO nombres de ficheros; con -r lo haces recursivo."
+  - La línea del testigo con la marca sale a la vista con un grep aparte.
+  - grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio
+teach: grep -l es la herramienta del «¿qué ficheros toca?» antes de entrar. Tras ella,
+  alimenta un for/xargs con los nombres.
+cheatsheet:
+  - cmd: grep -rl patrón dir
+    desc: "recursivo: solo nombres"
+  - cmd: grep -l patrón f1 f2
+    desc: solo ficheros con match
+keywords:
+  - grep
+  - -l
+  - -r
+  - ficheros
+profile: default

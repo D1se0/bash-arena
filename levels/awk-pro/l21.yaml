@@ -1,0 +1,41 @@
+id: awk-pro-l21
+track: awk-pro
+index: 21
+title: El extracted match()
+subtitle: awk match() + substr + RSTART/RLENGTH
+xp: 75
+difficulty: 5
+brief: "El fichero fragments.dat tiene líneas con texto ESENCIAL: hay un token FLAG con
+  forma FLAG{abc}. Extrae SOLO ese token."
+goal: De fragments.dat imprime SOLAMENTE la subcadena FLAG{…} de cada línea que la contenga.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Awk-Pro"
+  cat > /home/agent/fragments.dat <<EOF
+  inicio de la línea, FLAG{abc123} al medio
+  primer hallazgo FLAG{zz} corto sin cola
+  nada en esta línea
+  la señal al final: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/fragments.dat
+solution: awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }'
+  /home/agent/fragments.dat
+hints:
+  - match(s, /regex/) busca el regex en s y LLENA RSTART y RLENGTH.
+  - awk extra con substr($0, RSTART, RLENGTH) obtiene el texto casado.
+  - awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }'
+    /home/agent/fragments.dat
+teach: match(s, /regex/) llena RSTART/RLENGTH. Es lo que awk hace comparable a grep -o.
+  Especificar las llaves ([{], [}]) ARGUMENTES para no escape it inside class char.
+cheatsheet:
+  - cmd: awk 'match($0, /pat/) { print substr($0, RSTART, RLENGTH) }' f
+    desc: extrae el match (como grep -o)
+  - cmd: awk 'match($0, /pat/) { print RSTART }' f
+    desc: solo la POSICIÓN
+keywords:
+  - awk
+  - match
+  - RSTART
+  - RLENGTH
+profile: default

@@ -1,0 +1,45 @@
+id: awk-pro-l18
+track: awk-pro
+index: 18
+title: Cuenta con arrays
+subtitle: awk a[$1]++ + for (k in a)
+xp: 75
+difficulty: 5
+brief: "El fichero hits.log trae IPs (una por línea). Necesitas el HISTOGRAMA: IP cuenta
+  de hits (sin sort)."
+goal: De hits.log imprime el histograma «IP cuenta» (una por línea) y deja a la vista la
+  línea del testigo que lleva la marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Awk-Pro"
+  cat > /home/agent/hits.log <<EOF
+  10.0.0.1
+  10.0.0.2
+  10.0.0.1
+  10.0.0.3
+  10.0.0.1
+  10.0.0.2 $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/hits.log
+solution: awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log ; grep
+  'FLAG{' /home/agent/hits.log
+hints:
+  - a[$1]++ incrementa la cuenta por IP.
+  - En END, for (k in a) recorre las CLAVES y imprime indicator k y a[k].
+  - La línea del testigo con la marca se enseña aparte con grep.
+  - awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log ; grep
+    'FLAG{' /home/agent/hits.log
+teach: Los ARRAYS de awk (a[$1]++) mapean arbitrary (numéricos o strings). El bucle for (k
+  in arr) itera TODAS las CLAVES. Es el histograma más corto de escribir.
+cheatsheet:
+  - cmd: awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' f
+    desc: histograma por la col. 1
+  - cmd: awk '{ a[$1]++ } END { for (k in a) print k }' f
+    desc: solo las claves únicas
+keywords:
+  - awk
+  - array
+  - histograma
+  - END
+profile: default

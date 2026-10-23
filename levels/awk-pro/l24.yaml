@@ -1,0 +1,51 @@
+id: awk-pro-l24
+track: awk-pro
+index: 24
+title: "Boss: cayó en la lista negra"
+subtitle: awk join + exclusión + total
+xp: 175
+difficulty: 5
+brief: "Se necesitan dos ficheros: pagos.dat (usuario, monto) y blacklist.txt (usuario).
+  El reporte pide el TOTAL de los usuarios que NO están en blacklist."
+goal: Con ambos ficheros, imprime las líneas de pagos.dat cuyo usuario NO está en
+  blacklist.txt y al final el TOTAL de sus montos (suma de la 2.ª columna).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Awk-Pro"
+  cat > /home/agent/blacklist.txt <<EOF
+  developer
+  intern
+  EOF
+  cat > /home/agent/pagos.dat <<EOF
+  admin 5000
+  developer 4000
+  manager 6000 $DOJO_FLAG
+  intern 1000
+  EOF
+  chown agent:agent /home/agent/blacklist.txt /home/agent/pagos.dat
+solution: awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print
+  "total:", total }' /home/agent/blacklist.txt /home/agent/pagos.dat
+hints:
+  - En el primer fichero, llena el array (FNR==NR y next).
+  - "En el segundo, si el usuario NO está en la lista: imprime la línea y suma el monto
+    ($2)."
+  - En END imprime el total. La línea del manager lleva la marca y pasa el filtro (no está
+    en la lista).
+  - awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print
+    "total:", total }' /home/agent/blacklist.txt /home/agent/pagos.dat
+teach: 'El boss de awk envuelve el "SQL del shell": un join (fichero de índices +
+  consulta), un FILTRO NEGADO (NO está en la lista) y la SUMA con END. Es el patrón más
+  potente en awk en un único comando.'
+cheatsheet:
+  - cmd: awk 'FNR==NR { a[$1]; next } $1 in a { ... }' f1 f2
+    desc: f1 index → f2 filter
+  - cmd: awk 'FNR==NR { a[$1]; next } !($1 in a) { ... } END { print total }' f1 f2
+    desc: excluye + suma + END
+keywords:
+  - awk
+  - boss
+  - join
+  - acumulador
+  - END
+profile: default

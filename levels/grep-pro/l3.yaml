@@ -1,0 +1,43 @@
+id: grep-pro-l3
+track: grep-pro
+index: 3
+title: Mayúsculas rebeldes, cuenta igual
+subtitle: "grep -ic: caso insensible + contador"
+xp: 65
+difficulty: 4
+brief: El registro usa error/Error/ERROR indistintamente. El informe de incidencias exige
+  el total sin carecer del formato.
+goal: De visitas.log imprime el NÚMERO de líneas con error en cualquier formato de letras
+  y, aparte, la línea del testigo con la marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Grep-Pro"
+  cat > /home/agent/visitas.log <<EOF
+  ERROR nivel 1
+  error nivel 2
+  Error nivel 3
+  eRRoR nivel 4
+  ERROR nivel 5
+  errOr testigo: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/visitas.log
+solution: grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/visitas.log
+hints:
+  - "Las opciones de grep se APILAN: -i (insensible) + -c (contador)."
+  - El resultado del contador es un único número.
+  - "El testigo también se cuenta (formato errOr): su línea sale aparte con grep 'FLAG{'."
+  - grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/visitas.log
+teach: Combinar opciones cortas -ic (o -i -c) suma efectos. La apilación es la razón por
+  la que grep sigue útil en árboles grandes.
+cheatsheet:
+  - cmd: grep -ic pat f
+    desc: conteo sin mirar mayúsculas
+  - cmd: grep -in pat f
+    desc: listado insensible numerado
+keywords:
+  - grep
+  - -ic
+  - insensible
+  - contador
+profile: default

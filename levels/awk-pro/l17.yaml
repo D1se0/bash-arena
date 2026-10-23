@@ -1,0 +1,39 @@
+id: awk-pro-l17
+track: awk-pro
+index: 17
+title: Constructor de columnas
+subtitle: awk OFS + reordenación
+xp: 70
+difficulty: 5
+brief: "El fichero amplio.dat usa espacios entre campos. Necesitas REORDENAR: TERCERO,
+  PRIMERO y QUINTO, separados por |."
+goal: "De amplio.dat imprime en cada línea: campo 3, campo 1 y campo 5 (separados por |)."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Awk-Pro"
+  cat > /home/agent/amplio.dat <<EOF
+  uno dos tres cuatro cinco
+  uno dos tres cuatro cinco seis
+  uno dos tres cuatro $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/amplio.dat
+solution: awk '{ print $3 "|" $1 "|" $5 }' /home/agent/amplio.dat
+hints:
+  - "Puedes printáAR campos en el ORDEN que quieras: $3, $1, $5."
+  - 'Puedes usar OFS: BEGIN { OFS = "|" } y luego print $3, $1, $5 (con comas).'
+  - awk '{ print $3 "|" $1 "|" $5 }' /home/agent/amplio.dat
+teach: "En awk los campos $N se pueden impresar en CUALQUIER orden: no hay que reordenar
+  el fichero. El separador de cada WORKING fue el que manualmente se case: si print con
+  comas, awk separa con OFS (por defecto, espacio)."
+cheatsheet:
+  - cmd: awk '{ print $3, $1 }' f
+    desc: reordena campos (OFS pred.)
+  - cmd: awk 'BEGIN { OFS="|" } { $1 = $1; print }' f
+    desc: reconstruye con OFS=
+keywords:
+  - awk
+  - OFS
+  - reordenar
+  - campos
+profile: default

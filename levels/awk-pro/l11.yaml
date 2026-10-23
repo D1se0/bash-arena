@@ -1,0 +1,39 @@
+id: awk-pro-l11
+track: awk-pro
+index: 11
+title: La partida manual
+subtitle: awk split()
+xp: 70
+difficulty: 5
+brief: El fichero rutas.dat trae catalogo/sección/item separados por :. Necesitas TERCER
+  elemento (item).
+goal: "De rutas.dat, imprime el TERCER elemento de cada línea después de split por : (NO
+  con $3)."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Awk-Pro"
+  cat > /home/agent/rutas.dat <<EOF
+  catalogo:sección-1:item-a
+  catalogo:sección-2:$DOJO_FLAG
+  catalogo:sección-3:item-c
+  EOF
+  chown agent:agent /home/agent/rutas.dat
+solution: awk '{ split($0, a, ":"); print a[3] }' /home/agent/rutas.dat
+hints:
+  - split(cadena, array, sep) separa por el sep y LLENA el array con a[1], a[2]…
+  - El acceso a a[3] es la tercera parte (1-based).
+  - awk '{ split($0, a, ":"); print a[3] }' /home/agent/rutas.dat
+teach: split() separa una cadena en elementos ARRAY. Es útil cuando el delimitador varía
+  por línea. Sin embargo, awk ya lo haga con $N… split y la ruta manual son m's comunes en
+  el contexto actual.
+cheatsheet:
+  - cmd: awk '{ split($0, a, ":"); print a[2] }' f
+    desc: split manual y elemento 2
+  - cmd: awk '{ n = split($0, a, ":"); print n }' f
+    desc: split devuelve nº de piezas
+keywords:
+  - awk
+  - split
+  - array
+profile: default

@@ -1,0 +1,46 @@
+id: awk-pro-l20
+track: awk-pro
+index: 20
+title: Dos ficheros, una clave
+subtitle: awk FNR==NR + next
+xp: 75
+difficulty: 5
+brief: El fichero ids.txt lista los IDs permitidos; el fichero eventos.log trae líneas con
+  id. Necesitas las líneas de eventos.log cuyo ID APARECE EN ids.txt.
+goal: Con ambos ficheros (awk ficheroA ficheroB), imprime de eventos.log solo las líneas
+  cuyo primer campo ESTÉ en ids.txt.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Awk-Pro"
+  cat > /home/agent/ids.txt <<EOF
+  101
+  103
+  105
+  EOF
+  cat > /home/agent/eventos.log <<EOF
+  101 evento del agent
+  102 evento del clon
+  103 evento del usuario $DOJO_FLAG
+  104 evento del host
+  EOF
+  chown agent:agent /home/agent/ids.txt /home/agent/eventos.log
+solution: awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log
+hints:
+  - 'FNR == NR es "estoy en el PRIMER fichero": ahí llenas el array y haces NEXT.'
+  - En el segundo fichero, $1 in a es el chequeo de membresía.
+  - awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log
+teach: 'Cuando awk recibe DOS ficheros, FNR == NR es el patrón deIGNORE "estoy en el
+  primero". En NEXT hay que saltar el procesos restos. El patrón: primero llenar un índice
+  y en el segundo, consultar.'
+cheatsheet:
+  - cmd: awk 'FNR==NR { a[$1]; next } $1 in a' f1 f2
+    desc: join de 2 ficheros por clave
+  - cmd: awk 'FNR==NR { a[$1]; next } !($1 in a)' f1 f2
+    desc: "el inverso: los NO en f1"
+keywords:
+  - awk
+  - FNR
+  - NR
+  - join
+profile: default

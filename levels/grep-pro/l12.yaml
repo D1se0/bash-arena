@@ -1,0 +1,41 @@
+id: grep-pro-l12
+track: grep-pro
+index: 12
+title: Soporte de multiplicidad
+subtitle: "grep -E con |: alternancia"
+xp: 65
+difficulty: 4
+brief: "Las líneas de interés viven en dos variantes: confirmada o declined. Ambas
+  importan idénticamente."
+goal: De respuestas.log imprime solo las líneas que contengan confirmada o declined (en
+  una sola pasada).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Grep-Pro"
+  cat > /home/agent/respuestas.log <<EOF
+  ticket-1 pending revisión inicial
+  ticket-2 confirmada por operador
+  ticket-3 vencida sin respuesta
+  ticket-4 declined por el cliente
+  ticket-5 confirmada seguida de $DOJO_FLAG
+  ticket-6 dummy para relleno
+  EOF
+  chown agent:agent /home/agent/respuestas.log
+solution: grep -E 'confirmada|declined' /home/agent/respuestas.log
+hints:
+  - -E activa la regex extendida, donde el | significa ALTERNANCIA.
+  - "Sin -E, el | se interpreta literalmente y tendrías que escaparlo: \\|."
+  - grep -E 'confirmada|declined' /home/agent/respuestas.log
+teach: "La alternancia en -E (a|b) es el «Y/O» de grep: da igual la rama que case. Con más
+  variantes: (confirmad[oa]|declined)."
+cheatsheet:
+  - cmd: grep -E 'a|b' f
+    desc: acepta una u otra
+  - cmd: grep -E '(foo|bar)baz' f
+    desc: alternancia dentro del patrón
+keywords:
+  - grep
+  - -E
+  - alternancia
+profile: default

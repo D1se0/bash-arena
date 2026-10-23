@@ -1,0 +1,41 @@
+id: grep-pro-l6
+track: grep-pro
+index: 6
+title: Los ficheros SIN señal
+subtitle: "grep -L: el inverso de -l"
+xp: 70
+difficulty: 4
+brief: La auditoría legal pide la lista de ficheros que NUNCA citan el término
+  «comprometido». Es lo contrario de -l.
+goal: Del árbol auditoria/, imprime los NOMBRES de los ficheros que NO contienen
+  «comprometido» y, aparte, la línea del testigo con la marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Grep-Pro"
+  mkdir -p /home/agent/auditoria
+  echo "informe comprometido de octubre" > /home/agent/auditoria/oct.txt
+  echo "resumen del trimestre, sin señal" > /home/agent/auditoria/resumen.txt
+  echo "acta comprometida del consejo" > /home/agent/auditoria/acta.txt
+  echo "bitácora de copias de seguridad" > /home/agent/auditoria/bitacora.txt
+  echo "malargue asunto: $DOJO_FLAG" > /home/agent/auditoria/testigo.txt
+  chown -R agent:agent /home/agent/auditoria
+solution: grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{'
+  /home/agent/auditoria/testigo.txt
+hints:
+  - -L (MAYÚSCULA) muestra los ficheros SIN ninguna coincidencia; -l minúscula los CON.
+  - La línea del testigo con la marca se enseña aparte con grep.
+  - grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{'
+    /home/agent/auditoria/testigo.txt
+teach: "grep -L es la luz reversa: te parla los ficheros donde NO hubo señal. En
+  auditorías de fuga, cualquier fichero en esa lista es sospechoso."
+cheatsheet:
+  - cmd: grep -L patrón *.txt
+    desc: ficheros que NO casan
+  - cmd: grep -L patrón dir/*
+    desc: idem sobre la dir
+keywords:
+  - grep
+  - -L
+  - inverso
+profile: default

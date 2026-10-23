@@ -1,0 +1,46 @@
+id: grep-pro-l17
+track: grep-pro
+index: 17
+title: El puerto de la conexión
+subtitle: "grep -oE + cut: dos herramientas al servicio"
+xp: 70
+difficulty: 5
+brief: El fichero describe conexiones ip:port. Necesitas aislar el PUERTO pero SOLO en IPs
+  que empiecen por 10.4.
+goal: De conexiones.log extrae el PUERTO (segundo campo tras :) de las conexiones hacia
+  IPs 10.4.X.X, y deja a la vista la línea del testigo con la marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 17" "Grep-Pro"
+  cat > /home/agent/conexiones.log <<EOF
+  10.4.0.1:9999 rechazada
+  10.4.32.5:22 arrancando ssh
+  10.5.0.1:4321 subred equivocada
+  10.4.9.99:8999 puerto alternativa
+  10.0.0.3:11111 fuera del rango
+  10.4.22.4:4444 el puerto a coger: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/conexiones.log
+solution: "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d:
+  -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
+hints:
+  - grep -oE con 10[.]4[...[0-9]+:[0-9]+ saca líneas «IP:PUERTO» solo de la subred 10.4.
+  - "La tubería alimenta a cut; con -d: y -f2 coges el campo 2 (el puerto)."
+  - La línea del testigo sale aparte con grep 'FLAG{'.
+  - "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2 ;
+    grep 'FLAG{' /home/agent/conexiones.log"
+teach: grep + cut es el pipeline típico para piezas de un match más largo. -oE limita la
+  línea de partida; corte acompaña el array; ext menjadi más fácil de aplicar el campo
+  correcto.
+cheatsheet:
+  - cmd: grep -oE 'IP_pattern' f
+    desc: extrae el match como texto
+  - cmd: "cut -d: -f2"
+    desc: "segundo campo separado por :"
+keywords:
+  - grep
+  - -oE
+  - cut
+  - puerto
+profile: default

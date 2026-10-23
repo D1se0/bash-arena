@@ -1,0 +1,44 @@
+id: awk-pro-l19
+track: awk-pro
+index: 19
+title: Sólo los únicos
+subtitle: awk idiom !a[$0]++
+xp: 75
+difficulty: 5
+brief: El fichero revisados.lst tiene valores repetidos. Necesitas SOLO la PRIMERA
+  aparición de cada valor.
+goal: De revisados.lst imprime cada valor UNA VEZ (PRIMERA aparición; en el orden de llegada).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 19" "Awk-Pro"
+  cat > /home/agent/revisados.lst <<EOF
+  a
+  b
+  a
+  c
+  b
+  d
+  $DOJO_FLAG
+  a
+  EOF
+  chown agent:agent /home/agent/revisados.lst
+solution: awk '!a[$0]++' /home/agent/revisados.lst
+hints:
+  - "!a[$0]++ es el deduplicador famoso: la PRIMERA vez que se ve un valor imprime, ya que
+    a[valor] era 0 (undefined→false), y las siguientes ya no."
+  - Con la negación !, awk hace "si NO estaba presente, imprime" y luego marca presente.
+  - awk '!a[$0]++' /home/agent/revisados.lst
+teach: "El idiom !a[k]++ es el revisor universal de duplicados: sin sort -u ni awk
+  for-loop. Mantiene el ORDEN de llegada (a diferencia de sort -u)."
+cheatsheet:
+  - cmd: awk '!a[$0]++' f
+    desc: dedup por línea com.aleta
+  - cmd: awk '!a[$1]++' f
+    desc: dedup por la col. 1
+keywords:
+  - awk
+  - dedup
+  - array
+  - idioma
+profile: default

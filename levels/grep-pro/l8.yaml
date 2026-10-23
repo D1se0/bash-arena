@@ -1,0 +1,46 @@
+id: grep-pro-l8
+track: grep-pro
+index: 8
+title: El diccionario del operador
+subtitle: "grep -f: patrones desde fichero"
+xp: 70
+difficulty: 5
+brief: El equipo de filtrado tiene una lista de 3 palabras (patterns.txt) y un correo
+  largo. Cargarlas una a una sería tontería.
+goal: Usando patterns.txt como lista de patrones, imprime de carta.txt las líneas que
+  contengan CUALQUIERA de esos patrones.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 08" "Grep-Pro"
+  cat > /home/agent/patterns.txt <<EOF
+  urgente
+  crisis
+  confidencial
+  EOF
+  cat > /home/agent/carta.txt <<EOF
+  hola, es una nota amable
+  comunicado URGENTE del guardia
+  informe CONFIDENCIAL adjuntado: $DOJO_FLAG
+  asuntos de crisis cerrando a tiempo
+  nada relevante aquí
+  EOF
+  chown agent:agent /home/agent/patterns.txt /home/agent/carta.txt
+solution: grep -f /home/agent/patterns.txt -i /home/agent/carta.txt
+hints:
+  - -f fichero lee UN patrón POR LÍNEA del fichero dado; busca TODOS.
+  - Puedes combinar con -i, -E, -r, -n como cualquier otro grep.
+  - grep -if /home/agent/patterns.txt /home/agent/carta.txt
+teach: "grep -f fich-lista fich-destino construye una red de detección. Es clásico en
+  filtrado de contenido: listas negras de IP, dominios de spam, etc."
+cheatsheet:
+  - cmd: grep -f patrones.txt f
+    desc: múltiples patrones desde fichero
+  - cmd: grep -Ff patrones.txt f
+    desc: idéntico pero patrón literal
+keywords:
+  - grep
+  - -f
+  - patrones
+  - lista
+profile: default

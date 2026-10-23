@@ -1,0 +1,37 @@
+id: awk-pro-l16
+track: awk-pro
+index: 16
+title: "El valor inicial: BEGIN"
+subtitle: awk BEGIN { FS = ";" }
+xp: 70
+difficulty: 5
+brief: Si no quieres usar -F, define el separador dentro del BEGIN.
+goal: De datos.dat (delimitado por ;) imprime la SEGUNDA columna usando el BEGIN para
+  declarar el separador FS (SIN usar -F).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 16" "Awk-Pro"
+  cat > /home/agent/datos.dat <<EOF
+  a;1;X
+  b;$DOJO_FLAG;Y
+  c;3;Z
+  EOF
+  chown agent:agent /home/agent/datos.dat
+solution: awk 'BEGIN { FS = ";" } { print $2 }' /home/agent/datos.dat
+hints:
+  - BEGIN { FS = ";" } establece el separador ANTES de leer la primera línea.
+  - Equivale a -F; pero lo declaras en el SCRIPT, no en el thunk
+  - awk 'BEGIN { FS = ";" } { print $2 }' /home/agent/datos.dat
+teach: "El bloque BEGIN se ejecuta UNA VEZ antes de processar líneas: ahí se inicializa FS
+  (separador), OFS, variables, etc. Es la manera correcta cuando el separador es fijo."
+cheatsheet:
+  - cmd: awk 'BEGIN { FS=";" } { print $2 }' f
+    desc: el separador creado por BEGIN
+  - cmd: awk 'BEGIN { print "inicio" } { print $0 }' f
+    desc: BEGIN como banner
+keywords:
+  - awk
+  - BEGIN
+  - FS
+profile: default

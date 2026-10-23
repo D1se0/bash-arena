@@ -1,0 +1,43 @@
+id: awk-pro-l3
+track: awk-pro
+index: 3
+title: Suma acumulada
+subtitle: awk suma de columna + END
+xp: 65
+difficulty: 4
+brief: El fichero ventas.dat trae producto, importe. El reporte necesita la SUMA de la
+  segunda columna.
+goal: "De ventas.dat imprime cada línea tal cual (la nota suma 0) y al final el TOTAL de
+  la 2.ª columna con formato «total: N»."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Awk-Pro"
+  cat > /home/agent/ventas.dat <<EOF
+  docs 100
+  night 50
+  nights 250
+  air 1250
+  notas 0 $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/ventas.dat
+solution: awk '{ s += $2; print $0 } END { print "total:", s }' /home/agent/ventas.dat
+hints:
+  - El bloque { s += $2; print $0 } se ejecuta para cada línea; END una sola vez al final.
+  - La variable s empieza en 0 (vacía por defecto); las notas con importe 0 no mueven el
+    total.
+  - "print $0 deja cada línea a la vista: la de la nota lleva la marca."
+  - awk '{ s += $2; print $0 } END { print "total:", s }' /home/agent/ventas.dat
+teach: "El patrón {acumular} + END {imprimir} es el «streaming» de awk: procesas líneas en
+  caché y inv'mas un sólo resultado. Tu código va HEAD (procesoMedia,NR) + TAIL (END)."
+cheatsheet:
+  - cmd: awk '{s += $2} END {print s}' f
+    desc: suma de la col. 2
+  - cmd: awk 'END {print NR}' f
+    desc: nº de líneas leídas
+keywords:
+  - awk
+  - suma
+  - END
+  - acumulador
+profile: default

@@ -1,6 +1,6 @@
 {
   "name": "bash-arena",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "bash-arena — plataforma web de práctica de Linux con terminal real (Ubuntu en Docker), niveles gamificados y progreso persistente",
   "license": "MIT",

@@ -1,0 +1,42 @@
+id: grep-pro-l22
+track: grep-pro
+index: 22
+title: El contador de matched
+subtitle: "grep -o | wc: ratios de aparición vs líneas"
+xp: 75
+difficulty: 5
+brief: "El log no quiere la LISTA ni el número de líneas: quiere el TOTAL TOKEN que
+  aparece (incluso múltiples en una línea están)."
+goal: De testigos.log imprime el NÚMERO TOTAL de apariciones del token secret y, aparte,
+  la línea del testigo con la marca.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Grep-Pro"
+  cat > /home/agent/testigos.log <<EOF
+  secret aquí
+  dos secret en la misma línea secret de nuevo
+  tres al fin secret confiesa secret y secret
+  el final SECRET
+  $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/testigos.log
+solution: grep -o 'secret' /home/agent/testigos.log | wc -l ; grep 'FLAG{' /home/agent/testigos.log
+hints:
+  - -c cuenta LÍNEAS; -o con wc -l cuenta el TOTAL de tokens.
+  - La línea del testigo con la marca sale aparte con grep.
+  - grep -o 'secret' /home/agent/testigos.log | wc -l ; grep 'FLAG{'
+    /home/agent/testigos.log
+teach: grep -o patrón | wc -l es el conteo TOTAL de coincidencias (distinto de -c, que
+  cuenta LÍNEAS). Es la diferencia crucial entre "cuántas líneas" y "cuántas veces".
+cheatsheet:
+  - cmd: grep -o pat f | wc -l
+    desc: total de ocurrencias
+  - cmd: grep -c pat f
+    desc: nº de líneas con match
+keywords:
+  - grep
+  - -o
+  - wc
+  - total
+profile: default

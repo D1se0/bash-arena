@@ -1,0 +1,39 @@
+id: awk-pro-l10
+track: awk-pro
+index: 10
+title: La posición del token
+subtitle: awk index()
+xp: 65
+difficulty: 4
+brief: El fichero posiciones.txt tiene textos largos con posibles FICHAS.
+goal: De posiciones.txt imprime las LÍNEAS donde aparece el token MARK (usa index() como
+  condición de línea).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Awk-Pro"
+  cat > /home/agent/posiciones.txt <<EOF
+  un texto con MARK al medio
+  MARK al principio directamente
+  sin el token aquí
+  el token MARK esconde: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/posiciones.txt
+solution: awk 'index($0, "MARK")' /home/agent/posiciones.txt
+hints:
+  - index(cadena, subcadena) devuelve posición 1-based (0 si no aparece).
+  - Como condición de línea, index($0, "MARK") es verdad SOLO en las líneas que lo
+    contienen; awk imprime la línea entera.
+  - awk 'index($0, "MARK")' /home/agent/posiciones.txt
+teach: index(texto, subc) busca la posición 1-based de subc dentro de texto. Devuelve 0 si
+  no aparece. Es la herramienta que awk da para «¿dónde está?» sin regex.
+cheatsheet:
+  - cmd: awk '{ print index($0, "sub") }' f
+    desc: posición de la subcadena
+  - cmd: awk 'index($0, "x") > 0' f
+    desc: solo las líneas que la contengan
+keywords:
+  - awk
+  - index
+  - posición
+profile: default

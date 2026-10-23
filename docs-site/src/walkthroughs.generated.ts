@@ -15853,6 +15853,2624 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "awk '$2 == \"OK\" && $3 == \"sig\" {t = t $4} END {print t}' /home/agent/canal.txt"
+  },
+  {
+    "id": "grep-pro-l1",
+    "track": "grep-pro",
+    "index": 1,
+    "title": "El ladrón de direcciones",
+    "subtitle": "grep -oE: extracción con clases y cuantificadores",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El registro de contactos está lleno de nombres, notas y aprender tanto como se pueda: solo las direcciones de correo son la señal.",
+    "goal": "Extrae de emails.log ÚNICAMENTE las direcciones de correo (una por línea); la línea del testigo lleva la marca y se lista aparte.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "extraer",
+      "correo"
+    ],
+    "hints": [
+      "-o imprime solo la parte que casa; con -E tienes cuantificadores: +, {n,m}, alternancia |.",
+      "El patrón canonical del correo: usuario@dominio.tld, con clases [a-z0-9._-]+ y el punto como [.].",
+      "El testigo no tiene email: su línea completa sale aparte con grep 'FLAG{'.",
+      "grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log ; grep 'FLAG{' /home/agent/emails.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE 'patr\\\\.' f",
+        "desc": "extrae solo lo que casa"
+      },
+      {
+        "cmd": "grep -oE '[a-z0-9]+@\\\\S+' f",
+        "desc": "otra forma de email"
+      }
+    ],
+    "teach": "grep -oE convierte grep en extractor: cada coincidencia sale limpia en su propia línea. Con -E tienes {n,m}, clases por letra y punto; extrae el dato sin sed ni cut.",
+    "steps": [
+      {
+        "raw": "grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE [a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4} /home/agent/emails.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/emails.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/emails.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log ; grep 'FLAG{' /home/agent/emails.log"
+  },
+  {
+    "id": "grep-pro-l2",
+    "track": "grep-pro",
+    "index": 2,
+    "title": "El contador de errores",
+    "subtitle": "grep -c: cuenta, no liste",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "Tres servidores tributes a un solo log; el turno pide la cifra de errores, no la lista entera.",
+    "goal": "De accidente.log imprime CUÁNTAS líneas contienen la palabra ERROR (número) y, aparte, la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-c",
+      "contador"
+    ],
+    "hints": [
+      "-c es el CONTADOR de líneas casadas: emite un número, no el listado.",
+      "No confundir -C (mayúscula, contexto) con -c (minúscula, contador).",
+      "El testigo también es de ERROR: su línea completa sale aparte con grep 'FLAG{'.",
+      "grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{' /home/agent/accidente.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -c patrón f",
+        "desc": "cuántas líneas casan"
+      },
+      {
+        "cmd": "grep -cv patrón f",
+        "desc": "cuántas NO casan"
+      }
+    ],
+    "teach": "grep -c es el «wc -l del filtro»: la primera pregunta en diagnósticos siempre es «¿cuántas veces pasó?» antes de ver detalles.",
+    "steps": [
+      {
+        "raw": "grep -c 'ERROR' /home/agent/accidente.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-c ERROR /home/agent/accidente.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "cuenta coincidencias en vez de imprimirlas"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/accidente.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/accidente.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{' /home/agent/accidente.log"
+  },
+  {
+    "id": "grep-pro-l3",
+    "track": "grep-pro",
+    "index": 3,
+    "title": "Mayúsculas rebeldes, cuenta igual",
+    "subtitle": "grep -ic: caso insensible + contador",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El registro usa error/Error/ERROR indistintamente. El informe de incidencias exige el total sin carecer del formato.",
+    "goal": "De visitas.log imprime el NÚMERO de líneas con error en cualquier formato de letras y, aparte, la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-ic",
+      "insensible",
+      "contador"
+    ],
+    "hints": [
+      "Las opciones de grep se APILAN: -i (insensible) + -c (contador).",
+      "El resultado del contador es un único número.",
+      "El testigo también se cuenta (formato errOr): su línea sale aparte con grep 'FLAG{'.",
+      "grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/visitas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -ic pat f",
+        "desc": "conteo sin mirar mayúsculas"
+      },
+      {
+        "cmd": "grep -in pat f",
+        "desc": "listado insensible numerado"
+      }
+    ],
+    "teach": "Combinar opciones cortas -ic (o -i -c) suma efectos. La apilación es la razón por la que grep sigue útil en árboles grandes.",
+    "steps": [
+      {
+        "raw": "grep -ic 'error' /home/agent/visitas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-ic error /home/agent/visitas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "insensible a mayúsculas"
+              },
+              {
+                "flag": "-c",
+                "meaning": "cuenta coincidencias en vez de imprimirlas"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/visitas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/visitas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/visitas.log"
+  },
+  {
+    "id": "grep-pro-l4",
+    "track": "grep-pro",
+    "index": 4,
+    "title": "El despertador del ruido",
+    "subtitle": "grep -v: excluir comentarios y líneas vacías",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero tomcat.conf es 80% comentarios y líneas en blanco. Se lee bien cuando limpías.",
+    "goal": "Imprime del fichero tomcat.conf únicamente las líneas de configuración real: quita los comentarios (# al principio) y las líneas vacías, EN DOS PASADAS.",
+    "keywords": [
+      "grep",
+      "-v",
+      "limpieza",
+      "conf"
+    ],
+    "hints": [
+      "Primera pasada: -v '^#' quita los comentarios.",
+      "Las líneas vacías son '^$' (ancla inicio + ancla fin, nada en medio). Con espacios antes puede usar '\\s*' o [[:space:]]*.",
+      "grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -v '^#' f",
+        "desc": "descarta comentarios de línea"
+      },
+      {
+        "cmd": "grep -v '^[[:space:]]*$' f",
+        "desc": "descarta vacías/blancas"
+      },
+      {
+        "cmd": "grep -E -v '^(#|$)' f",
+        "desc": "ambas en una regex"
+      }
+    ],
+    "teach": "Los greps -v encadenados son el patrón clásico de limpieza. El ^ y el $ son impacrables: ^# solo casa SI la línea ARRANCA con #, y ^$ solo si está vacía.",
+    "steps": [
+      {
+        "raw": "grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-v ^# /home/agent/tomcat.conf",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v ^[[:space:]]*$",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'"
+  },
+  {
+    "id": "grep-pro-l5",
+    "track": "grep-pro",
+    "index": 5,
+    "title": "Solo los nombres de ficheros con señal",
+    "subtitle": "grep -rl: nombres, no contenido",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "La auditoría sobre el árbol de negocio no quiere el detalle, solo SABER EN QUÉ ficheros aparece la señal.",
+    "goal": "Del árbol negocio/, da la lista de ficheros que contienen «confidencial» (solo nombres) y deja a la vista la línea del testigo que lleva la marca.",
+    "keywords": [
+      "grep",
+      "-l",
+      "-r",
+      "ficheros"
+    ],
+    "hints": [
+      "-l cambia la salida: muestra SOLO nombres de ficheros; con -r lo haces recursivo.",
+      "La línea del testigo con la marca sale a la vista con un grep aparte.",
+      "grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -rl patrón dir",
+        "desc": "recursivo: solo nombres"
+      },
+      {
+        "cmd": "grep -l patrón f1 f2",
+        "desc": "solo ficheros con match"
+      }
+    ],
+    "teach": "grep -l es la herramienta del «¿qué ficheros toca?» antes de entrar. Tras ella, alimenta un for/xargs con los nombres.",
+    "steps": [
+      {
+        "raw": "grep -rl 'confidencial' /home/agent/negocio",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-rl confidencial /home/agent/negocio",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "-l",
+                "meaning": "solo nombres de fichero con coincidencia"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep -r 'FLAG{' /home/agent/negocio",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r FLAG{ /home/agent/negocio",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio"
+  },
+  {
+    "id": "grep-pro-l6",
+    "track": "grep-pro",
+    "index": 6,
+    "title": "Los ficheros SIN señal",
+    "subtitle": "grep -L: el inverso de -l",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "La auditoría legal pide la lista de ficheros que NUNCA citan el término «comprometido». Es lo contrario de -l.",
+    "goal": "Del árbol auditoria/, imprime los NOMBRES de los ficheros que NO contienen «comprometido» y, aparte, la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-L",
+      "inverso"
+    ],
+    "hints": [
+      "-L (MAYÚSCULA) muestra los ficheros SIN ninguna coincidencia; -l minúscula los CON.",
+      "La línea del testigo con la marca se enseña aparte con grep.",
+      "grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{' /home/agent/auditoria/testigo.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -L patrón *.txt",
+        "desc": "ficheros que NO casan"
+      },
+      {
+        "cmd": "grep -L patrón dir/*",
+        "desc": "idem sobre la dir"
+      }
+    ],
+    "teach": "grep -L es la luz reversa: te parla los ficheros donde NO hubo señal. En auditorías de fuga, cualquier fichero en esa lista es sospechoso.",
+    "steps": [
+      {
+        "raw": "grep -L 'comprometido' /home/agent/auditoria/*",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-L comprometido /home/agent/auditoria/*",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/auditoria/testigo.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/auditoria/testigo.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{' /home/agent/auditoria/testigo.txt"
+  },
+  {
+    "id": "grep-pro-l7",
+    "track": "grep-pro",
+    "index": 7,
+    "title": "Solo la primera",
+    "subtitle": "grep -m 1: para tras el primer match",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El beacon.log repite la misma señal cada segundo. Para diagnóstico, la PRIMERA es la que interes",
+    "goal": "De beacon.log, imprime únicamente la PRIMERA línea que contenga BEACON.",
+    "keywords": [
+      "grep",
+      "-m",
+      "límite"
+    ],
+    "hints": [
+      "-m 1 detiene la lectura del fichero tras el primer match (u -m N para N máximo).",
+      "En ficheros grandes es una ganancia de rendimiento brutal: no escanea lo demás.",
+      "grep -m 1 'BEACON' /home/agent/beacon.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -m 1 pat f",
+        "desc": "solo el primer match"
+      },
+      {
+        "cmd": "grep -m 3 pat f",
+        "desc": "hasta 3 matches"
+      }
+    ],
+    "teach": "-m N limita el nº de matches POR FICHERO. Con -m 1 pides el primer hallazgo y#----------------------------------------------------------------# para; en modo recursivo, cada fichero aportará su primera copia.",
+    "steps": [
+      {
+        "raw": "grep -m 1 'BEACON' /home/agent/beacon.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-m 1 BEACON /home/agent/beacon.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -m 1 'BEACON' /home/agent/beacon.log"
+  },
+  {
+    "id": "grep-pro-l8",
+    "track": "grep-pro",
+    "index": 8,
+    "title": "El diccionario del operador",
+    "subtitle": "grep -f: patrones desde fichero",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El equipo de filtrado tiene una lista de 3 palabras (patterns.txt) y un correo largo. Cargarlas una a una sería tontería.",
+    "goal": "Usando patterns.txt como lista de patrones, imprime de carta.txt las líneas que contengan CUALQUIERA de esos patrones.",
+    "keywords": [
+      "grep",
+      "-f",
+      "patrones",
+      "lista"
+    ],
+    "hints": [
+      "-f fichero lee UN patrón POR LÍNEA del fichero dado; busca TODOS.",
+      "Puedes combinar con -i, -E, -r, -n como cualquier otro grep.",
+      "grep -if /home/agent/patterns.txt /home/agent/carta.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -f patrones.txt f",
+        "desc": "múltiples patrones desde fichero"
+      },
+      {
+        "cmd": "grep -Ff patrones.txt f",
+        "desc": "idéntico pero patrón literal"
+      }
+    ],
+    "teach": "grep -f fich-lista fich-destino construye una red de detección. Es clásico en filtrado de contenido: listas negras de IP, dominios de spam, etc.",
+    "steps": [
+      {
+        "raw": "grep -f /home/agent/patterns.txt -i /home/agent/carta.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-f /home/agent/patterns.txt -i /home/agent/carta.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man grep»"
+              },
+              {
+                "flag": "-i",
+                "meaning": "insensible a mayúsculas"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -f /home/agent/patterns.txt -i /home/agent/carta.txt"
+  },
+  {
+    "id": "grep-pro-l9",
+    "track": "grep-pro",
+    "index": 9,
+    "title": "Pasado el hallazgo",
+    "subtitle": "grep -A 2: contexto después",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El log de despliegue enraiza el trigger GO y, DESPUÉS, la salida. Necesitas ver lo que sigue.",
+    "goal": "De deploy.log imprime la línea que contiene GO y las DOS SIGUIENTES (así estado está en esa zona).",
+    "keywords": [
+      "grep",
+      "-A",
+      "contexto"
+    ],
+    "hints": [
+      "-A 2 imprime cada match y las DÚO líneas QUE SIGUEN.",
+      "Cuando dos matches se superponen, el contexto puede incluir separadores --.",
+      "grep -A 2 'GO' /home/agent/deploy.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -A 2 pat f",
+        "desc": "match + 2 siguientes"
+      },
+      {
+        "cmd": "grep -B 3 pat f",
+        "desc": "3 ANTIERIORES (B de before)"
+      }
+    ],
+    "teach": "A de after: incluye el contexto posterior. En logs de deploy es la vía rápida de leer «qué pasó tras el evento» sin abrir el fichero entero.",
+    "steps": [
+      {
+        "raw": "grep -A 2 'GO' /home/agent/deploy.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-A 2 GO /home/agent/deploy.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -A 2 'GO' /home/agent/deploy.log"
+  },
+  {
+    "id": "grep-pro-l10",
+    "track": "grep-pro",
+    "index": 10,
+    "title": "El culpable anterior",
+    "subtitle": "grep -B 2: contexto antes",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fallo crítico se entiende SOLO con lo anterior: los dos pasos ANTERIORES al abort.",
+    "goal": "De pipeline.log imprime la línea ABORT y las DÚO ANTERIORES (ahí está la causa).",
+    "keywords": [
+      "grep",
+      "-B",
+      "contexto"
+    ],
+    "hints": [
+      "-B 2 imprime cada match y las 2 líneas que lo PRECEDEN.",
+      "B es de before: la contraparte de -A.",
+      "grep -B 2 'ABORT' /home/agent/pipeline.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B 2 pat f",
+        "desc": "2 líneas antes + match"
+      },
+      {
+        "cmd": "grep -A 3 -B 2 pat f",
+        "desc": "asimétrica: 3 después, 2 antes"
+      }
+    ],
+    "teach": "El diagnóstico de logs casi siempre mira atrás: -B N da el «qué produjo esto». Con -A N en el mismo grep (o -C) ves la banda completa.",
+    "steps": [
+      {
+        "raw": "grep -B 2 'ABORT' /home/agent/pipeline.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B 2 ABORT /home/agent/pipeline.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B 2 'ABORT' /home/agent/pipeline.log"
+  },
+  {
+    "id": "grep-pro-l11",
+    "track": "grep-pro",
+    "index": 11,
+    "title": "La banda alrededor",
+    "subtitle": "grep -C 2: ambos lados",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El bloque de SIGNAL (baliza) solo tiene su significado con 2 líneas de contexto a BOTH direcciones.",
+    "goal": "De baliza.log imprime la línea de la señal BALIZA y DOS líneas de contexto en ambas direcciones.",
+    "keywords": [
+      "grep",
+      "-C",
+      "contexto"
+    ],
+    "hints": [
+      "-C 2 = -A 2 + -B 2: contexto completo alrededor del match.",
+      "Si el match llega al INICIO del fichero, no habría líneas anteriores que mostrar.",
+      "grep -C 2 'BALIZA' /home/agent/baliza.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -C 3 pat f",
+        "desc": "3 antes y 3 después"
+      },
+      {
+        "cmd": "grep -A 4 -B 1 pat f",
+        "desc": "asimétrica expresa"
+      }
+    ],
+    "teach": "C de context: la herramienta del «muéstrame la escena completa». Con -A y -C combinadas puedes personalizar la banda.",
+    "steps": [
+      {
+        "raw": "grep -C 2 'BALIZA' /home/agent/baliza.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-C 2 BALIZA /home/agent/baliza.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -C 2 'BALIZA' /home/agent/baliza.log"
+  },
+  {
+    "id": "grep-pro-l12",
+    "track": "grep-pro",
+    "index": 12,
+    "title": "Soporte de multiplicidad",
+    "subtitle": "grep -E con |: alternancia",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "Las líneas de interés viven en dos variantes: confirmada o declined. Ambas importan idénticamente.",
+    "goal": "De respuestas.log imprime solo las líneas que contengan confirmada o declined (en una sola pasada).",
+    "keywords": [
+      "grep",
+      "-E",
+      "alternancia"
+    ],
+    "hints": [
+      "-E activa la regex extendida, donde el | significa ALTERNANCIA.",
+      "Sin -E, el | se interpreta literalmente y tendrías que escaparlo: \\|.",
+      "grep -E 'confirmada|declined' /home/agent/respuestas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E 'a|b' f",
+        "desc": "acepta una u otra"
+      },
+      {
+        "cmd": "grep -E '(foo|bar)baz' f",
+        "desc": "alternancia dentro del patrón"
+      }
+    ],
+    "teach": "La alternancia en -E (a|b) es el «Y/O» de grep: da igual la rama que case. Con más variantes: (confirmad[oa]|declined).",
+    "steps": [
+      {
+        "raw": "grep -E 'confirmada|declined' /home/agent/respuestas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E confirmada|declined /home/agent/respuestas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E 'confirmada|declined' /home/agent/respuestas.log"
+  },
+  {
+    "id": "grep-pro-l13",
+    "track": "grep-pro",
+    "index": 13,
+    "title": "Anclado por el domingo",
+    "subtitle": "grep -E con ^: el principio de línea",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El diario de la semana mezcla arranques de línea con menciones a mitad de texto: solo las que ARRANCAN son válidas.",
+    "goal": "De chicas.log muestra las líneas que EMPIEZAN por la palabra domingo (y solo ellas).",
+    "keywords": [
+      "grep",
+      "-E",
+      "ancla",
+      "inicio"
+    ],
+    "hints": [
+      "^ ancla al INICIO DE LÍNEA: ^domingo casa solo si la línea empieza por esa palabra.",
+      "El espacio tras domingo evita que casa el domingode otro texto siguiente.",
+      "grep -E '^domingo ' /home/agent/chicas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '^ERROR' f",
+        "desc": "líneas que empiezan por ERROR"
+      },
+      {
+        "cmd": "grep -E 'done$' f",
+        "desc": "líneas que terminan en done"
+      }
+    ],
+    "teach": "Las ANCLAS en -E (^ y $) fijan el punto de inicio/fin de línea. En registros con timestamps, ^ es la base del filtrado por hora.",
+    "steps": [
+      {
+        "raw": "grep -E '^domingo ' /home/agent/chicas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E ^domingo  /home/agent/chicas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '^domingo ' /home/agent/chicas.log"
+  },
+  {
+    "id": "grep-pro-l14",
+    "track": "grep-pro",
+    "index": 14,
+    "title": "La IP del incidente",
+    "subtitle": "grep -oE de IPs IPv4",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El registro guarda muchas IPs, pero solo una es de la subred 10.0. Extraela LIMPIA (solo la IP, sin el resto del texto).",
+    "goal": "Del registro connexion.log, extrae TODAS las IPs de la subred 10.0.X.X (formato D.D.D.D, una por línea); la línea del testigo (sin IP) sale aparte con su marca.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "IP"
+    ],
+    "hints": [
+      "Para extraer LIMPIO usa -oE; con clases 10[.]0[...[0-9]+ evitas escapar el punto.",
+      "El patrón casa solo la subred 10.0 y deja fuera la IP mal formada 10.0d...",
+      "La línea del testigo (sin IP) sale aparte con grep 'FLAG{'.",
+      "grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{' /home/agent/connexion.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE 'IP_pattern' f",
+        "desc": "extrae IPs limpias"
+      },
+      {
+        "cmd": "grep -oE '\\\\b(\\\\d{1,3}\\\\.){3}\\\\d{1,3}\\\\b' f",
+        "desc": "todas las IP IPv4"
+      }
+    ],
+    "teach": "Extraccion de IPs: \\b10\\.[0-9]+\\.[0-9]+\\b con -oE es el patrón más solicitado. No necesitas validar el rango 0-255 en logs normales.",
+    "steps": [
+      {
+        "raw": "grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE 10[.]0[.][0-9]+[.][0-9]+ /home/agent/connexion.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/connexion.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/connexion.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{' /home/agent/connexion.log"
+  },
+  {
+    "id": "grep-pro-l15",
+    "track": "grep-pro",
+    "index": 15,
+    "title": "Rangos dentro de línea",
+    "subtitle": "grep -E con {n} y clases",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero de fichas tiene muchos formatos, pero solo un formato pasa el test: un ID de SEIS dígitos exactos (aunque vaya rodeado de texto).",
+    "goal": "De registros.txt imprime las líneas que contengan un número de EXACTAMENTE 6 dígitos (aunque el número forme parte de otro mayor).",
+    "keywords": [
+      "grep",
+      "-E",
+      "contadores",
+      "clases"
+    ],
+    "hints": [
+      "[0-9]{6} casa cualquier SECUENCIA de 6 dígitos consecutivos ( incluso como parte de un número más largo).",
+      "Con -o verías solo el NUMERO extraído: pero aquí hay que imprimir la LÍNEA completa.",
+      "grep -E '[0-9]{6}' /home/agent/registros.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '[0-9]{4}' f",
+        "desc": "números de 4 cifras"
+      },
+      {
+        "cmd": "grep -oE '[0-9]{6}' f",
+        "desc": "extrae solo la secuencia de 6"
+      }
+    ],
+    "teach": "Las llaves {n} en -E son contadores exactos. Con {n,m} fluctúa: {6} = exactamente 6, {6,} = 6 o más, {2,5} = entre 2 y 5.",
+    "steps": [
+      {
+        "raw": "grep -E '[0-9]{6}' /home/agent/registros.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E [0-9]{6} /home/agent/registros.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '[0-9]{6}' /home/agent/registros.txt"
+  },
+  {
+    "id": "grep-pro-l16",
+    "track": "grep-pro",
+    "index": 16,
+    "title": "Profundo, con filtro",
+    "subtitle": "grep -r --include",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "En árboles de muchos tipos de fichero, solo interesa CON los .log. Filtrálo por el NOMBRE del fichero (no por contenido).",
+    "goal": "Del árbol incidentes/, muestra las líneas que contengan intrusión pero UNICAMENTE entre los ficheros .log (a cualquier profundidad).",
+    "keywords": [
+      "grep",
+      "recursivo",
+      "--include",
+      "-r"
+    ],
+    "hints": [
+      "--include=\"*.log\" restringe la búsqueda recursiva a ese patrón de NOMBRE de fichero.",
+      "--exclude=\"*.log.bak\" descarta patrones específicos (excluye).",
+      "grep -r --include='*.log' 'intrusión' /home/agent/incidentes"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --include=\"*.log\" p dir",
+        "desc": "solo ficheros .log"
+      },
+      {
+        "cmd": "grep -r --exclude=\"*.bak\" p dir",
+        "desc": "sin respaldos"
+      }
+    ],
+    "teach": "En árboles grandes, --include/--exclude acotan por TIPO de fichero sin recurrir a find. Trabajan sobre el NOMBRE, no el contenido.",
+    "steps": [
+      {
+        "raw": "grep -r --include='*.log' 'intrusión' /home/agent/incidentes",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --include=*.log intrusión /home/agent/incidentes",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--include=*.log",
+                "meaning": "patrones de ficheros a incluir en la búsqueda"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --include='*.log' 'intrusión' /home/agent/incidentes"
+  },
+  {
+    "id": "grep-pro-l17",
+    "track": "grep-pro",
+    "index": 17,
+    "title": "El puerto de la conexión",
+    "subtitle": "grep -oE + cut: dos herramientas al servicio",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero describe conexiones ip:port. Necesitas aislar el PUERTO pero SOLO en IPs que empiecen por 10.4.",
+    "goal": "De conexiones.log extrae el PUERTO (segundo campo tras :) de las conexiones hacia IPs 10.4.X.X, y deja a la vista la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "cut",
+      "puerto"
+    ],
+    "hints": [
+      "grep -oE con 10[.]4[...[0-9]+:[0-9]+ saca líneas «IP:PUERTO» solo de la subred 10.4.",
+      "La tubería alimenta a cut; con -d: y -f2 coges el campo 2 (el puerto).",
+      "La línea del testigo sale aparte con grep 'FLAG{'.",
+      "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE 'IP_pattern' f",
+        "desc": "extrae el match como texto"
+      },
+      {
+        "cmd": "cut -d: -f2",
+        "desc": "segundo campo separado por :"
+      }
+    ],
+    "teach": "grep + cut es el pipeline típico para piezas de un match más largo. -oE limita la línea de partida; corte acompaña el array; ext menjadi más fácil de aplicar el campo correcto.",
+    "steps": [
+      {
+        "raw": "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE 10[.]4[.][0-9]+[.][0-9]+:[0-9]+ /home/agent/conexiones.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "cut",
+            "args": "-d: -f2",
+            "why": "corta columnas de texto por delimitador o por posición",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "carácter delimitador (con -f)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "números de campo a conservar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/conexiones.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/conexiones.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
+  },
+  {
+    "id": "grep-pro-l18",
+    "track": "grep-pro",
+    "index": 18,
+    "title": "El detector de dos etapa",
+    "subtitle": "grep | grep: filtrado en cadena",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero ficha.txt repleta de patrones. Dos filtros en cadena son la opción más segura: primero el formato, luego la señal.",
+    "goal": "De ficha.txt imprime las líneas con patrón uid: TENGAN cuatro dígitos y CONTÉNGAN la marca (tenga FLAG).",
+    "keywords": [
+      "grep",
+      "pipeline",
+      "AND"
+    ],
+    "hints": [
+      "grep uid:[0-9]{6} lista las líneas con formato correcto.",
+      "El segundo grep (FLAG) filtra la línea con la marca.",
+      "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep 1 | grep 2",
+        "desc": "filtro lógico AND"
+      },
+      {
+        "cmd": "grep -E 'a.*b' f",
+        "desc": "a y b en la misma línea"
+      }
+    ],
+    "teach": "Un pipeline con 2 greps simplifica. El primero reduce espectro, el segundo afina: nunca resuelvas en una sola línea si no llega.",
+    "steps": [
+      {
+        "raw": "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E uid: [0-9]{6} /home/agent/ficha.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "FLAG",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'"
+  },
+  {
+    "id": "grep-pro-l19",
+    "track": "grep-pro",
+    "index": 19,
+    "title": "La línea exacta",
+    "subtitle": "grep -xF: exactitud de línea completa",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero acceso.txt miles de variantes. SOLO la línea EXACTA password:secreto es válida (ni indentada, ni con texto extra).",
+    "goal": "De acceso.txt imprime SOLO la línea EXACTA password:secreto (línea completa, sin nada antes o después) y, aparte, la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-x",
+      "-F",
+      "exacto"
+    ],
+    "hints": [
+      "-x casa TODO el patrón con la LÍNEA COMPLETA; -F hace el patrón LITERAL.",
+      "La línea del testigo (password:correcto con la marca) NO es exacta: sale aparte con grep 'FLAG{'.",
+      "grep -xF 'password:secreto' /home/agent/acceso.txt ; grep 'FLAG{' /home/agent/acceso.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -Ff lista.txt f",
+        "desc": "patrones literales desde fichero"
+      },
+      {
+        "cmd": "grep -xF cadena f",
+        "desc": "solo si la línea ES LA CADENA"
+      }
+    ],
+    "teach": "-x es exacto sobre una línea completa. -F convierte el patrón en literal. La fórmula -xF es la herramienta definitiva para «buscar esta cadena exacta como línea».",
+    "steps": [
+      {
+        "raw": "grep -xF 'password:secreto' /home/agent/acceso.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-xF password:secreto /home/agent/acceso.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man grep»"
+              },
+              {
+                "flag": "-F",
+                "meaning": "patrón literal, sin regex"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/acceso.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/acceso.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -xF 'password:secreto' /home/agent/acceso.txt ; grep 'FLAG{' /home/agent/acceso.txt"
+  },
+  {
+    "id": "grep-pro-l20",
+    "track": "grep-pro",
+    "index": 20,
+    "title": "El tablero de rangos",
+    "subtitle": "grep + sed: líneas con número en rango",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "En el log, la marca PROFUNDO vive entre las líneas 4 y 8 (y solo hay).",
+    "goal": "De marcas.txt imprime las líneas que contengan DEEP pero EXCLUSIVAMENTE entre las líneas 4 a 8 (incluyendo los extremos).",
+    "keywords": [
+      "grep",
+      "head",
+      "tail",
+      "rango"
+    ],
+    "hints": [
+      "Goala en la línea 4-8: head -n 8 da las primeras 8; tail -n +4 salta las 3 primeras.",
+      "El último grep 'DEEP' filtra de ese bloque.",
+      "head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "head -n 8 f | tail -n +4",
+        "desc": "líneas 4 a 8"
+      },
+      {
+        "cmd": "sed -n 4,8p f",
+        "desc": "idem: imprime las líneas 4 a 8"
+      }
+    ],
+    "teach": "No todas las subtareas son solo greps. Puedes combinar greps con head/tail/sed cut. Recuerda: la ventana de líneas 4-8 (head -n 8 | tail -n +4) tras un grep es una técnica común.",
+    "steps": [
+      {
+        "raw": "head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'",
+        "cmds": [
+          {
+            "cmd": "head",
+            "args": "-n 8 /home/agent/marcas.txt",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 8",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 8)"
+              }
+            ]
+          },
+          {
+            "cmd": "tail",
+            "args": "-n +4",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 3 = las últimas 3)"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "DEEP",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'"
+  },
+  {
+    "id": "grep-pro-l21",
+    "track": "grep-pro",
+    "index": 21,
+    "title": "El corte asimétrico",
+    "subtitle": "grep -B 3 -A 1: contexto distinto a cada lado",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El corte del log quiere 3 líneas ANTES y UNA después del evento MARCAR (distinto a cada lado).",
+    "goal": "De flujo.log imprime el evento MARCAR con TRES líneas ANTERIORES y UNA línea POSTERIOR (la señal va en el posterior).",
+    "keywords": [
+      "grep",
+      "-A",
+      "-B",
+      "contexto"
+    ],
+    "hints": [
+      "-B 3 -A 1 es UNA orden con dos opciones, contexto distinto a cada lado.",
+      "El orden de las opciones da igual: -A 1 -B 3 funciona igual.",
+      "grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B 3 -A 1 pat f",
+        "desc": "asymétrica personalizada"
+      },
+      {
+        "cmd": "grep -A 1 -B 3 pat f",
+        "desc": "el mismo resultado"
+      }
+    ],
+    "teach": "Combinar -A y -B en el mismo comando da la banda de interés personalizada; cuando necesitas uno ≠ otro, evita la -C simétrica.",
+    "steps": [
+      {
+        "raw": "grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B 3 -A 1 MARCAR /home/agent/flujo.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log"
+  },
+  {
+    "id": "grep-pro-l22",
+    "track": "grep-pro",
+    "index": 22,
+    "title": "El contador de matched",
+    "subtitle": "grep -o | wc: ratios de aparición vs líneas",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El log no quiere la LISTA ni el número de líneas: quiere el TOTAL TOKEN que aparece (incluso múltiples en una línea están).",
+    "goal": "De testigos.log imprime el NÚMERO TOTAL de apariciones del token secret y, aparte, la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-o",
+      "wc",
+      "total"
+    ],
+    "hints": [
+      "-c cuenta LÍNEAS; -o con wc -l cuenta el TOTAL de tokens.",
+      "La línea del testigo con la marca sale aparte con grep.",
+      "grep -o 'secret' /home/agent/testigos.log | wc -l ; grep 'FLAG{' /home/agent/testigos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -o pat f | wc -l",
+        "desc": "total de ocurrencias"
+      },
+      {
+        "cmd": "grep -c pat f",
+        "desc": "nº de líneas con match"
+      }
+    ],
+    "teach": "grep -o patrón | wc -l es el conteo TOTAL de coincidencias (distinto de -c, que cuenta LÍNEAS). Es la diferencia crucial entre \"cuántas líneas\" y \"cuántas veces\".",
+    "steps": [
+      {
+        "raw": "grep -o 'secret' /home/agent/testigos.log | wc -l",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-o secret /home/agent/testigos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              }
+            ]
+          },
+          {
+            "cmd": "wc",
+            "args": "-l",
+            "why": "cuenta: sin opciones imprime líneas/palabras/bytes",
+            "flags": [
+              {
+                "flag": "-l",
+                "meaning": "sólo nº de líneas"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/testigos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/testigos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -o 'secret' /home/agent/testigos.log | wc -l ; grep 'FLAG{' /home/agent/testigos.log"
+  },
+  {
+    "id": "grep-pro-l23",
+    "track": "grep-pro",
+    "index": 23,
+    "title": "ISO extraction",
+    "subtitle": "grep -oE de fechas AAAA-MM-DD",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El log guarda las fechas en varias formas (ISO y texto) y en distintas posiciones.",
+    "goal": "De tiempos.log extrae SOLAMENTE las fechas AAAA-MM-DD (una por línea) y deja a la vista la línea del testigo con la marca.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "fechas"
+    ],
+    "hints": [
+      "{n} pide n dígitos consecutivos; con -oE cada fecha sale limpia en su línea.",
+      "La línea del testigo con la marca sale aparte con grep.",
+      "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log ; grep 'FLAG{' /home/agent/tiempos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE '[0-9]{4}-[0-9]{2}' f",
+        "desc": "AAAA-MM"
+      },
+      {
+        "cmd": "grep -oE '[0-9]{2}:[0-9]{2}' f",
+        "desc": "hh:mm"
+      }
+    ],
+    "teach": "El patrón [0-9]{4}-[0-9]{2}-[0-9]{2} extrae las fechas ISO. La gracia -o + {n} es reemplazar el «recortar con cut/awk» por directamente un regex experto.",
+    "steps": [
+      {
+        "raw": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE [0-9]{4}-[0-9]{2}-[0-9]{2} /home/agent/tiempos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/tiempos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/tiempos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log ; grep 'FLAG{' /home/agent/tiempos.log"
+  },
+  {
+    "id": "grep-pro-l24",
+    "track": "grep-pro",
+    "index": 24,
+    "title": "Boss: triple filtro encadenado",
+    "subtitle": "3 greps en tubería",
+    "xp": 175,
+    "difficulty": 5,
+    "brief": "El log de tuna.log tiene eventos de 4 tipos: trig, span, offs y noise. Se quiere algo estricto.",
+    "goal": "De tuna.log imprime SOLO las líneas que contengas trig PERO no noise Y QUE EMPIECE CON el timestamp 2026-10-25.",
+    "keywords": [
+      "grep",
+      "boss",
+      "cadena",
+      "filtro"
+    ],
+    "hints": [
+      "Encadenas tuberías: filtrar trig; excluir noise; conservar los timestamps ISO que empiezan por el año 2026.",
+      "Un grep puede tanto INCLUIR (default) como EXCLUIR con -v, y ANCLA con ^",
+      "grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep a f | grep -v b",
+        "desc": "filtra + excluye"
+      },
+      {
+        "cmd": "grep -E '^2026' f",
+        "desc": "ancla año inicio"
+      }
+    ],
+    "teach": "El triple-encadenado es el trabajo diario de los ingenieros de logs: filtra, excluye el ruido, y añade una ancla de fecha. El resultado final limpio.",
+    "steps": [
+      {
+        "raw": "grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "trig /home/agent/tuna.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-v noise",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-E ^2026-10-25",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'"
+  },
+  {
+    "id": "awk-pro-l1",
+    "track": "awk-pro",
+    "index": 1,
+    "title": "Campos con delimitador custom",
+    "subtitle": "awk -F con split por los dos puntos",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El fichero roles.txt usa delimitador \":\". La 1.ª columna es el usuario, la 2.ª el rol. El dato relevante sólo es el ROL.",
+    "goal": "De roles.txt imprime la SEGUNDA columna (el rol) respetando su delimitador del fichero.",
+    "keywords": [
+      "awk",
+      "-F",
+      "delimitador",
+      "campos"
+    ],
+    "hints": [
+      "awk separa por espacios cuando no le dices nada: -F: cambia el separador a «dos puntos».",
+      "Con -F: el campo $2 es la columna delimitada por :.",
+      "awk -F: '{print $2}' /home/agent/roles.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F: '{print $2}' f",
+        "desc": "segundo campo separado por :"
+      },
+      {
+        "cmd": "awk -F, '{print $1}' f",
+        "desc": "primera columna de un CSV simple"
+      }
+    ],
+    "teach": "-F es la FLAG de DELIMITADOR: sin él, awk asume espacios y tabs. Si tu data no va separada por espacios, este es el PRIMER paso. El $2 apunta SIEMPRE al segundo campo.",
+    "steps": [
+      {
+        "raw": "awk -F: '{print $2}' /home/agent/roles.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F: {print $2} /home/agent/roles.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F: '{print $2}' /home/agent/roles.txt"
+  },
+  {
+    "id": "awk-pro-l2",
+    "track": "awk-pro",
+    "index": 2,
+    "title": "Umbral sobre columna",
+    "subtitle": "awk $2 > N: filtro numérico",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El fichero procesos.dat trae usuario, memoria (MB), cpu. Son procesos de la columna memoria los CRÍTICOS.",
+    "goal": "De procesos.dat, imprime las líneas cuya segunda columna (memoria) supere 500.",
+    "keywords": [
+      "awk",
+      "umbral",
+      "numérico",
+      "filtro"
+    ],
+    "hints": [
+      "awk compara NUMÉRICAMENTE si ambos operandos son numéricos: $2 > 500.",
+      "No necesitas un if: la CONDICIÓN sola (sin acción) imprime la LÍNEA COMPLETA.",
+      "awk '$2 > 500' /home/agent/procesos.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2 > 500' f",
+        "desc": "líneas con col. 2 > 500"
+      },
+      {
+        "cmd": "awk '$2 >= 100 && $2 <= 1000' f",
+        "desc": "rango numérico con &&"
+      }
+    ],
+    "teach": "El caso clásico de awk: comparación numérica de columnas sin cut/while. La ACCIÓN por defecto ({ print $0 }) hace el trabajo de print total si no la processes.",
+    "steps": [
+      {
+        "raw": "awk '$2 > 500' /home/agent/procesos.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2 > 500 /home/agent/procesos.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2 > 500' /home/agent/procesos.dat"
+  },
+  {
+    "id": "awk-pro-l3",
+    "track": "awk-pro",
+    "index": 3,
+    "title": "Suma acumulada",
+    "subtitle": "awk suma de columna + END",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero ventas.dat trae producto, importe. El reporte necesita la SUMA de la segunda columna.",
+    "goal": "De ventas.dat imprime cada línea tal cual (la nota suma 0) y al final el TOTAL de la 2.ª columna con formato «total: N».",
+    "keywords": [
+      "awk",
+      "suma",
+      "END",
+      "acumulador"
+    ],
+    "hints": [
+      "El bloque { s += $2; print $0 } se ejecuta para cada línea; END una sola vez al final.",
+      "La variable s empieza en 0 (vacía por defecto); las notas con importe 0 no mueven el total.",
+      "print $0 deja cada línea a la vista: la de la nota lleva la marca.",
+      "awk '{ s += $2; print $0 } END { print \"total:\", s }' /home/agent/ventas.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{s += $2} END {print s}' f",
+        "desc": "suma de la col. 2"
+      },
+      {
+        "cmd": "awk 'END {print NR}' f",
+        "desc": "nº de líneas leídas"
+      }
+    ],
+    "teach": "El patrón {acumular} + END {imprimir} es el «streaming» de awk: procesas líneas en caché y inv'mas un sólo resultado. Tu código va HEAD (procesoMedia,NR) + TAIL (END).",
+    "steps": [
+      {
+        "raw": "awk '{ s += $2; print $0 } END { print \"total:\", s }' /home/agent/ventas.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ s += $2; print $0 } END { print \"total:\", s } /home/agent/ventas.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ s += $2; print $0 } END { print \"total:\", s }' /home/agent/ventas.dat"
+  },
+  {
+    "id": "awk-pro-l4",
+    "track": "awk-pro",
+    "index": 4,
+    "title": "El máximo de la columna",
+    "subtitle": "awk $2 > max + END con dos variables",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero medias.dat trae «id valor». Necesitas el id del VALOR MÁXIMO: la clave que encabeza al campeón es la señal.",
+    "goal": "De medias.dat imprime el id (PRIMERA columna) de la fila con el valor MÁXIMO en la segunda columna.",
+    "keywords": [
+      "awk",
+      "máximo",
+      "END",
+      "variables"
+    ],
+    "hints": [
+      "max partierer sin declarar en 0: si el valor de la fila supera al máximo, guárdalo y guarda su id.",
+      "END imprimi el id cuando todo el fichero ha sido procesado.",
+      "awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2 > max {max=$2; id=$1} END {print id}' f",
+        "desc": "el id con el valor máximo"
+      },
+      {
+        "cmd": "awk '$2 > max {max=$2} END {print max}' f",
+        "desc": "el valor máximo en sí"
+      }
+    ],
+    "teach": "Patrón «compara-guarda-imprime» de awk: una variable max y una id, y el campeón se anuncia en END. Sin sort y sin bucles: el streaming atiende por ti.",
+    "steps": [
+      {
+        "raw": "awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2 > max {max = $2; id = $1} END {print id} /home/agent/medias.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat"
+  },
+  {
+    "id": "awk-pro-l5",
+    "track": "awk-pro",
+    "index": 5,
+    "title": "La línea n exacta",
+    "subtitle": "awk NR == N",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El fichero lineas.log tiene la marca en la LÍNEA 7 (y SOLO esa).",
+    "goal": "De lineas.log imprime EXACTAMENTE la línea 7.",
+    "keywords": [
+      "awk",
+      "NR",
+      "línea"
+    ],
+    "hints": [
+      "NR es el contador de línea leídas (1-based): NR == 7 selecciona esa.",
+      "Con solo la condición, awk imprime la LÍNEA entera por defecto.",
+      "awk 'NR == 7' /home/agent/lineas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR == 7' f",
+        "desc": "solo la línea 7"
+      },
+      {
+        "cmd": "awk 'NR % 2 == 0' f",
+        "desc": "solo las líneas pares"
+      }
+    ],
+    "teach": "awk NR cuenta las líneas procesadas: NR == 7 es un selector directo. Ante archivos enormes, es más rápido que sed -n 7p.",
+    "steps": [
+      {
+        "raw": "awk 'NR == 7' /home/agent/lineas.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR == 7 /home/agent/lineas.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR == 7' /home/agent/lineas.log"
+  },
+  {
+    "id": "awk-pro-l6",
+    "track": "awk-pro",
+    "index": 6,
+    "title": "Ventana de líneas",
+    "subtitle": "awk con doble condición en NR",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero escenas.log guarda la sección crítica entre las líneas 4 y 6 (inclusiva).",
+    "goal": "De escenas.log, imprime SOLAMENTE las líneas 4 a 6 (INCLUIDAS).",
+    "keywords": [
+      "awk",
+      "NR",
+      "rango"
+    ],
+    "hints": [
+      "DOBLE condición con el operador && sobre NR.",
+      "NR es 1-based.",
+      "awk 'NR >= 4 && NR <= 6' /home/agent/escenas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR >= 4 && NR <= 6' f",
+        "desc": "líneas 4 a 6"
+      },
+      {
+        "cmd": "awk 'NR % 2 == 0' f",
+        "desc": "solo las líneas pares"
+      }
+    ],
+    "teach": "Con la doble condición en NR puedes reproducir el «sed -n 4,6p» con awk. Nota que el RANGO INCLUIVE ambos extremos (>= y <=).",
+    "steps": [
+      {
+        "raw": "awk 'NR >= 4 && NR <= 6' /home/agent/escenas.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR >= 4 && NR <= 6 /home/agent/escenas.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR >= 4 && NR <= 6' /home/agent/escenas.log"
+  },
+  {
+    "id": "awk-pro-l7",
+    "track": "awk-pro",
+    "index": 7,
+    "title": "El hash perfecto",
+    "subtitle": "awk longitud + regex de campo",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero hashes.log tiene usuario + hash (sin espacios). Necesitas las líneas cuyo campo SI y SÓLO SI es un hash hex de 32 dígitos EXACTOS.",
+    "goal": "De hashes.log imprime las líneas cuyo SEGUNDO campo es un hash hex de 32 caracteres EXACTOS (uso la facil length + regex).",
+    "keywords": [
+      "awk",
+      "length",
+      "regex",
+      "campo"
+    ],
+    "hints": [
+      "length($2) == 32 es la COMPROBACIÓN de longitud EXACTA (hex 32 simbolos md5).",
+      "$2 ~ /^[0-9a-f]+$/ es el REGEX de la forma exclusivamente hex.",
+      "awk 'length($2) == 32 && $2 ~ /^[0-9a-f]+$/' /home/agent/hashes.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'length($2) == 32' f",
+        "desc": "campo 2 con TAM 32"
+      },
+      {
+        "cmd": "awk '$2 ~ /^[0-9a-f]+$/' f",
+        "desc": "regex hex en campo 2"
+      }
+    ],
+    "teach": "Confundir length($x) con la función length(). La combinación de length() + un regex con clases y ^$ es la forma robusta de validar un formato de CAMPO en awk (incluye mawk que no garantiza {32}).",
+    "steps": [
+      {
+        "raw": "awk 'length($2) == 32 && $2 ~ /^[0-9a-f]+$/' /home/agent/hashes.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "length($2) == 32 && $2 ~ /^[0-9a-f]+$/ /home/agent/hashes.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'length($2) == 32 && $2 ~ /^[0-9a-f]+$/' /home/agent/hashes.log"
+  },
+  {
+    "id": "awk-pro-l8",
+    "track": "awk-pro",
+    "index": 8,
+    "title": "El rey de la longitud",
+    "subtitle": "awk length($0) + guardado del máximo",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "En dumpe.log, hay una línea anómala MUY LARGA. À veces tiene la marca, a veces no.",
+    "goal": "De dumpe.log imprime la línea MÁS LARGA (contenido, no la longitud).",
+    "keywords": [
+      "awk",
+      "length",
+      "if",
+      "máximo"
+    ],
+    "hints": [
+      "length($0) da el TAM de la línea ACTUAL.",
+      "Guarda la línea si supera al máximo; al final imprímela con END.",
+      "awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line }' /home/agent/dumpe.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ print length($0) }' f",
+        "desc": "longitud de cada línea"
+      },
+      {
+        "cmd": "awk '{ if (length($0) > max) max = length($0) } END { print max }' f",
+        "desc": "la MAYOR longitud"
+      }
+    ],
+    "teach": "En awk, if dentro de una acción con llaves acumula el «tope» y guarda una copia de la línea todas las vezes que mejora. END imprime al final.",
+    "steps": [
+      {
+        "raw": "awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line }' /home/agent/dumpe.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ if (length($0) > max) { max = length($0); line = $0 } } END { print line } /home/agent/dumpe.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line }' /home/agent/dumpe.log"
+  },
+  {
+    "id": "awk-pro-l9",
+    "track": "awk-pro",
+    "index": 9,
+    "title": "El recortador de campos",
+    "subtitle": "awk substr()",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero tokens.log trae alias + token. Necesitas los ÚLTIMOS 8 caracteres de cada token y, aparte, la LÍNEA que lleva la marca.",
+    "goal": "De tokens.log imprime, por línea, los últimos 8 caracteres del TOKEN (2.ª columna) con substr; después imprime la línea completa que contiene la marca.",
+    "keywords": [
+      "awk",
+      "substr",
+      "recortar",
+      "length"
+    ],
+    "hints": [
+      "substr(texto, inicio) devuelve desde esa posición HASTA el final (sin 3er argumento).",
+      "Para obtener los últimos 8: substr(s, length(s) - 7).",
+      "El token del testigo es la marca entera: su línea se enseña aparte con grep.",
+      "awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ; grep 'FLAG{' /home/agent/tokens.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ print substr($1, 1, 3) }' f",
+        "desc": "primeras 3 letras del campo 1"
+      },
+      {
+        "cmd": "awk '{ print substr($2, length($2) - 7) }' f",
+        "desc": "últimos 8 chars del campo 2"
+      }
+    ],
+    "teach": "substr(texto, inicio, longitud) corta CUALQUIER texto, por posición y tamaño. Combinando con length() puedes extraer «el final» solar de cualquier longitud.",
+    "steps": [
+      {
+        "raw": "awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ print substr($2, length($2) - 7) } /home/agent/tokens.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/tokens.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/tokens.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ; grep 'FLAG{' /home/agent/tokens.log"
+  },
+  {
+    "id": "awk-pro-l10",
+    "track": "awk-pro",
+    "index": 10,
+    "title": "La posición del token",
+    "subtitle": "awk index()",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero posiciones.txt tiene textos largos con posibles FICHAS.",
+    "goal": "De posiciones.txt imprime las LÍNEAS donde aparece el token MARK (usa index() como condición de línea).",
+    "keywords": [
+      "awk",
+      "index",
+      "posición"
+    ],
+    "hints": [
+      "index(cadena, subcadena) devuelve posición 1-based (0 si no aparece).",
+      "Como condición de línea, index($0, \"MARK\") es verdad SOLO en las líneas que lo contienen; awk imprime la línea entera.",
+      "awk 'index($0, \"MARK\")' /home/agent/posiciones.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ print index($0, \"sub\") }' f",
+        "desc": "posición de la subcadena"
+      },
+      {
+        "cmd": "awk 'index($0, \"x\") > 0' f",
+        "desc": "solo las líneas que la contengan"
+      }
+    ],
+    "teach": "index(texto, subc) busca la posición 1-based de subc dentro de texto. Devuelve 0 si no aparece. Es la herramienta que awk da para «¿dónde está?» sin regex.",
+    "steps": [
+      {
+        "raw": "awk 'index($0, \"MARK\")' /home/agent/posiciones.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "index($0, \"MARK\") /home/agent/posiciones.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'index($0, \"MARK\")' /home/agent/posiciones.txt"
+  },
+  {
+    "id": "awk-pro-l11",
+    "track": "awk-pro",
+    "index": 11,
+    "title": "La partida manual",
+    "subtitle": "awk split()",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero rutas.dat trae catalogo/sección/item separados por :. Necesitas TERCER elemento (item).",
+    "goal": "De rutas.dat, imprime el TERCER elemento de cada línea después de split por : (NO con $3).",
+    "keywords": [
+      "awk",
+      "split",
+      "array"
+    ],
+    "hints": [
+      "split(cadena, array, sep) separa por el sep y LLENA el array con a[1], a[2]…",
+      "El acceso a a[3] es la tercera parte (1-based).",
+      "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ split($0, a, \":\"); print a[2] }' f",
+        "desc": "split manual y elemento 2"
+      },
+      {
+        "cmd": "awk '{ n = split($0, a, \":\"); print n }' f",
+        "desc": "split devuelve nº de piezas"
+      }
+    ],
+    "teach": "split() separa una cadena en elementos ARRAY. Es útil cuando el delimitador varía por línea. Sin embargo, awk ya lo haga con $N… split y la ruta manual son m's comunes en el contexto actual.",
+    "steps": [
+      {
+        "raw": "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ split($0, a, \":\"); print a[3] } /home/agent/rutas.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat"
+  },
+  {
+    "id": "awk-pro-l12",
+    "track": "awk-pro",
+    "index": 12,
+    "title": "Primera sustitución",
+    "subtitle": "awk sub()",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "Sus líneas mezclan dominios con puntos. La clave: sub() con el punto escapado y una sola sustitución. Una de las líneas lleva la marca.",
+    "goal": "De dominios.txt imprime cada línea con su PRIMER punto sustituido por guion bajo (solo la PRIMERA ocurrencia).",
+    "keywords": [
+      "awk",
+      "sub",
+      "sustitución"
+    ],
+    "hints": [
+      "sub(regex, reemplazo) sustituye SOLO la primera aparición del regex en la línea actual.",
+      "El punto hay que escaparlo: en regex casa cualquier carácter ( /\\./ ).",
+      "awk '{ sub(/\\./, \"_\"); print }' /home/agent/dominios.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ sub(/a/, \"b\"); print }' f",
+        "desc": "sustituye la PRIMERA a por b"
+      },
+      {
+        "cmd": "awk '{ x = sub(/a/, \"b\"); print x }' f",
+        "desc": "1 si hizo sustituciones, 0 si no"
+      }
+    ],
+    "teach": "sub(regex, valor) cambia la PRIMERA coincidencia. Es la awk-equivalencia de sed s/…/…/ (1 vez). Usela cuando ya hay awk: así evitas una tubería adicional.",
+    "steps": [
+      {
+        "raw": "awk '{ sub(/\\./, \"_\"); print }' /home/agent/dominios.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ sub(/\\./, \"_\"); print } /home/agent/dominios.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ sub(/\\./, \"_\"); print }' /home/agent/dominios.txt"
+  },
+  {
+    "id": "awk-pro-l13",
+    "track": "awk-pro",
+    "index": 13,
+    "title": "Todas las apariciones",
+    "subtitle": "awk gsub()",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero normalizado.txt tiene líneas con múltiples espacios seguidos. Necesitas de DOBLE-ESPACIO a UNO SOLO.",
+    "goal": "De normalizado.txt imprime cada línea con TODOS los espacios consecutivos reducidos a UNO SOLO.",
+    "keywords": [
+      "awk",
+      "gsub",
+      "sustitución",
+      "espacios"
+    ],
+    "hints": [
+      "gsub(regex, valor) sustituye TODAS las apariciones de la línea.",
+      "El regex [ ]+ casa UNO O MÁS espacios consecutivos (y se sustituye por UNO).",
+      "awk '{ gsub(/[ ]+/, \" \"); print }' /home/agent/ruido.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ gsub(/[ ]+/, \" \"); print }' f",
+        "desc": "normaliza espacios"
+      },
+      {
+        "cmd": "awk '{ n = gsub(/a/, \"b\"); print n }' f",
+        "desc": "gium cuántas sustituciones hizo"
+      }
+    ],
+    "teach": "gsub(regex, valor) es la sustitución GLOBAL: cambia TODAS las coincidencias. Puedes usar la situación para formatear la línea entera $0 sin extra print (sólo el print default).",
+    "steps": [
+      {
+        "raw": "awk '{ gsub(/[ ]+/, \" \"); print }' /home/agent/ruido.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ gsub(/[ ]+/, \" \"); print } /home/agent/ruido.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ gsub(/[ ]+/, \" \"); print }' /home/agent/ruido.txt"
+  },
+  {
+    "id": "awk-pro-l14",
+    "track": "awk-pro",
+    "index": 14,
+    "title": "Formato C-style en la salida",
+    "subtitle": "awk printf()",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero metrica.dat trae clave y valor. Necesitas la salida con FORMA ESTRICTA: la clave en 6 caracteres alineada izquierda, espacio, el valor flotante con DOS decimales.",
+    "goal": "De metrica.dat imprime cada línea formateada con printf: clave alineada a la izquierda en 6 espacios y valor con 2 decimales. La fila del testigo (no numérica) la muestras aparte tal cual.",
+    "keywords": [
+      "awk",
+      "printf",
+      "formato"
+    ],
+    "hints": [
+      "printf de awk imprime con formato C-style: %-6s es campo de 6 alineado a la izquierda; %.2f es float de 2 decimales.",
+      "printf NO añade salto automático: cierra el formato con \\n dentro del string del formato.",
+      "La fila del testigo no es numérica (su «valor» da 0.00): muéstrala aparte con grep.",
+      "awk '{ printf \"%-6s %.2f\\n\", $1, $2 }' /home/agent/metrica.dat ; grep 'FLAG{' /home/agent/metrica.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ printf \"%s\\\\n\", $1 }' f",
+        "desc": "printf del campo 1"
+      },
+      {
+        "cmd": "awk '{ printf \"%.2f\\\\n\", $1 }' f",
+        "desc": "2 decimales de la col. 1"
+      }
+    ],
+    "teach": "printf es C-style: imprime con formato; cada %obras substituye un argumento. Es la salida del awk, SIN salto automático (necesita \\n). Uso disponible para formatear la tabla ( %-6s, %.2f, %-8s etc).",
+    "steps": [
+      {
+        "raw": "awk '{ printf \"%-6s %.2f\\n\", $1, $2 }' /home/agent/metrica.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ printf \"%-6s %.2f\\n\", $1, $2 } /home/agent/metrica.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/metrica.dat",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/metrica.dat",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ printf \"%-6s %.2f\\n\", $1, $2 }' /home/agent/metrica.dat ; grep 'FLAG{' /home/agent/metrica.dat"
+  },
+  {
+    "id": "awk-pro-l15",
+    "track": "awk-pro",
+    "index": 15,
+    "title": "Acumulación con sprintf",
+    "subtitle": "awk sprintf + variable",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero informe.lst trae filas «id valor». Necesitas que la VARIABLE acumule la salida con el formato id=valor; manejado por sprintf.",
+    "goal": "De informe.lst construye una ÚNICA cadena con todas las líneas en formato \"id=valor\" separadas por \";\" y imprímela al FINAL.",
+    "keywords": [
+      "awk",
+      "sprintf",
+      "variables"
+    ],
+    "hints": [
+      "sprintf devuelve el STRING formateado (NO lo imprime).",
+      "t = t sprintf(...) CONCATE con el acumulador de cada vez; END imprime una vez.",
+      "awk '{ t = t sprintf(\"%s=%s;\", $1, $2) } END { print t }' /home/agent/informe.lst"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ a = sprintf(\"%03d\", $1); print a }' f",
+        "desc": "variable de formato"
+      },
+      {
+        "cmd": "awk '{ t = t $1 \"=\" $2 \";\" } END { print t }' f",
+        "desc": "sin formato: acumular"
+      }
+    ],
+    "teach": "sprintf es printf pero en texto: devuelve el valor en lugar de imprimir. Cumple con el patrón AWK-FORMATO-ACUMULAR-PRINTAR.",
+    "steps": [
+      {
+        "raw": "awk '{ t = t sprintf(\"%s=%s;\", $1, $2) } END { print t }' /home/agent/informe.lst",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ t = t sprintf(\"%s=%s;\", $1, $2) } END { print t } /home/agent/informe.lst",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ t = t sprintf(\"%s=%s;\", $1, $2) } END { print t }' /home/agent/informe.lst"
+  },
+  {
+    "id": "awk-pro-l16",
+    "track": "awk-pro",
+    "index": 16,
+    "title": "El valor inicial: BEGIN",
+    "subtitle": "awk BEGIN { FS = \";\" }",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "Si no quieres usar -F, define el separador dentro del BEGIN.",
+    "goal": "De datos.dat (delimitado por ;) imprime la SEGUNDA columna usando el BEGIN para declarar el separador FS (SIN usar -F).",
+    "keywords": [
+      "awk",
+      "BEGIN",
+      "FS"
+    ],
+    "hints": [
+      "BEGIN { FS = \";\" } establece el separador ANTES de leer la primera línea.",
+      "Equivale a -F; pero lo declaras en el SCRIPT, no en el thunk",
+      "awk 'BEGIN { FS = \";\" } { print $2 }' /home/agent/datos.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN { FS=\";\" } { print $2 }' f",
+        "desc": "el separador creado por BEGIN"
+      },
+      {
+        "cmd": "awk 'BEGIN { print \"inicio\" } { print $0 }' f",
+        "desc": "BEGIN como banner"
+      }
+    ],
+    "teach": "El bloque BEGIN se ejecuta UNA VEZ antes de processar líneas: ahí se inicializa FS (separador), OFS, variables, etc. Es la manera correcta cuando el separador es fijo.",
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { FS = \";\" } { print $2 }' /home/agent/datos.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { FS = \";\" } { print $2 } /home/agent/datos.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { FS = \";\" } { print $2 }' /home/agent/datos.dat"
+  },
+  {
+    "id": "awk-pro-l17",
+    "track": "awk-pro",
+    "index": 17,
+    "title": "Constructor de columnas",
+    "subtitle": "awk OFS + reordenación",
+    "xp": 70,
+    "difficulty": 5,
+    "brief": "El fichero amplio.dat usa espacios entre campos. Necesitas REORDENAR: TERCERO, PRIMERO y QUINTO, separados por |.",
+    "goal": "De amplio.dat imprime en cada línea: campo 3, campo 1 y campo 5 (separados por |).",
+    "keywords": [
+      "awk",
+      "OFS",
+      "reordenar",
+      "campos"
+    ],
+    "hints": [
+      "Puedes printáAR campos en el ORDEN que quieras: $3, $1, $5.",
+      "Puedes usar OFS: BEGIN { OFS = \"|\" } y luego print $3, $1, $5 (con comas).",
+      "awk '{ print $3 \"|\" $1 \"|\" $5 }' /home/agent/amplio.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ print $3, $1 }' f",
+        "desc": "reordena campos (OFS pred.)"
+      },
+      {
+        "cmd": "awk 'BEGIN { OFS=\"|\" } { $1 = $1; print }' f",
+        "desc": "reconstruye con OFS="
+      }
+    ],
+    "teach": "En awk los campos $N se pueden impresar en CUALQUIER orden: no hay que reordenar el fichero. El separador de cada WORKING fue el que manualmente se case: si print con comas, awk separa con OFS (por defecto, espacio).",
+    "steps": [
+      {
+        "raw": "awk '{ print $3 \"|\" $1 \"|\" $5 }' /home/agent/amplio.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ print $3 \"|\" $1 \"|\" $5 } /home/agent/amplio.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ print $3 \"|\" $1 \"|\" $5 }' /home/agent/amplio.dat"
+  },
+  {
+    "id": "awk-pro-l18",
+    "track": "awk-pro",
+    "index": 18,
+    "title": "Cuenta con arrays",
+    "subtitle": "awk a[$1]++ + for (k in a)",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero hits.log trae IPs (una por línea). Necesitas el HISTOGRAMA: IP cuenta de hits (sin sort).",
+    "goal": "De hits.log imprime el histograma «IP cuenta» (una por línea) y deja a la vista la línea del testigo que lleva la marca.",
+    "keywords": [
+      "awk",
+      "array",
+      "histograma",
+      "END"
+    ],
+    "hints": [
+      "a[$1]++ incrementa la cuenta por IP.",
+      "En END, for (k in a) recorre las CLAVES y imprime indicator k y a[k].",
+      "La línea del testigo con la marca se enseña aparte con grep.",
+      "awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log ; grep 'FLAG{' /home/agent/hits.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' f",
+        "desc": "histograma por la col. 1"
+      },
+      {
+        "cmd": "awk '{ a[$1]++ } END { for (k in a) print k }' f",
+        "desc": "solo las claves únicas"
+      }
+    ],
+    "teach": "Los ARRAYS de awk (a[$1]++) mapean arbitrary (numéricos o strings). El bucle for (k in arr) itera TODAS las CLAVES. Es el histograma más corto de escribir.",
+    "steps": [
+      {
+        "raw": "awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ a[$1]++ } END { for (k in a) print k, a[k] } /home/agent/hits.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FLAG{' /home/agent/hits.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FLAG{ /home/agent/hits.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log ; grep 'FLAG{' /home/agent/hits.log"
+  },
+  {
+    "id": "awk-pro-l19",
+    "track": "awk-pro",
+    "index": 19,
+    "title": "Sólo los únicos",
+    "subtitle": "awk idiom !a[$0]++",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero revisados.lst tiene valores repetidos. Necesitas SOLO la PRIMERA aparición de cada valor.",
+    "goal": "De revisados.lst imprime cada valor UNA VEZ (PRIMERA aparición; en el orden de llegada).",
+    "keywords": [
+      "awk",
+      "dedup",
+      "array",
+      "idioma"
+    ],
+    "hints": [
+      "!a[$0]++ es el deduplicador famoso: la PRIMERA vez que se ve un valor imprime, ya que a[valor] era 0 (undefined→false), y las siguientes ya no.",
+      "Con la negación !, awk hace \"si NO estaba presente, imprime\" y luego marca presente.",
+      "awk '!a[$0]++' /home/agent/revisados.lst"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '!a[$0]++' f",
+        "desc": "dedup por línea com.aleta"
+      },
+      {
+        "cmd": "awk '!a[$1]++' f",
+        "desc": "dedup por la col. 1"
+      }
+    ],
+    "teach": "El idiom !a[k]++ es el revisor universal de duplicados: sin sort -u ni awk for-loop. Mantiene el ORDEN de llegada (a diferencia de sort -u).",
+    "steps": [
+      {
+        "raw": "awk '!a[$0]++' /home/agent/revisados.lst",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "!a[$0]++ /home/agent/revisados.lst",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '!a[$0]++' /home/agent/revisados.lst"
+  },
+  {
+    "id": "awk-pro-l20",
+    "track": "awk-pro",
+    "index": 20,
+    "title": "Dos ficheros, una clave",
+    "subtitle": "awk FNR==NR + next",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero ids.txt lista los IDs permitidos; el fichero eventos.log trae líneas con id. Necesitas las líneas de eventos.log cuyo ID APARECE EN ids.txt.",
+    "goal": "Con ambos ficheros (awk ficheroA ficheroB), imprime de eventos.log solo las líneas cuyo primer campo ESTÉ en ids.txt.",
+    "keywords": [
+      "awk",
+      "FNR",
+      "NR",
+      "join"
+    ],
+    "hints": [
+      "FNR == NR es \"estoy en el PRIMER fichero\": ahí llenas el array y haces NEXT.",
+      "En el segundo fichero, $1 in a es el chequeo de membresía.",
+      "awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'FNR==NR { a[$1]; next } $1 in a' f1 f2",
+        "desc": "join de 2 ficheros por clave"
+      },
+      {
+        "cmd": "awk 'FNR==NR { a[$1]; next } !($1 in a)' f1 f2",
+        "desc": "el inverso: los NO en f1"
+      }
+    ],
+    "teach": "Cuando awk recibe DOS ficheros, FNR == NR es el patrón deIGNORE \"estoy en el primero\". En NEXT hay que saltar el procesos restos. El patrón: primero llenar un índice y en el segundo, consultar.",
+    "steps": [
+      {
+        "raw": "awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "FNR == NR { a[$1]; next } $1 in a /home/agent/ids.txt /home/agent/eventos.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log"
+  },
+  {
+    "id": "awk-pro-l21",
+    "track": "awk-pro",
+    "index": 21,
+    "title": "El extracted match()",
+    "subtitle": "awk match() + substr + RSTART/RLENGTH",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero fragments.dat tiene líneas con texto ESENCIAL: hay un token FLAG con forma FLAG{abc}. Extrae SOLO ese token.",
+    "goal": "De fragments.dat imprime SOLAMENTE la subcadena FLAG{…} de cada línea que la contenga.",
+    "keywords": [
+      "awk",
+      "match",
+      "RSTART",
+      "RLENGTH"
+    ],
+    "hints": [
+      "match(s, /regex/) busca el regex en s y LLENA RSTART y RLENGTH.",
+      "awk extra con substr(\"$0, RSTART, RLENGTH) obtiene el texto casado.",
+      "awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }' /home/agent/fragments.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'match($0, /pat/) { print substr($0, RSTART, RLENGTH) }' f",
+        "desc": "extrae el match (como grep -o)"
+      },
+      {
+        "cmd": "awk 'match($0, /pat/) { print RSTART }' f",
+        "desc": "solo la POSICIÓN"
+      }
+    ],
+    "teach": "match(s, /regex/) llena RSTART/RLENGTH. Es lo que awk hace comparable a grep -o. Especificar las llaves ([{], [}]) ARGUMENTES para no escape it inside class char.",
+    "steps": [
+      {
+        "raw": "awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }' /home/agent/fragments.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) } /home/agent/fragments.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }' /home/agent/fragments.dat"
+  },
+  {
+    "id": "awk-pro-l22",
+    "track": "awk-pro",
+    "index": 22,
+    "title": "Suma condicional",
+    "subtitle": "awk '$1 == \"x\" { total += $2 } + END",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero entregas.dat trae acción y cantidad. Solo las líneas con ACCIÓN guardo acumulan en el total.",
+    "goal": "De entregas.dat imprime las líneas cuyo PRIMER campo es \"guardo\" y al final el TOTAL (suma de la 2.ª columna) de esas líneas.",
+    "keywords": [
+      "awk",
+      "condicional",
+      "suma",
+      "END"
+    ],
+    "hints": [
+      "La condición $1 == \"guardo\" filtra; la ACCIÓN imprime la línea Y acumula $2.",
+      "En END imprime el total acumulado.",
+      "awk '$1 == \"guardo\" { print $0; total += $2 } END { print \"total:\", total }' /home/agent/entregas.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$1 == \"x\" { s += $2 } END { print s }' f",
+        "desc": "suma condicional"
+      },
+      {
+        "cmd": "awk '{ tot += $2 } END { print tot/NR }' f",
+        "desc": "promedio de la col. 2"
+      }
+    ],
+    "teach": "La condición de awk solo deja pasar las líneas que casan; la ACCIÓN puede hacer varias cosas (imprimir + acumular) y END cierra con el total. Filtro y cálculo en una línea.",
+    "steps": [
+      {
+        "raw": "awk '$1 == \"guardo\" { print $0; total += $2 } END { print \"total:\", total }' /home/agent/entregas.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$1 == \"guardo\" { print $0; total += $2 } END { print \"total:\", total } /home/agent/entregas.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$1 == \"guardo\" { print $0; total += $2 } END { print \"total:\", total }' /home/agent/entregas.dat"
+  },
+  {
+    "id": "awk-pro-l23",
+    "track": "awk-pro",
+    "index": 23,
+    "title": "El promedio contabilizado",
+    "subtitle": "awk suma + END (promedio)",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero puntajes.lst trae «id puntaje». Se necesita el PROMEDIO de la columna puntaje.",
+    "goal": "De puntajes.lst imprime cada línea tal cual y al final el PROMEDIO de la 2.ª columna con printf (2 decimales).",
+    "keywords": [
+      "awk",
+      "promedio",
+      "NR",
+      "END"
+    ],
+    "hints": [
+      "tot += $2 acumula la base; NR es el número de líneas vistas.",
+      "printf \"%.2f\\n\" redondea a dos decimales; el print intermedio deja a la vista la línea del testigo.",
+      "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }' /home/agent/puntajes.lst"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{ tot += $2 } END { print tot/NR }' f",
+        "desc": "promedio col. 2 con NR"
+      },
+      {
+        "cmd": "awk 'END { print NR }' f",
+        "desc": "nº de líneas vistas"
+      }
+    ],
+    "teach": "Promedio = acumular + contar + dividir en END. awk yprintf están. YOUR atajo aquí son las variables NR (contadores) y tot (sum).",
+    "steps": [
+      {
+        "raw": "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }' /home/agent/puntajes.lst",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR } /home/agent/puntajes.lst",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }' /home/agent/puntajes.lst"
+  },
+  {
+    "id": "awk-pro-l24",
+    "track": "awk-pro",
+    "index": 24,
+    "title": "Boss: cayó en la lista negra",
+    "subtitle": "awk join + exclusión + total",
+    "xp": 175,
+    "difficulty": 5,
+    "brief": "Se necesitan dos ficheros: pagos.dat (usuario, monto) y blacklist.txt (usuario). El reporte pide el TOTAL de los usuarios que NO están en blacklist.",
+    "goal": "Con ambos ficheros, imprime las líneas de pagos.dat cuyo usuario NO está en blacklist.txt y al final el TOTAL de sus montos (suma de la 2.ª columna).",
+    "keywords": [
+      "awk",
+      "boss",
+      "join",
+      "acumulador",
+      "END"
+    ],
+    "hints": [
+      "En el primer fichero, llena el array (FNR==NR y next).",
+      "En el segundo, si el usuario NO está en la lista: imprime la línea y suma el monto ($2).",
+      "En END imprime el total. La línea del manager lleva la marca y pasa el filtro (no está en la lista).",
+      "awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total }' /home/agent/blacklist.txt /home/agent/pagos.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'FNR==NR { a[$1]; next } $1 in a { ... }' f1 f2",
+        "desc": "f1 index → f2 filter"
+      },
+      {
+        "cmd": "awk 'FNR==NR { a[$1]; next } !($1 in a) { ... } END { print total }' f1 f2",
+        "desc": "excluye + suma + END"
+      }
+    ],
+    "teach": "El boss de awk envuelve el \"SQL del shell\": un join (fichero de índices + consulta), un FILTRO NEGADO (NO está en la lista) y la SUMA con END. Es el patrón más potente en awk en un único comando.",
+    "steps": [
+      {
+        "raw": "awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total }' /home/agent/blacklist.txt /home/agent/pagos.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total } /home/agent/blacklist.txt /home/agent/pagos.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total }' /home/agent/blacklist.txt /home/agent/pagos.dat"
   }
 ];
-export const TRACK_ORDER = ["fundamentos","filtrado","busqueda","procesado","permisos","procesos","redes","archivos","scripting","forense","boss","grep","awk"];
+export const TRACK_ORDER = ["fundamentos","filtrado","busqueda","procesado","permisos","procesos","redes","archivos","scripting","forense","boss","grep","awk","grep-pro","awk-pro"];

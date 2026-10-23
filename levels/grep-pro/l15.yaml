@@ -1,0 +1,43 @@
+id: grep-pro-l15
+track: grep-pro
+index: 15
+title: Rangos dentro de línea
+subtitle: grep -E con {n} y clases
+xp: 70
+difficulty: 5
+brief: "El fichero de fichas tiene muchos formatos, pero solo un formato pasa el test: un
+  ID de SEIS dígitos exactos (aunque vaya rodeado de texto)."
+goal: De registros.txt imprime las líneas que contengan un número de EXACTAMENTE 6 dígitos
+  (aunque el número forme parte de otro mayor).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Grep-Pro"
+  cat > /home/agent/registros.txt <<EOF
+  operación con código 12345 corto (-5 dígitos)
+  el ticket 234 de soporte: demasiado corto
+  referencia de pago: 990210 correcto
+  código largo 1234567: incluso 7 dígitos
+  línea con nómina 050499 $DOJO_FLAG
+  dos candidata: 112233 y 445566
+  EOF
+  chown agent:agent /home/agent/registros.txt
+solution: grep -E '[0-9]{6}' /home/agent/registros.txt
+hints:
+  - "[0-9]{6} casa cualquier SECUENCIA de 6 dígitos consecutivos ( incluso como parte de
+    un número más largo)."
+  - "Con -o verías solo el NUMERO extraído: pero aquí hay que imprimir la LÍNEA completa."
+  - grep -E '[0-9]{6}' /home/agent/registros.txt
+teach: "Las llaves {n} en -E son contadores exactos. Con {n,m} fluctúa: {6} = exactamente
+  6, {6,} = 6 o más, {2,5} = entre 2 y 5."
+cheatsheet:
+  - cmd: grep -E '[0-9]{4}' f
+    desc: números de 4 cifras
+  - cmd: grep -oE '[0-9]{6}' f
+    desc: extrae solo la secuencia de 6
+keywords:
+  - grep
+  - -E
+  - contadores
+  - clases
+profile: default

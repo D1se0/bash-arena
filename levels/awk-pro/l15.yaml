@@ -1,0 +1,39 @@
+id: awk-pro-l15
+track: awk-pro
+index: 15
+title: Acumulación con sprintf
+subtitle: awk sprintf + variable
+xp: 70
+difficulty: 5
+brief: El fichero informe.lst trae filas «id valor». Necesitas que la VARIABLE acumule la
+  salida con el formato id=valor; manejado por sprintf.
+goal: De informe.lst construye una ÚNICA cadena con todas las líneas en formato "id=valor"
+  separadas por ";" y imprímela al FINAL.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 15" "Awk-Pro"
+  cat > /home/agent/informe.lst <<EOF
+  alpha $DOJO_FLAG
+  beta 2
+  gamma 3
+  alpha 10
+  EOF
+  chown agent:agent /home/agent/informe.lst
+solution: awk '{ t = t sprintf("%s=%s;", $1, $2) } END { print t }' /home/agent/informe.lst
+hints:
+  - sprintf devuelve el STRING formateado (NO lo imprime).
+  - t = t sprintf(...) CONCATE con el acumulador de cada vez; END imprime una vez.
+  - awk '{ t = t sprintf("%s=%s;", $1, $2) } END { print t }' /home/agent/informe.lst
+teach: "sprintf es printf pero en texto: devuelve el valor en lugar de imprimir. Cumple
+  con el patrón AWK-FORMATO-ACUMULAR-PRINTAR."
+cheatsheet:
+  - cmd: awk '{ a = sprintf("%03d", $1); print a }' f
+    desc: variable de formato
+  - cmd: awk '{ t = t $1 "=" $2 ";" } END { print t }' f
+    desc: "sin formato: acumular"
+keywords:
+  - awk
+  - sprintf
+  - variables
+profile: default

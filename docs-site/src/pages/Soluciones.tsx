@@ -14,12 +14,18 @@ const TRACK_LABELS: Record<string, string> = {
   scripting: 'Bash scripting',
   forense: 'Forense',
   boss: 'Boss cronometrado',
+  grep: 'Grep (especialización)',
+  awk: 'Awk (especialización)',
+  'grep-pro': 'Grep Maestro',
+  'awk-pro': 'Awk Maestro',
 };
 
 const TRACK_ICONS: Record<string, string> = {
   fundamentos: '🧭', filtrado: '🗝️', busqueda: '🔎', procesado: '✂️',
   permisos: 'chmod', procesos: '⚙️', redes: '🌐', archivos: '📁',
   scripting: '📜', forense: '🧪', boss: '👑',
+  grep: '🧲', awk: '📐',
+  'grep-pro': '🥇', 'awk-pro': '🏅',
 };
 
 function Stars({ n }: { n: number }) {

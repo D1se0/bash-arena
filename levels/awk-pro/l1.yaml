@@ -1,0 +1,40 @@
+id: awk-pro-l1
+track: awk-pro
+index: 1
+title: Campos con delimitador custom
+subtitle: awk -F con split por los dos puntos
+xp: 60
+difficulty: 4
+brief: El fichero roles.txt usa delimitador ":". La 1.ª columna es el usuario, la 2.ª el
+  rol. El dato relevante sólo es el ROL.
+goal: De roles.txt imprime la SEGUNDA columna (el rol) respetando su delimitador del fichero.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Awk-Pro"
+  cat > /home/agent/roles.txt <<EOF
+  root:admin
+  agent:$DOJO_FLAG
+  invitado:lector
+  backup:admin
+  EOF
+  chown agent:agent /home/agent/roles.txt
+solution: "awk -F: '{print $2}' /home/agent/roles.txt"
+hints:
+  - "awk separa por espacios cuando no le dices nada: -F: cambia el separador a «dos
+    puntos»."
+  - "Con -F: el campo $2 es la columna delimitada por :."
+  - "awk -F: '{print $2}' /home/agent/roles.txt"
+teach: "-F es la FLAG de DELIMITADOR: sin él, awk asume espacios y tabs. Si tu data no va
+  separada por espacios, este es el PRIMER paso. El $2 apunta SIEMPRE al segundo campo."
+cheatsheet:
+  - cmd: "awk -F: '{print $2}' f"
+    desc: "segundo campo separado por :"
+  - cmd: awk -F, '{print $1}' f
+    desc: primera columna de un CSV simple
+keywords:
+  - awk
+  - -F
+  - delimitador
+  - campos
+profile: default

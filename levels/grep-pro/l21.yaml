@@ -1,0 +1,41 @@
+id: grep-pro-l21
+track: grep-pro
+index: 21
+title: El corte asimétrico
+subtitle: "grep -B 3 -A 1: contexto distinto a cada lado"
+xp: 75
+difficulty: 5
+brief: El corte del log quiere 3 líneas ANTES y UNA después del evento MARCAR (distinto a
+  cada lado).
+goal: De flujo.log imprime el evento MARCAR con TRES líneas ANTERIORES y UNA línea
+  POSTERIOR (la señal va en el posterior).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Grep-Pro"
+  cat > /home/agent/flujo.log <<EOF
+  preludio 1
+  preludio 2
+  preludio 3
+  MARCAR evento en el medio
+  postludio única: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/flujo.log
+solution: grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log
+hints:
+  - -B 3 -A 1 es UNA orden con dos opciones, contexto distinto a cada lado.
+  - "El orden de las opciones da igual: -A 1 -B 3 funciona igual."
+  - grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log
+teach: Combinar -A y -B en el mismo comando da la banda de interés personalizada; cuando
+  necesitas uno ≠ otro, evita la -C simétrica.
+cheatsheet:
+  - cmd: grep -B 3 -A 1 pat f
+    desc: asymétrica personalizada
+  - cmd: grep -A 1 -B 3 pat f
+    desc: el mismo resultado
+keywords:
+  - grep
+  - -A
+  - -B
+  - contexto
+profile: default

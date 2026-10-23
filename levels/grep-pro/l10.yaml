@@ -1,0 +1,38 @@
+id: grep-pro-l10
+track: grep-pro
+index: 10
+title: El culpable anterior
+subtitle: "grep -B 2: contexto antes"
+xp: 65
+difficulty: 4
+brief: "El fallo crítico se entiende SOLO con lo anterior: los dos pasos ANTERIORES al abort."
+goal: De pipeline.log imprime la línea ABORT y las DÚO ANTERIORES (ahí está la causa).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Grep-Pro"
+  cat > /home/agent/pipeline.log <<EOF
+  descargar fuentes (ok)
+  compilar módulo B con la marca: $DOJO_FLAG
+  ABORT pub-sub no responde
+  causa: señal falsa enganchó
+  reiniciamos el pipeline
+  EOF
+  chown agent:agent /home/agent/pipeline.log
+solution: grep -B 2 'ABORT' /home/agent/pipeline.log
+hints:
+  - -B 2 imprime cada match y las 2 líneas que lo PRECEDEN.
+  - "B es de before: la contraparte de -A."
+  - grep -B 2 'ABORT' /home/agent/pipeline.log
+teach: "El diagnóstico de logs casi siempre mira atrás: -B N da el «qué produjo esto». Con
+  -A N en el mismo grep (o -C) ves la banda completa."
+cheatsheet:
+  - cmd: grep -B 2 pat f
+    desc: 2 líneas antes + match
+  - cmd: grep -A 3 -B 2 pat f
+    desc: "asimétrica: 3 después, 2 antes"
+keywords:
+  - grep
+  - -B
+  - contexto
+profile: default

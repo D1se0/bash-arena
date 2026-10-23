@@ -1,0 +1,41 @@
+id: grep-pro-l18
+track: grep-pro
+index: 18
+title: El detector de dos etapa
+subtitle: "grep | grep: filtrado en cadena"
+xp: 70
+difficulty: 5
+brief: "El fichero ficha.txt repleta de patrones. Dos filtros en cadena son la opción más
+  segura: primero el formato, luego la señal."
+goal: "De ficha.txt imprime las líneas con patrón uid: TENGAN cuatro dígitos y CONTÉNGAN
+  la marca (tenga FLAG)."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 18" "Grep-Pro"
+  cat > /home/agent/ficha.txt <<EOF
+  uid: 12345 demasiado corto
+  uid: 123456 correcto campo sin marca
+  uid: abc12 sin números suficientes
+  uid: 654321 correcto tanpoco
+  uid: "12345 con comillas no vale"
+  uid: 432198 correcto: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/ficha.txt
+solution: "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'"
+hints:
+  - grep uid:[0-9]{6} lista las líneas con formato correcto.
+  - El segundo grep (FLAG) filtra la línea con la marca.
+  - "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'"
+teach: "Un pipeline con 2 greps simplifica. El primero reduce espectro, el segundo afina:
+  nunca resuelvas en una sola línea si no llega."
+cheatsheet:
+  - cmd: grep 1 | grep 2
+    desc: filtro lógico AND
+  - cmd: grep -E 'a.*b' f
+    desc: a y b en la misma línea
+keywords:
+  - grep
+  - pipeline
+  - AND
+profile: default

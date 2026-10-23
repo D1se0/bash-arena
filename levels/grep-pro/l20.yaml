@@ -1,0 +1,45 @@
+id: grep-pro-l20
+track: grep-pro
+index: 20
+title: El tablero de rangos
+subtitle: "grep + sed: líneas con número en rango"
+xp: 75
+difficulty: 5
+brief: En el log, la marca PROFUNDO vive entre las líneas 4 y 8 (y solo hay).
+goal: De marcas.txt imprime las líneas que contengan DEEP pero EXCLUSIVAMENTE entre las
+  líneas 4 a 8 (incluyendo los extremos).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 20" "Grep-Pro"
+  cat > /home/agent/marcas.txt <<EOF
+  uno simple con DEEP fuera de rango
+  dos vacío
+  tres el término DEEP en la mitad inicial
+  cuatro DEEP en medio de todo
+  cinco marca DEEP
+  seis el resilient DEEP
+  siete DEEP profundo: $DOJO_FLAG
+  ocho DEEP en el final
+  nueve fuera DEEP del rango
+  EOF
+  chown agent:agent /home/agent/marcas.txt
+solution: head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'
+hints:
+  - "Goala en la línea 4-8: head -n 8 da las primeras 8; tail -n +4 salta las 3 primeras."
+  - El último grep 'DEEP' filtra de ese bloque.
+  - head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'
+teach: "No todas las subtareas son solo greps. Puedes combinar greps con head/tail/sed
+  cut. Recuerda: la ventana de líneas 4-8 (head -n 8 | tail -n +4) tras un grep es una
+  técnica común."
+cheatsheet:
+  - cmd: head -n 8 f | tail -n +4
+    desc: líneas 4 a 8
+  - cmd: sed -n 4,8p f
+    desc: "idem: imprime las líneas 4 a 8"
+keywords:
+  - grep
+  - head
+  - tail
+  - rango
+profile: default

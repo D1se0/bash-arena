@@ -1,0 +1,39 @@
+id: grep-pro-l7
+track: grep-pro
+index: 7
+title: Solo la primera
+subtitle: "grep -m 1: para tras el primer match"
+xp: 65
+difficulty: 4
+brief: El beacon.log repite la misma señal cada segundo. Para diagnóstico, la PRIMERA es
+  la que interes
+goal: De beacon.log, imprime únicamente la PRIMERA línea que contenga BEACON.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Grep-Pro"
+  cat > /home/agent/beacon.log <<EOF
+  t=001 BEACON primer latido: $DOJO_FLAG
+  t=002 BEACON latido de control
+  t=003 silencio dextral
+  t=004 conexión estimada normal
+  EOF
+  chown agent:agent /home/agent/beacon.log
+solution: grep -m 1 'BEACON' /home/agent/beacon.log
+hints:
+  - -m 1 detiene la lectura del fichero tras el primer match (u -m N para N máximo).
+  - "En ficheros grandes es una ganancia de rendimiento brutal: no escanea lo demás."
+  - grep -m 1 'BEACON' /home/agent/beacon.log
+teach: -m N limita el nº de matches POR FICHERO. Con -m 1 pides el primer hallazgo
+  y#----------------------------------------------------------------# para; en modo
+  recursivo, cada fichero aportará su primera copia.
+cheatsheet:
+  - cmd: grep -m 1 pat f
+    desc: solo el primer match
+  - cmd: grep -m 3 pat f
+    desc: hasta 3 matches
+keywords:
+  - grep
+  - -m
+  - límite
+profile: default

@@ -1,0 +1,42 @@
+id: awk-pro-l4
+track: awk-pro
+index: 4
+title: El máximo de la columna
+subtitle: awk $2 > max + END con dos variables
+xp: 65
+difficulty: 4
+brief: "El fichero medias.dat trae «id valor». Necesitas el id del VALOR MÁXIMO: la clave
+  que encabeza al campeón es la señal."
+goal: De medias.dat imprime el id (PRIMERA columna) de la fila con el valor MÁXIMO en la
+  segunda columna.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 04" "Awk-Pro"
+  cat > /home/agent/medias.dat <<EOF
+  a 10
+  b 40
+  $DOJO_FLAG 90
+  c 35
+  d 22
+  EOF
+  chown agent:agent /home/agent/medias.dat
+solution: awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat
+hints:
+  - "max partierer sin declarar en 0: si el valor de la fila supera al máximo, guárdalo y
+    guarda su id."
+  - END imprimi el id cuando todo el fichero ha sido procesado.
+  - awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat
+teach: "Patrón «compara-guarda-imprime» de awk: una variable max y una id, y el campeón se
+  anuncia en END. Sin sort y sin bucles: el streaming atiende por ti."
+cheatsheet:
+  - cmd: awk '$2 > max {max=$2; id=$1} END {print id}' f
+    desc: el id con el valor máximo
+  - cmd: awk '$2 > max {max=$2} END {print max}' f
+    desc: el valor máximo en sí
+keywords:
+  - awk
+  - máximo
+  - END
+  - variables
+profile: default

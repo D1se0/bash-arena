@@ -1,0 +1,40 @@
+id: grep-pro-l9
+track: grep-pro
+index: 9
+title: Pasado el hallazgo
+subtitle: "grep -A 2: contexto después"
+xp: 65
+difficulty: 4
+brief: El log de despliegue enraiza el trigger GO y, DESPUÉS, la salida. Necesitas ver lo
+  que sigue.
+goal: De deploy.log imprime la línea que contiene GO y las DOS SIGUIENTES (así estado está
+  en esa zona).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Grep-Pro"
+  cat > /home/agent/deploy.log <<EOF
+  paso 1: guardar el repo
+  paso 2: compilar módulo A
+  GO activación de despliegue
+  config aplicada: $DOJO_FLAG
+  retora ciclos 2-3
+  EOF
+  chown agent:agent /home/agent/deploy.log
+solution: grep -A 2 'GO' /home/agent/deploy.log
+hints:
+  - -A 2 imprime cada match y las DÚO líneas QUE SIGUEN.
+  - Cuando dos matches se superponen, el contexto puede incluir separadores --.
+  - grep -A 2 'GO' /home/agent/deploy.log
+teach: "A de after: incluye el contexto posterior. En logs de deploy es la vía rápida de
+  leer «qué pasó tras el evento» sin abrir el fichero entero."
+cheatsheet:
+  - cmd: grep -A 2 pat f
+    desc: match + 2 siguientes
+  - cmd: grep -B 3 pat f
+    desc: 3 ANTIERIORES (B de before)
+keywords:
+  - grep
+  - -A
+  - contexto
+profile: default

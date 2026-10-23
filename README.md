@@ -1,8 +1,8 @@
 # bash-arena
 
-**Plataforma web para aprender Linux de verdad**: una terminal bash real (Ubuntu en Docker) en el navegador, 194 niveles gamificados en 11 tracks, flags con HMAC, XP/nivel/rachas y progreso persistente en SQLite. Sin instalar nada: `./scripts/deploy.sh` y a jugar.
+**Plataforma web para aprender Linux de verdad**: una terminal bash real (Ubuntu en Docker) en el navegador, 292 niveles gamificados en 15 tracks (incluidos los de experto grep-pro y awk-pro), flags con HMAC, XP/nivel/rachas y progreso persistente en SQLite. Sin instalar nada: `./scripts/deploy.sh` y a jugar.
 
-![status](https://img.shields.io/badge/niveles-53-green) ![tests](https://img.shields.io/badge/tests-18%2F18%20%2B%2011%2F11%20seguridad-green) ![docker](https://img.shields.io/badge/stack-compose%20%2B%20dockerode-blue)
+![status](https://img.shields.io/badge/niveles-292-green) ![tests](https://img.shields.io/badge/tests-18%2F18%20%2B%2011%2F11%20seguridad-green) ![docker](https://img.shields.io/badge/stack-compose%20%2B%20dockerode-blue)
 
 ## Cómo funciona
 
@@ -43,7 +43,7 @@ navegador ──wss──▶ nginx ──▶ server (ws.ts ─ api.ts ─ docker
 app/server   # WebSocket ↔ dockerode, motor de niveles, flags HMAC, SQLite, api
 app/client   # React + Vite + xterm.js (terminal en el navegador)
 docs-site    # web de documentación (React + Vite + Tailwind) para GitHub Pages
-levels/      # 194 niveles (YAML) en 11 tracks: fundamentos…boss
+levels/      # 292 niveles (YAML) en 15 tracks: fundamentos…boss, grep-pro, awk-pro
 docker/      # ubuntu-dojo, arena-prompt, nginx, compose
 scripts/     # deploy/stop/status/logs/backup/restore/update + smoke/e2e/seguridad
 ```
@@ -86,13 +86,13 @@ profile: default          # límites (memoria, pids, red, caps)
 ## Documentación
 
 - Web de docs: `docs-site/` (Home · Aprende · Cómo funciona · Despliegue · Técnica · Extras). Desplegada automáticamente a **GitHub Pages** con `.github/workflows/pages.yml`.
-- CI en `.github/workflows/ci.yml`: lint, typecheck, tests unitarios + lint de 194 niveles, build de cliente/docs-site, verificación de las 194 soluciones **dentro de Docker** con dockerode, y smoke E2E (WS + dockerode + SQLite).
+- CI en `.github/workflows/ci.yml`: lint, typecheck, tests unitarios + lint de 292 niveles, build de cliente/docs-site, verificación de las 292 soluciones **dentro de Docker** con dockerode, y smoke E2E (WS + dockerode + SQLite).
 
 ## Roadmap
 
 - [x] Motor de niveles + flags HMAC + XP/rachas
 - [x] Terminal real en el navegador (xterm.js ↔ WebSocket ↔ dockerode)
-- [x] 194 niveles en 11 tracks (fundamentos → boss)
+- [x] 292 niveles en 15 tracks (fundamentos → boss → grep-pro → awk-pro)
 - [x] Progreso en SQLite + backup/restore
 - [x] Despliegue con un comando (`./scripts/deploy.sh`)
 - [x] Web de documentación + GitHub Pages

@@ -1,0 +1,42 @@
+id: grep-pro-l11
+track: grep-pro
+index: 11
+title: La banda alrededor
+subtitle: "grep -C 2: ambos lados"
+xp: 70
+difficulty: 5
+brief: El bloque de SIGNAL (baliza) solo tiene su significado con 2 líneas de contexto a
+  BOTH direcciones.
+goal: De baliza.log imprime la línea de la señal BALIZA y DOS líneas de contexto en ambas
+  direcciones.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Grep-Pro"
+  cat > /home/agent/baliza.log <<EOF
+  inicio de la ceremonia
+  stress bajo en el generador 1
+  >>> BALIZA encendida <<<
+  stress alto en el generador 2
+  restaus del ciclo
+  stress bajo de regreso
+  >>> BALIZA encendida: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/baliza.log
+solution: grep -C 2 'BALIZA' /home/agent/baliza.log
+hints:
+  - "-C 2 = -A 2 + -B 2: contexto completo alrededor del match."
+  - Si el match llega al INICIO del fichero, no habría líneas anteriores que mostrar.
+  - grep -C 2 'BALIZA' /home/agent/baliza.log
+teach: "C de context: la herramienta del «muéstrame la escena completa». Con -A y -C
+  combinadas puedes personalizar la banda."
+cheatsheet:
+  - cmd: grep -C 3 pat f
+    desc: 3 antes y 3 después
+  - cmd: grep -A 4 -B 1 pat f
+    desc: asimétrica expresa
+keywords:
+  - grep
+  - -C
+  - contexto
+profile: default
