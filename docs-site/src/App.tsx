@@ -46,12 +46,12 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 backdrop-blur bg-base/80 border-b border-edge/50">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3 sm:gap-4 min-w-0">
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-3 sm:gap-4 min-w-0">
           <Link to="/" className="font-mono text-nord6 shrink-0 whitespace-nowrap">
             <span className="text-morado">[</span>bash-arena<span className="text-morado">]</span>
             <span className="text-frost/60 text-xs ml-2 hidden sm:inline">docs</span>
           </Link>
-          <nav className="hidden xl:flex gap-1 ml-2 overflow-x-auto">
+          <nav className="hidden xl:flex gap-1 ml-2 overflow-x-auto no-scrollbar">
             {NAV.map((n) => (
               <Link
                 key={n.to}
@@ -135,7 +135,7 @@ export default function App() {
         </AnimatePresence>
       </header>
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
         <motion.div key={location.pathname} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
           <Suspense fallback={<p className="text-sm text-frost/60">cargando soluciones…</p>}>
           {location.pathname === '/' && <Home />}

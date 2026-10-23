@@ -19,8 +19,8 @@ mkdirSync(SHOTS, { recursive: true });
 
 const fails = [];
 const oks = [];
-const ok = (m) => oks.push(m);
-const fail = (m) => fails.push(m);
+const ok = (m) => { oks.push(m); console.log('  ✓', m); };
+const fail = (m) => { fails.push(m); console.log('  ✗', m); };
 
 const browser = await chromium.launch({
   executablePath: '/usr/bin/chromium',
@@ -34,7 +34,8 @@ const browser = await chromium.launch({
     permissions: ['clipboard-read', 'clipboard-write'],
   });
   const page = await ctx.newPage();
-  page.on('pageerror', (e) => fail(`pageerror app: ${e.message}`));
+  page.on('pageerror', (e) => { console.error('PAGEERROR:', e.message); fail(`pageerror app: ${e.message}`); });
+  page.on('console', (m) => { if (m.type() === 'error') console.error('CONSOLE-ERR:', m.text().slice(0, 240)); });
 
   // sniffer de WS: guarda todos los «data» que llegan a la terminal en __arenaData
   await page.addInitScript(() => {
@@ -187,7 +188,24 @@ const browser = await chromium.launch({
     }
 
     // — pantalla completa de la terminal: botón ves→ fija overlay, Esc vuelve
-    await page.getByRole('button', { name: /pantalla completa/ }).first().click();
+    try {
+      await page.getByRole('button', { name: /pantalla completa/ }).first().click({ timeout: 8_000 });
+    } catch {
+      // diagnóstico: ¿existen los botones? ¿cayó el render de React?
+      const dbg = await page.evaluate(() => ({
+        botones: [...document.querySelectorAll('button')].map((b) => b.textContent?.trim()).slice(0, 14),
+        pane: !!document.querySelector('.arena-terminal'),
+        head: (document.body.innerText || '').slice(0, 220),
+      }));
+      writeFileSync(`${SHOTS}/fail-fullscreen-dom.html`, await page.content());
+      fail(`app: botón «pantalla completa» no clickable — ${JSON.stringify(dbg)}`);
+      // click de reserva por evaluate para no cortar el resto del test
+      await page.evaluate(() => {
+        const b = [...document.querySelectorAll('button')].find((x) => /pantalla completa/.test(x.textContent || ''));
+        if (b) (b).click();
+      });
+    }
+    // diagnóstico si el locator no resuelve: captura el estado del DOM en ese punto
     await page.waitForTimeout(400);
     let fs = await page.evaluate(() => {
       const pane = document.querySelector('.arena-terminal');
@@ -207,6 +225,42 @@ const browser = await chromium.launch({
       fail(`app: pantalla completa de terminal no activó overlay (${JSON.stringify(fs)})`);
     }
     await page.screenshot({ path: `${SHOTS}/app-fullscreen.png` });
+    // — EN pantalla completa, el flujo del bug histórico: teclear un comando,
+    // subir con ↑, volver a ejecutarlo y leer un fichero con edición por
+    // flechas (← + Delete). El historial debe traer «echo fullzoom» y el cat
+    // debe funcionar sin errores de bash («not found», basura de escape).
+    {
+      const marker = await page.evaluate(() => (window.__arenaData || '').length);
+      await page.locator('.xterm').click();
+      await page.keyboard.type('echo fullzoom', { delay: 25 });
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(900);
+      await page.keyboard.press('ArrowUp'); // recuperación del historial
+      await page.waitForTimeout(250);
+      await page.keyboard.press('Enter'); // vuelve «echo fullzoom»
+      await page.waitForTimeout(700);
+      // edición con ← y Delete: `cat .profilr` → ← (sobre la r) → Delete → 'e'
+      await page.keyboard.type('cat .profilr');
+      await page.keyboard.press('ArrowLeft');
+      await page.waitForTimeout(150);
+      await page.keyboard.press('Delete');
+      await page.waitForTimeout(150);
+      await page.keyboard.type('e'); // → «cat .profile»
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(1000);
+      const all = (await page.evaluate(() => window.__arenaData || ''));
+      const fsStream = all.slice(marker);
+      const plain = fsStream.replace(/\x1b\[[0-9;?]*[ -/]*[a-zA-Z]/g, '');
+      const zoomRuns = (plain.match(/fullzoom/g) || []).length; // ejecución + reejecución por ↑
+      const noBashErr = !plain.includes('not found') && !plain.includes('No such file');
+      const catRan = plain.includes('bash_profile') || plain.includes('.profile');
+      if (zoomRuns >= 2 && noBashErr && catRan) {
+        ok('fullscreen: ↑ trae el comando anterior y ←+Delete corrigen «cat .profile» sin ruido de bash');
+      } else {
+        fail(`fullscreen: flujo ↑/edición roto — fullzoom×${zoomRuns} bashErr=${!noBashErr} cat=${catRan} «${plain.slice(-230).replace(/[^ -~\n\r]/g, '').slice(-200)}»`);
+      }
+      await page.screenshot({ path: `${SHOTS}/app-fullscreen-arrows.png` });
+    }
     await page.keyboard.press('Escape');
     await page.waitForTimeout(400);
     fs = await page.evaluate(() => ({

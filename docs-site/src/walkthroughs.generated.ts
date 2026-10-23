@@ -1070,6 +1070,156 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "p=$(grep -oE '/var/[a-z/.]+' /home/agent/.bash_history | sort -u | head -n1); cat \"$p\""
   },
   {
+    "id": "fundamentos-l19",
+    "track": "fundamentos",
+    "index": 19,
+    "title": "Vecindad sin nombre",
+    "subtitle": "find por nombre (n Go a buscar sin extensión)",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "> El barrio \"barrio\" está lleno de vecinos con apellidos (extensiones). > Pero el contrabando viaja en el único vecino SIN apellido: un fichero > cuyo nombre no lleva ningún punto. Encuéntralo y lee su contenido.",
+    "goal": "Muestra el contenido del único fichero del árbol ~/barrio cuyo nombre NO contiene punto (los demás son señuelos con extensiones).",
+    "keywords": [
+      "find",
+      "!",
+      "-exec"
+    ],
+    "hints": [
+      "find recorre árboles: find ~/barrio -type f lista todos los ficheros.",
+      "El patrón ! -name '*.*' niega nombres con punto.",
+      "find permite ejecutar sobre los resultados: -exec cat {} +"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "find DIR -name PATRÓN",
+        "desc": "busca por nombre dentro de DIR"
+      },
+      {
+        "cmd": "! -name ...",
+        "desc": "niega el patrón (lo que NO coincide)"
+      },
+      {
+        "cmd": "-exec cmd {} +",
+        "desc": "ejecuta cmd con los resultados"
+      }
+    ],
+    "teach": "find busca ficheros en un árbol. Con `-name '*.*'` fichas los que llevan punto (una \"extensión\"); el `!` delante niega la condición. Los múltiples {}` de `-exec ... {}` se llenan con cada resultado y el `+` agrupa en un solo cat.\n\n    find ~/barrio -type f ! -name '*.*' -exec cat {} +",
+    "steps": [
+      {
+        "raw": "find ~/barrio -type f ! -name '*.*' -exec cat {} +",
+        "cmds": [
+          {
+            "cmd": "find",
+            "args": "~/barrio -type f ! -name *.* -exec cat {} +",
+            "why": "busca ficheros jerárquicamente por nombre, tamaño, tiempo o tipo",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man find»"
+              },
+              {
+                "flag": "-y",
+                "meaning": "flag y del comando — revisa «man find»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-n",
+                "meaning": "flag n del comando — revisa «man find»"
+              },
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man find»"
+              },
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man find»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "find ~/barrio -type f ! -name '*.*' -exec cat {} +"
+  },
+  {
+    "id": "fundamentos-l20",
+    "track": "fundamentos",
+    "index": 20,
+    "title": "La guía invertida",
+    "subtitle": "tac + rev: leer al revés",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "> Un vendedor callejero te entrega su libreta de contactos, pero está > escrita al revés: las líneas van de abajo a arriba y cada línea está > volteada letra a letra. La única línea con :FLAGVEZ: al secundar > (con su contenido también volteado) es la que buscas.",
+    "goal": "Muestra la flag del fichero ~/guia.txt tal como se escribió originalmente (deshaz el orden de líneas y el de letras de cada línea).",
+    "keywords": [
+      "tac",
+      "rev"
+    ],
+    "hints": [
+      "tac imprime las líneas en orden inverso (cat al revés).",
+      "rev invierte los caracteres de cada línea.",
+      "Encadena ambos: tac fichero | rev — y observa qué línea queda limpia."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tac",
+        "desc": "imprime el fichero con las líneas invertidas"
+      },
+      {
+        "cmd": "rev",
+        "desc": "invierte los caracteres de cada línea"
+      }
+    ],
+    "teach": "tac es cat con las líneas en orden inverso; rev voltea los caracteres de cada línea. Combinados deshacen cualquier \"escritura al revés\":\n\n    tac ~/guia.txt | rev\n\nLa línea que contiene el texto de la flag quedará legible en la salida.",
+    "steps": [
+      {
+        "raw": "tac ~/guia.txt | rev",
+        "cmds": [
+          {
+            "cmd": "tac",
+            "args": "~/guia.txt",
+            "why": "invierte el ORDEN de las líneas (cat al revés)",
+            "flags": []
+          },
+          {
+            "cmd": "rev",
+            "args": "",
+            "why": "invierte cada línea carácter a carácter",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "tac ~/guia.txt | rev"
+  },
+  {
     "id": "filtrado-l1",
     "track": "filtrado",
     "index": 0,
@@ -2166,6 +2316,135 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "tr -s ' ' < /home/agent/folleto.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
+  },
+  {
+    "id": "filtrado-l19",
+    "track": "filtrado",
+    "index": 19,
+    "title": "El evento único",
+    "subtitle": "sort + uniq: cazar lo no repetido",
+    "xp": 35,
+    "difficulty": 2,
+    "brief": "> El radar del dojo registró cientos de eventos... y todos se repiten > salvo uno. Regla del dojo: lo que ocurre una sola vez es lo que > importa. Y esa única aparición es la flag.",
+    "goal": "Extrae de ~/eventos.txt la única línea que NO está repetida (todas las demás aparecen 2 o más veces).",
+    "keywords": [
+      "sort",
+      "uniq"
+    ],
+    "hints": [
+      "sort necesita ordenar antes de uniq: uniq solo agrupa líneas adyacentes.",
+      "uniq -d deja las REPETIDAS; uniq -u se queda con las ÚNICAS.",
+      "sort ~/eventos.txt | uniq -u"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sort fich",
+        "desc": "ordena líneas"
+      },
+      {
+        "cmd": "uniq -u",
+        "desc": "muestra solo líneas sin repetición"
+      },
+      {
+        "cmd": "uniq -c",
+        "desc": "cuenta cuántas veces aparece cada línea"
+      }
+    ],
+    "teach": "uniq compara solo con la línea anterior, así que antes se ordena con sort. -u (unique) imprime únicamente las líneas que no se repiten (descarta copias).\n\n    sort ~/eventos.txt | uniq -u\n\nLa línea del evento exclusivo —conteniendo la flag— es la que sobrevive.",
+    "steps": [
+      {
+        "raw": "sort ~/eventos.txt | uniq -u",
+        "cmds": [
+          {
+            "cmd": "sort",
+            "args": "~/eventos.txt",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-u",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-u",
+                "meaning": "muestra solo las únicas (nunca repetidas)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "sort ~/eventos.txt | uniq -u"
+  },
+  {
+    "id": "filtrado-l20",
+    "track": "filtrado",
+    "index": 20,
+    "title": "La fracción exacta",
+    "subtitle": "head + tail apilados",
+    "xp": 35,
+    "difficulty": 2,
+    "brief": "> La coral del dojo ensaya una canción de 12 trenzas. El maestro dice: > \"El secreto está en el compás final, pero solo en su primer verso\". > Si sabes cortar por el final y luego por el principio, lo tendrás.",
+    "goal": "Muestra la única línea que contiene la flag: es la 10.ª línea del fichero ~/cancion.txt (cuenta desde el final: la tercera contando desde atrás, pero la primera del tramo final).",
+    "keywords": [
+      "tail",
+      "head"
+    ],
+    "hints": [
+      "tail -n N fichero entrega las N últimas líneas.",
+      "alto ahí: con head -n 1 te quedas con la primera de ese tramo.",
+      "tail -n 3 ~/cancion.txt | head -n 1"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tail -n N",
+        "desc": "últimas N líneas"
+      },
+      {
+        "cmd": "head -n M",
+        "desc": "primeras M líneas"
+      }
+    ],
+    "teach": "Se combinan dos \"tijeras\": tail corta por el final y head por el principio.\n\n    tail -n 3 fichero     # el tramo de las 3 últimas líneas\n    | head -n 1           # de ese tramo, la primera\n\nEse es el verso escondido —donde vive la flag—.",
+    "steps": [
+      {
+        "raw": "tail -n 3 ~/cancion.txt | head -n 1",
+        "cmds": [
+          {
+            "cmd": "tail",
+            "args": "-n 3 ~/cancion.txt",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 3 = las últimas 3)"
+              },
+              {
+                "flag": "-n 3",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 3)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 1",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 1)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "tail -n 3 ~/cancion.txt | head -n 1"
   },
   {
     "id": "busqueda-l1",
@@ -3430,6 +3709,183 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "find /etc/dojo -name '*.conf' -exec grep -hoE 'FLAG\\{[a-f0-9]+\\}' {} \\;"
   },
   {
+    "id": "busqueda-l19",
+    "track": "busqueda",
+    "index": 19,
+    "title": "La talla exacta",
+    "subtitle": "find -size con bytes",
+    "xp": 40,
+    "difficulty": 3,
+    "brief": "> Los archivos del armario \"medidas\" son todos de tallas sospechosas > (2 KiB, 4 KiB...) porque el chapucero que los creó los rellenó con > basura. Solo uno escapó a la hinchazón: ocupa JUSTO 512 bytes. > Ese es el contrabando.",
+    "goal": "Encuentra dentro de ~/medidas el fichero cuyo tamaño es EXACTAMENTE 512 bytes (los demás son más grandes) y muestra su contenido.",
+    "keywords": [
+      "-size"
+    ],
+    "hints": [
+      "find acepta tamaños: -size Nc interpreta N como bytes (\"c\" de chars).",
+      "Los señuelos ocupan más (relleno con head -c y /dev/zero).",
+      "find ~/medidas -type f -size 512c"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "-size 512c",
+        "desc": "tamaño exacto en bytes"
+      },
+      {
+        "cmd": "-size +2k",
+        "desc": "mayor que 2 KiB"
+      },
+      {
+        "cmd": "-size -1M",
+        "desc": "menor que 1 MiB"
+      }
+    ],
+    "teach": "Con `-size` find filtra por tamaño. El sufijo importa: `c` = bytes exactos, `k` = kibibytes, `M` = mebibytes (y sin sufijo redondea a bloques de 512).\n\n    find ~/medidas -type f -size 512c\n\nY con -exec se lee al vuelo:\n\n    find ~/medidas -type f -size 512c -exec cat {} +",
+    "steps": [
+      {
+        "raw": "find ~/medidas -type f -size 512c -exec cat {} +",
+        "cmds": [
+          {
+            "cmd": "find",
+            "args": "~/medidas -type f -size 512c -exec cat {} +",
+            "why": "busca ficheros jerárquicamente por nombre, tamaño, tiempo o tipo",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man find»"
+              },
+              {
+                "flag": "-y",
+                "meaning": "flag y del comando — revisa «man find»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-s",
+                "meaning": "flag s del comando — revisa «man find»"
+              },
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man find»"
+              },
+              {
+                "flag": "-z",
+                "meaning": "flag z del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man find»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "find ~/medidas -type f -size 512c -exec cat {} +"
+  },
+  {
+    "id": "busqueda-l20",
+    "track": "busqueda",
+    "index": 20,
+    "title": "La colmena silenciosa",
+    "subtitle": "find por mtime: el fichero más reciente",
+    "xp": 40,
+    "difficulty": 3,
+    "brief": "> La colmena guarda panales con fechas de fabricación distintas (algunas > desde hace meses). La abeja reina dejó su mensaje en el panal MÁS > NOVEDOSO: el único marcado con fecha de hoy.",
+    "goal": "Encuentra en ~/colmena el fichero modificado más recientemente (los demás tienenfechas antiguas) y muestra su contenido.",
+    "keywords": [
+      "ls",
+      "find"
+    ],
+    "hints": [
+      "ls -t ordena por fecha de modificación (la más nueva primero).",
+      "find permite probar antigüedad: -mmin -1 son los tocados hace menos de 1 minuto.",
+      "jj: ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ls -t",
+        "desc": "ordena por fecha de modificación"
+      },
+      {
+        "cmd": "find -mmin -N",
+        "desc": "modificado hace menos de N minutos"
+      },
+      {
+        "cmd": "find -newer FICHERO",
+        "desc": "modificado después que otro fichero"
+      }
+    ],
+    "teach": "ls -t reordena por mtime (modificación): el primero es el más reciente. Combinando con head/xargs se lee directamente:\n\n    ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}\n\nO con find, para árboles grandes:\n\n    find ~/colmena -mmin -1 -type f -exec cat {} +\n\n(-mmin -1 = modificado hace menos de 1 minuto).",
+    "steps": [
+      {
+        "raw": "ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}",
+        "cmds": [
+          {
+            "cmd": "ls",
+            "args": "-t ~/colmena",
+            "why": "lista el contenido de un directorio",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "ordena por fecha de modificación"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 1",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 1)"
+              }
+            ]
+          },
+          {
+            "cmd": "xargs",
+            "args": "-I{} cat ~/colmena/{}",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": [
+              {
+                "flag": "-I",
+                "meaning": "marcador de sustitución {}: cada línea va ahí"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}"
+  },
+  {
     "id": "procesado-l1",
     "track": "procesado",
     "index": 0,
@@ -4426,6 +4882,106 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "comm -13 <(sort /home/agent/listas.txt) <(sort /home/agent/firmadas.txt)"
+  },
+  {
+    "id": "procesado-l19",
+    "track": "procesado",
+    "index": 19,
+    "title": "El titular del día",
+    "subtitle": "awk: estadística de máximos",
+    "xp": 45,
+    "difficulty": 3,
+    "brief": "> La redacción del dojo midió cuántas veces sonó el teléfono de cada > periodista... perdón, de cada \"fuente\". El que más SONÓ es el que > guarda la carta: su nombre es,a la vez, el nombre de un fichero .log > en el mismo armario.",
+    "goal": "Lee resumen.txt (columnas: nombre y recuento) y muestra el contenido del fichero <nOMBRE>.log del压力大 número de llamadas.",
+    "keywords": [
+      "awk",
+      "xargs"
+    ],
+    "hints": [
+      "awk recorre línea a línea guardando el máximo: $2>m{m=$2;n=$1}",
+      "En el bloque END{} se imprime lo acumulado: print n",
+      "Ese texto es un nombre de fichero: pasa por xargs -I{}."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2>m{m=$2;n=$1} END{print n}'",
+        "desc": "nombre de la fila con la columna 2 máxima"
+      },
+      {
+        "cmd": "xargs -I{} CMD {}",
+        "desc": "incrusta la salida en el comando (el {} es el hueco)"
+      }
+    ],
+    "teach": "awk guarda estado entre líneas. Este patrón busca el máximo:\n\n    awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt\n\nCada vez que la columna 2 supera el máximo guardado, el nombre ($1) pasa a ser \"el líder\". En END se imprime. Como el líder es el nombre de un fichero:\n\n    awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt | xargs -I{} cat ~/prensa/{}.log",
+    "steps": [
+      {
+        "raw": "awk '$2>m{m=$2;n=$1} END{print n}' ~/prensa/resumen.txt | xargs -I{} cat ~/prensa/{}.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2>m{m=$2;n=$1} END{print n} ~/prensa/resumen.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "xargs",
+            "args": "-I{} cat ~/prensa/{}.log",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": [
+              {
+                "flag": "-I",
+                "meaning": "marcador de sustitución {}: cada línea va ahí"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2>m{m=$2;n=$1} END{print n}' ~/prensa/resumen.txt | xargs -I{} cat ~/prensa/{}.log"
+  },
+  {
+    "id": "procesado-l20",
+    "track": "procesado",
+    "index": 20,
+    "title": "La carta desenmascarada",
+    "subtitle": "sed con varias sustituciones",
+    "xp": 45,
+    "difficulty": 3,
+    "brief": "> El espía disfrazó la flag en ~/carta.txt: puso ( y ) donde iban las > llaves { } y guiones donde iban los subrayados. Un solo sed con tres > sustituciones la recompone tal como se escribió originalmente.",
+    "goal": "Transforma ~/carta.txt para que la flag vuelva a su formato (llaves { } y subrayados _ sustituyendo los paréntesis y guiones actuales). La salida debe mostrar FLAG{...} con el interior correcto.",
+    "keywords": [
+      "sed"
+    ],
+    "hints": [
+      "sed admite varias expresiones separadas por ; dentro de las mismas comillas.",
+      "El patrón s/(/{/g cambia TODOS los paréntesis abiertos por llaves.",
+      "Tres pasos en una invocación: sed \"s/(/{/g;s/)/}/g;s/-/_/g\" ~/carta.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sed 's/a/b/g'",
+        "desc": "sustituye todas las apariciones de a por b"
+      },
+      {
+        "cmd": "sed -e '…' -e '…'",
+        "desc": "encadena varias expresiones"
+      }
+    ],
+    "teach": "sed acepta varios comandos en cadena (separados por ;) en una sola pasada:\n\n    sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt\n\nCada s/a/b/g sustituye TODAS las apariciones de a por b: - ( → {  ·  ) → }  ·  - → _\nLa salida desvela la flag con su formato correcto.",
+    "steps": [
+      {
+        "raw": "sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "s/(/{/g;s/)/}/g;s/-/_/g ~/carta.txt",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt"
   },
   {
     "id": "permisos-l1",
@@ -5594,6 +6150,139 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "sudo cat /root/paneles/llave.txt"
+  },
+  {
+    "id": "permisos-l19",
+    "track": "permisos",
+    "index": 19,
+    "title": "El sello del grupo",
+    "subtitle": "chmod con sudo para el dueño root",
+    "xp": 50,
+    "difficulty": 4,
+    "brief": "> El acta del consejo (/var/dojo/acta.txt) es de root y su grupo > \"auditores\" —del que tú formas parte, pero no es tu grupo primario. > Con los permisos 640 actuales, el grupo debería poder leerla... y > aunque ERES miembro del grupo, el fichero está sellado: faltan los > bits correctos. Solo un superpoder la abrirá.",
+    "goal": "Haz legible el acta para el grupo (o para todos) con sudo y muestra la flag.",
+    "keywords": [
+      "sudo",
+      "chmod",
+      "id"
+    ],
+    "hints": [
+      "sudo ejecuta el comando como root: sudo chmod …",
+      "El 6 en 640 son lectura+escritura del DUEÑO; el grupo tiene un 4 (leer)… ¿o no?",
+      "Los bits se pueden dar numéricos (644) o simbólicos (g+r / a+r)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo chmod 644 F",
+        "desc": "da permisos de lectura a todos"
+      },
+      {
+        "cmd": "chmod g+r F",
+        "desc": "variante simbólica: grupo puede leer"
+      },
+      {
+        "cmd": "id",
+        "desc": "revisa a qué grupos perteneces"
+      }
+    ],
+    "teach": "Un fichero root:auditores con -rw-r----- debería dejar leer al grupo… pero si el sello se puso en 600 (grupo sin permisos), el miembro del grupo no lee. Como agente (miembro del grupo pero SIN ser root), no puedes chmod; para ello está sudo:\n\n    sudo chmod 644 /var/dojo/acta.txt\n    cat /var/dojo/acta.txt\n\n644 = dueño lee/escribe, grupo y otros leen.",
+    "steps": [
+      {
+        "raw": "sudo chmod 644 /var/dojo/acta.txt",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "chmod 644 /var/dojo/acta.txt",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/dojo/acta.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/dojo/acta.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo chmod 644 /var/dojo/acta.txt && cat /var/dojo/acta.txt"
+  },
+  {
+    "id": "permisos-l20",
+    "track": "permisos",
+    "index": 20,
+    "title": "La maleta del inspector",
+    "subtitle": "chown con sudo",
+    "xp": 50,
+    "difficulty": 4,
+    "brief": "> El inspector invitado dejó su maletín en tu cueva… pero lo cerró con > llave: el fichero es DE ÉL (propietario inspector) y tú no puedes > leerlo. Tienes sudo: recupera la propiedad y la lee.",
+    "goal": "Cambia el propietario de ~/cueva/maletin.txt para que seas tú y muestra su contenido.",
+    "keywords": [
+      "sudo",
+      "ls"
+    ],
+    "hints": [
+      "ls -l muestra el propietario en la 3.ª columna.",
+      "sudo chown agent FICHERO transfiere la propiedad.",
+      "Después de apropiarte, cat ya funciona."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo chown user F",
+        "desc": "transfiere la propiedad a user"
+      },
+      {
+        "cmd": "ls -l",
+        "desc": "ve quién es el dueño y los permisos"
+      }
+    ],
+    "teach": "chown cambia el dueño; solo root (o sudo) puede dárselo a otro. Después de apropiarte del maletín, leer es trivial:\n\n    ls -l ~/cueva/maletin.txt          # quien es el dueño\n    sudo chown agent ~/cueva/maletin.txt\n    cat ~/cueva/maletin.txt",
+    "steps": [
+      {
+        "raw": "ls -l ~/cueva/maletin.txt",
+        "cmds": [
+          {
+            "cmd": "ls",
+            "args": "-l ~/cueva/maletin.txt",
+            "why": "lista el contenido de un directorio",
+            "flags": [
+              {
+                "flag": "-l",
+                "meaning": "formato largo (permisos, dueño, tamaño, fecha)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo chown agent ~/cueva/maletin.txt",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "chown agent ~/cueva/maletin.txt",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat ~/cueva/maletin.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "~/cueva/maletin.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ls -l ~/cueva/maletin.txt && sudo chown agent ~/cueva/maletin.txt && cat ~/cueva/maletin.txt"
   },
   {
     "id": "procesos-l1",
@@ -7076,6 +7765,157 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "ps -eo ni,args | awk '$1 == 19' | head -n1"
   },
   {
+    "id": "procesos-l19",
+    "track": "procesos",
+    "index": 19,
+    "title": "El candado de la señal",
+    "subtitle": "usr1 a un proceso en espera",
+    "xp": 55,
+    "difficulty": 4,
+    "brief": "> Un \"celador\" del dojo duerme agarrado a un candado. Solo si le envías > la señal USR1 depositará la llave (la flag) en ~/candado.listo. > Encuéntralo con pgrep y despíertalo con la señal correcta.",
+    "goal": "El proceso que contiene \"celador\" en su línea de comando aún duerme; envíale la señal SIGUSR1 y lee ~/candado.listo (se crea al recibir la señal).",
+    "keywords": [
+      "pgrep",
+      "kill",
+      "trap"
+    ],
+    "hints": [
+      "pgrep -f PATRÓN lista los PID cuyo comando completo encaja con PATRÓN.",
+      "kill -USR1 PID envía SIGUSR1 (las señales USR1/USR2 son \"de usuario\").",
+      "kill -USR1 $(pgrep -f \"[c]elador\") && sleep 2 && cat ~/candado.listo"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "pgrep -f texto",
+        "desc": "PIDs whose command line matches"
+      },
+      {
+        "cmd": "pgrep -f '[c]lave'",
+        "desc": "truco: el corchete evita auto-coincidir con tu propia cmdline"
+      },
+      {
+        "cmd": "kill -USR1 PID",
+        "desc": "envía la señal de usuario 1"
+      },
+      {
+        "cmd": "trap CMD SIto",
+        "desc": "en un script: qué hacer al recibir una señal"
+      }
+    ],
+    "teach": "pgrep -f busca en TODA la línea de comando (no solo el nombre):\n\n    pgrep -f '[c]elador'    # imprime el PID (el corchete evita auto-coincidir)\n\nCon kill -USR1 se le avisa; el proceso tiene un trap que, al recibir la señal, escribe la llave en disco. Después solo hay que leerla:\n\n    kill -USR1 $(pgrep -f '[c]elador') && sleep 2 && cat ~/candado.listo\n\nEl corchete importa: pgrep -f busca en TODA la línea de comando — incluida la de tu propia invocación, que contiene la palabra — y sin el [ c ] te matarías a ti mismo con la señal. (sleep 2 deja tiempo al trap).",
+    "steps": [
+      {
+        "raw": "kill -USR1 $(pgrep -f '[c]elador')",
+        "cmds": [
+          {
+            "cmd": "kill",
+            "args": "-USR1 $(pgrep -f [c]elador)",
+            "why": "manda una señal a un proceso; la señal por defecto es TERM (petición de terminar)",
+            "flags": [
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man kill»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sleep 2",
+        "cmds": [
+          {
+            "cmd": "sleep",
+            "args": "2",
+            "why": "espera los segundos dados (o s/m/h)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat ~/candado.listo",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "~/candado.listo",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "kill -USR1 $(pgrep -f '[c]elador') && sleep 2 && cat ~/candado.listo"
+  },
+  {
+    "id": "procesos-l20",
+    "track": "procesos",
+    "index": 20,
+    "title": "Nombre en la lista",
+    "subtitle": "ps -eo args",
+    "xp": 55,
+    "difficulty": 4,
+    "brief": "> Un doberman del dojo circula con un disfraz obsesivo: su línea de > comando (los \"args\") lleva escondida la flag en texto plano. /proc > tiene poco espacio, así que quien esconde cosas ahí es porque confía > en que nadie mire las columnas.",
+    "goal": "Lista las líneas de comando completas de todos los procesos con ps -eo args y usa grep con el patrón FLAG{…} para incautar la flag.",
+    "keywords": [
+      "ps",
+      "pgrep",
+      "grep"
+    ],
+    "hints": [
+      "ps -eo args imprime la última columna de los procesos: su comando completo.",
+      "Un grep -o patrón extrae CADA coincidencia (no la línea entera).",
+      "El patrón FLAG{…} sirve para localizarla sin exponer la entrada completa."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ps -eo args",
+        "desc": "lista los comandos completos de los procesos"
+      },
+      {
+        "cmd": "pgrep -f",
+        "desc": "versión reducida: solo PIDs"
+      },
+      {
+        "cmd": "grep -o PATRÓN",
+        "desc": "muestra solo la parte que encaja"
+      }
+    ],
+    "teach": "ps -eo args muestra el COMANDO COMPLETO con argumentos de cada proceso; es otra forma de leer /proc/*/cmdline. Con grep se incauta:\n\n    ps -eo args | grep -o 'FLAG{[^}]*}'\n\ngrep -o imprime solo la parte que encaja con el patrón —la flag, entera.",
+    "steps": [
+      {
+        "raw": "ps -eo args | grep -o 'FLAG{[^}]*}'",
+        "cmds": [
+          {
+            "cmd": "ps",
+            "args": "-eo args",
+            "why": "lista procesos",
+            "flags": [
+              {
+                "flag": "-e",
+                "meaning": "todos los procesos del sistema"
+              },
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man ps»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-o FLAG{[^}]*}",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "ps -eo args | grep -o 'FLAG{[^}]*}'"
+  },
+  {
     "id": "redes-l1",
     "track": "redes",
     "index": 0,
@@ -8143,6 +8983,202 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "dig @127.0.0.1 -p 5354 +short TXT marca.dojo"
+  },
+  {
+    "id": "redes-l19",
+    "track": "redes",
+    "index": 19,
+    "title": "Estación 512",
+    "subtitle": "números de puerto: aritmética + ss",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "> El dojo despliega mini-servidores locales en puertos altos. La regla > de la casa: solo el canal de DATOS (ESTADO \"UNIQUE\") merece leerse, y > su puerto es el PRIMERO que ss reporte COMO ESCUCHA por encima de 5000.",
+    "goal": "Usa ss -tln para listar los puertos locales en escucha, identifica el primero cuya columna \"Local Address:Port\" tenga un puerto > 5000 y haz una petición con curl a http://127.0.0.1:PUERTO/tarjeta.txt para incautar la flag.",
+    "keywords": [
+      "ss",
+      "curl"
+    ],
+    "hints": [
+      "ss -tln lista los sockets TCP en escucha (listening).",
+      "la columna \"Local Address:Port\" muestra el puerto, ej. 127.0.0.1:5127.",
+      "curl -s http://127.0.0.1:PUERTO/tarjeta.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ss -tln",
+        "desc": "lista puertos TCP en escucha"
+      },
+      {
+        "cmd": "curl -s URL",
+        "desc": "petición HTTP silenciosa a un servidor local"
+      }
+    ],
+    "teach": "ss -tln lista los puertos en escucha del host. Identifica el puerto \"anormal\" (> 5000) en la columna Local Address:Port y consulta el pequeño servidor:\n\n    ss -tln\n    curl -s http://127.0.0.1:5127/tarjeta.txt\n\n(sustituye 5127 por el puerto que hayas visto en tu ss).",
+    "steps": [
+      {
+        "raw": "ss -tln | grep -oE '127\\.0\\.0\\.1:[0-9]+' | awk -F: '$2>5000{print $2}' | head -n 1 | xargs -I{} curl -s http://127.0.0.1:{}/tarjeta.txt",
+        "cmds": [
+          {
+            "cmd": "ss",
+            "args": "-tln",
+            "why": "estado de sockets y puertos (sustituto moderno de netstat)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "sólo TCP"
+              },
+              {
+                "flag": "-l",
+                "meaning": "sólo en escucha"
+              },
+              {
+                "flag": "-n",
+                "meaning": "no resuelve nombres"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE 127\\.0\\.0\\.1:[0-9]+",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "awk",
+            "args": "-F: $2>5000{print $2}",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 1",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 1)"
+              }
+            ]
+          },
+          {
+            "cmd": "xargs",
+            "args": "-I{} curl -s http://127.0.0.1:{}/tarjeta.txt",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": [
+              {
+                "flag": "-I",
+                "meaning": "marcador de sustitución {}: cada línea va ahí"
+              },
+              {
+                "flag": "-s",
+                "meaning": "flag s del comando — revisa «man xargs»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "ss -tln | grep -oE '127\\.0\\.0\\.1:[0-9]+' | awk -F: '$2>5000{print $2}' | head -n 1 | xargs -I{} curl -s http://127.0.0.1:{}/tarjeta.txt"
+  },
+  {
+    "id": "redes-l20",
+    "track": "redes",
+    "index": 20,
+    "title": "La llave del puerto",
+    "subtitle": "leer un valor JSON y montar una URL",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "> La estación sur del dojo abre un canal web OSCURO: nadie recuerda el > número de puerto… pero quedó grabado en /var/dojo/canal.json. Localiza > la llave (el número) y consúltala a mano con curl en el localhost.",
+    "goal": "Lee el número de puerto que está dentro de /var/dojo/canal.json y usa curl para pedir http://127.0.0.1:PUERTO/tarjeta.txt, donde viaja la flag.",
+    "keywords": [
+      "grep",
+      "var=$(CMD)",
+      "curl"
+    ],
+    "hints": [
+      "cat /var/dojo/canal.json muestra el fichero con el campo \"puerto\".",
+      "grep -oE '[0-9]+' canal.json | head -n 1 extrae el número.",
+      "curl -s http://127.0.0.1:PUERTO/tarjeta.txt se lo come."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE PATRÓN fich",
+        "desc": "extrae solo el texto que encaja"
+      },
+      {
+        "cmd": "var=$(CMD)",
+        "desc": "captura la salida de un comando en una variable"
+      },
+      {
+        "cmd": "curl -s http://127.0.0.1:$port/…",
+        "desc": "petición HTTP al puerto guardado"
+      }
+    ],
+    "teach": "Un mini-parse de un JSON plano: localiza el valor del campo y úsalo en la URL.\n\n    cat /var/dojo/canal.json        → {\"instancia\": \"sur\", \"puerto\": 9341}\n    port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1)\n    curl -s http://127.0.0.1:$port/tarjeta.txt\n\nCon la variable de shell $port la URL se compone al vuelo.",
+    "steps": [
+      {
+        "raw": "port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1)",
+        "cmds": [
+          {
+            "cmd": "port=$(grep",
+            "args": "-oE [0-9]+ /var/dojo/canal.json",
+            "why": "comando port=$(grep — revisa «man port=$(grep»",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man port=$(grep»"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1)",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "curl -s http://127.0.0.1:$port/tarjeta.txt",
+        "cmds": [
+          {
+            "cmd": "curl",
+            "args": "-s http://127.0.0.1:$port/tarjeta.txt",
+            "why": "petición HTTP/CLI (sólo red local del dojo, sin internet)",
+            "flags": [
+              {
+                "flag": "-s",
+                "meaning": "silencia la barra de progreso"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1); curl -s http://127.0.0.1:$port/tarjeta.txt"
   },
   {
     "id": "archivos-l1",
@@ -9226,6 +10262,173 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "cat \"$(find /home/agent/desorden -name '*salida*' | grep 'final' | head -n1)\""
+  },
+  {
+    "id": "archivos-l19",
+    "track": "archivos",
+    "index": 19,
+    "title": "La caja del tren",
+    "subtitle": "tar: crear y listar",
+    "xp": 55,
+    "difficulty": 4,
+    "brief": "> El equipaje viaja en formato .tar.gz y los bultos se identifican por > su etiqueta (el nombre de cada fichero dentro del paquete). La caja > \"maleta.tar.gz\" tiene 3 bultos: solo el llamado \"j Rusia ligero\" > (joya.txt) lleva la contrapartida. Descomprímela en el sitio seguro.",
+    "goal": "Lista el contenido de ~/maleta.tar.gz, extrae su contenido en el directorio actual y muestra la flag del fichero joya.txt.",
+    "keywords": [
+      "tar"
+    ],
+    "hints": [
+      "tar -czf destino.tar.gz ficheros — c: crear, z: gzip, f: fichero.",
+      "tar -tzf paquete.tar.gz lista el contenido (t: \"tocar sin extraer\").",
+      "tar -xzf paquete.tar.gz extrae (x: extraer)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tar -czf paquete.tar.gz ficheros",
+        "desc": "crear un paquete comprimido"
+      },
+      {
+        "cmd": "tar -tzf paquete.tar.gz",
+        "desc": "listar su contenido"
+      },
+      {
+        "cmd": "tar -xzf paquete.tar.gz -C DIR",
+        "desc": "extraer el paquete en DIR"
+      }
+    ],
+    "teach": "El flujo tar clásico:\n\n    tar -tzf ~/maleta.tar.gz      # ver qué lleva dentro (sin extraer)\n    tar -xzf ~/maleta.tar.gz -C ~ # extraer en tu home\n    cat ~/joya.txt                # la flag está en joya.txt\n\nz significa que el paquete va comprimido con gzip (por lo tanto usa z tanto al listar como al extraer, igual que al crear).",
+    "steps": [
+      {
+        "raw": "tar -xzf ~/maleta.tar.gz -C ~",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-xzf ~/maleta.tar.gz -C ~",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "extraer"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              },
+              {
+                "flag": "-f",
+                "meaning": "nombre del archivo tar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat ~/joya.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "~/joya.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "tar -xzf ~/maleta.tar.gz -C ~ && cat ~/joya.txt"
+  },
+  {
+    "id": "archivos-l20",
+    "track": "archivos",
+    "index": 20,
+    "title": "Los gemelos del estante",
+    "subtitle": "md5sum + uniq: invariantes",
+    "xp": 55,
+    "difficulty": 4,
+    "brief": "> En el estante \"estante\" hay pila de ficheros; dos son IDÉNTICOS byte a > byte (mismo contenido), y solo uno de LOS DOS lleva la contrapartida > dentro. Regla de la casa: los gemelos comparten huella MD5; una vez > detectados, \"el de la izquierda\" (alfabéticamente primero) es el bueno.",
+    "goal": "Detecta la huella md5 duplicada en ~/estante usando md5sum + sort + uniq, y muestra el contenido del fichero duplicado (que es el que lleva la flag).",
+    "keywords": [
+      "md5sum",
+      "uniq"
+    ],
+    "hints": [
+      "md5sum fichero imprime \"hash fichero\".",
+      "md5sum ~/estante/* | sort | uniq -D -w32 agrupa por los 32 primeros caracteres (el hash).",
+      "La línea duplicada contiene el nombre del fichero con la flag: cat ese fichero."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "md5sum FICHEROS",
+        "desc": "huella MD5 de cada fichero"
+      },
+      {
+        "cmd": "uniq -D -w32",
+        "desc": "agrupa por los 32 primeros caracteres"
+      }
+    ],
+    "teach": "Los ficheros idénticos comparten hash MD5. Se listan las huellas y se agrupan:\n\n    md5sum ~/estante/*           # \"hash  fichero\" por fichero\n    | sort                       # adyacentes las iguales\n    | uniq -D -w32               # muestra TODAS las filas con igual hash (32 chars)\n\nextract: los nombres duplicados; el que contiene la flag es el alfabético primero de los gemelos:\n\n    md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat",
+    "steps": [
+      {
+        "raw": "md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat",
+        "cmds": [
+          {
+            "cmd": "md5sum",
+            "args": "~/estante/*",
+            "why": "hash MD5 por fichero (integridad clásica, criptografía obsoleta)",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-D -w32",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man uniq»"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 1",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 1)"
+              }
+            ]
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2}",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "xargs",
+            "args": "cat",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat"
   },
   {
     "id": "scripting-l1",
@@ -10487,6 +11690,145 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "/home/agent/paso1.sh && /home/agent/paso2.sh && cat /tmp/corredor.txt"
   },
   {
+    "id": "scripting-l19",
+    "track": "scripting",
+    "index": 19,
+    "title": "El caso del argumento",
+    "subtitle": "case + $1 en un script",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "> El conserje ha dejado un script \"caja.sh\" en tu home. Se maneja con > una ÚNICA palabra-clave como argumento; si la aciertas, la caja > suelta el contrabando. Míralo primero: con head verás el case y qué > palabra espera.",
+    "goal": "Lee ~/caja.sh para descubrir el argumento que acepta y ejecútalo con la palabra correcta para que imprima la flag.",
+    "keywords": [
+      "case",
+      "$1,",
+      "bash"
+    ],
+    "hints": [
+      "En un script, $1 es su primer argumento: caja.sh palabra",
+      "case \"$1\" in patrón) comando;; esac elige por coincidencia.",
+      "head ~/caja.sh te muestra qué patrón imprime la flag."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "case \"$1\" in … esac",
+        "desc": "elige una rama según el primer argumento"
+      },
+      {
+        "cmd": "$1, $2, $#",
+        "desc": "argumentos y número de argumentos"
+      },
+      {
+        "cmd": "bash script.sh arg",
+        "desc": "ejecuta un script con argumento"
+      }
+    ],
+    "teach": "Los scripts reciben argumentos por posición: $1 es el primero. case los compara con patrones:\n\n    case \"$1\" in\n      desbloquear) echo \"...\" ;;\n      *) echo \"uso: caja.sh desconocido\" ;;\n    esac\n\nprocedimiento: mira el script (head ~/caja.sh), detecta qué palabra encaja con la rama que imprime la flag, y ejecuta:\n\n    bash ~/caja.sh desbloquear",
+    "steps": [
+      {
+        "raw": "head ~/caja.sh",
+        "cmds": [
+          {
+            "cmd": "head",
+            "args": "~/caja.sh",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "bash ~/caja.sh desbloquear",
+        "cmds": [
+          {
+            "cmd": "bash",
+            "args": "~/caja.sh desbloquear",
+            "why": "ejecuta un script/cadena con bash",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "head ~/caja.sh; bash ~/caja.sh desbloquear"
+  },
+  {
+    "id": "scripting-l20",
+    "track": "scripting",
+    "index": 20,
+    "title": "El bucle de la tropa",
+    "subtitle": "for + globbing",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "> El sargento repartió la contrapartida entre la tropa: fragmentos > pequeños en ~/tropa/*.txt. Ninguno lleva la flag entera. Para > recomponer el mensaje hay que UNIR todos los fragmentos: el bucle for > con tilde-glob es la herramienta del sargento.",
+    "goal": "Concatena en orden TODOS los ficheros ~/tropa/*.txt (usa for f in … con cat \"$f\") y muestra el mensaje completo con la flag.",
+    "keywords": [
+      "for",
+      ".txt"
+    ],
+    "hints": [
+      "for f in ~/tropa/*.txt; do … done itera los ficheros del patrón.",
+      "cat \"$f\" imprime cada fichero: al concatenar todos sale el mensaje.",
+      "El globbing (*.txt) se expande en orden alfabético."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "for f in FILES; do …; done",
+        "desc": "bucle sobre un patrón de ficheros"
+      },
+      {
+        "cmd": "*.txt",
+        "desc": "globbing: se expande a la lista ordenada"
+      }
+    ],
+    "teach": "Un for con glob recorre ficheros:\n\n    for f in ~/tropa/*.txt; do\n      cat \"$f\"\n    done\n\nCada iteración imprime un fragmento; en conjunto la flag completa queda reconstruida (y ordenada, porque el globbing ordena alfabéticamente).",
+    "steps": [
+      {
+        "raw": "for f in ~/tropa/*.txt",
+        "cmds": [
+          {
+            "cmd": "for",
+            "args": "f in ~/tropa/*.txt",
+            "why": "comando for — revisa «man for»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "do cat \"$f\"",
+        "cmds": [
+          {
+            "cmd": "do",
+            "args": "cat $f",
+            "why": "comando do — revisa «man do»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "done",
+        "cmds": [
+          {
+            "cmd": "done",
+            "args": "",
+            "why": "comando done — revisa «man done»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "echo",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "for f in ~/tropa/*.txt; do cat \"$f\"; done; echo"
+  },
+  {
     "id": "forense-l1",
     "track": "forense",
     "index": 0,
@@ -11548,6 +12890,159 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "grep -viE 'falso|test|spacer' /home/agent/mix.log | grep -oE 'FLAG\\{[a-f0-9]{24}\\}'"
+  },
+  {
+    "id": "forense-l19",
+    "track": "forense",
+    "index": 19,
+    "title": "El paquete sellado",
+    "subtitle": "base64 en un log",
+    "xp": 65,
+    "difficulty": 5,
+    "brief": "> En el sucio registro ~/registro.log un \"paquete\" viaja codificado en > base64 en la línea que empieza por PAYLOAD. Al decodificarlo, la flag > asoma. Los logs del dojo guardan todo; incluso lo que no deberían.",
+    "goal": "Extrae el segmento base64 de la línea PAYLOAD de ~/registro.log y decodifícalo para mostrar la flag.",
+    "keywords": [
+      "grep",
+      "awk",
+      "base64"
+    ],
+    "hints": [
+      "grep PAYLOAD fichero encuentra la línea; con awk '{print $3}' se saca el 3.º campo.",
+      "base64 -d decodifica en el otro sentido.",
+      "grep -F … | awk \"{print \\$2}\" | base64 -d"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep TEXTO fich",
+        "desc": "localiza la línea clave"
+      },
+      {
+        "cmd": "awk '{print $N}'",
+        "desc": "extrae el campo N de la línea"
+      },
+      {
+        "cmd": "base64 -d",
+        "desc": "decodifica un bloque base64"
+      }
+    ],
+    "teach": "El flujo forense minero: localizar la línea, recortar el campo, decodificar:\n\n    grep 'PAYLOAD' registro.log      → \"PAYLOAD cod BxOx…\"\n    awk '{print $4}'                 → solo el bloque base64\n    base64 -d                        → texto en claro\n\nencadenado:\n\n    grep 'PAYLOAD' /home/agent/registro.log | awk '{print $4}' | base64 -d",
+    "steps": [
+      {
+        "raw": "grep 'PAYLOAD' ~/registro.log | awk '{print $4}' | base64 -d",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "PAYLOAD ~/registro.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $4}",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "base64",
+            "args": "-d",
+            "why": "codifica/decodifica base64 (binario ↔ texto plano)",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "decodifica (de base64 a binario)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "echo",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'PAYLOAD' ~/registro.log | awk '{print $4}' | base64 -d; echo"
+  },
+  {
+    "id": "forense-l20",
+    "track": "forense",
+    "index": 20,
+    "title": "Hexagonal",
+    "subtitle": "xxd: bytes a texto",
+    "xp": 65,
+    "difficulty": 5,
+    "brief": "> El técnico volcó un intercambio en forma hexadecimal en ~/rastro.hex: > cada byte son dos caracteres hex. Laっても flag viaja ahí dentro en > plano... pero no lo verás con cat. Los hex tienen que Volver a bytes.",
+    "goal": "Convierte ~/rastro.hex con xxd -r -p (reverse + plain hex) y verifica que la flag asoma en la salida.",
+    "keywords": [
+      "xxd",
+      "strings"
+    ],
+    "hints": [
+      "xxd -p convierte a hex; xxd -r -p hace lo inverso (hex → bytes).",
+      "El fichero .hex puede llevar saltos de línea: xxd -r -p los tolera.",
+      "echo $(cat rastro.hex) | xxd -r -p"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "xxd -p fich",
+        "desc": "vuelca el fichero en hex plano"
+      },
+      {
+        "cmd": "xxd -r -p",
+        "desc": "convierte hex plano de nuevo a bytes"
+      },
+      {
+        "cmd": "strings fich",
+        "desc": "alternativa: extrae texto de un binario"
+      }
+    ],
+    "teach": "xxd trabaja con \"hexdumps\". Para invertir un fichero de hex plano:\n\n    echo $(cat ~/rastro.hex) | xxd -r -p\n\n-p interpreta entrada/salida como hex plano y -r revierte al binario. El grep final confirma que la flag está dentro:\n\n    ... | grep -o 'FLAG{[^}]*}'",
+    "steps": [
+      {
+        "raw": "echo $(cat ~/rastro.hex) | xxd -r -p | grep -o 'FLAG{[^}]*}'",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "$(cat ~/rastro.hex)",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          },
+          {
+            "cmd": "xxd",
+            "args": "-r -p",
+            "why": "volcado hexadecimal de un fichero (byte a byte con representación ASCII la derecha)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "revertir: de hexadecimal de vuelta a bytes"
+              },
+              {
+                "flag": "-p",
+                "meaning": "salida limpia: sólo hex sin offsets ni columna ASCII"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-o FLAG{[^}]*}",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "echo $(cat ~/rastro.hex) | xxd -r -p | grep -o 'FLAG{[^}]*}'"
   },
   {
     "id": "boss-l1",
@@ -12795,6 +14290,167 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar -xzOf \"$f\" | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
+  },
+  {
+    "id": "boss-l19",
+    "track": "boss",
+    "index": 19,
+    "title": "El mayor del caso",
+    "subtitle": "pipeline: uniq + sort -n + xargs",
+    "xp": 90,
+    "difficulty": 5,
+    "brief": "> El archivo de cierre del caso (diario.txt) registra a quién se llamó > por canal: la ÚLTIMA palabra de cada línea es el \"ciudadano\". El > ciudadano que más repite es el jefe de la banda; guarda su expediente > en ~/casos/<ciudadano>.txt… con la flag dentro.",
+    "goal": "Analiza diario.txt, descubre qué ciudadano (última columna) aparece MÁS veces y muestra su expediente ~/casos/<ciudadano>.txt.",
+    "keywords": [
+      "awk",
+      "sort",
+      "xargs"
+    ],
+    "hints": [
+      "awk '{print $NF}' toma la ÚLTIMA columna de cada línea.",
+      "sort | uniq -c cuenta repeticiones; sort -n ordena por ese conteo numérico.",
+      "tail -n 1 se queda con el mayor; el campo 2.º es el nombre."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print $NF}'",
+        "desc": "última columna (NF = nº de campos)"
+      },
+      {
+        "cmd": "sort -n | uniq -c | sort -n",
+        "desc": "frecuencia par línea: lo clásico"
+      },
+      {
+        "cmd": "xargs -I{} CMD {}",
+        "desc": "COLÓN la salida en un marcador de posición"
+      }
+    ],
+    "teach": "Pipeline de análisis (el clásico de \"word count\"):\n\n    awk '{print $NF}' ~/diario.txt   # la última palabra de cada línea\n    | sort | uniq -c                 # cuenta repeticiones\n    | sort -n                        # de menor a mayor frecuencia\n    | tail -n 1                      # el ganador: \"  N ciudadano\"\n    | awk '{print $2}'               # el nombre del ganador\n    | xargs -I{} cat ~/casos/{}.txt  # lee SU expediente",
+    "steps": [
+      {
+        "raw": "awk '{print $NF}' ~/diario.txt | sort | uniq -c | sort -n | tail -n 1 | awk '{print $2}' | xargs -I{} cat ~/casos/{}.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{print $NF} ~/diario.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-n",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              }
+            ]
+          },
+          {
+            "cmd": "tail",
+            "args": "-n 1",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 3 = las últimas 3)"
+              },
+              {
+                "flag": "-n 1",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 1)"
+              }
+            ]
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2}",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "xargs",
+            "args": "-I{} cat ~/casos/{}.txt",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": [
+              {
+                "flag": "-I",
+                "meaning": "marcador de sustitución {}: cada línea va ahí"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{print $NF}' ~/diario.txt | sort | uniq -c | sort -n | tail -n 1 | awk '{print $2}' | xargs -I{} cat ~/casos/{}.txt"
+  },
+  {
+    "id": "boss-l20",
+    "track": "boss",
+    "index": 20,
+    "title": "La rotación doble",
+    "subtitle": "rev + tr: rot13 al rescate",
+    "xp": 90,
+    "difficulty": 5,
+    "brief": "> La chapa del boss está en ~/enigma.txt pero se ROizó con dos capas: > primero rot13 (letras desplazadas 13) y luego invertida letra a letra. > Solo se puede deshacer en orden inverso a como se construyó.",
+    "goal": "Deshace la doble transformación de ~/enigma.txt (primero rev, luego un tr de rot13) para imprimir la flag. Recordar: si se aplicó \"rev | tr\", para deshacer se aplica \"tr | rev\".",
+    "keywords": [
+      "tr",
+      "rev"
+    ],
+    "hints": [
+      "tr 'A-Za-z' 'N-ZA-Mn-za-m' es el rot13 (desplaza 13 posiciones y da la vuelta al abecedario).",
+      "Para deshacer: primero VOLTEA LOS CARACTERES con rev, después el rot13 tr.",
+      "rev fichero | tr A-Za-z N-ZA-Mn-za-m"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tr 'A-Za-z' 'N-ZA-Mn-za-m'",
+        "desc": "rot13: cifra y descifra (es auto-inverso)"
+      },
+      {
+        "cmd": "rev",
+        "desc": "invierte los caracteres"
+      }
+    ],
+    "teach": "La transformación original fue: rot13 → luego invertir. Para deshacer se desmonta al revés (como los calcetines):\n\n    rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'\n\nrev arregla el orden de letras; tr re-desplaza el alfabeto 13 posiciones. rot13 es auto-inverso (rot13 de rot13 es identidad): el mismo tr sirve para cifrar y descifrar.",
+    "steps": [
+      {
+        "raw": "rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'",
+        "cmds": [
+          {
+            "cmd": "rev",
+            "args": "~/enigma.txt",
+            "why": "invierte cada línea carácter a carácter",
+            "flags": []
+          },
+          {
+            "cmd": "tr",
+            "args": "A-Za-z N-ZA-Mn-za-m",
+            "why": "traduce/borra caracteres del flujo, uno a uno (p. ej. tr a-z A-Z pasa a mayúsculas)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'"
   }
 ];
 export const TRACK_ORDER = ["fundamentos","filtrado","busqueda","procesado","permisos","procesos","redes","archivos","scripting","forense","boss"];

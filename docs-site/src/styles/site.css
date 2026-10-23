@@ -78,4 +78,8 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 :focus-visible { outline: 2px solid rgb(var(--c-ice)); outline-offset: 2px; }
 
+/* util: scroll funcional pero SIEMPRE invisible (header con nav desplazable) */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 ::selection { background: rgba(180, 142, 173, 0.35); }

@@ -1,4 +1,4 @@
-52 ok · 0 fail
+53 ok · 0 fail
 
 terminal: prompt del nivel visible (WS → xterm)
 app: sin scroll horizontal
@@ -10,9 +10,10 @@ flag: submiteada por la UI nueva → «flag correcta» con diseño ✓
 panel: la pista aparece en la UI en texto plano tras un clic
 panel: la solución desbloqueada se muestra en bloque limpio (2 pistas → desbloqueo)
 app: terminal ampliada a pantalla completa sobre el resto de la página
+fullscreen: ↑ trae el comando anterior y ←+Delete corrigen «cat .profile» sin ruido de bash
 app: Esc sale de la pantalla completa y la página vuelve
 navegador: abre con el catálogo de niveles por sesión/tracks
-navegador: búsqueda por término devuelve niveles relevantes (11 filas, 2 jugables)
+navegador: búsqueda por término devuelve niveles relevantes (14 filas, 2 jugables)
 navegador: la búsqueda muestra también niveles bloqueados (🔒 visible)
 navegador: «jugar» de un nivel salta a su session (procesado-l1)
 terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)
@@ -20,7 +21,7 @@ terminal: «next» tecleado avanza de nivel (procesado-l2)
 app móvil (390px): sin scroll horizontal
 docs /soluciones: catálogo completo de guías (≥190 niveles)
 docs /soluciones: la tarjeta expandida muestra pasos detallados y explicaciones
-docs /soluciones: búsqueda «awk» filtra a 13 nivel(es)
+docs /soluciones: búsqueda «awk» filtra a 18 nivel(es)
 docs /soluciones (390px): sin scroll horizontal
 docs / (1440px): sin scroll horizontal
 docs / (1440px): header sin envoltura (57px)
