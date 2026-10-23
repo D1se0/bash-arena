@@ -358,7 +358,7 @@ lv('procesos', 19, 'El candado de la señal', 'usr1 a un proceso en espera', 55,
 [
   'pgrep -f PATRÓN lista los PID cuyo comando completo encaja con PATRÓN.',
   'kill -USR1 PID envía SIGUSR1 (las señales USR1/USR2 son "de usuario").',
-  'kill -USR1 $(pgrep -f \"[c]elador\") && sleep 2 && cat ~/candado.listo',
+  'kill -USR1 $(pgrep -f "[c]elador") && sleep 2 && cat ~/candado.listo',
 ],
 `pgrep -f busca en TODA la línea de comando (no solo el nombre):
 
@@ -659,7 +659,7 @@ lv('forense', 19, 'El paquete sellado', 'base64 en un log', 65, 5,
 [
   'grep PAYLOAD fichero encuentra la línea; con awk \'{print $3}\' se saca el 3.º campo.',
   'base64 -d decodifica en el otro sentido.',
-  'grep -F … | awk \"{print \\$2}\" | base64 -d',
+  'grep -F … | awk "{print \\$2}" | base64 -d',
 ],
 `El flujo forense minero: localizar la línea, recortar el campo, decodificar:
 

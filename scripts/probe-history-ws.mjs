@@ -45,7 +45,7 @@ function next(k) {
   if (k >= pasos.length) {
     clearTimeout(killer);
     const out = chunks.join('');
-    const historial = /[\$>] ?echo A1/.test(out.slice(out.indexOf('A1\r') + 5));
+    const historial = /[$>] ?echo A1/.test(out.slice(out.indexOf('A1\r') + 5));
     const editado = out.includes('bash: xAyz');
     console.log('historial recuperado con ↑:', historial ? 'SÍ' : 'NO');
     console.log('edición interior ← + inserción (xAyz):', editado ? 'SÍ' : 'NO');

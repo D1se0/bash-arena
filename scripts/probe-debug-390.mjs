@@ -1,4 +1,5 @@
 /* debug 390 v4: rects del aside y de sus secciones internas */
+/* global window, document, getComputedStyle, innerHeight */
 import { chromium } from 'playwright-core';
 const browser = await chromium.launch({
   executablePath: '/usr/bin/chromium',

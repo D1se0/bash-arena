@@ -8,6 +8,7 @@
  *     el footer ni desbordar la ventana).
  * Uso: node scripts/probe-overlap.mjs [url=8091]
  */
+/* global window, document */
 import { chromium } from 'playwright-core';
 
 const APP_URL = process.argv[2] || 'http://127.0.0.1:8091/';
