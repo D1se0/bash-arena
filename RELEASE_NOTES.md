@@ -29,7 +29,7 @@ docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
 # → plataforma en http://localhost:8091 · API en http://localhost:18080
 ```
 
-sha256: (ver releases/bash-arena-v0.1.1.tar.gz.sha256)
+sha256: 657af8c76abf2d550b093988429573ef99f4a14d46a79802ddcf509296d0f3d0
 
 ---
 
