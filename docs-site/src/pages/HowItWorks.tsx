@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 function DiagramBox({ title, subtitle, chips, accentClass }: { title: string; subtitle: string; chips: string[]; accentClass: string }) {
   return (
-    <div className={`rounded-xl bg-[#161a20] border ${accentClass} p-4`}>
+    <div className={`code-surface rounded-xl border ${accentClass} p-4`}>
       <h3 className={`font-bold text-base ${accentClass.split(' ')[0]}`}>{title}</h3>
       <p className="text-[11px] text-frost/60 font-mono mt-0.5">{subtitle}</p>
       <div className="flex flex-wrap gap-1.5 mt-3">
@@ -124,7 +124,7 @@ export default function HowItWorks() {
         <div className="rounded-xl bg-panel/60 border border-edge/50 p-5 text-sm text-frost/80 leading-relaxed space-y-2">
           <p><strong className="text-nord6">Declarativo</strong>: cada nivel es un YAML en <code className="font-mono">{'levels/<track>/lN.yaml'}</code> con briefing, setup (bash), pistas progresivas, cheatsheet, solución de referencia y explicación post-nivel.</p>
           <p><strong className="text-nord6">Flag por sesión</strong>: el setup recibe <code className="font-mono">$DOJO_FLAG</code> (HMAC de sessionId+nivel) y la esconde donde haga falta; dos jugadores JAMÁS tienen la misma flag.</p>
-          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 194/194 verificados.</p>
+          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 244/244 verificados.</p>
         </div>
       </section>
     </div>

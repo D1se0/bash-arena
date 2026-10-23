@@ -1,0 +1,42 @@
+id: grep-l9
+track: grep
+index: 9
+title: Palabras, no fragmentos
+subtitle: "grep -w: palabra entera"
+xp: 60
+difficulty: 4
+brief: "El índice de niebla trae variantes: brumario, desbrumar, brumelia… Solo el
+  registro con literalmente la palabra bruma aislada guarda la señal."
+goal: Imprime del índice ÚNICAMENTE las líneas donde aparece bruma como palabra entera (ni
+  brumario ni desbrumar ni brumelia).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Grep"
+  cat > /home/agent/indice.txt <<EOF
+  brumario-calendario, capítulo tres
+  desbrumar las ventanas del ala sur
+  bruma señal clara en el patio: $DOJO_FLAG
+  brumelia mascota del equipo
+  niebla densa, sin bruma aparente
+  EOF
+  chown agent:agent /home/agent/indice.txt
+solution: grep -w 'bruma' /home/agent/indice.txt
+hints:
+  - −w exige que la coincidencia sea una PALABRA completa (delimitada por espacios,
+    puntuación, inicio/fin de línea).
+  - Sin -w, «bruma» casaría dentro de «brumario»; con -w no.
+  - grep -w 'bruma' /home/agent/indice.txt
+teach: "grep -w garantiza palabra entera: bruma casa, brumario no. Es el antídoto contra
+  los falsos positivos cuando el vocabulario del dojo tiene familias completas de palabras
+  parecidas."
+cheatsheet:
+  - cmd: grep -w palabra f
+    desc: solo palabras completas
+  - cmd: grep -oE 'FLAG\{[^}]*\}'
+    desc: extraer la marca en cualquier contexto
+keywords:
+  - grep
+  - -w
+  - palabra
+profile: default

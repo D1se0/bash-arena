@@ -1,0 +1,41 @@
+id: grep-l7
+track: grep
+index: 7
+title: Reglas literales
+subtitle: "grep -F: patrón sin regex"
+xp: 50
+difficulty: 3
+brief: El cuaderno del taller guarda órdenes con símbolos que parecerían regex (*. ?). Los
+  decoys escribieron variantes sin símbolos. −F toma el patrón tal cual.
+goal: Encuentra en taller.txt la línea que contiene la instrucción detector.*laser escrita
+  tal cual, con sus símbolos.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Grep"
+  cat > /home/agent/taller.txt <<EOF
+  instrucciones: calibrar el sensor en modo calmo
+  órdenes: detector de láser (el rojo, siempre el rojo)
+  plan maestro: detector.*laser activo esta noche $DOJO_FLAG
+  regla: detectorXlaser es la variación escrita a mano
+  nota: el del otro taller escribió detectorlaser sin nada
+  EOF
+  chown agent:agent /home/agent/taller.txt
+solution: grep -F 'detector.*laser' /home/agent/taller.txt
+hints:
+  - "−F significa Fixed: el patrón es TEXTO PLANO, sin interpretación regex."
+  - "Como regex, detector.*laser casaría «detectorXlaser»; con -F solo casa los caracteres
+    exactos: detector.*laser."
+  - grep -F 'detector.*laser' /home/agent/taller.txt
+teach: "grep -F (Fixed) trata el patrón como texto: ni + ni * ni puntos mágicos. Es además
+  el grep más rápido en ficheros grandes porque se salta el motor de regex."
+cheatsheet:
+  - cmd: grep -F 'a.*b' f
+    desc: coincidencia literal
+  - cmd: grep -Ff lista.txt f
+    desc: múltiples patrones literal de un fichero
+keywords:
+  - grep
+  - -F
+  - literal
+profile: default

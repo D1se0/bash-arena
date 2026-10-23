@@ -1,0 +1,41 @@
+id: awk-l12
+track: awk
+index: 12
+title: Cadena del caudal
+subtitle: awk acumulador con filtro
+xp: 80
+difficulty: 5
+brief: El medidor de caudal escribe «estación valor token». Solo las estaciones con valor
+  superior a 50 llevan fragmentos de la marca; el resto suelta señuelos.
+goal: "De caudal.txt: imprime la concatenación de los tokens (3.º campo) de las filas con
+  valor superior a 50."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 12" "Awk"
+  FLAG="$DOJO_FLAG"
+  cat > /home/agent/caudal.txt <<EOF
+  aguaje 30 señuelo-a
+  colchón 55 $(printf '%s' "${FLAG:0:7}")
+  represa 62 $(printf '%s' "${FLAG:7:12}")
+  confianza 45 señuelo-b
+  cielo 70 $(printf '%s' "${FLAG:19}")
+  EOF
+  chown agent:agent /home/agent/caudal.txt
+solution: awk '$2 > 50 {t = t $3} END {print t}' /home/agent/caudal.txt
+hints:
+  - Filtrar $2 > 50 deja solo las filas del caudal crítico.
+  - La variable t acumula el campo 3 de cada fila válida; END lo imprime.
+  - awk '$2 > 50 {t = t $3} END {print t}' /home/agent/caudal.txt
+teach: "awk acumulando bajo una condición: filtro escalar + END. Con umbral numérico
+  seleccionas y con la yuxtación t = t $3. ensamblas piezas repartidas por el fichero."
+cheatsheet:
+  - cmd: awk 'cond {t = t $n} END {print t}' f
+    desc: acumulador con filtro
+  - cmd: awk '{c += $2} END {print c}' f
+    desc: suma de la 2.ª columna
+keywords:
+  - awk
+  - acumulador
+  - END
+profile: default

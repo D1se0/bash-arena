@@ -48,11 +48,11 @@ export default function Technical() {
 
       <section>
         <h2 className="text-xl font-semibold mb-3">Estructura del monorepo</h2>
-        <pre className="rounded-xl bg-[#161a20] border border-edge/60 p-4 font-mono text-[13px] overflow-x-auto">
+        <pre className="code-surface rounded-xl border border-edge/60 p-4 font-mono text-[13px] overflow-x-auto">
 {`app/
   server/   backend: ws + dockerode + motor de niveles + SQLite (strict TS)
   client/   frontend: React + Vite + xterm.js (fit, web-links)
-levels/     un YAML por nivel (11 tracks, 194 niveles) — sin código de motor
+levels/     un YAML por nivel (13 tracks, 244 niveles) — sin código de motor
 docker/     ubuntu-dojo.Dockerfile · server/client Dockerfiles · compose · nginx · arena-prompt
 scripts/    deploy · stop · backup · restore · status · logs · update · test-levels · security-tests · e2e
 tests/      unitarios (vitest) · informes generados
@@ -83,11 +83,11 @@ docs-site/  esta web (React + Vite + Tailwind + Framer Motion) — GitHub Pages
           Un nivel es UN fichero YAML — el motor lo carga, valida (id, track, setup, solution, hints…), lo prueba en contenedor
           real y lo publica en el catálogo. Ejemplo con su solución de referencia:
         </p>
-        <pre className="rounded-xl bg-[#161a20] border border-edge/60 p-4 font-mono text-[12.5px] overflow-x-auto">{LEVEL_YAML}</pre>
+        <pre className="code-surface rounded-xl border border-edge/60 p-4 font-mono text-[12.5px] overflow-x-auto">{LEVEL_YAML}</pre>
         <div className="mt-3 rounded-xl bg-panel/60 border border-edge/50 p-4 text-sm text-frost/80 space-y-1">
           <p>· <strong className="text-arena">Reglas de oro</strong>: la solución NUNCA depende del valor de $DOJO_FLAG (el arnés no lo pasa del SCOPE), corre como <code className="font-mono">agent</code> y termina imprimiendo la flag.</p>
           <p>· <strong className="text-arena">Verificación</strong>: <code className="font-mono">node scripts/test-levels.mjs fundamentos</code> — exige exit 0 y la flag exacta; si algo falla, el informe te muestra el stdout capturado.</p>
-          <p>· <strong className="text-arena">Lint</strong>: <code className="font-mono">node scripts/lint-levels.mjs</code> valida campos requeridos y sintaxis YAML de los 11 tracks.</p>
+          <p>· <strong className="text-arena">Lint</strong>: <code className="font-mono">node scripts/lint-levels.mjs</code> valida campos requeridos y sintaxis YAML de los 13 tracks.</p>
         </div>
       </section>
 

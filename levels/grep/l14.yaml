@@ -1,0 +1,55 @@
+id: grep-l14
+track: grep
+index: 14
+title: "Boss: la cadena del intruso"
+subtitle: "cadena de greps: -rh + -oE"
+xp: 130
+difficulty: 5
+brief: Un intruso escribió eventos EXFIL por todo el árbol intrusion/. En un evento real
+  viaja la marca completa; los demás son señuelos incompletos. Dos greps encadenados la
+  desenmascaran.
+goal: Extrae del árbol intrusion/ la marca completa FLAG{…} imprimiendo ÚNICAMENTE la
+  marca (sin rutas ni adornos).
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 14" "Grep"
+
+  mkdir -p /home/agent/intrusion/auth
+
+  echo 'EXFIL parcial: solo la cabecera FLAG viajó' > /home/agent/intrusion/sys-A.log
+
+  echo 'EXFIL sin llaves de cierre, salto truncado FLAG{ roto' >
+  /home/agent/intrusion/sys-B.log
+
+  echo 'evento: EXFIL validado con la marca completa: $DOJO_FLAG' >
+  /home/agent/intrusion/auth/log-C.log
+
+  echo 'EXFIL cada 30 segundos, ritmo sin marca' > /home/agent/intrusion/auth/log-D.log
+
+  echo 'nota local: la marca quedó antes de la cuidanimación' >
+  /home/agent/intrusion/nota.txt
+
+  chown -R agent:agent /home/agent/intrusion
+solution: grep -rh 'EXFIL' /home/agent/intrusion | grep -oE 'FLAG\{[^}]*\}'
+hints:
+  - "Primer grep: -r recupera las líneas EXFIL del árbol y -h oculta las rutas."
+  - "Los parciales sin llaves son trampa: FLAG\\{[^}]*\\} exige cuerpo antes del cierre."
+  - grep -rh 'EXFIL' intrusion | grep -oE 'FLAG\{[^}]*\}'
+teach: "La cadena -rh + -oE es el extractor forense: primero selecciona las líneas
+  relevantes en el árbol (−h tira el ruido de rutas), luego −o entrega solo lo casado. Es
+  el patrón grep-sobre-grep: «dime dónde, y luego dame solo la cosa»."
+cheatsheet:
+  - cmd: grep -rh patrón dir
+    desc: recursivo sin rutas
+  - cmd: grep -oE 'FLAG\{[^}]*\}' f
+    desc: extraer la marca
+keywords:
+  - grep
+  - boss
+  - -r
+  - -o
+  - cadena
+profile: default

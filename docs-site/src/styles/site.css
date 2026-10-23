@@ -24,10 +24,14 @@ html.dark {
   --c-text: 216 222 233;
   --c-bg-blob1: 94, 129, 172;
   --c-bg-blob2: 180, 142, 173;
+  --c-blob1-a: 0.16;
+  --c-blob2-a: 0.14;
+  --c-code: 22 26 32;      /* #161A20, fondo de bloques de código */
+  --c-code-text: 236 239 244;
 }
 
 html.light {
-  --c-base: 235 237 241;   /* gris muy claro */
+  --c-base: 238 240 244;   /* papel gris muy claro */
   --c-panel: 255 255 255;
   --c-panel2: 246 248 250;
   --c-edge: 200 208 218;
@@ -46,14 +50,18 @@ html.light {
   --c-text: 59 66 82;
   --c-bg-blob1: 129, 161, 193;
   --c-bg-blob2: 146, 84, 146;
+  --c-blob1-a: 0.09;
+  --c-blob2-a: 0.07;
+  --c-code: 245 247 250;   /* bloque de código claro con borde suave */
+  --c-code-text: 46 52 64;
 }
 
 html, body, #root { height: 100%; }
 
 body {
   background:
-    radial-gradient(1100px 500px at 80% -10%, rgba(var(--c-bg-blob1), 0.16), transparent 70%),
-    radial-gradient(900px 420px at 5% 110%, rgba(var(--c-bg-blob2), 0.14), transparent 60%),
+    radial-gradient(1100px 500px at 80% -10%, rgba(var(--c-bg-blob1), var(--c-blob1-a)), transparent 70%),
+    radial-gradient(900px 420px at 5% 110%, rgba(var(--c-bg-blob2), var(--c-blob2-a)), transparent 60%),
     rgb(var(--c-base));
   color: rgb(var(--c-text));
   /* bloquea el scroll horizontal accidental en móvil/escritorio */
@@ -83,3 +91,21 @@ img, video, iframe { max-width: 100%; height: auto; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
 ::selection { background: rgba(180, 142, 173, 0.35); }
+html.light ::selection { background: rgba(94, 129, 172, 0.22); }
+
+/* ── superficie de código adaptable al tema: sustituye a bg-[#161a20] ── */
+.code-surface {
+  background: rgb(var(--c-code));
+  color: rgb(var(--c-code-text));
+}
+html.light .code-surface {
+  box-shadow: 0 1px 3px rgba(46, 52, 64, 0.08), inset 0 0 0 1px rgb(var(--c-edge) / 0.35);
+  background: linear-gradient(180deg, rgb(248 250 252), rgb(242 245 249));
+}
+
+/* marco de la demo de terminal: la pantalla sigue oscura (es un xterm real
+   simulado), pero el marco y la sombra se adaptan al tema */
+html.light .terminal-frame {
+  box-shadow: 0 12px 32px rgba(46, 52, 64, 0.14), 0 2px 6px rgba(46, 52, 64, 0.08);
+  border-color: rgb(var(--c-edge)) !important;
+}

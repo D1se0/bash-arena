@@ -1,0 +1,48 @@
+id: awk-l11
+track: awk
+index: 11
+title: Dos ficheros, una clave
+subtitle: "awk FNR==NR: joins"
+xp: 70
+difficulty: 4
+brief: claves.txt lista ids autorizados; valores.dat trae «id valor». Solo la fila del id
+  que aparece en claves lleva la marca en el valor.
+goal: "Del par claves.txt + valores.dat: imprime el VALOR (2.º campo) de las filas cuyo id
+  está presente en claves.txt."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Awk"
+  cat > /home/agent/claves.txt <<EOF
+  k7
+  arpola
+  c4
+  EOF
+  cat > /home/agent/valores.dat <<EOF
+  perfil dedo sin marca
+  otro1 eco paralelo
+  k7 $DOJO_FLAG
+  q5 eco extrao
+  EOF
+  chown agent:agent /home/agent/claves.txt /home/agent/valores.dat
+solution: awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}' /home/agent/claves.txt
+  /home/agent/valores.dat
+hints:
+  - Cuando hacka recibe dos ficheros, FNR==NR significa «estoy en el primero».
+  - "En el primero: llenar el array; con next saltas sin procesar más."
+  - awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}' /home/agent/claves.txt
+    /home/agent/valores.dat
+teach: 'FNR (contador por fichero) y NR (global) distinstinguen los ficheros: FNR==NR es
+  el truco clásico que convierte awk en "SQL del shell": un índice en el primer fichero y
+  consultas contra el segundo.'
+cheatsheet:
+  - cmd: awk 'FNR==NR {k[$1]; next} $1 in k'
+    desc: join simple de dos ficheros
+  - cmd: awk 'FILENAME == "b"' a b
+    desc: elige filas por nombre de fichero
+keywords:
+  - awk
+  - FNR
+  - NR
+  - join
+profile: default

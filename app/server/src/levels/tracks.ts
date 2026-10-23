@@ -12,6 +12,8 @@ export const TRACKS = [
   { id: 'scripting', name: 'Scripting Bash', icon: '📜', color: '#A3BE8C', order: 9, description: 'variables, condicionales, bucles, funciones, trap, getopts, set -x' },
   { id: 'forense', name: 'Forense / CTF de logs', icon: '🕵️', color: '#EBCB8B', order: 10, description: 'logs, base64, hex, rot13, detectar intrusos' },
   { id: 'boss', name: 'Boss / Cronometrado', icon: '⚔️', color: '#BF616A', order: 11, description: 'desafíos que combinan varias herramientas' },
+  { id: 'grep', name: 'Grep (especialización)', icon: '🧲', color: '#8FBCBB', order: 12, description: 'solo grep a fondo: -i -v -n -o -E -F -r -w, contexto -A/-B, anclas, clases, --include, -x y boss en cadena' },
+  { id: 'awk', name: 'Awk (especialización)', icon: '📐', color: '#88C0D0', order: 13, description: 'solo awk a fondo: campos, NF/NR, -F:, comparaciones, regex por campo, máximo+END, concatenación, asociativos, join FNR==NR y match()' },
 ] as const;
 
 export interface CheatsheetEntry {

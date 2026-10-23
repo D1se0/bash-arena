@@ -1,0 +1,40 @@
+id: awk-l2
+track: awk
+index: 2
+title: El último campo
+subtitle: "awk $NF: la cola de la línea"
+xp: 30
+difficulty: 2
+brief: Los mensajes de maniobra tienen longitud variable. En los de cinco campos va la
+  marca en el final.
+goal: Imprime de mensajes.txt el ÚLTIMO campo de las líneas que empiezan por maniobra y
+  tienen exactamente 5 campos.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Awk"
+  cat > /home/agent/mensajes.txt <<EOF
+  maniobra despegue brisa litoral $DOJO_FLAG
+  maniobra silencio 45
+  periódico de manecillas sueltas
+  maniobra vuelo corto estela
+  EOF
+  chown agent:agent /home/agent/mensajes.txt
+solution: awk '$1 == "maniobra" && NF == 5 {print $NF}' /home/agent/mensajes.txt
+hints:
+  - $NF es el ÚLTIMO campo de la línea (se ajusta a cualquier longitud) y NF es cuántos
+    campos tiene.
+  - Filtra $1 == "maniobra" && NF == 5 y entonces imprime $NF.
+  - awk '$1 == "maniobra" && NF == 5 {print $NF}' /home/agent/mensajes.txt
+teach: awk $NF apunta al último campo sin importar la longitud de la línea; NF es el
+  número de campos. La pareja (NF, $NF) maneja registros de ancho variable sin bucles.
+cheatsheet:
+  - cmd: awk '{print $NF}' f
+    desc: último campo de cada línea
+  - cmd: awk 'NF == 5' f
+    desc: líneas de exactamente 5 campos
+keywords:
+  - awk
+  - $NF
+  - NF
+profile: default

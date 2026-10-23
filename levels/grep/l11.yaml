@@ -1,0 +1,46 @@
+id: grep-l11
+track: grep
+index: 11
+title: Clases con contadores
+subtitle: "grep -E: {n} exacto y rangos"
+xp: 70
+difficulty: 4
+brief: "El registro del laboratorio guarda muestras con identificador hex compacto. Solo
+  una fila respeta el formato EXACTO: 16 símbolos hexadecimales minúsculas seguidos de un
+  espacio."
+goal: Imprime del registro solo la línea cuyo primer campo sea exactamente 16
+  hexadecimales en minúscula seguidos de un espacio.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 11" "Grep"
+  cat > /home/agent/muestras.txt <<EOF
+  abc corto
+  abcdef0123456789x con salto de formato
+  FFFFFFFFFFFFFFFF mayúsculas fuera de rango
+  1f2e3d4c5b6a7980 $DOJO_FLAG
+  abcdef9 demasiado corto
+  1f2e3d4c5b6a7980ff demasiado largo
+  f0e1d2c3 con secuencia truncada
+  EOF
+  chown agent:agent /home/agent/muestras.txt
+solution: grep -E '^[a-f0-9]{16} ' /home/agent/muestras.txt
+hints:
+  - "[a-f0-9] es un rango: solo letras a–f y dígitos en minúscula."
+  - "{16} pide EXACTAMENTE 16 repeticiones del expediente anterior; el espacio después
+    delimita la columna."
+  - grep -E '^[a-f0-9]{16} ' /home/agent/muestras.txt
+teach: "grep -E con rangos y contadores exactos: {16} pide exactamente 16 repeticiones (ni
+  una más). El ancla ^ fija el inicio y el espacio final delimita el campo: sin explore,
+  casaría prefijos de líneas más largas."
+cheatsheet:
+  - cmd: grep -E '^[a-f0-9]{16} ' f
+    desc: ID hex exacto de 16
+  - cmd: grep -E '[0-9]{4}-[0-9]{2}'
+    desc: formato fecha por clases
+keywords:
+  - grep
+  - -E
+  - clases
+  - contador
+profile: default

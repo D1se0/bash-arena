@@ -1,0 +1,42 @@
+id: awk-l7
+track: awk
+index: 7
+title: El código de la antena
+subtitle: "awk: regex por campo (~)"
+xp: 55
+difficulty: 3
+brief: "El radar de equipos registra «equipo código estado». Solo un equipo sigue el
+  patrón H + 3 dígitos + mayúscula exacta: la marca viaja en su estado."
+goal: Imprime de equipos.txt el ESTADO (tercer campo) de la fila cuyo código (2.º campo)
+  es H seguido de 3 dígitos y una mayúscula, nada más.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 07" "Awk"
+  cat > /home/agent/equipos.txt <<EOF
+  antena H12A ok
+  sonda ab90X ausente
+  escudo H456X $DOJO_FLAG
+  radar H456Zx ausente
+  gobernador 9H456Y ausente
+  flujo H08Q ok
+  EOF
+  chown agent:agent /home/agent/equipos.txt
+solution: awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/ {print $3}' /home/agent/equipos.txt
+hints:
+  - "El operador ~ aplica una regex al campo: $2 ~ /^H./."
+  - "Sin contadores {3} (algunos awk no los admiten): encadena [0-9][0-9][0-9]."
+  - awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/ {print $3}' /home/agent/equipos.txt
+teach: "awk hace regex por campo: $2 ~ /patrón/ casa SOLO el campo dos. Con el delimitador
+  ^…$ evitas códigos parciales; y como el awk del sistema (mawk) no garantiza contadores
+  {3}, encadenamos las clases: portable y seguro."
+cheatsheet:
+  - cmd: awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/' f
+    desc: regex exacta sobre campo 2
+  - cmd: awk '$3 !~ /ok/' f
+    desc: el !~ niega el match
+keywords:
+  - awk
+  - regex
+  - "~"
+profile: default

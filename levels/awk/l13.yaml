@@ -1,0 +1,43 @@
+id: awk-l13
+track: awk
+index: 13
+title: Detección dinámica
+subtitle: awk match() + RSTART/RLENGTH
+xp: 85
+difficulty: 5
+brief: "pistas.txt mezcla prosa con marcas enterradas: la elegante FLAG{…} está dentro de
+  la línea, no siempre al principio. match() la revela donde quiera que esté."
+goal: "De pistas.txt: imprime únicamente la subcadena FLAG{…} (con match() y substr())."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 13" "Awk"
+  cat > /home/agent/pistas.txt <<EOF
+  la marca baila dentro: hallazgo $DOJO_FLAG y sigue el eco
+  aquí solo caminos sin llaves FIN
+  otra línea y una falsa caseFLAG{eco min}
+  y una truncada FLAG{ sin cierre
+  EOF
+  chown agent:agent /home/agent/pistas.txt
+solution: awk 'match($0, /FLAG[{][^}]*[}]/) {print substr($0, RSTART, RLENGTH)}'
+  /home/agent/pistas.txt
+hints:
+  - "match($0, /regex/) devuelve la posición 0-base: si casó, llena RSTART (inicio) y
+    RLENGTH (longitud)."
+  - substr(texto, RSTART, RLENGTH) recorta la subcadena.
+  - awk 'match($0, /FLAG[{][^}]*[}]/) {print substr($0, RSTART, RLENGTH)}'
+    /home/agent/pistas.txt
+teach: "match(sel, regex) llena RSTART/RLENGTH con la posición del casamiento: no
+  necesitas imprimir la línea entera. Con las llaves dentro de clases de caracteres ([{],
+  [}]) el patrón es portable a cualquier awk (gawk, mawk)."
+cheatsheet:
+  - cmd: awk 'match($0, /p/) {print substr($0, RSTART, RLENGTH)}'
+    desc: extraer lo que casó
+  - cmd: awk '{print index($0, "x")}' f
+    desc: posición de un texto
+keywords:
+  - awk
+  - match
+  - substr
+  - RSTART
+profile: default

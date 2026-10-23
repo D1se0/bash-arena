@@ -39,7 +39,7 @@ export default function Deploy() {
               <h2 className="font-semibold text-nord6">{s.t}</h2>
             </div>
             {s.c.includes('\n') ? (
-              <pre className="mt-2 rounded-lg bg-[#161a20] p-3 font-mono text-[13px] overflow-x-auto">{s.c}</pre>
+              <pre className="code-surface mt-2 rounded-lg border border-edge/50 p-3 font-mono text-[13px] overflow-x-auto">{s.c}</pre>
             ) : (
               <p className="mt-1 text-sm text-frost/75">{s.c}</p>
             )}
@@ -58,7 +58,7 @@ export default function Deploy() {
             ['./scripts/status.sh · logs.sh', 'estado del stack · logs en vivo'],
             ['make up / down / purge / test', 'atajos del Makefile'],
           ].map(([c, d]) => (
-            <div key={c} className="rounded-lg bg-[#161a20] border border-edge/50 p-3">
+            <div key={c} className="code-surface rounded-lg border border-edge/50 p-3">
               <p className="font-mono text-ice text-[13px]">{c}</p>
               <p className="text-frost/70 text-xs mt-1">{d}</p>
             </div>

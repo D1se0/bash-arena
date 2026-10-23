@@ -402,10 +402,10 @@ const browser = await chromium.launch({
     await sp.goto(`${DOCS_URL}soluciones`, { waitUntil: 'domcontentloaded' });
     try {
       await sp.waitForFunction(
-        () => document.querySelectorAll('main details').length >= 190,
+        () => document.querySelectorAll('main details').length >= 240,
         { timeout: 20_000 },
       );
-      ok('docs /soluciones: catálogo completo de guías (≥190 niveles)');
+      ok('docs /soluciones: catálogo completo de guías (≥240 niveles)');
     } catch {
       fail('docs /soluciones: no apareció el catálogo completo');
     }
@@ -476,6 +476,50 @@ const browser = await chromium.launch({
     }
     await ctx.close();
   }
+}
+
+/* ───────────── B2. docs en MODO CLARO ───────────── */
+{
+  // el tema leo de localStorage al arrancar: lo fijamos antes de cargar cada página
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => window.localStorage.setItem('docs-theme', 'light'));
+  const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras'];
+  for (const p of PAGES) {
+    await page.goto(DOCS_URL + p, { waitUntil: 'domcontentloaded' }).catch(() => fail(`docs-light ${p}: no carga`));
+    await page.waitForTimeout(900);
+    const r = await page.evaluate(() => {
+      const de = document.documentElement;
+      const darkCode = [...document.querySelectorAll('pre, code, div')].filter((el) => {
+        const s = getComputedStyle(el);
+        return s.backgroundColor === 'rgb(22, 26, 32)';
+      }).length;
+      const darkNoTerminal = [...document.querySelectorAll('.terminal-frame')].length; // la pantalla del demo puede seguir oscura
+      return {
+        bodyBg: getComputedStyle(document.body).backgroundColor,
+        noH: de.scrollWidth <= de.clientWidth + 1,
+        darkCode,
+        darkNoTerminal,
+      };
+    });
+    if (r.bodyBg && r.bodyBg !== 'rgb(25, 29, 36)') {
+      ok(`docs-light /${p}: fondo claro aplicado (${r.bodyBg})`);
+    } else {
+      fail(`docs-light /${p}: el body sigue oscuro (${r.bodyBg})`);
+    }
+    if (r.darkCode === 0) {
+      ok(`docs-light /${p}: sin bloques de código oscuros fijados a mano`);
+    } else {
+      fail(`docs-light /${p}: ${r.darkCode} bloque(s) con bg oscuro fijado (#161a20)`);
+    }
+    if (r.noH) {
+      ok(`docs-light /${p} (1440px): sin scroll horizontal`);
+    } else {
+      fail(`docs-light /${p} (1440px): scroll horizontal`);
+    }
+    await page.screenshot({ path: `${SHOTS}/docs-light-${p || 'home'}.png`, fullPage: true });
+  }
+  await ctx.close();
 }
 
 await browser.close();

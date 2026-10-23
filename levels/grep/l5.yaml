@@ -1,0 +1,41 @@
+id: grep-l5
+track: grep
+index: 5
+title: Solo la marca
+subtitle: "grep -o: extraer, no mostrar"
+xp: 45
+difficulty: 3
+brief: "En carta.txt la marca viaja dentro de la prosa: la línea entera es demasiado
+  ruido. Quieres SOLO la pieza que casa, nada más."
+goal: Extrae de carta.txt únicamente la subcadena en formato FLAG{…} (una línea limpia,
+  sin adornos).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 05" "Grep"
+  cat > /home/agent/carta.txt <<EOF
+  cordial saludo, write con tinta del dojo 2026,
+  registro el hallazgo en el volumen tres: $DOJO_FLAG
+  además, un eco curioso: FLAG en minúsculas no cuenta,
+  y otra marca truncada por el cartero: FLAG{ sin cierre
+  adiós, saludos del dúo
+  EOF
+  chown agent:agent /home/agent/carta.txt
+solution: grep -oE 'FLAG\{[^}]*\}' /home/agent/carta.txt
+hints:
+  - −o imprime la PARTE que casa, no la línea entera.
+  - "El patrón debe describir: FLAG + { + todo lo que NO sea llave de cierre + }."
+  - grep -oE 'FLAG\{[^}]*\}' carta.txt
+teach: "grep -o cambia el foco: en lugar de líneas completas, extrae exactamente la
+  coincidencia. Con -E y el patrón FLAG\\{[^}]*\\} sales las marcas en una línea limpia… y
+  las truncadas sin cierre, descartadas."
+cheatsheet:
+  - cmd: grep -oE 'FLAG\{[^}]*\}' f
+    desc: extrae solo la marca
+  - cmd: grep -oE '[0-9]+' f
+    desc: extrae todos los números
+keywords:
+  - grep
+  - -o
+  - extraer
+profile: default

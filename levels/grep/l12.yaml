@@ -1,0 +1,51 @@
+id: grep-l12
+track: grep
+index: 12
+title: Solo en los conf
+subtitle: grep -r con --include
+xp: 70
+difficulty: 4
+brief: El directorio servicio mezcla configuraciones .conf con logs, scripts y respaldos.
+  La señal «chip» interesa SOLO entre los ficheros .conf vivos.
+goal: "Recursivamente, muestra las coincidencias con chip: solo entre ficheros *.conf (con
+  ruta y línea)."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 12" "Grep"
+
+  mkdir -p /home/agent/servicio
+
+  for p in servidor cliente mon; do echo "chip: $DOJO_FLAG (config ${p})" >
+  /home/agent/servicio/${p}.conf; done
+
+  echo 'chip: eco en un log de eventos' > /home/agent/servicio/evento.log
+
+  echo '# chip mencionado en comentario de código' > /home/agent/servicio/ajuste.py
+
+  echo 'chip en el respaldo antiguo, fuera de servicio' >
+  /home/agent/servicio/ajuste.conf.bak
+
+  echo 'sin rastro relevante aquí' > /home/agent/servicio/otro.log
+
+  chown -R agent:agent /home/agent/servicio
+solution: "grep -r --include='*.conf' 'chip: ' /home/agent/servicio"
+hints:
+  - --include="*.conf" restringe QUÉ ficheros participan en la recursiva.
+  - 'El patrón "chip: " (con espacio y dos puntos) deja fuera los ecos sin valor.'
+  - "grep -r --include='*.conf' 'chip: ' /home/agent/servicio"
+teach: grep -r --include="*.conf" filtra los ficheros por NOMBRE (no por contenido) —
+  imprescindible cuando el árbol está lleno de logs, scripts y backups .conf.bak que no
+  forman parte del servicio.
+cheatsheet:
+  - cmd: grep -r --include="*.conf" p dir
+    desc: solo ficheros .conf
+  - cmd: grep -r --exclude="*.bak" p dir
+    desc: "el inverso: excluir nombres"
+keywords:
+  - grep
+  - -r
+  - --include
+profile: default

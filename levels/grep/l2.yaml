@@ -1,0 +1,41 @@
+id: grep-l2
+track: grep
+index: 2
+title: Mayúsculas rebeldes
+subtitle: "grep -i: ignorar el caso"
+xp: 30
+difficulty: 2
+brief: "El reactor escribe «critico» con gritos aleatorios: cRiTiCo, CRITICO… Solo −i se
+  entera de todas sus formas."
+goal: Imprime del reactor.log las líneas que contienen critico en cualquier combinación de
+  mayúsculas y minúsculas.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 02" "Grep"
+  cat > /home/agent/reactor.log <<EOF
+  temp=310 ventilador nominal
+  rumor crítico descartado por el operador
+  cRiTiCo refrigerante bajo: $DOJO_FLAG
+  alerta critica-formato (borrador del turno)
+  CRITICO simulacro programado a mediodía
+  FIN
+  chown agent:agent /home/agent/reactor.log
+solution: grep -i 'critico' /home/agent/reactor.log
+hints:
+  - −i busca sin distinguir mayúsculas de minúsculas.
+  - El patrón en minúsculas + -i casa cRiTiCo y CRITICO también.
+  - grep -i 'critico' /home/agent/reactor.log
+teach: "grep -i ignora el caso: critico casa con cRiTiCo y CRITICO. Ojo con el acento:
+  «crítico» con tilde NO casa con «critico» — en logs reales conviene decidir qué se busca
+  y probarlo."
+cheatsheet:
+  - cmd: grep -i patrón f
+    desc: insensible a mayúsculas
+  - cmd: grep -v patrón f
+    desc: excluye las líneas que casan
+keywords:
+  - grep
+  - -i
+  - mayúsculas
+profile: default

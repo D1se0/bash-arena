@@ -1,0 +1,46 @@
+id: awk-l14
+track: awk
+index: 14
+title: "Boss: la firma del operador"
+subtitle: "awk: doble filtro + acumulador + END"
+xp: 130
+difficulty: 5
+brief: "canal.txt trae eventos «id estado señal token». Solo los eventos con estado OK y
+  señal sig son firmas válidas: sus tokens unidos en orden componen la firma completa. El
+  resto son trampas de caso o estado."
+goal: Concatena de canal.txt los tokens (4.º campo) de las filas con estado OK (2.º campo)
+  y señal sig exacta (3.º campo), e imprime la firma completa.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 14" "Awk"
+  FLAG="$DOJO_FLAG"
+  cat > /home/agent/canal.txt <<EOF
+  t1 OK sig ${FLAG:0:8}
+  t2 FAI sig eco ruido
+  t3 OK error eco ruido
+  t4 OK sig ${FLAG:8:12}
+  t5 OK SIG eco ruido
+  t6 ok sig eco ruido
+  t7 OK sig ${FLAG:20}
+  EOF
+  chown agent:agent /home/agent/canal.txt
+solution: awk '$2 == "OK" && $3 == "sig" {t = t $4} END {print t}' /home/agent/canal.txt
+hints:
+  - Filtrar $2 == "OK" deja fuera los FAI y aviso de error.
+  - 'El 3.º campo debe ser EXACTO "sig": ni SIG ni ok minúscula estafan el estado.'
+  - awk '$2 == "OK" && $3 == "sig" {t = t $4} END {print t}' /home/agent/canal.txt
+teach: "El boss de awk es el oficio: dos filtros de campo (igualdad exacta) más acumulador
+  y END. Con esto ensamblas cualquier salida «señal repartida por un fichero» directo del
+  shell."
+cheatsheet:
+  - cmd: awk 'c1 && c2 {t = t $n} END {print t}' f
+    desc: doble filtro + acumular
+  - cmd: awk '$3 == "sig"' f
+    desc: igualdad exacta en campo
+keywords:
+  - awk
+  - boss
+  - filtro
+  - acumulador
+profile: default

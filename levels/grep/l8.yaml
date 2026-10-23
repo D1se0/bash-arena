@@ -1,0 +1,51 @@
+id: grep-l8
+track: grep
+index: 8
+title: El bosque de expedientes
+subtitle: "grep -r: búsqueda recursiva"
+xp: 55
+difficulty: 3
+brief: Los expedientes están repartidos en carpetas por año y mes. Solo quien mira en
+  profundidad encuentra la entrada con la marca.
+goal: Recorre todo el árbol expedientes/ y muestra la línea que contiene la palabra
+  confirmada (con su ruta y línea).
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 08" "Grep"
+
+  mkdir -p /home/agent/expedientes/2026/enero /home/agent/expedientes/2025/diciembre
+  /home/agent/expedientes/2026/febrero
+
+  echo 'otro hallazgo en la mesa: la copia sin marca' >
+  /home/agent/expedientes/2026/enero/h-12.txt
+
+  echo 'hallazgo confirmado con la marca: $DOJO_FLAG' >
+  /home/agent/expedientes/2026/febrero/h-31.txt
+
+  echo 'hallazgo confirmado (el disputado, sin marca)' >
+  /home/agent/expedientes/2025/diciembre/h-05.txt
+
+  echo 'llamada Sra. Ramírez, depositó tres paquetes' >
+  /home/agent/expedientes/2025/diciembre/nota.txt
+
+  chown -R agent:agent /home/agent/expedientes
+solution: grep -r 'hallazgo confirmado' /home/agent/expedientes
+hints:
+  - "−r baja recursivamente por los subdirectorios: grep PATRÓN DIRECTORIO."
+  - Dos líneas dicen «hallazgo confirmado»; la verdadera trae la marca.
+  - grep -r 'hallazgo confirmado' /home/agent/expedientes
+teach: "grep -r recorre el árbol: imprime cada coincidencia con su ruta de origen. Con -rn
+  numeras las líneas del hallazgo; con -rl recibes solo los nombres de fichero."
+cheatsheet:
+  - cmd: grep -r patrón dir
+    desc: "recursivo: ruta + línea"
+  - cmd: grep -rl patrón dir
+    desc: solo ficheros con coincidencia
+keywords:
+  - grep
+  - -r
+  - recursivo
+profile: default

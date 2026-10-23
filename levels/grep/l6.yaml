@@ -1,0 +1,44 @@
+id: grep-l6
+track: grep
+index: 6
+title: Rango privado
+subtitle: grep -E con anclas y clases
+xp: 50
+difficulty: 3
+brief: Un envío interno (subred 172.31.*) filtró el hallazgo hacia una puerta impropia.
+  Los demás rangos son de paseo.
+goal: Imprime del registro de red las entradas cuyo emisor empieza por 172.31. (anclado al
+  inicio de línea).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Grep"
+  cat > /home/agent/red.log <<EOF
+  10.0.0.4 -> local ok, ping 200
+  172.16.3.9 -> depósito secundario
+  192.168.1.7 -> domótica del ala norte
+  172.31.14.3 -> entrega del hallazgo: $DOJO_FLAG
+  10.44.9.8 -> respaldo nocturno
+  172.31.255.1 -> balanceador sin etiqueta
+  192.168.0.2 -> envío externo simulado
+  EOF
+  chown agent:agent /home/agent/red.log
+solution: grep -E '^172\.31\.[0-9]+\.[0-9]+' /home/agent/red.log
+hints:
+  - "−E activa la regex extendida: + (uno o más), clases [0-9], anclas ^."
+  - En -E el punto ANY es \. y el punto préstamo es . literal.
+  - grep -E '^172\.31\.[0-9]+\.[0-9]+' /home/agent/red.log
+teach: "grep -E abre el vocabulario regex completo: +, clases y anclas ^. Los puntos
+  literales se escapan: \\. — sin el escape casarían «cualquier carácter». La ancla ^
+  evita que una IP en medio de la línea engañe."
+cheatsheet:
+  - cmd: grep -E '^172\.31\.' f
+    desc: IP anclada a inicio de línea
+  - cmd: grep -E '(a|b)c'
+    desc: alternancia
+keywords:
+  - grep
+  - -E
+  - regex
+  - IP
+profile: default

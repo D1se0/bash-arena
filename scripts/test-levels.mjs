@@ -27,7 +27,7 @@ const tar = require(path.join(repoRoot, 'node_modules/tar-stream'));
 const docker = new Docker({ socketPath: process.env.ARENA_DOCKER_SOCKET || '/var/run/docker.sock' });
 const IMAGE = process.env.ARENA_DOJO_IMAGE || 'bash-arena/dojo-base:latest';
 
-const TRACKS = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss'];
+const TRACKS = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss', 'grep', 'awk'];
 
 function listLevelFiles(filter) {
   const out = [];

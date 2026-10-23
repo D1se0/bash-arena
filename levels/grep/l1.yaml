@@ -1,0 +1,41 @@
+id: grep-l1
+track: grep
+index: 1
+title: El diario del dojo
+subtitle: "grep básico: líneas que contienen algo"
+xp: 25
+difficulty: 1
+brief: "El diario de visitas registra cada paso por el dojo. Una entrada anómala dejó
+  constancia del hallazgo: es la única que habla de «hallazgo»."
+goal: Imprime la línea del diario que contiene la palabra hallazgo.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Grep"
+  cat > /home/agent/visitas.log <<EOF
+  07:12 recepción acreditó al visitante
+  08:45 gimnasio rutina de la mañana
+  09:31 archivo visitó la sala oeste
+  10:02 hallazgo $DOJO_FLAG
+  11:20 cafetería colación del turno
+  12:44 salida del visitante por el portal
+  EOF
+  chown agent:agent /home/agent/visitas.log
+solution: grep 'hallazgo' /home/agent/visitas.log
+hints:
+  - grep PATRÓN FICHERO imprime las líneas que contienen PATRÓN.
+  - "El patrón es una palabra plana: hallazgo."
+  - grep 'hallazgo' /home/agent/visitas.log
+teach: "grep busca un patrón en un fichero y muestra cada línea que lo contiene. Es la
+  base de todo el filtrado en la terminal: las variantes siguientes (−i, −v, −o…) son solo
+  ajustes de esta misma idea."
+cheatsheet:
+  - cmd: grep patrón fichero
+    desc: líneas que contienen el patrón
+  - cmd: grep -c patrón f
+    desc: cuántas líneas casan
+keywords:
+  - grep
+  - filtrado
+  - log
+profile: default

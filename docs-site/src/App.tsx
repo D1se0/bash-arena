@@ -7,7 +7,7 @@ import HowItWorks from './pages/HowItWorks';
 import Deploy from './pages/Deploy';
 import Technical from './pages/Technical';
 import Extras from './pages/Extras';
-// la página de soluciones arrastra el catálogo entero (194 niveles): carga diferida
+// la página de soluciones arrastra el catálogo entero (244 niveles): carga diferida
 const Soluciones = lazy(() => import('./pages/Soluciones'));
 import { searchIndex, SearchHit } from './search';
 import { useTheme } from './theme';

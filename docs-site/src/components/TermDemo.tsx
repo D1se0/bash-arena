@@ -38,7 +38,7 @@ export default function TermDemo() {
   const history = LINES.map((l, i) => (i < step % LINES.length ? l : null)).filter(Boolean);
 
   return (
-    <div className="rounded-xl bg-[#161a20] border border-edge/60 shadow-[0_0_24px_rgba(136,192,208,0.15)] p-4 font-mono text-sm h-[240px] overflow-hidden">
+    <div className="terminal-frame code-surface rounded-xl border border-edge/60 shadow-[0_0_24px_rgba(136,192,208,0.15)] p-4 font-mono text-sm h-[240px] overflow-hidden">
       {history.slice(-3).map((l, i) => (
         <div key={`${l?.cmd}-${i}`} className="opacity-60 break-all">
           <p><span className="text-ice">$</span> {l?.cmd}</p>

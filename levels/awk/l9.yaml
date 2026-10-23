@@ -1,0 +1,38 @@
+id: awk-l9
+track: awk
+index: 9
+title: Ensamblaje del sello
+subtitle: awk concatenación + END
+xp: 60
+difficulty: 4
+brief: "trozos.txt guarda la marca partido en tres líneas: «trozo n fragmento». awk los
+  junta en orden y al final los suelta de una tacada con END."
+goal: Concatena los 3.er campos de las líneas trozo de trozos.txt (en el orden del
+  fichero) e imprime TODO en una línea.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 09" "Awk"
+  FLAG="$DOJO_FLAG"
+  echo "trozo 1 ${FLAG:0:5}" > /home/agent/trozos.txt
+  echo "trozo 2 ${FLAG:5:15}" >> /home/agent/trozos.txt
+  echo "trozo 3 ${FLAG:20}" >> /home/agent/trozos.txt
+  chown agent:agent /home/agent/trozos.txt
+solution: awk '/^trozo/ {s = s $3} END {print s}' /home/agent/trozos.txt
+hints:
+  - "awk permite manipular variables: s = s $3 añade el tercer campo a lo acumulado."
+  - "Pago en una línea: END {print s} al terminar, no en el patrón."
+  - awk '/^trozo/ {s = s $3} END {print s}' /home/agent/trozos.txt
+teach: "awk no necesita bucles para ensamblar: la variable s acumula campos y END los
+  vierte. La concatenación es por yuxtación: s = s $3 (sin +) une el campo tras la
+  variable."
+cheatsheet:
+  - cmd: awk '{s = s $1} END {print s}' f
+    desc: concatena los primeros campos
+  - cmd: awk '{s = s $2 ", "} END {print s}' f
+    desc: concatena con separador
+keywords:
+  - awk
+  - concatenar
+  - END
+profile: default

@@ -1,0 +1,39 @@
+id: awk-l1
+track: awk
+index: 1
+title: El inspector de columnas
+subtitle: "awk: campos $1, $2…"
+xp: 25
+difficulty: 1
+brief: En cargos.txt cada línea es «alias objeto peso». Un envío viene marcado con la
+  marca como objeto y su alias es vista.
+goal: Imprime de cargos.txt el SEGUNDO campo de la línea cuyo primer campo es vista.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 01" "Awk"
+  cat > /home/agent/cargos.txt <<EOF
+  llave reloj 3
+  mapa cuaderno 2
+  vista $DOJO_FLAG 1
+  candado teclado 4
+  EOF
+  chown agent:agent /home/agent/cargos.txt
+solution: awk '$1 == "vista" {print $2}' /home/agent/cargos.txt
+hints:
+  - "awk trabaja con la estructura «patrón {acción}»: el patrón selecciona líneas, la
+    acción imprime."
+  - "awk parte cada línea en campos: $1, $2, $3… y $2 es el segundo."
+  - awk '$1 == "vista" {print $2}' /home/agent/cargos.txt
+teach: "awk parte cada línea en campos separados por espacios: $1 primero, $2 segundo y
+  $NF último. La estructura patrón {acción} es el corazón de awk: filtro y acción en una
+  sola línea."
+cheatsheet:
+  - cmd: awk '{print $2}' f
+    desc: segundo campo de cada línea
+  - cmd: awk '$1 == "x" {print $2}' f
+    desc: campo 2 de las línea cuyo campo 1 es x
+keywords:
+  - awk
+  - campos
+profile: default

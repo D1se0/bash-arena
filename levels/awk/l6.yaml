@@ -1,0 +1,40 @@
+id: awk-l6
+track: awk
+index: 6
+title: Umbral crítico
+subtitle: "awk: comparación numérica"
+xp: 50
+difficulty: 3
+brief: Los famacéuticos con tonelaje superior a 120 salen con la marca REMITIDA (y a veces
+  es su nombre).
+goal: De cargamentos.txt, imprime el NOMBRE (1.er campo) de las filas cuyo TONELAJE (2.º
+  campo) supera 120.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 06" "Awk"
+  cat > /home/agent/cargamentos.txt <<EOF
+  tornillo 42
+  malla 88
+  $DOJO_FLAG 140
+  arena 15
+  vigas 100
+  EOF
+  chown agent:agent /home/agent/cargamentos.txt
+solution: awk '$2 > 120 {print $1}' /home/agent/cargamentos.txt
+hints:
+  - "$2 > 120 es un filtro numérico: awk convierte el campo a número para comparar."
+  - La acción {print $1} imprime el primer campo (el nombre).
+  - awk '$2 > 120 {print $1}' /home/agent/cargamentos.txt
+teach: "awk es un motor de informáticos: coge una columna, aplica un umbral y Reporta otra
+  columna. La comparación funciona con decimales también (19.5 > 19)."
+cheatsheet:
+  - cmd: awk '$2 > 120 {print $1}' f
+    desc: nombre de filas con valor alto
+  - cmd: awk '$2 <= 50' f
+    desc: bajo el umbral (líneas completas)
+keywords:
+  - awk
+  - comparación
+  - umbral
+profile: default

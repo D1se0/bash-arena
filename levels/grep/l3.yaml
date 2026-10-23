@@ -1,0 +1,44 @@
+id: grep-l3
+track: grep
+index: 3
+title: Quitar el ruido
+subtitle: "grep -v: excluir líneas"
+xp: 35
+difficulty: 2
+brief: El proxy.conf es un ruido de comentarios y líneas de debug. El ajuste auth_secret
+  está ahí, escondido entre tanto adorno.
+goal: "Trae a la vista la línea auth_secret del config: primero descarta los comentarios
+  (#), luego busca el ajuste."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 03" "Grep"
+  cat > /home/agent/proxy.conf <<EOF
+  # proxy del dojo
+  # ajustes de escucha
+  port 8091
+  debug nivel 3
+  auth_secret $DOJO_FLAG
+  # notas del operador
+  timeout 30
+  debug detalle extra del demonio
+  FIN
+  chown agent:agent /home/agent/proxy.conf
+solution: grep -v '^#' /home/agent/proxy.conf | grep 'auth_secret'
+hints:
+  - "−v es el filtro inverso: muestra las líneas que NO casan."
+  - "Encadena dos greps con una tubería: limpiar primero, apuntar después."
+  - grep -v '^#' /home/agent/proxy.conf | grep 'auth_secret'
+teach: "grep -v invierte el criterio: «muéstrame lo que NO casa». Combinar −v con un
+  segundo grep es el patrón clásico de limpieza: quita lo inútil y entonces filtra lo
+  importante."
+cheatsheet:
+  - cmd: grep -v patrón f
+    desc: excluye las líneas que casan
+  - cmd: cmd1 | cmd2
+    desc: "tubería: la salida alimenta al siguiente"
+keywords:
+  - grep
+  - -v
+  - excluir
+profile: default

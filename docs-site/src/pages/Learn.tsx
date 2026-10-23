@@ -10,6 +10,8 @@ const TRACKS = [
   { icon: '📜', name: 'Scripting Bash', color: '#A3BE8C', n: 18, tools: 'for · case · funciones · $@ · getopts · base64', boss: 'Rearmar una flag fragmentada en base64' },
   { icon: '🕵️', name: 'Forense/CTF de logs', color: '#EBCB8B', n: 18, tools: 'grep -v · base64 · grep -a · xxd · rot13 · zcat', boss: 'Exfiltración en base64+gzip' },
   { icon: '⚔️', name: 'Boss / Cronometrado', color: '#BF616A', n: 14, tools: 'find+grep+base64 · mtime · pkill+decode · tar+zip+base64', boss: 'Muñeca rusa de empaquetados' },
+  { icon: '🧲', name: 'Grep (especialización)', color: '#8FBCBB', n: 14, tools: 'grep -i · -v · -n · -o · -E · -F · -r · -w · -A/-B · anclas y clases · --include · -x', boss: 'Cadena forense -rh + -oE sobre un árbol de intrusión' },
+  { icon: '📐', name: 'Awk (especialización)', color: '#88C0D0', n: 14, tools: 'awk $N · $NF · NF · NR · -F: · comparaciones · regex ~ · máximo+END · asociativos · join FNR==NR · match()', boss: 'Firma del operador: doble filtro + acumulador + END' },
 ];
 
 export default function Learn() {
@@ -18,7 +20,7 @@ export default function Learn() {
       <header>
         <h1 className="text-3xl font-bold">Qué se aprende</h1>
         <p className="mt-2 text-frost/75 max-w-3xl">
-          11 tracks y 194 niveles declarativos. Cada nivel genera su propio escenario en el
+          13 tracks y 244 niveles declarativos. Cada nivel genera su propio escenario en el
           contenedor: nada de lecturas estáticas ni listas de comandos para memorizar —
           tú investigas, encuentras la flag y subes de rango.
         </p>

@@ -1,0 +1,47 @@
+id: grep-l10
+track: grep
+index: 10
+title: Contexto del evento
+subtitle: "grep -A/-B/-C: ver alrededor"
+xp: 65
+difficulty: 4
+brief: "El registro de tareas no esconde la marca EN la línea del suceso: la clave llega
+  dos líneas DESPUÉS de «pinza». El contexto se lee con −A."
+goal: Muestra del registro la línea pinza y las 2 líneas siguientes (la marca viaja entre
+  ellas).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 10" "Grep"
+  cat > /home/agent/tareas.txt <<EOF
+  tarea 01: revisar el botón de la guardia
+  tarea 02: pinza marcada en el tablero
+  tarea 03: repaso del oficial de guardia
+  tarea 04: hallazgo asociado a la pinza: $DOJO_FLAG
+  tarea 05: cierre del día en el tablón
+  tarea 06: ronda nocturna sin novedades
+  tarea 07: pinza mencionada en la otra hoja (sin contexto)
+  EOF
+  chown agent:agent /home/agent/tareas.txt
+solution: grep -A2 'pinza marcada' /home/agent/tareas.txt
+hints:
+  - "−A N muestra N líneas DESPUÉS de cada coincidencia (−B: antes, −C: ambos)."
+  - "El patrón punta a la línea 02: pinza marcada; el premio está en la 04."
+  - grep -A2 'pinza marcada' /home/agent/tareas.txt
+teach: "grep -A/-B/-C dan contexto alrededor del resultado: A de After (después), B de
+  Before (antes), C de Contexto (ambos). Es la forma rápida de leer un log alrededor del
+  evento sin abrir el fichero entero."
+cheatsheet:
+  - cmd: grep -A2 patrón f
+    desc: 2 líneas después de cada match
+  - cmd: grep -B3 patrón f
+    desc: 3 líneas antes
+  - cmd: grep -C5 patrón f
+    desc: 5 líneas a ambos lados
+keywords:
+  - grep
+  - -A
+  - -B
+  - -C
+  - contexto
+profile: default
