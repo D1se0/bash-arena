@@ -1,7 +1,7 @@
 {
-  "generated": "2026-10-22T08:31:31.152Z",
-  "total": 194,
-  "ok": 194,
+  "generated": "2026-10-23T08:03:10.985Z",
+  "total": 216,
+  "ok": 216,
   "fail": 0,
   "results": [
     {
@@ -58,7 +58,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "fundamentos/l17.yaml",
@@ -75,7 +75,21 @@
       "secs": 2
     },
     {
+      "name": "fundamentos/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 1
+    },
+    {
       "name": "fundamentos/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "fundamentos/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -107,7 +121,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "fundamentos/l7.yaml",
@@ -149,14 +163,14 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "filtrado/l12.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "filtrado/l13.yaml",
@@ -177,7 +191,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "filtrado/l16.yaml",
@@ -201,7 +215,21 @@
       "secs": 2
     },
     {
+      "name": "filtrado/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 1
+    },
+    {
       "name": "filtrado/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "filtrado/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -212,7 +240,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "filtrado/l4.yaml",
@@ -240,7 +268,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "filtrado/l8.yaml",
@@ -275,7 +303,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "busqueda/l12.yaml",
@@ -324,10 +352,24 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
+    },
+    {
+      "name": "busqueda/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
     },
     {
       "name": "busqueda/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "busqueda/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -373,7 +415,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "busqueda/l9.yaml",
@@ -394,7 +436,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "procesado/l11.yaml",
@@ -453,7 +495,21 @@
       "secs": 2
     },
     {
+      "name": "procesado/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
       "name": "procesado/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "procesado/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -471,7 +527,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "procesado/l5.yaml",
@@ -485,7 +541,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "procesado/l7.yaml",
@@ -499,14 +555,14 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "procesado/l9.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "permisos/l1.yaml",
@@ -555,7 +611,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "permisos/l16.yaml",
@@ -579,7 +635,21 @@
       "secs": 2
     },
     {
+      "name": "permisos/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
       "name": "permisos/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "permisos/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -597,7 +667,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "permisos/l5.yaml",
@@ -611,7 +681,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "permisos/l7.yaml",
@@ -632,7 +702,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "procesos/l1.yaml",
@@ -653,7 +723,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "procesos/l12.yaml",
@@ -705,6 +775,13 @@
       "secs": 2
     },
     {
+      "name": "procesos/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 5
+    },
+    {
       "name": "procesos/l2.yaml",
       "ok": true,
       "exitCode": 0,
@@ -712,11 +789,18 @@
       "secs": 4
     },
     {
+      "name": "procesos/l20.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 3
+    },
+    {
       "name": "procesos/l3.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "procesos/l4.yaml",
@@ -779,7 +863,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 3
+      "secs": 4
     },
     {
       "name": "redes/l12.yaml",
@@ -800,7 +884,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 3
+      "secs": 4
     },
     {
       "name": "redes/l15.yaml",
@@ -814,7 +898,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 3
     },
     {
       "name": "redes/l17.yaml",
@@ -828,7 +912,14 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 3
+    },
+    {
+      "name": "redes/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 4
     },
     {
       "name": "redes/l2.yaml",
@@ -836,6 +927,13 @@
       "exitCode": 0,
       "abs": "",
       "secs": 2
+    },
+    {
+      "name": "redes/l20.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 4
     },
     {
       "name": "redes/l3.yaml",
@@ -877,7 +975,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 3
+      "secs": 4
     },
     {
       "name": "redes/l9.yaml",
@@ -926,7 +1024,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "archivos/l15.yaml",
@@ -940,7 +1038,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "archivos/l17.yaml",
@@ -957,11 +1055,25 @@
       "secs": 2
     },
     {
+      "name": "archivos/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
       "name": "archivos/l2.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
       "secs": 2
+    },
+    {
+      "name": "archivos/l20.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 1
     },
     {
       "name": "archivos/l3.yaml",
@@ -975,7 +1087,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "archivos/l5.yaml",
@@ -1017,7 +1129,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "scripting/l10.yaml",
@@ -1038,7 +1150,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "scripting/l13.yaml",
@@ -1066,28 +1178,42 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "scripting/l17.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "scripting/l18.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
+    },
+    {
+      "name": "scripting/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
     },
     {
       "name": "scripting/l2.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
+    },
+    {
+      "name": "scripting/l20.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
     },
     {
       "name": "scripting/l3.yaml",
@@ -1115,35 +1241,35 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "scripting/l7.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "scripting/l8.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "scripting/l9.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "forense/l1.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 2
+      "secs": 1
     },
     {
       "name": "forense/l10.yaml",
@@ -1192,7 +1318,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "forense/l17.yaml",
@@ -1209,7 +1335,21 @@
       "secs": 2
     },
     {
+      "name": "forense/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
       "name": "forense/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "forense/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -1227,7 +1367,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "forense/l5.yaml",
@@ -1255,7 +1395,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "forense/l9.yaml",
@@ -1283,7 +1423,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "boss/l12.yaml",
@@ -1304,10 +1444,24 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
+    },
+    {
+      "name": "boss/l19.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
     },
     {
       "name": "boss/l2.yaml",
+      "ok": true,
+      "exitCode": 0,
+      "abs": "",
+      "secs": 2
+    },
+    {
+      "name": "boss/l20.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
@@ -1325,7 +1479,7 @@
       "ok": true,
       "exitCode": 0,
       "abs": "",
-      "secs": 1
+      "secs": 2
     },
     {
       "name": "boss/l5.yaml",
