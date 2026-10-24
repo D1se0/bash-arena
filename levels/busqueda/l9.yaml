@@ -5,29 +5,42 @@ title: Contraseña sospechosa
 subtitle: grep -E con prefijos compuestos
 xp: 40
 difficulty: 3
-brief: logins.txt anota intentos con formato user=… pass=…. Solo las passwords que empiezan por el
-  prefijo s3cr3t delatan al intruso.
+brief: logins.txt anota intentos con formato user=… pass=…. Solo las passwords
+  que empiezan por el prefijo s3cr3t delatan al intruso.
 goal: Muestra las líneas cuya contraseña empiece por s3cr3t.
-setup: |-
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 09" "Búsqueda"
+
   cat > /home/agent/logins.txt <<FIN
+
   user=beto pass=hola123 desde=web
+
   user=ana pass=letmein2 desde=lan
+
   user=zoe pass=superclaves desde=web
+
   user=marc pass=qwerty9 desde=api
+
   user=gua pass=estonosirve desde=lan
+
   FIN
-  echo "user=intruso pass=s3cr3t-clave: $DOJO_FLAG desde=tor" >> /home/agent/logins.txt
+
+  echo "user=intruso pass=s3cr3t-clave: $DOJO_FLAG desde=tor" >>
+  /home/agent/logins.txt
+
   chown agent:agent /home/agent/logins.txt
 solution: grep -E 'pass=s3cr3t' /home/agent/logins.txt
 hints:
   - El patrón debe fijarse al literal pass= para no casar nada más.
   - grep -E soporta prefijos textuales y clases a la vez.
   - grep -E 'pass=s3cr3t' logins.txt
-teach: "Incluir contexto en la regex (pass=s3cr3t) evita sacar coincidencias sueltas: la fuerza de
-  grep -E está en describir la ESTRUCTURA de la línea, no solo un trozo."
+teach: "Incluir contexto en la regex (pass=s3cr3t) evita sacar coincidencias
+  sueltas: la fuerza de grep -E está en describir la ESTRUCTURA de la línea, no
+  solo un trozo."
 cheatsheet:
   - cmd: grep -E 'k=v' f
     desc: casa campo=valor
@@ -38,3 +51,6 @@ keywords:
   - logins
   - prefijo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "user=intruso pass=s3cr3t-clave: FLAG{d3b09a4f7c2e1b8d6041a5f3} desde=tor"

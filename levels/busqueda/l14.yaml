@@ -5,8 +5,8 @@ title: Caso y forma
 subtitle: grep -i contra el ruido
 xp: 40
 difficulty: 3
-brief: "auditoria.log escribe el rastreador con mayúsculas y minúsculas dentro de la marca a lo
-  bestia: el grep sensible a la caja se le pierde."
+brief: "auditoria.log escribe el rastreador con mayúsculas y minúsculas dentro
+  de la marca a lo bestia: el grep sensible a la caja se le pierde."
 goal: Encuentra en /home/agent/auditoria.log la marca aunque su caja sea desordenada.
 setup: |-
   #!/bin/bash
@@ -27,10 +27,12 @@ setup: |-
 solution: grep -ioE 'FLAG\{[a-f0-9]{24}\}' /home/agent/auditoria.log
 hints:
   - grep -i ignora el caso de las letras.
-  - La marca correcta lleva 24 caracteres hex exactos; los señuelos (A9B) se quedan fuera con {24}.
+  - La marca correcta lleva 24 caracteres hex exactos; los señuelos (A9B) se
+    quedan fuera con {24}.
   - grep -ioE 'FLAG\{[a-f0-9]{24}\}' /home/agent/auditoria.log
-teach: -i cuesta algo de rendimiento pero salva la vida en logs donde el emisor escribe a capricho.
-  La regex con {24} exactos discrimina señuelos de verdad sin grep -v.
+teach: -i cuesta algo de rendimiento pero salva la vida en logs donde el emisor
+  escribe a capricho. La regex con {24} exactos discrimina señuelos de verdad
+  sin grep -v.
 cheatsheet:
   - cmd: grep -i p f
     desc: sin distinción de caja
@@ -41,3 +43,6 @@ keywords:
   - logs
   - ruido
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

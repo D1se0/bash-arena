@@ -5,9 +5,10 @@ title: Mi rastro en /srv
 subtitle: "find -user: ficheros por dueño"
 xp: 40
 difficulty: 3
-brief: /srv/repo mezcla ficheros tuyos y de otros usuarios. La tuya de entre todas lleva la pieza —
-  el resto está sin permiso.
-goal: Encuentra en /srv/repo los ficheros propiedad del usuario agent y muestra el que sea legible.
+brief: /srv/repo mezcla ficheros tuyos y de otros usuarios. La tuya de entre
+  todas lleva la pieza — el resto está sin permiso.
+goal: Encuentra en /srv/repo los ficheros propiedad del usuario agent y muestra
+  el que sea legible.
 setup: |-
   #!/bin/bash
   set -e
@@ -27,8 +28,9 @@ hints:
   - find -user agent devuelve solo lo tuyo.
   - "El nombre del fichero está limpio: cat $(find ... ) lo muestra después."
   - cat $(find /srv/repo -user agent)
-teach: 'find -user/-group filtran por titular: el "quién tocó esto" del audit forense. Los permisos
-  de los demás te acusan también: el sistema te guía hacia lo correcto.'
+teach: 'find -user/-group filtran por titular: el "quién tocó esto" del audit
+  forense. Los permisos de los demás te acusan también: el sistema te guía hacia
+  lo correcto.'
 cheatsheet:
   - cmd: find dir -user agent
     desc: por titular
@@ -39,3 +41,6 @@ keywords:
   - user
   - duenos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "del agent: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

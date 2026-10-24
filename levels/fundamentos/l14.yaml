@@ -5,8 +5,8 @@ title: La séptima marca
 subtitle: dirigirse a una línea exacta
 xp: 30
 difficulty: 2
-brief: salas.txt tiene una marca por línea, tantas como salas. La de la séptima línea es la buena;
-  el resto son señuelos.
+brief: salas.txt tiene una marca por línea, tantas como salas. La de la séptima
+  línea es la buena; el resto son señuelos.
 goal: Muestra únicamente la séptima línea de /home/agent/salas.txt.
 setup: |-
   #!/bin/bash
@@ -23,8 +23,8 @@ hints:
   - sed -n Np fichero imprime exactamente la línea N.
   - "También vale: head -n7 | tail -n1."
   - sed -n 7p /home/agent/salas.txt
-teach: "Dirigirse a una línea exacta evita imprimir ficheros enormes: sed -n 12p, head | tail o
-  NR==7 de awk son tres caminos al mismo punto."
+teach: "Dirigirse a una línea exacta evita imprimir ficheros enormes: sed -n
+  12p, head | tail o NR==7 de awk son tres caminos al mismo punto."
 cheatsheet:
   - cmd: sed -n 7p f
     desc: imprime la línea 7
@@ -35,3 +35,6 @@ keywords:
   - lineas
   - wc
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "sala 7: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

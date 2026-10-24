@@ -5,10 +5,10 @@ title: Todas las apariciones
 subtitle: awk gsub()
 xp: 70
 difficulty: 5
-brief: El fichero normalizado.txt tiene líneas con múltiples espacios seguidos. Necesitas
-  de DOBLE-ESPACIO a UNO SOLO.
-goal: De normalizado.txt imprime cada línea con TODOS los espacios consecutivos reducidos
-  a UNO SOLO.
+brief: El fichero normalizado.txt tiene líneas con múltiples espacios seguidos.
+  Necesitas de DOBLE-ESPACIO a UNO SOLO.
+goal: De normalizado.txt imprime cada línea con TODOS los espacios consecutivos
+  reducidos a UNO SOLO.
 setup: |
   #!/bin/bash
   set -e
@@ -24,9 +24,9 @@ hints:
   - gsub(regex, valor) sustituye TODAS las apariciones de la línea.
   - El regex [ ]+ casa UNO O MÁS espacios consecutivos (y se sustituye por UNO).
   - awk '{ gsub(/[ ]+/, " "); print }' /home/agent/ruido.txt
-teach: "gsub(regex, valor) es la sustitución GLOBAL: cambia TODAS las coincidencias.
-  Puedes usar la situación para formatear la línea entera $0 sin extra print (sólo el
-  print default)."
+teach: "gsub(regex, valor) es la sustitución GLOBAL: cambia TODAS las
+  coincidencias. Puedes usar la situación para formatear la línea entera $0 sin
+  extra print (sólo el print default)."
 cheatsheet:
   - cmd: awk '{ gsub(/[ ]+/, " "); print }' f
     desc: normaliza espacios
@@ -38,3 +38,9 @@ keywords:
   - sustitución
   - espacios
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      palabra con varios espacios
+      otra línea con dos separaciones
+      la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3} con espacios después

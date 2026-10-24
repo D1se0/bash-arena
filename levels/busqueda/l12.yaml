@@ -5,8 +5,8 @@ title: Configuración filtrada
 subtitle: grep -r --include
 xp: 50
 difficulty: 4
-brief: En /etc/arena/ hay ficheros .conf, .log y .bak mezclados. Solo los .conf cuentan para la
-  validación.
+brief: En /etc/arena/ hay ficheros .conf, .log y .bak mezclados. Solo los .conf
+  cuentan para la validación.
 goal: Busca la clave SOLO dentro de los ficheros *.conf de /etc/arena.
 setup: |-
   #!/bin/bash
@@ -22,11 +22,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: grep -rn 'FLAG{' /etc/arena --include='*.conf'
 hints:
-  - grep -r recorre el árbol; --include="*.conf" acota los nombres que inspecciona.
+  - grep -r recorre el árbol; --include="*.conf" acota los nombres que
+    inspecciona.
   - "La marca puede estar en cualquier fichero: el include evita confusiones."
   - grep -rn 'FLAG{' /etc/arena --include='*.conf'
-teach: "--include (y su contrario --exclude) en grep -r filtra POR NOMBRE de fichero mientras el -r
-  recorre el árbol: la pareja ideal para auditorías de configuración."
+teach: "--include (y su contrario --exclude) en grep -r filtra POR NOMBRE de
+  fichero mientras el -r recorre el árbol: la pareja ideal para auditorías de
+  configuración."
 cheatsheet:
   - cmd: grep -rn x d --include='*.conf'
     desc: solo .conf, indicando línea
@@ -38,3 +40,6 @@ keywords:
   - exclude
   - conf
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: /etc/arena/llave.conf:1:nitro = FLAG{d3b09a4f7c2e1b8d6041a5f3}

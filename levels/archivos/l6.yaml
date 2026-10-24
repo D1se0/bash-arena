@@ -5,9 +5,10 @@ title: Reunion del compresor
 subtitle: "gzip/zcat: descomprimir en el pipe"
 xp: 35
 difficulty: 1
-brief: comprimido.gz contiene una nota importante en texto plano, comprimida. Solo falta leerla sin
-  archivo intermedio.
-goal: Descomprime /home/agent/comprimido.gz en el flujo (sin borrar el fichero) y muestra su contenido.
+brief: comprimido.gz contiene una nota importante en texto plano, comprimida.
+  Solo falta leerla sin archivo intermedio.
+goal: Descomprime /home/agent/comprimido.gz en el flujo (sin borrar el fichero)
+  y muestra su contenido.
 setup: |-
   #!/bin/bash
   set -e
@@ -20,8 +21,9 @@ hints:
   - "gzip -d reemplazaría el fichero: no es lo que se pide."
   - zcat (o gzip -dc) descomprime AL PIPE sin tocar el fichero.
   - zcat comprimido.gz
-teach: "zcat/gzip -dc descomprime a stdout manteniendo el original: el flujo se puede encadenar
-  directamente con grafiteo o filtrado. Sustituye descentralizar pistas sin ensuciar el disco."
+teach: "zcat/gzip -dc descomprime a stdout manteniendo el original: el flujo se
+  puede encadenar directamente con grafiteo o filtrado. Sustituye descentralizar
+  pistas sin ensuciar el disco."
 cheatsheet:
   - cmd: zcat f.gz
     desc: descomprime a stdout
@@ -32,3 +34,6 @@ keywords:
   - zcat
   - compresión
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "nota comprimida: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

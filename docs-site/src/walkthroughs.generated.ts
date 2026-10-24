@@ -8,6 +8,7 @@ export interface WalkthroughData {
   id: string; track: string; index: number; title: string; subtitle: string | null;
   xp: number; difficulty: number; brief: string; goal: string; keywords: string[];
   hints: string[]; cheatsheet: { cmd: string; desc: string }[]; teach: string;
+  examples: { title: string; content: string }[];
   steps: Step[]; raw: string;
 }
 export const WALKTHROUGHS: WalkthroughData[] = [
@@ -50,6 +51,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`ls -a` muestra ficheros cuyo nombre empieza por `.` — ocultos para `ls` normal. `cat` volca el contenido. Para explorar directorios usa `pwd` (dónde estás) y `cd` (para moverte).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat ~/.secreto",
@@ -100,6 +107,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Una ruta absoluta (/home/…) empieza en la raíz; una relativa empieza en tu posición actual. `cd ~` te lleva a home y `cd ..` sube un nivel. Verifica dónde estás con `pwd` antes de fiarte de las rutas relativas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Código de la misión: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/empresa/mision/nota.txt",
@@ -151,6 +164,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`cp` copia, `mv` mueve o renombra (segundo argumento define destino), `mkdir` crea directorios y `-p` los crea anidados. El asterisco `*` es un comodín de expansión de nombre (globbing) manejado por el shell.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "PNG falsa con texto dentro:\nClave interna: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "mkdir -p ~/evidencias\ncp /var/dojo/evidencias/*.png ~/evidencias/\nmv ~/evidencias/pieza-clave.png ~/evidencias/pieza-clave-final.png\ncat ~/evidencias/pieza-clave-final.png",
@@ -206,6 +225,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El shell expande `*` antes de que rm lo vea, así que /ruido/*.trash es una lista explícita de ficheros. `rm -i` pide confirmación uno a uno: útil cuando dudas. Cuidado con `rm -rf` en rutas mal escritas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "clave FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "rm -f /var/dojo/ruido/*.trash\ncat /var/dojo/ruido/.importantísimo",
@@ -261,6 +286,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En Linux los ficheros ocultos empiezan por punto y las rutas anidadas se escriben — no hay mágia real: cat + cd + ls resuelven laberintos. `cat fichero` solo funciona si el fichero existe y puedes leerlo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "No aquí. La pista real está DOS niveles más abajo, en .oculto.\nAvanza hacia .caldera: el código te espera.\nClave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat ~/aviso.txt\ncat ~/lab/.oculto/aviso.txt\ncat ~/lab/.oculto/nivel1/bodegon/.caldera/pentagram",
@@ -308,6 +339,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Cuando un nombre contiene espacios o paréntesis, la shell lo parte en palabras: hay que protegerlo con comillas. El tabulador (autocompletado) te salva de escribirlo mal.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "secreto del informe: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat '/home/agent/informe (copia) final.txt'",
@@ -354,6 +391,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El historial (~/.bash_history) es memoria forense: sirve para reconstruir lo que otro hizo. Y es el motivo por el que NUNCA debes teclear secretos: quedan grabados.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "secret=$(grep -oE '/etc/arena/[^ ]+' /home/agent/.bash_history | head -n1)",
@@ -428,6 +471,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El globbing (* y ?) lo expande la shell ANTES de ejecutar el comando; sirve para filtrar por nombre sin abrir ficheros. Verifica siempre con ls qué va a casar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "clave del trimestre: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/exports/data_2024_10.csv",
@@ -475,6 +524,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "head y tail encadenados recortan cualquier ventana de líneas: primeras N y últimas M. wc -l y nl te ayudan a localizar la que buscas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "linea 111 hallazgo clave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "head -n 111 /home/agent/agenda.txt | tail -n 1",
@@ -546,6 +601,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "cp copia, mv mueve (y renombra); rm borra y no tiene marcha atrás. Las rutas relativas se apoyan en tu cwd: confirma dónde estás con pwd si dudas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "aviso critico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cp /home/agent/bandeja/entrada/2024/urgente/aviso.txt /home/agent/aviso-copia.txt",
@@ -603,6 +664,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los ficheros ocultos (punto inicial) guardan configuraciones y notas. La sustitución $(…) mete la salida de un comando dentro de otro: el patrón «localiza → actúa» que usarás todos los días.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "secuencia valida: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(grep -oE '/home/agent/[^ ]+' /home/agent/.leeme | head -n1)\"",
@@ -649,6 +716,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "cat concatena todos sus argumentos en el orden dado. Si un fichero no termina en salto de línea, la salida se pega al siguiente: así las mitades forman una sola línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/parte_a.txt /home/agent/parte_b.txt",
@@ -695,6 +768,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ls -t es el modo cronológico de ls; con -t | head tienes el último fichero tocado en una sola tubería. Perfecto para \"¿qué cambió aquí hace un rato?\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "última entrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/registro/$(ls -t /home/agent/registro | head -n1)",
@@ -757,6 +836,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Dirigirse a una línea exacta evita imprimir ficheros enormes: sed -n 12p, head | tail o NR==7 de awk son tres caminos al mismo punto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "sala 7: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sed -n 7p /home/agent/salas.txt",
@@ -808,6 +893,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "source NO abre un subshell: las variables quedan en tu sesión. Es la diferencia entre \"ejecutar\" (fork: variables efímeras) y \"cargar\" (dot). Clásico de .bashrc y .env.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "clave de la bóveda: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "source /home/agent/.login_env",
@@ -865,6 +956,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "file Lee los \"magic bytes\" del principio del fichero: la extensión se puede fingir, los primeros bytes no. Útil cuando algo \"debería ser X\" y no abre.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la pieza real: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "f=$(file /home/agent/cofre/* | grep gzip | cut -d: -f1)",
@@ -943,6 +1040,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Leer documentación ES una habilidad de terminal: grep -oE \"\\w+\\.\\w+|/ruta\" sobre README y man página el salto de \"se que existo\" a \"hago lo que pide\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep -oE '/etc/arena/[a-z.-]+' /home/agent/README | head -n1)",
@@ -1016,6 +1119,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": ".bash_history es oro forense: comandos, rutas y hasta errores revelan lo que pasó. grep -oE sobre history es una receta de incident response de verdad.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep -oE '/var/[a-z/.]+' /home/agent/.bash_history | sort -u | head -n1)",
@@ -1104,6 +1213,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find busca ficheros en un árbol. Con `-name '*.*'` fichas los que llevan punto (una \"extensión\"); el `!` delante niega la condición. Los múltiples {}` de `-exec ... {}` se llenan con cada resultado y el `+` agrupa en un solo cat.\n\n    find ~/barrio -type f ! -name '*.*' -exec cat {} +",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find ~/barrio -type f ! -name '*.*' -exec cat {} +",
@@ -1198,6 +1313,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tac es cat con las líneas en orden inverso; rev voltea los caracteres de cada línea. Combinados deshacen cualquier \"escritura al revés\":\n\n    tac ~/guia.txt | rev\n\nLa línea que contiene el texto de la flag quedará legible en la salida.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "señuelo del sótano\nFLAG{d3b09a4f7c2e1b8d6041a5f3}\nseñuelo del tejado"
+      }
+    ],
     "steps": [
       {
         "raw": "tac ~/guia.txt | rev",
@@ -1247,6 +1368,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`head -n N fichero` te ahorra leer megas cuando el dato está al principio. `head -c N` limita por bytes. El complemento natural es `tail`.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "CABECERA — registro sensible. NO difundir.\norigen: equipo dojo · fecha: hoy\ncódigo maestro: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nresto de telemetría repetitiva:\n evento 1"
+      }
+    ],
     "steps": [
       {
         "raw": "head -n 5 /var/log/telemetry.log",
@@ -1305,6 +1432,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`tail` es el complemento de `head`. Con `tail -f fichero` sigues en vivo un log que crece; termina con Ctrl+C. `tail -n +N fichero` imprime desde la línea N hasta el final.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "día 2998: rutina sin novedades\ndía 2999: rutina sin novedades\ndía 3000: rutina sin novedades\nconfesión final: contraseña FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -n 4 /var/log/daemon.log",
@@ -1363,6 +1496,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`cut -d SEP -f N` recorta campos de texto delimitado. Con -f3-4 pides varios y range 5- hasta el final. `cut` no entiende comillas dentro de campo con espacios: para CSVs con comillas usa awk.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep sysadmin /var/dojo/personal.csv | cut -d, -f4",
@@ -1426,6 +1565,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`sort` ordena alfabético/numéricamente (-n, -r, -u sin repetidos). `uniq` solo es útil después de sort (compara líneas adyacentes): `uniq -d` enseña los repetidos y `uniq -c` los cuenta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}\nhash-estándar-0\nhash-estándar-1\nhash-estándar-10\nhash-estándar-11\nhash-estándar-2\nhash-estándar-3\nhash-estándar-4\nhash-estándar-5\nhash-estándar-6\nhash-estándar-7\nhash-estándar-8\nhash-estándar-9\nregistro-repetido-0\nregistro-repetido-1\nregistro-repetido-2\nregistro-repetido-3\nregistro-repetido-4\nregistro-repetido-5\nregistro-repetido-6"
+      }
+    ],
     "steps": [
       {
         "raw": "sort -u /var/dojo/dupes.txt",
@@ -1478,6 +1623,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`tr` traduce/borra conjuntos de un stream: `tr a-z A-Z` capitaliza, `tr -d ' ' ` limpia. Recuerda: tr no acepta ficheros, necesita stdin (pipe o redirección). Ofuscaciones simples como rot13 también son tr.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /var/dojo/ofuscado.txt | tr -d ' '",
@@ -1536,6 +1687,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tail -n +N lee DESDE la línea N hasta el final; head -n M corta. La combinación «desde + recorte» es el patrón estándar para inspeccionar tramos de logs enormes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "linea 360 anomalia detectada: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nlinea 365 latido\nlinea 366 latido\nlinea 367 latido\nlinea 368 latido\nlinea 369 latido\nlinea 370 latido\nlinea 371 latido\nlinea 372 latido\nlinea 373 latido\nlinea 374 latido\nlinea 375 latido\nlinea 376 latido\nlinea 377 latido\nlinea 378 latido\nlinea 379 latido\nlinea 380 latido\nlinea 381 latido\nlinea 382 latido\nlinea 383 latido"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -n +360 /home/agent/bitacora.log | head -n 20",
@@ -1603,6 +1760,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "cut descuartiza cada línea por un delimitador (-d) y elige campos con -f. Encadenar grep (filas) + cut (columnas) resuelve la mayoría de tablas CSV del mundo real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nota de boveda: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nnas secundario"
+      }
+    ],
     "steps": [
       {
         "raw": "grep ',backup,' /home/agent/servidores.csv | cut -d, -f3",
@@ -1664,6 +1827,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sort ordena líneas completas por defecto; -k2 -nr ordena por el segundo campo numéricamente y en descenso. head -n 1 toma el campeón.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "campeon 1600 nota del orgullo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sort -k2 -nr /home/agent/puntuaciones.txt | head -n 1",
@@ -1738,6 +1907,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El tándem sort | uniq -c es la herramienta de frecuencias: cuenta cuántas veces aparece cada valor. El contador ocupa la primera columna: úsalo para filtrar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "      1 firma única: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sort /home/agent/accesos.txt | uniq -c | grep ' 1 '",
@@ -1802,6 +1977,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "rev invierte el texto y paste fusiona columnas (el símbolo - representa stdin). La comparación por campos de awk localiza el espejo; una vez localizado, el sigiente renglón esconde el premio: primero ENCOTRRA, luego MUEVE.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "marca espejada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sed -n \"$(rev /home/agent/frases.txt | paste /home/agent/frases.txt - | awk -F'\\t' '$1==$2{print NR+1; exit}')p\" /home/agent/frases.txt",
@@ -1854,6 +2035,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -E abre el repertorio de regex: ^ ancla al inicio, $ al final, [] clases de caracteres. Anclar evita falsos positivos en cualquier parte del texto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "15:20 baliza registrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n15:47 segunda baliza confirmada"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E '^15:' /home/agent/intentos.log",
@@ -1905,6 +2092,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tr traduce o borra caracteres de stdin: -d borra, -s comprime repeticiones. Normalizar la entrada (CRLF, espacios, mayúsculas) antes de filtrar evita falsos negativos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "clave maestra: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tr -d '\\r' < /home/agent/importado.txt | tr -s ' ' | grep 'clave'",
@@ -1973,6 +2166,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "head -c es la navaja para binarios y logs binarios mezclados: cortas por bytes sin cortar líneas imposibles. Combinado con tail -c +S lees \"ventanas\" de ficheros gigantes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3} RELLENO R"
+      }
+    ],
     "steps": [
       {
         "raw": "head -c 40 /home/agent/data.bin",
@@ -2024,6 +2223,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tail -n +N es \"desde la línea N\": el + invierte el papel de tail. La pareja tail -n +N | head -nM es la ventana de lectura clásica de logs gigantes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "entrada útil: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -n +12 /home/agent/bitacora.txt | head -n1",
@@ -2086,6 +2291,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sort -n ordena por valor numérico (sort -h entiende sufijos 2K/3M). Sin -n, \"10\" < \"9\": el bug clásico de los informes mal ordenados.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "3 nota: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sort -n /home/agent/cuenta.csv | head -n1",
@@ -2148,6 +2359,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "uniq exige adyacencia: sort | uniq es la pareja inseparable. -d (duplicadas), -u (únicas) y -c (contar) cubren el 90 % de los análisis de logs rápidos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "marca FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sort /home/agent/visitas.log | uniq -d",
@@ -2205,6 +2422,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "cut es el cortador de columnas por delimitador (-d) y por campo (-f); awk $2 hace lo mismo con más músculo. Para listas enormes, cut es más barato que awk.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cut -d@ -f2 /home/agent/correo.txt | sort -u | head -n1",
@@ -2282,6 +2505,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tr -s exprime repeticiones (espacios, tabs, saltos): limpiar columnas desalineadas antes de cut/awk es su hora de gloria. tr NO acepta ficheros como argumento: redirige con <.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tr -s ' ' < /home/agent/folleto.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -2351,6 +2580,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "uniq compara solo con la línea anterior, así que antes se ordena con sort. -u (unique) imprime únicamente las líneas que no se repiten (descarta copias).\n\n    sort ~/eventos.txt | uniq -u\n\nLa línea del evento exclusivo —conteniendo la flag— es la que sobrevive.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sort ~/eventos.txt | uniq -u",
@@ -2407,6 +2642,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Se combinan dos \"tijeras\": tail corta por el final y head por el principio.\n\n    tail -n 3 fichero     # el tramo de las 3 últimas líneas\n    | head -n 1           # de ese tramo, la primera\n\nEse es el verso escondido —donde vive la flag—.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -n 3 ~/cancion.txt | head -n 1",
@@ -2478,6 +2719,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`grep` busca en ficheros y streams. Con '^' anclas al principio, '$' al final, '.' vale por cualquier carácter. Añade --color=auto y serás feliz.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3} 200"
+      }
+    ],
     "steps": [
       {
         "raw": "grep '^FLAG{' /var/log/access.log",
@@ -2522,6 +2769,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`grep -r patrón carpeta` recorre el árbol completo. Con `grep -rl` puedes listar solo los nombres de fichero. Para combinar con find considera xargs en el nivel 5.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/var/dojo/proyecto/tools/scripts/deploy-notes.txt:código: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r FLAG /var/dojo/proyecto",
@@ -2576,6 +2829,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`-E` activa regex extendida: {24} significa «24 repeticiones», [0-9a-f] es la clase de dígitos hex. `-o` (only-matching) imprime únicamente el match: perfecto para extraer datos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'FLAG\\{[0-9a-f]+\\}' /var/dojo/correspondencia.txt",
@@ -2631,6 +2890,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`find carpeta -name X -size +Nc` te filtra por tamaño exacto + nombre. Los criterios se combinan y actúan sobre la salida con `-exec cmd {} \\\\;`; para pipes más libres usa xargs.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FICHERO REAL  cooldown del agente Skywalker.\\nCódigo entregable: FLAG{d3b09a4f7c2e1b8d6041a5f3}\\ncomentario viajero 1\\ncomentario viajero 2\\ncomentario viajero 3\\ncomentario viajero 4\\ncomentario viajero 5\\ncomentario viajero 6\\ncomentario viajero 7\\ncomentario viajero 8\\ncomentario viajero 9\\ncomentario viajero 10\\ncomentario viajero 11\\ncomentario viajero 12\\ncomentario viajero 13\\ncomentario viajero 14\\ncomentario viajero 15\\ncomentario viajero 16\\ncomentario viajero 17\\ncomentario viajero 18\\ncomentario viajero 19\\ncomentario viajero 20\\ncomentario viajero 21\\ncomentario viajero 22\\ncomentario viajero 23\\ncomentario viajero 24\\ncomentario viajero 25\\ncomentario viajero 26\\ncomentario viajero 27\\ncomentario viajero 28\\ncomentario viajero 29\\ncomentario viajero 30\\ncomentario viajero 31\\ncomentario viajero 32\\ncomentario viajero 33\\ncomentario viajero 34\\ncomentario viajero 35\\ncomentario viajero 36\\ncomentario viajero 37\\ncomentario viajero 38\\ncomentario viajero 39\\ncomentario viajero 40\\ncomentario viajero 41\\ncomentario viajero 42\\ncomentario viajero 43\\ncomentario viajero 44\\ncomentario viajero 45\\ncomentario viajero 46\\ncomentario viajero 47\\ncomentario viajero 48\\ncomentar\n  … (+8389 caracteres más — la forma es idéntica)"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(find /var/dojo/archivo -name '*.flag' -size +400c)\"",
@@ -2675,6 +2940,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La combinación `find … | xargs command` canaliza resultados a otros comandos; con nombres raros usa `find … -print0 | xargs -0 cmd`. `grep -r` ya hace esto por ti si buscas PATRÓN en un árbol.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/var/dojo/cartera/asuntos pendientes/dir dos/nota reservada.txt:transacción aprobada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r FLAG /var/dojo/cartera",
@@ -2726,6 +2997,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -r busca recursivamente en todos los ficheros de un árbol; combinado con -n indica fichero y línea del hallazgo. Es la linterna para cuando no sabes dónde está.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/proyecto/docs/dev/secretos.md:-> FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r 'FLAG{' /home/agent/proyecto",
@@ -2778,6 +3055,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find filtra por usuario (-user), tipo, tamaño, tiempo… y ejecuta acciones con -exec. La negación ! invierte cualquier criterio: aquí, porque el testigo es lo que NO es tuyo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "etiqueta cambiada\ntesoro de root: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /home/agent/vault ! -user agent -type f -exec cat {} ;",
@@ -2873,6 +3156,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find + -delete es la escoba quirúrgica: muy potente, así que previsualiza el listado sin ella antes. Tras la limpieza, los nombres verdaderos emergen.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/work/nota-real-01.txt:el resto no es basura: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /home/agent/work -name '*.tmp' -delete",
@@ -2976,6 +3265,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Incluir contexto en la regex (pass=s3cr3t) evita sacar coincidencias sueltas: la fuerza de grep -E está en describir la ESTRUCTURA de la línea, no solo un trozo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "user=intruso pass=s3cr3t-clave: FLAG{d3b09a4f7c2e1b8d6041a5f3} desde=tor"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E 'pass=s3cr3t' /home/agent/logins.txt",
@@ -3027,6 +3322,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "-mindepth/-maxdepth acotan la profundidad de la búsqueda: imprescindible cuando el árbol tiene capas de señuelos. La raíz cuenta como nivel 0.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "otra sombra\nnivel intermedio\nen el fondo del pozo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /home/agent/maze -mindepth 3 -type f -exec cat {} ;",
@@ -3138,6 +3439,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find -size clasifica por tamaño real (c, k, M…); tail -c lee bytes, no líneas. Muchos troyanos anexan su carga al final de ficheros legítimos: mirar la cola es rutina forense.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\nwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\nclave final: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+      }
+    ],
     "steps": [
       {
         "raw": "for f in $(find /home/agent/block -size +100k)",
@@ -3240,6 +3547,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "--include (y su contrario --exclude) en grep -r filtra POR NOMBRE de fichero mientras el -r recorre el árbol: la pareja ideal para auditorías de configuración.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/etc/arena/llave.conf:1:nitro = FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -rn 'FLAG{' /etc/arena --include='*.conf'",
@@ -3299,6 +3612,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -r es el \"buscar en todo el árbol\" de un repo: con -nñades números de línea y con -E patrones. En proyectos reales es la primera pasada del code review forense.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/proyecto/src/lib/legacy/core.js:FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r -oE 'FLAG\\{[a-f0-9]+\\}' /home/agent/proyecto | head -n1",
@@ -3369,6 +3688,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "-i cuesta algo de rendimiento pero salva la vida en logs donde el emisor escribe a capricho. La regex con {24} exactos discrimina señuelos de verdad sin grep -v.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -ioE 'FLAG\\{[a-f0-9]{24}\\}' /home/agent/auditoria.log",
@@ -3428,6 +3753,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find opera por fecha real del fingerprint: -mtime (días), -mmin (minutos) y -newer (frente a otro fichero). Útil para \"¿qué cambió desde el backup?\" de verdad.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ficha fresca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat $(find /home/agent/archivo -name '*.txt' -mtime -1)",
@@ -3511,6 +3842,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find -user/-group filtran por titular: el \"quién tocó esto\" del audit forense. Los permisos de los demás te acusan también: el sistema te guía hacia lo correcto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "del agent: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /srv/repo/$(find /srv/repo -user agent | head -n1 | xargs basename)",
@@ -3591,6 +3928,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Contexto (-A/-B/-C) sustituye \"leerte el log entero\": los sistemas de alerta te llevan a la línea exacta y -A/B te dáan el resto gratis.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -A2 'AVERIA: cobre-7' /home/agent/enlace.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -3652,6 +3995,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find -exec te ahorra el bucle for: cada hallazgo es un {} al cimiento del comando. Con ; ejecuta por fichero y con + los agrupa: ambos son legítimos, el + es más barato.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /etc/dojo -name '*.conf' -exec grep -hoE 'FLAG\\{[a-f0-9]+\\}' {} ;",
@@ -3741,6 +4090,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Con `-size` find filtra por tamaño. El sufijo importa: `c` = bytes exactos, `k` = kibibytes, `M` = mebibytes (y sin sufijo redondea a bloques de 512).\n\n    find ~/medidas -type f -size 512c\n\nY con -exec se lee al vuelo:\n\n    find ~/medidas -type f -size 512c -exec cat {} +",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la joya del gabinete: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    ],
     "steps": [
       {
         "raw": "find ~/medidas -type f -size 512c -exec cat {} +",
@@ -3839,6 +4194,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ls -t reordena por mtime (modificación): el primero es el más reciente. Combinando con head/xargs se lee directamente:\n\n    ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}\n\nO con find, para árboles grandes:\n\n    find ~/colmena -mmin -1 -type f -exec cat {} +\n\n(-mmin -1 = modificado hace menos de 1 minuto).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}",
@@ -3917,6 +4278,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`awk '{print $N}'` imprime el campo N de cada línea. `$NF` es el último campo y `NR` el número de línea. Con `-F:` cambias el separador de campo (los registros * WTF * con espacios se separan por defecto con espacios).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$1==\"root\"{print $NF}' /var/dojo/accesos.db",
@@ -3964,6 +4331,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La sintaxis documentada de sed `s/PATRON/REEMPLAZO/` es la base de la sustitución. `\\\\(...\\\\)` captura grupos que luego se referencian como `\\\\1` en el reemplazo. Para cortes simples también sirve `cut -d#`.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "# Informe diario de novedades\\nTodo en orden. Rotaciones ejecutadas correctamente.\\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep EXTRAIDO /var/dojo/informe.md | sed 's/EXTRAIDO ### \\(.*\\) ###.*/\\1/'",
@@ -4018,6 +4391,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El operador pipe `|` sirve de frente común de los comandos; `tee` duplica un stream hacia fichero y pantalla. Recuerda que cada redirección `>` trunca y `>>` añade (append).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /var/dojo/mitad-a /var/dojo/mitad-b",
@@ -4065,6 +4444,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`diff` muestra qué cambia de un fichero a otro; `diff -u` muestra con contexto y `comm` compara ficheros ordenados con columnas por único en cada uno. Ambos huelen a UNIX clásicos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "61d60\n< CLAVE FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "diff /var/dojo/replica-a /var/dojo/replica-b",
@@ -4125,6 +4510,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Combina awk + cut + tr para casos donde el separador anida. Cuando encaje, `-F'|'` de awk es la opción elegante. La clave es atacar el formato capa a capa sin intentar resolverlo todo de golpe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep tres /var/dojo/mixto | awk -F'|' '{print $2}' | cut -d: -f2",
@@ -4197,6 +4588,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk evalúa un patrón por línea y ejecuta la acción por defecto (imprimir la línea) si casa. NF, NR, $1… son variables internas que hacen del awk un mini-lenguaje de relatórios.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "estante puente hierro roble pintura barniz cinta\ncofre llave marca FLAG{d3b09a4f7c2e1b8d6041a5f3} zinc cobre tornillo"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'NF == 7' /home/agent/inventario.txt",
@@ -4243,6 +4640,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El bloque patrón→acción de awk (patrón { acción }) filtra y transforma en un solo paso: filas con -F, campos con $n, salida con print. Es el sustituto ligero de mil scripts.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "entrada-liquidos\nnota-especial: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F, '$2 > 900 {print $1}' /home/agent/movs.txt",
@@ -4294,6 +4697,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La extracción en dos pasos (casa el CONTEXTO, luego casa solo el TROZO) es la alternativa sin sed a la captura de grupos: primero delimita, luego purifica. práctica forense de cada día.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'clave=FLAG\\{[^}]*\\}' /home/agent/datos.txt | grep -oE 'FLAG\\{[^}]*\\}'",
@@ -4364,6 +4773,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "paste une ficheros en columnas; cuando dos ficheros están alineados por filas, el índice de una línea ES la clave. El grep con ancla evita hallazgos falsos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "0042\tficha especial: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "paste /home/agent/ids.txt /home/agent/secretos.txt | grep '^0042'",
@@ -4416,6 +4831,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk funciona igual de bien con : , ; o espacios como separador: -F define tu mundo tabular. La comparación == funciona con números y cadenas sin drama.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "puente-defensa:8081:FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F: '$2 == 8081' /home/agent/servicios.conf",
@@ -4467,6 +4888,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "split trocea ficheros gigantes por tamaño (-b) o por líneas (-n l/K). Filtrar en trozos es lo que hacen las herramientas de streaming: menos memoria, más paralelismo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "linea 333 ancla: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "split -n l/5 /home/agent/grande.log trozo_",
@@ -4535,6 +4962,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "comm es el hermano fino de diff para LISTAS: sus columnas son solo-A, solo-B y común, y cada una se suprime con -1/-2/-3. Requiere ficheros ordenados con el mismo orden.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "insignia nueva con marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nmartillo\nreloj"
+      }
+    ],
     "steps": [
       {
         "raw": "comm -13 /home/agent/v1.sorted /home/agent/v2.sorted",
@@ -4581,6 +5014,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk mantiene variables entre líneas: el patrón \"if ($n > max) {max=$n; line=$0} END {print line}\" es el modo awk canónica de \"máximo con su contexto\" — sin sort de por medio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la clave: FLAG{d3b09a4f7c2e1b8d6041a5f3},3111"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F, '{if ($2+0 > max) {max=$2+0; line=$0}} END {print line}' /home/agent/ventas.csv",
@@ -4632,6 +5071,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sed s/viejo/nuevo/g es el reemplazo de texto por excelencia. Para informes censurados, quitar la máscara revela lo que quedó detrás: el censor borra palabras, no datos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sed 's/REDACTADO //g' /home/agent/informe.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -4693,6 +5138,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "$NF es la joya de awk para logs con anchura variable: da igual que mida 3 o 13 campos; el último es SIEMPRE el último. awk NR es el número de línea, NF es el de campos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep 'envio confidencial' /home/agent/registro.log | awk '{print $NF}' | head -n1",
@@ -4756,6 +5207,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El rango de patrones de sed es la \"zona de interés en extracto\":/logs de configuración con bloques BEGIN/END son su habitat natural. awk entre triviales /pat/,/pat/ hace lo mismo con gsub…",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sed -n '/COPIA-INTERNA/,/FIN-COPIA/p' /home/agent/inventario.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -4822,6 +5279,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk permite regex per columna: '/pat/' filtra por la línea completa pero $n ~ /pat/ es selectivo por field: precisión quirúrgica en logs anchos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "subtotal 9-esquema: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 ~ /^9/ {print}' /home/agent/schemas.txt",
@@ -4868,6 +5331,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "comm es el comparador de SETS con columnas: -1, -2 y -3 esconden columnas; -13 = \"solo en la 2ª\". diff muestra diferencias CONTEXTUALES; comm muestra diferencias de PERTENENCIA.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": " comun4: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "comm -13 <(sort /home/agent/listas.txt) <(sort /home/agent/firmadas.txt)",
@@ -4913,6 +5382,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk guarda estado entre líneas. Este patrón busca el máximo:\n\n    awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt\n\nCada vez que la columna 2 supera el máximo guardado, el nombre ($1) pasa a ser \"el líder\". En END se imprime. Como el líder es el nombre de un fichero:\n\n    awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt | xargs -I{} cat ~/prensa/{}.log",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2>m{m=$2;n=$1} END{print n}' ~/prensa/resumen.txt | xargs -I{} cat ~/prensa/{}.log",
@@ -4968,6 +5443,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sed acepta varios comandos en cadena (separados por ;) en una sola pasada:\n\n    sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt\n\nCada s/a/b/g sustituye TODAS las apariciones de a por b: - ( → {  ·  ) → }  ·  - → _\nLa salida desvela la flag con su formato correcto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Estimado agente: la clave es FLAG{d3b09a4f7c2e1b8d6041a5f3}. Sigue así."
+      }
+    ],
     "steps": [
       {
         "raw": "sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt",
@@ -5015,6 +5496,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`chmod 644 fichero` = dueño escribe/lee, grupo lee, otros leen. `chmod u+x` activa ejecución del dueño. Cambiar permisos de ficheros ajenos exige root (sudo). En el dojo tienes sudo de confianza.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo chmod 0644 /home/agent/bóveda.txt\ncat /home/agent/bóveda.txt",
@@ -5063,6 +5550,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`chown usuario:grupo fichero` transfiere propiedad; solo root puede quitar/poner dueños ajenos. La forma `chown :grupo` cambia solo grupo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo chown agent:agent /home/agent/config-premium.conf\ncat /home/agent/config-premium.conf",
@@ -5113,6 +5606,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`id` muestra uids/gids; `usermod -aG grupo usu` añade a un grupo — `-a` evita reemplazar los existentes. IMPORTANTE: la pertenencia nueva solo aplica en la siguiente sesión (login); en un contenedor efímero cada exec es una sesión. Para trabajo inmediato, el admin usa sudo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "uid=1000(agent) gid=1000(agent) groups=1000(agent)\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "id\nsudo usermod -aG doorkeeper agent\nsudo cat /var/dojo/gimnasio.txt",
@@ -5161,6 +5660,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El bit SUID da al ejecutable los permisos de SU DUEÑO (no del que lo lanza). Es la base de utilidades como `su` o `passwd`. Demasiados SUID/sudoers sin control = hueco de seguridad. Busca los binarios SUID del sistema con `find / -perm -u+s -type f 2>/dev/null`.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /etc/dojo/confidencial",
@@ -5206,6 +5711,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Para LEER dentro de un directorio se necesita permiso de ejecución (x) — no basta con r. El admin cerró x, así que ni ls ni cd; pero root siempre puede. Guarda el principio de menor privilegio: sin permisos de más y con sudo solo cuando toque.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/etc/dojo/bóveda/cajon/.profunda/atajo.notes\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo find /etc/dojo/bóveda -name 'atajo.notes'\nsudo cat /etc/dojo/bóveda/cajon/.profunda/atajo.notes",
@@ -5269,6 +5780,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El bit x convierte un fichero en ejecutable: sin él el núcleo no lo lanza directamente. u/g/o definen a quién se toca el permiso; ls -l es tu espejo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la llave gira y revela: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod u+x /home/agent/llave.sh",
@@ -5326,6 +5843,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "umask ENMASCARA los permisos de creación (0666 & ~umask en ficheros). En un subshell (paréntesis) la cambia solo para ese comando: el entorno decide la herencia de permisos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "credencial del operador: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n600"
+      }
+    ],
     "steps": [
       {
         "raw": "umask 077",
@@ -5411,6 +5934,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un directorio sin x no se puede recorrer aunque los ficheros dentro sean legibles. El dueño puede SIEMPRE cambiar permisos: por eso los fallos de permisos propios no necesitan sudo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la boveda se abre: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod 700 /home/agent/vault",
@@ -5479,6 +6008,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sudo ejecuta un comando como root validando contra /etc/sudoers. Potencia enorme, responsabilidad idéntica: mínimo privilegio, comando a comando.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "tesoro real: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo cat /root/tesoro.txt",
@@ -5525,6 +6060,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los ficheros escribibles por el mundo son una vulnerabilidad clásica: cualquiera puede modificarlos. find -perm te los caza sin abrirlos uno a uno.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "exposicion: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /home/agent/reinado -perm -o+w -type f -exec cat {} ;",
@@ -5628,6 +6169,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los permisos que importan al COPIAR son los del DIRECTORIO destino (w) y los del FICHERO origen (r). Si cp falla escribiendo, mira el directorio, no el fichero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "hito de auditoria: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod u+w /home/agent/salida",
@@ -5696,6 +6243,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "chmod -R es la restauración en bloque de un árbol maltratado. +X (mayúscula) es la variante fina: x solo en directorios y en los ficheros que YA la tenían.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "eslabon 3\nfin realmente: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod -R u+x /home/agent/cadena",
@@ -5769,6 +6322,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Sin x, un script es texto (así lo trata bash y el kernel). El bit x + el shebang lo convierten en comando utilizable. Diferencia entre \"bash script\" (interénte del corazón de bash) y \"./script\" (proceso propio).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "el despacho confirma: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod u+x /home/agent/despacho.sh",
@@ -5826,6 +6385,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find -perm busca por bits de permisos te los ordena: /777 (cualquiera de los bits), -777 (al menos los bits) y 777 (exacto). Útil en auditoría: \"¿qué es 777 por ahí?\"",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "lo ejecutable: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "f=$(find /home/agent/caja -perm 777 | head -n1)",
@@ -5911,6 +6476,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El grupo segundo de acceso parte del usuario: /etc/group manda; en ejecución (proc eco), el agente solo pega si su sesida tiene RONDA en el libro: newgrp re-arrastré la sesión con el GRUPO nuevo sin cerrar la terminal.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la llave del gremio: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo usermod -aG ronda agent",
@@ -5978,6 +6549,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "w sin r es un modo aníritu: como dueño puedes autocorregirte. chown SIEMPRE requiere root — chmod no. La cuadrícula octal: 4=r, 2=w, 1=x.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la llave de espejo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "chmod 644 /home/agent/caja-negra/llave.txt",
@@ -6035,6 +6612,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un 000 es un fichero invisible para el contenido y visible por nombre. find -perm 000 es su buscador idóneo — igual que -perm 400 desenmáscara esos \"solo lectura\" que confunden.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "acta 6: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "f=$(find /home/agent/redactar -perm 000 -type f)",
@@ -6136,6 +6719,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sudo es la franquicia contemplada de elevación: comando a comando, sin sesión completa. ¿Por qué \"sudo cat\" y no \"sudo sh\"? Menos superficie, auditoría línea a línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "acceso al panel: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo cat /root/paneles/llave.txt",
@@ -6186,6 +6775,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un fichero root:auditores con -rw-r----- debería dejar leer al grupo… pero si el sello se puso en 600 (grupo sin permisos), el miembro del grupo no lee. Como agente (miembro del grupo pero SIN ser root), no puedes chmod; para ello está sudo:\n\n    sudo chmod 644 /var/dojo/acta.txt\n    cat /var/dojo/acta.txt\n\n644 = dueño lee/escribe, grupo y otros leen.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "sudo chmod 644 /var/dojo/acta.txt",
@@ -6242,6 +6837,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "chown cambia el dueño; solo root (o sudo) puede dárselo a otro. Después de apropiarte del maletín, leer es trivial:\n\n    ls -l ~/cueva/maletin.txt          # quien es el dueño\n    sudo chown agent ~/cueva/maletin.txt\n    cat ~/cueva/maletin.txt",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "-rw------- 1 inspector inspector 39 Oct 23 11:34 /home/agent/cueva/maletin.txt\nFLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ls -l ~/cueva/maletin.txt",
@@ -6316,6 +6917,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`ps aux` lista todos los procesos con PID, CPU, usuario y el commandline completo — que es público: cualquiera puede verlo con `ps -ef` o leyendo /proc/PID/cmdline. NUNCA pongas secretos en la línea de comandos de un proceso real: ese es el educativo punto. `pgrep -f 'patrón'` te devuelve los PIDs que casan directamente.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "root          18  4.6  0.1  15112  9232 ?        Ss   11:35   0:00 python3 -c import time time.sleep(30000) FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ps aux | grep 'FLAG{' | grep -v grep",
@@ -6383,6 +6990,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`kill -TERM PID` pide finalización limpia (la señal por omisión de kill). `-KILL` (9) es el «espadón» que no puede ser ignorado. `killall` y `pkill -f` apuntan por nombre. Verifica procesos al acecho con `ps`.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "1792755338 emit:: FLAG{d3b09a4f7c2e1b8d6041a5f3} fragmento-32592"
+      }
+    ],
     "steps": [
       {
         "raw": "pkill -f '[h]unterd$'",
@@ -6447,6 +7060,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`du -a` lista el tamaño de cada fichero/archivo; en disco `df` reporta filesystems. `sort -n | tail -1` ordena numéric y coje el mayor.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "\nRADIOGRAFÍA: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(find /var/dojo/silo -type f -printf '%s %p\\n' | sort -n | tail -1 | cut -d' ' -f2-)\"",
@@ -6497,6 +7116,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En Linux un fichero borrado subsiste mientras algún proceso lo tenga abierto (referencia al inodo). `lsof` lista ficheros abiertos (con el marcador deleted) pero puede ser lento/colgar en contenedores: la vía universal de forense es /proc/<PID>/fd — el atajo ES el fichero: su contenido se copia para recuperar datos \"perdidos\". Ojo: los fd de otro usuario no se ven sin permisos de dueño (o root con permisos completos).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "testigo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "pid=$(pgrep -f 'arena-hold' | head -1)\n[ -n \"$pid\" ]",
@@ -6613,6 +7238,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El systemctl real gestiona systemd units (servicios del sistema); el dojo lo SIMULA para que practiques la mecánica. `systemctl status unidad` te dice cómo está y qué fichero la define; el fichero .service guarda metadatos (Description=) y qué ejecutar (ExecStart=).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "cache.service                cache simulada del dojo\nforge.service                forge that stores the code: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nweb.service                  web simulada del dojo\n[Unit]\nDescription=forge that stores the code: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n[Service]\nExecStart=/bin/true"
+      }
+    ],
     "steps": [
       {
         "raw": "systemctl list-units\ncat /etc/systemd/system/forge.service",
@@ -6659,6 +7290,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ps no solo muestra nombres: la columna args revela TODOS los argumentos con que un proceso nació. Auditar ps regularmente saca a la luz procesos intrusos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ps ax -o args | grep -oE 'FLAG\\{[^}]*\\}' | tail -n 1",
@@ -6741,6 +7378,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "SIGTERM es la señal educada: da al proceso la oportunidad de cerrar bien (trap la intercepta). kill -9 (SIGKILL) mata sin ninguna última palabra: úsala solo como último recurso.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "confesion del vigilante: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "pid=$(cat /tmp/vigilante.pid)",
@@ -6821,6 +7464,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ps aux --sort=-rss expone a los devoradores de memoria. Ordenar procesos por consumo es lo que hacen los sysadmins antes de matar nada: medir primero, actuar después.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ps aux --sort=-rss | head -n 5 | grep -oE 'FLAG\\{[^}]*\\}' | head -n 1",
@@ -6918,6 +7567,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "lsof responde «quién tiene abierto qué»: ficheros borrados a medias, sockets, descriptores… La combinación pgrep → lsof -b -p PID es un diagnóstico mínimo eficaz (en contenedores sin privilegios usa -b para que lsof no se bloquee escaneando el kernel).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "caso guardado: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(cat /tmp/guardian.pid)",
@@ -7059,6 +7714,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "df mide PARTICIONES y du mide CARPETAS. Antes de cualquier limpieza: df para saber dónde aprieta y du para saber a quién culpar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Filesystem      Size  Used Avail Use% Mounted on\noverlay          79G   63G   12G  85% /\nmediciones del dia: espacio sano, disco estable: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "df -h /",
@@ -7121,6 +7782,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "du -sk + sort -rn es la rutina clásica de «quién llena el disco». El -k normaliza unidades para que el orden numérico no traicione nada mezclando Mega y Kilo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "aqui estoy: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "m=$(du -sk /workspace/* | sort -rn | head -n1 | cut -f2)",
@@ -7224,6 +7891,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "/proc es un espejo del kernel: cmdline, environ, status, fd… todo proceso vive ahí. Leer cmdline de otros procesos revela con qué fueron arrancados.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la llave del portero: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "r=$(tr '\\0' ' ' < /proc/$(pgrep -f portero-guardian | head -n1)/cmdline | grep -oE '/etc/arena/[^ ]+' | head -n1)",
@@ -7351,6 +8024,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "exec -a reescribe argv[0]: es el truco de cambiapieles de los procesos (y de los rootkits). ps -eo args — y en kernels modernos /proc/PID/cmdline — son la contramedida.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "sudo -u agent bash -c exec -a 'FLAG{d3b09a4f7c2e1b8d6041a5f3}' sleep 600"
+      }
+    ],
     "steps": [
       {
         "raw": "ps -eo args | grep -F 'FLAG{' | grep -v grep | head -n1",
@@ -7439,6 +8118,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "SIGTERM es negociable (trap); SIGKILL es judicial: el kernel saca el proceso y TERMINA. Nunca uses -9 de primeras: \"a veces el trap es el que hace el backup\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "manifesto del tozudo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "kill -9 $(cat /tmp/quisquilla.pid)",
@@ -7501,6 +8186,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Señales trappables: TERM (la educada), INT (Ctrl+C) y las de usuario USR1/USR2, pensadas para acciones del programa. kill SIN sufijo es TERM. KILL no es trappable: el kernel mata.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "confesion USR1: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "kill -USR1 $(cat /tmp/cubridor.pid)",
@@ -7569,6 +8260,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Cada proceso tiene PPID: usarlo es el modo de \"¿quién lanzó esto?\" — parentage forense básico. ps -o ppid= y ps -o args= van de la mano.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "sudo -u agent bash -c exec -a 'pantalla-FLAG{d3b09a4f7c2e1b8d6041a5f3}' sleep 600"
+      }
+    ],
     "steps": [
       {
         "raw": "pp=$(ps -o ppid= -p $(cat /tmp/pantalla.pid) | tr -d ' ')",
@@ -7655,6 +8352,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los pidfiles numerados son un patrón aún útil (systemd generó el patrón). Cuando hay procesos homónimos, apuntar su PID te salvan de la matanza indiscriminada de pkill.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "despacho del escolta: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "kill $(cat /tmp/escolta.3.pid)",
@@ -7723,6 +8426,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "nice -n 19 baja la prioridad al mínimo (ni = 19). ps la muestra con la columna ni. Un proceso ofendido sigue corriendo — solo corre cuando nadie más quiere la CPU.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": " 19 FLAG{d3b09a4f7c2e1b8d6041a5f3} 600"
+      }
+    ],
     "steps": [
       {
         "raw": "ps -eo ni,args | awk '$1 == 19' | head -n1",
@@ -7803,6 +8512,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "pgrep -f busca en TODA la línea de comando (no solo el nombre):\n\n    pgrep -f '[c]elador'    # imprime el PID (el corchete evita auto-coincidir)\n\nCon kill -USR1 se le avisa; el proceso tiene un trap que, al recibir la señal, escribe la llave en disco. Después solo hay que leerla:\n\n    kill -USR1 $(pgrep -f '[c]elador') && sleep 2 && cat ~/candado.listo\n\nEl corchete importa: pgrep -f busca en TODA la línea de comando — incluida la de tu propia invocación, que contiene la palabra — y sin el [ c ] te matarías a ti mismo con la señal. (sleep 2 deja tiempo al trap).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "kill -USR1 $(pgrep -f '[c]elador')",
@@ -7880,6 +8595,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ps -eo args muestra el COMANDO COMPLETO con argumentos de cada proceso; es otra forma de leer /proc/*/cmdline. Con grep se incauta:\n\n    ps -eo args | grep -o 'FLAG{[^}]*}'\n\ngrep -o imprime solo la parte que encaja con el patrón —la flag, entera.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}\nFLAG{[^}\nFLAG{[^}"
+      }
+    ],
     "steps": [
       {
         "raw": "ps -eo args | grep -o 'FLAG{[^}]*}'",
@@ -7948,6 +8669,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`nc host puerto` conecta TCP y vacía stdin; escupirá la respuesta al stdout. `-l escucha (`servidor`), `-v verbose`. En este dojo la única red es la loopback: mola para lab sin abrir la máquina al mundo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "nc 127.0.0.1 7080",
@@ -7997,6 +8724,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`curl URL` descarga; `-I` pide cabeceras; `-o fichero` guarda. Monstramos un server nativo de python en loopback para jugar con curl sin salir a internet. `curl localhost:8501` te enseña el index del servidor.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s http://127.0.0.1:8501/secreto/.cargo",
@@ -8047,6 +8780,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`ss` es el sucesor de netstat: `-t` TCP, `-l` LISTEN, `-n` sin resolver nombres. Para anclar el recuerdo: en el dojo hay un servicio solo en loopback. Nada peor que un servicio abierto a todos por descuido.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\nLISTEN 0      1          127.0.0.1:9696      0.0.0.0:*          \nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ss -tln\nnc 127.0.0.1 9696",
@@ -8109,6 +8848,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`dig @server` consulta un servidor DNS concreto; `-p` el puerto. TXT guarda texto libre (popular en mails y cachés). En el dojo, dnsmasq sirve registros con poca RAM: te enseña la mecánica de consultas sin distraerte con BIND real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "\"FLAG{d3b09a4f7c2e1b8d6041a5f3}\""
+      }
+    ],
     "steps": [
       {
         "raw": "dig +short @127.0.0.1 -p 5353 flag.dojo TXT",
@@ -8160,6 +8905,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "curl es el cuchillo suizo de HTTP. En contenedores de práctica sin red externa, 127.0.0.1 (loopback) sigue siendo el terreno de juego: ideal para simular servicios internos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "<html><body><h1>Area clasificada</h1><p>clave de acceso: FLAG{d3b09a4f7c2e1b8d6041a5f3}</p></body></html>"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s http://127.0.0.1:8000/flag.html",
@@ -8212,6 +8963,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ss -tln lista sockets TCP a la escucha: la foto del lado servidor. Cuando hay varios puertos, un bucle for con curl barre la fábrica sin repetir código.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "<html>señuelo prudente del puerto 9000</html>\n\n<html>respuesta de sobra: FLAG{d3b09a4f7c2e1b8d6041a5f3}</html>\n\n<html>otro señuelo del puerto 9002</html>"
+      }
+    ],
     "steps": [
       {
         "raw": "for p in 9000 9001 9002",
@@ -8296,6 +9053,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "/etc/hosts es la resolución local que se consulta ANTES que la DNS: la técnica clásica para entornos de laboratorio (y para secuestrar dominios, ojo).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "127.0.0.1 tesoro.interno\nbandera del dominio interno: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep tesoro.interno /etc/hosts",
@@ -8359,6 +9122,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "nc habla TCP crudo: ni HTTP ni protocolos, bytes. Es la herramienta para sondear servicios a mano (banners SMTP, SSH…) y suele despejar dudas en la fase de reconocimiento.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "nc -w 2 127.0.0.1 9999 </dev/null",
@@ -8410,6 +9179,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los headers HTTP son metadata donde se esconde casi todo (rate-limits, versiones, tokens de sesión): curl -i los destapa junto al cuerpo. Curl -I solo los cabecera.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "HTTP/1.0 200 OK\r\nServer: BaseHTTP/0.6 Python/3.12.3\r\nDate: Fri, 23 Oct 2026 11:37:17 GMT\r\nX-Arena-Flag: FLAG{d3b09a4f7c2e1b8d6041a5f3}\r\nContent-Type: text/plain\r\n\r\nauditoria ejecutada: todo limpio"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s -i http://127.0.0.1:7080/auditoria",
@@ -8465,6 +9240,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "curl -d (o --data) cambia el verbo HTTP a POST y manda el cuerpo form-enconded. Es la moneda para hablar con APIs internas sin cliente gráfico.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "acceso concedido: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s -d 'token=arena' http://127.0.0.1:6060/validar",
@@ -8520,6 +9301,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "/etc/services es el mapa clásico de puertos (80 http, 22 ssh…). Leerlo evita los memorizar: el catálogo vive en el fichero donde empieza toda la revisión de un servidor.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "puerto dinamico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep '^arena-tesoro' /etc/services | awk '{print $2}' | cut -d/ -f1)",
@@ -8604,6 +9391,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las cabeceras de PETICIÓN son la mitad de la conversación HTTP: Accept, Authorization, Content-Type… curl -H las teclea por ti. Los errores 406 normalmente delatan una cabecera ausente.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "secreto del api: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s -H 'Accept: application/arena-json' http://127.0.0.1:7700/api",
@@ -8655,6 +9448,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "/etc/hosts es el DNS de bolsillo: alias internos, docker-compose sobrescribe IPs, machines frente a entornos. curl por hostname ya no va por IP: pasing de DNS a nombre.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "<html>Desde el alias: FLAG{d3b09a4f7c2e1b8d6041a5f3}</html>"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s http://dojo.local:8000/pieza.html",
@@ -8706,6 +9505,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El URL-encoding transforma todo lo \"raro\" para que viaje en una URL: { → %7B. Saber decodificar (y encodear con --data-urlencode) es lectura básica de URLs.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "curl -s http://127.0.0.1:8000/ | sed 's/%7B/{/g; s/%7D/}/g' | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -8778,6 +9583,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "wget es el capataz de descargas: reintentos, recursividad (--mirror). curl es de copiar al stdout, wget de ir a cacharrar fichero. Dos sabores del mismo café.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "entrega directa: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "wget -q -O /tmp/recogida.txt http://127.0.0.1:8000/reparto.txt",
@@ -8840,6 +9651,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "nc -l -p N es un servidor mínimo: una línea de TCP sin HTTP. Para probar servicios custom, juniors y pipelines: es EL petardazo de las redes del shell.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "saludado por nc: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "timeout 5 nc 127.0.0.1 7077",
@@ -8886,6 +9703,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "/proc/net/tcp es la mine de oro de TCP (ss/lo lee de ahí). Puertos/file states en hexadecimal: 1F90=8080, 2339=9009. ¿Parser portátil sin tools? /proc/net/tcp.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "a la vista del 9009: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -i ':2339 ' /proc/net/tcp | head -n1",
@@ -8964,6 +9787,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los registros TXT cargan texto libre (DKIM, verificación dominio…). dig -p habla a un puerto NO estándar: la manera de testear DNS no en el 53 de siempre.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "\"FLAG{d3b09a4f7c2e1b8d6041a5f3}\""
+      }
+    ],
     "steps": [
       {
         "raw": "dig @127.0.0.1 -p 5354 +short TXT marca.dojo",
@@ -9014,6 +9843,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "ss -tln lista los puertos en escucha del host. Identifica el puerto \"anormal\" (> 5000) en la columna Local Address:Port y consulta el pequeño servidor:\n\n    ss -tln\n    curl -s http://127.0.0.1:5127/tarjeta.txt\n\n(sustituye 5127 por el puerto que hayas visto en tu ss).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "ss -tln | grep -oE '127\\.0\\.0\\.1:[0-9]+' | awk -F: '$2>5000{print $2}' | head -n 1 | xargs -I{} curl -s http://127.0.0.1:{}/tarjeta.txt",
@@ -9133,6 +9968,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un mini-parse de un JSON plano: localiza el valor del campo y úsalo en la URL.\n\n    cat /var/dojo/canal.json        → {\"instancia\": \"sur\", \"puerto\": 9341}\n    port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1)\n    curl -s http://127.0.0.1:$port/tarjeta.txt\n\nCon la variable de shell $port la URL se compone al vuelo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1)",
@@ -9213,6 +10054,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`tar -czf paquete.tar.gz fichero...` comprime; `tar -tzf` lista;  `tar -xzf` extrae. La `-C destino` redirige la extracción — sin ella tar desempaca en el actual. En tar moderno la extensión insinúa el formato y se puede omitir la z/j/J.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nota ultra-privada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "mkdir -p /tmp/x\ntar -xzf /var/dojo/notas.tar.gz -C /tmp/x\ncat /tmp/x/notas/nota_clave.txt",
@@ -9278,6 +10125,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`gzip fichero` comprime y renombra a .gz en el sitio. `zcat`/`gunzip -c` descomprimen a stdout SIN tocar el fichero original. Con `zcat fichero.gz | head` te ahorras descomprimir a un fichero temporal.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Diario del operador. Hoy ha sido un gran día. Todo listo para la entrega.\nY por supuesto, el final: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "zcat /var/dojo/diario.txt.gz",
@@ -9322,6 +10175,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`zip -r pack.zip carpeta` crea (recursivo); `unzip -l` lee el índice; `unzip pack.zip -d destino` extrae a un sitio concreto. Contrasta con tar: zip comparte formatos multiplataforma (Windows-friendly).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Archive:  /var/dojo/maletin.zip\n   creating: /tmp/extraigo/fondos/\n   creating: /tmp/extraigo/fondos/lote3/\n   creating: /tmp/extraigo/fondos/lote3/no-lucer/\n extracting: /tmp/extraigo/fondos/lote3/no-lucer/interior.txt  \n extracting: /tmp/extraigo/fondos/lote3/no-lucer/intermedio.txt  \nclave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "mkdir -p /tmp/extraigo\nunzip -o /var/dojo/maletin.zip -d /tmp/extraigo\ncat /tmp/extraigo/fondos/lote3/no-lucer/interior.txt",
@@ -9383,6 +10242,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`diff` genera el parche (diff -u viejo nuevo > parche.diff) y `patch fichero < parche.diff` lo aplica. El formato unificado (-u) es el que usan git y los diffs de código: contexto con espacio, + añade, - quita.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "patching file libretas.md\nLibretas vueltas v2: parche aplicado con éxito. Código: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cd /var/dojo\npatch libretas.md < mejora.patch\ncat libretas.md",
@@ -9429,6 +10294,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un enlace simbólico (symlink) es un atajo a otro fichero/ruta; los duros (hard link) comparten inodo. `readlink -f` resuelve la cadena completa al fichero real. `ln -s destino link` crea; `ls -l` mue stras flechas →.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "clave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(readlink -f /home/agent/pomer-c)\"",
@@ -9475,6 +10346,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "zcat/gzip -dc descomprime a stdout manteniendo el original: el flujo se puede encadenar directamente con grafiteo o filtrado. Sustituye descentralizar pistas sin ensuciar el disco.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nota comprimida: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "zcat /home/agent/comprimido.gz",
@@ -9521,6 +10398,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tar es el archivador por excelencia de UNIX. Siempre: -x extragir(C)/-c crear, -z/--gzip y -f fichero. La extracción con -C evita la dispersión de ficheros en el cwd.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/tmp/raiz/carpeta-interna/llave.txt:nota profunda: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tar -xzf /home/agent/paquete.tar.gz -C /tmp",
@@ -9596,6 +10479,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "unzip -p desplaza contenido al stdout sin escribir ficheros: el zcat del mundo zip. Lista con -l antes para saber qué hay dentro del paquete.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nota del corredor: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "unzip -p /home/agent/paquete.zip nota.txt",
@@ -9647,6 +10536,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "diff es la base de wits parecidas a `patch`. Recuerda < = fichero A, > = fichero B. La salida está a la orden de wc, sort y filtered: el beam de comparaciones.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2c2\n< linea dos con typo\n---\n> linea dos corregida\n3a4\n> linea nueva tabulada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "diff /home/agent/viejo.txt /home/agent/nuevo.txt | cat",
@@ -9699,6 +10594,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un enlace simbólico es un puntero textual que se resuelve al abrir. readlink -f desmonta la cadena entera: útil para scripts (no te fies del nombre del fichero que recibes).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "el auténtico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(readlink -f /home/agent/acceso)\"",
@@ -9745,6 +10646,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "xz supera a gzip en ratio al precio de más CPU. La trilogía -x/-d/-c funciona igual en gzip, bzip2 y xz: una sola sintaxis para tres compresores.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "papel volcado con marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "xz -dc /home/agent/volcado.xz",
@@ -9800,6 +10707,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "7z acepta docenas de formatos (tar, zip, gz, iso…) con el mismo interfazo: a/extracto, -o destino, -l listar. Para archivos raros, 7z casi siempre tiene la respuesta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "marca empacada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "7z x -y -o/tmp/7z-salida /home/agent/paquete.7z >/dev/null",
@@ -9906,6 +10819,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "split parte a bytes fijos (-b) o por líneas (-l); cat * los regresa. El estándar de envíos por fichero pequeño (cuota de tamaño de mail/FTP) es este par siempre alfligido.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/partes/trozo-* | tar -xzOf - | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -9986,6 +10905,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "zip/unzip con cifrado Clásico (ZipCrypto) o AES según versión. unzip -p es el \"cat\" de los zips: manda a stdout y manejable en pipelines.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "guardada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep -oE 'dojocofre' /home/agent/nota.txt | head -n1)",
@@ -10064,6 +10989,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "gzip (rápido), bzip2 (mejor ratio), xz (lo mejor ratio, más lento) y zstd (el equilibrado moderno). El sufijo .xz señala realmente Adventisten del juego; -c manda salida al stdout.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "xz -dc /home/agent/xiles.txt.xz | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -10134,6 +11065,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un symlink es un puntero: readlink -f lo data el destino ABSOLUTO final a(disfraz de infinite loops). Comprobar enlaces rotos es find -L -type l.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la masa del faro: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(readlink -f /home/agent/faro/lazo1)\"",
@@ -10180,6 +11117,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "diff COMPARA y patch APLICA: el par que rige el flujo de parcheos (kernel, git apply). Saber generar (diff -u a b > f.diff) y aplicar (patch < f.diff) es lengüeta de mantenedor.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "patching file pieza.txt\nlinea uno\nla pieza remendada: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nfecha del remiendo: tanda tres\nlinea tres"
+      }
+    ],
     "steps": [
       {
         "raw": "cd /home/agent/taller",
@@ -10248,6 +11191,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Nombres con espacios son el pecado de un 50% de los scripts: SIEMPRE entre comillas \"$(...)\". Con find -print0 | xargs -0 nulos separan sin ambigüedad.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "guardada con espacios: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(find /home/agent/desorden -name '*salida*' | grep 'final' | head -n1)\"",
@@ -10296,6 +11245,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El flujo tar clásico:\n\n    tar -tzf ~/maleta.tar.gz      # ver qué lleva dentro (sin extraer)\n    tar -xzf ~/maleta.tar.gz -C ~ # extraer en tu home\n    cat ~/joya.txt                # la flag está en joya.txt\n\nz significa que el paquete va comprimido con gzip (por lo tanto usa z tanto al listar como al extraer, igual que al crear).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tar -xzf ~/maleta.tar.gz -C ~",
@@ -10365,6 +11320,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los ficheros idénticos comparten hash MD5. Se listan las huellas y se agrupan:\n\n    md5sum ~/estante/*           # \"hash  fichero\" por fichero\n    | sort                       # adyacentes las iguales\n    | uniq -D -w32               # muestra TODAS las filas con igual hash (32 chars)\n\nextract: los nombres duplicados; el que contiene la flag es el alfabético primero de los gemelos:\n\n    md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat",
@@ -10464,6 +11425,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El clásico `for f in lista; do cmd; done` itera palabras e expandición de globs. `grep -q` queda en silencio y devuelve 0 si hay match — perfecto para condicionales if/then. Cambia {} por los comodines correctos y el shell hace el resto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "el apunte premiado contendía esta línea: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "for f in /var/dojo/apuntes/*",
@@ -10551,6 +11518,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`case $x in patrón) cmd;; esac` ramifica por valor sin if/elif. Las variables se leen con $var y entre comillas dobles conservan espacios. Si el portero se resiste, `cat` del script enseña su lógica (y a veces, sus secretos — lección sobre NO meter secretos en scripts legibles).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "La palabra está desdorada: laropse (ñaka ñaka)\nPuerta abierta. Clave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/pista-portero.txt\nportero espiral",
@@ -10599,6 +11572,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`$1`..`$9` son argumentos posicionales; `$#` el número total; `$@` todos, cada uno como está. Las funciones (`fn() { … }`) se llaman como comandos con SUS argumentos locales a $1/$2 dentro.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "invocación correcta. Banner del honi: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "bash /home/agent/verso.sh abierto sésamo",
@@ -10642,6 +11621,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`getopts \"k:vh\" opt` procesa opciones cortas: `k:` exige valor (queda en $OPTARG). La forma correcta de escribir opciones es la misma en cualquier script de sistema — y es lo que hace legible a tus herramientas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "@@@ FLAG{d3b09a4f7c2e1b8d6041a5f3} @@@"
+      }
+    ],
     "steps": [
       {
         "raw": "oraculo -k matrix",
@@ -10697,6 +11682,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El glob `*` expande en orden alfabético: por eso `cat fragdir/*.b64 | base64 -d` rearma lo troceado. Recuerda: base64 exige bloques de 4 caracteres — si troceas en el medio, cada fragmento por separado NO es base64 válido; solo la concatenación lo es.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /var/dojo/fragmentos/*.b64 | base64 -d",
@@ -10765,6 +11756,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "source (o el punto) ejecuta un script SIN crear subshell: las variables que define quedan en TU shell. Es el mecanismo con el que TODO el mundo carga configuraciones (.bashrc incluido).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "buzón confirmado: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": ". /home/agent/config.env",
@@ -10822,6 +11819,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El test [ ] compara: -eq, -ne, -gt, -ge, -lt, -le para números; = para cadenas. Si el if no entra, else (o elif) dan la alternativa.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "puerta del adulto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "if [ \"$(cat /home/agent/edad.txt)\" -ge 18 ]",
@@ -10911,6 +11914,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "$0 $1 $2… son los argumentos posicionales de un script (como argv de C). case sobre $1 es el switch de bash: la forma idiomática de depender del parámetro a ser.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ficha correcta: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "bash /home/agent/menu.sh mostrar centro-2",
@@ -10957,6 +11966,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "while read parsea cada línea en variables: para procesar ficheros columna a columna es EL patrón. for sobre $() rompe en espacios y come los saltos: read es la vía fiel.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ruta local exacta: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "while read -r h p",
@@ -11063,6 +12078,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las funciones en bash (nombre() { … }) reutilizan lógica en el mismo shell. El test -x/-r/-f/-d responde propiedades de ficheros: la combinación script = filtro perfectro para lotes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ejecutable: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "for f in /home/agent/caja/*",
@@ -11158,6 +12179,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sed -i es la edición en el sitio (in-place) que usan los scripters para toques quirúrgicos. La / la puedes depender: s|a|b| con cualquier carácter evita fugas con la propia ele.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "primero la calibración\nla marca del parche: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nfin del fichero"
+      }
+    ],
     "steps": [
       {
         "raw": "sed -i 's|^# ||' /home/agent/repara.sh",
@@ -11220,6 +12247,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Combinar $(…) dentro de los argumentos es la forma de pasarle a un script dinámicas reales: la salida de un comando (estado) alimenta el siguiente (caja). así viven los scripts de un administrador.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ficha fantasma: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "bash /home/agent/caja.sh \"$(cat /home/agent/estado.txt)\"",
@@ -11266,6 +12299,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Bash nace de Savoy arrays: arr=(...) crea, ${arr[0]} lee el PRIMER elemento y ${#arr[@]} cuenta. Los índices empiezan si en 0, y la expansión entre comillas evita split por espacios.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "3-gamma.txt\nmarca gamma: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "arr=($(ls /home/agent/almenas))",
@@ -11334,6 +12373,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "while read -r es EL bucle de líneas en bash (xargs -I es el primo). La -r cuesta nada y evita que el backslash se coma los datos. Con < fichero al final, el bucle lee del fichero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "while read -r f",
@@ -11450,6 +12495,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La aritmética de bash es nativa con $(( )): no necesitas expr ni bc para enteras (bc sí para decimales). Asignaciones también van dentro: s=$((s+1)).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "celda acertada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "a=$(cat /home/agent/taquilla/a.num)",
@@ -11518,6 +12569,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "cat une ficheros y tr -d '\\n' elimina los saltos: el pegado de mitades sin herramientas sofisticadas. (GNU paste con delimitador vacío es quisquilloso: queda como dato curioso.)",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/parteA.txt /home/agent/parteB.txt | tr -d '\\n'",
@@ -11575,6 +12632,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las expansiones de parámetros son el \"pozo\" de bash: ${v^^} (MAYÚSCULAS), ${v:0:5} (substring), ${v%.txt} (quitar sufijo). Sin sed ni tr manipulas cadenas en la misma línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "v=$(grep -ioE 'flag\\{[a-f0-9]+\\}' /home/agent/id_doc.txt | head -n1)",
@@ -11652,6 +12715,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "&& y || son los \"and / or\" de comandos encasquetados: exit 0 = TRUE, resto = FALSE. La cadena cmd1 && cmd2 && cmd3 es un flujo de puerta: falla al primero, para. Escondido en todos los CI.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "corredor en su muelle: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "/home/agent/paso1.sh",
@@ -11724,6 +12793,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los scripts reciben argumentos por posición: $1 es el primero. case los compara con patrones:\n\n    case \"$1\" in\n      desbloquear) echo \"...\" ;;\n      *) echo \"uso: caja.sh desconocido\" ;;\n    esac\n\nprocedimiento: mira el script (head ~/caja.sh), detecta qué palabra encaja con la rama que imprime la flag, y ejecuta:\n\n    bash ~/caja.sh desbloquear",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "#!/bin/bash\ncase \"$1\" in\n  desbloquear)\n    echo \"FLAG{d3b09a4f7c2e1b8d6041a5f3}\"\n    ;;\n  *)\n    echo \"uso: caja.sh <palabra>\" >&2\n    exit 1\n    ;;\nesac\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "head ~/caja.sh",
@@ -11780,6 +12855,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un for con glob recorre ficheros:\n\n    for f in ~/tropa/*.txt; do\n      cat \"$f\"\n    done\n\nCada iteración imprime un fragmento; en conjunto la flag completa queda reconstruida (y ordenada, porque el globbing ordena alfabéticamente).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}fin de la contrapartida"
+      }
+    ],
     "steps": [
       {
         "raw": "for f in ~/tropa/*.txt",
@@ -11861,6 +12942,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En logs de autenticación lo que importa es separar fallos de éxitos: `grep -v` descarta (la forma amortiguada) y `grep texto` localiza el patrón de interés — aquí la línea de sesión concedida. Con `grep -c` entenderás el volumen de la fuerza bruta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "(auth okay) Session granted: user=ghost passwd=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -v pifia /var/log/auth-dojo.log",
@@ -11913,6 +13000,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El base64 convierte binario en texto (4 chars por 3 bytes) — por eso sale de sigilos en mails y logs. `base64 fichero` codifica; `base64 -d fichero` descodifica. En pipes: `cmd | base64 -d`.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "contraseña confidencial: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -1 /var/dojo/interceptado.b64 | base64 -d",
@@ -11972,6 +13065,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`grep` por defecto se niega a procesar el binario; `-a` (text-jump) fuerza la lectura texto. `xxd` vuelca hexadecimal para el análisis forense clásico. Si tu herramienta falla con bytes raros, reduce a octetos con `xxd -r -p` (reconstruye el binario del hex).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "La joya escondida: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -a 'FLAG{' /var/dojo/core-dump",
@@ -12021,6 +13120,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`tr` traduce entre DOS conjuntos del mismo tamaño: cada byte del primero se cambia por su par. El clásico rot13: 'A-Za-z' → 'N-ZA-Mn-za-m'. El cifrado César/rot13 se decodifica aplicand PROPIO tr de nuevo (es su inversa).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3} erfgb qr yn abgn: svezn qry zrafnwr ra póqvtb Péfne 13."
+      }
+    ],
     "steps": [
       {
         "raw": "cat /var/dojo/rot13.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'",
@@ -12072,6 +13177,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las capas se deshacen en orden inverso al de embalaje: `base64 -d` te da el flujo gzip, y `zcat` (uo `gunzip -c`) el contenido. La disciplina UNIX de pipelines hace trivial encadenar 2, 3 o más transformaciones.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "el tesoro: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat",
@@ -12135,6 +13246,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -a trata los ficheros binarios como texto (binary→text). La pareja -a -o es el kit forense para extraer cadenas sin instolar strings:",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -a -oE 'FLAG\\{[^}]*\\}' /home/agent/blob.bin",
@@ -12194,6 +13311,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "base64 codifica a 64 caracteres binarios seguros; -d deshace. Appears en logs, adjuntos, tokens JWT (la parte media) y exfiltraciones: reconocerla es obligatorio en forense.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "adjunto normal: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "base64 -d /home/agent/adjunto.b64",
@@ -12245,6 +13368,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "xxd -r revierte un volcado hex a bytes: la forensic reconstrucción de ficheros que ya no existen. Grabar claves hexa es exactamente lo mismo que las marcas hexa frecuentes en el foro.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "volcado real de la sala: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "xxd -r /home/agent/volcado.hex",
@@ -12297,6 +13426,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tr es el cifrado césar sencillo: defines el abecedario destino rotado. Para descifrar, aplica el desplazamiento COMPLEMENTARIO (para +7, es +19 sobre 26 letras).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "mensagem cifrada con cesar: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tr 'A-Za-z' 'tuvwxyzabcdefghijklmnopqrsTUVWXYZABCDEFGHIJKLMNOPQRS' < /home/agent/cifrado.txt",
@@ -12344,6 +13479,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La revisión de logs con grep en dos fases: primero identifica al actor sospechoso, después extrae el trozo exacto con la clase [^}]*. Leer primero y extraer después reduce el ruido a cero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'FLAG\\{[^}]*\\}' /home/agent/sucesos.log",
@@ -12399,6 +13540,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El patrón «relleno + carga útil al final» es una técnica de steganografía trivial: los ficheros siguen siendo válidos pero la cola lleva secretos. tail -c es el bisturí.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "��=v\u0013�W쮥T��\\\rھM���\\\u0011>T�C4��\r\u001b>�ʠb�\bq\nmarca exfiltrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tail -c 90 /home/agent/cargo.bin",
@@ -12450,6 +13597,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las regex con clases y cuantificadores EXACTOS ({24}, [0-9a-f]) son cómo se descarta la basura: el patrón codifica la estructura REAL de lo legítimo. Arma afilada contra los señuelos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'FLAG\\{[0-9a-f]{24}\\}' /home/agent/rastro.txt",
@@ -12505,6 +13658,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "xxd y xxd -r son par par (hex ↔ bytes). Es la forma de desempacar trozos binarios que solo existen como texto en otra capa (datos de un log, chat…).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "xxd -r /home/agent/volcado.hex | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -12571,6 +13730,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En binarios con NUL y bytes raros hay que dest textar: tr -c [:print:] los limpia a saltos y el texto true resalta. (Si binutils está instalada, strings hace lo mismo: filtra \"lo que parece texto\".)",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat /home/agent/mechero.bin | tr -c '[:print:]\\n' '\\n' | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -12643,6 +13808,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los logs estructurados se filtran mejor que se buscan: si la fecha es el primer campo, grep \"^HH:MM\" y awk $1==\"HH:MM\" son equivalentes. Elige el que dé menos falsos positivos en cada log.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep '^09:42' /home/agent/turno.log | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -12704,6 +13875,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La extención ES mentira; los PRIMEROS BYTES no: 1f 8b = gzip. file da el tipo real. No confiar en el nombre = primer paso forense.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "zcat /home/agent/algo_sin_nombre | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -12765,6 +13942,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Exfiltrar es trocear: base64 troceado por líneas sueltas de un log es una canal clásico. La receta del analista: extraer los candidatos con regex, unir (tr -d '\\n') y decodificar UNA VEZ al final.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'chip [0-9]+: [A-Za-z0-9+/=]+' /home/agent/canal.log | sed 's/.*: //' | tr -d '\\n' | base64 -d",
@@ -12848,6 +14031,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La inversión de log (exclusiones) es el 90% del filtrado auditable: ruido de FALLOS, ARGS DE TEST, líneas de train. -v + -E es el dúo rápido en vez del cut — de esos todos sons",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -viE 'falso|test|spacer' /home/agent/mix.log | grep -oE 'FLAG\\{[a-f0-9]{24}\\}'",
@@ -12926,6 +14115,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El flujo forense minero: localizar la línea, recortar el campo, decodificar:\n\n    grep 'PAYLOAD' registro.log      → \"PAYLOAD cod BxOx…\"\n    awk '{print $4}'                 → solo el bloque base64\n    base64 -d                        → texto en claro\n\nencadenado:\n\n    grep 'PAYLOAD' /home/agent/registro.log | awk '{print $4}' | base64 -d",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep 'PAYLOAD' ~/registro.log | awk '{print $4}' | base64 -d",
@@ -13003,6 +14198,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "xxd trabaja con \"hexdumps\". Para invertir un fichero de hex plano:\n\n    echo $(cat ~/rastro.hex) | xxd -r -p\n\n-p interpreta entrada/salida como hex plano y -r revierte al binario. El grep final confirma que la flag está dentro:\n\n    ... | grep -o 'FLAG{[^}]*}'",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "echo $(cat ~/rastro.hex) | xxd -r -p | grep -o 'FLAG{[^}]*}'",
@@ -13079,6 +14280,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El truco de nivel boss es encadenar herramientas: `find` da el fichero objetivo, el fichero oculto evita las trampas y `base64 -d` abre la carga útil. La disciplina de pipelines cubrirá tu caos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "desierto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "cat \"$(find /var/dojo/jungla -name '.*')\" | base64 -d",
@@ -13139,6 +14346,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "`find` filtra por mtime: `-newer fichero` compara contra un REF; `-mmin -10` busca tocados hace MENOS de 10 min, `-newermt 'YYYY-MM-DD'` por fecha. Forenses buscan «lo recién cambiado» tras un intruso.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "edición recién impresa: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /var/dojo/estantería -type f -mmin -30 -exec cat {} ;",
@@ -13237,6 +14450,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Combinación boss: `pkill -f` te limpia el proceso ruidoso, `tail -1` saca la última emisión, `base64 -d` la abre. ¿Por qué matar primero? Evitas leer una emisión PARTIDA a mitad de escritura (atomicidad práctica) y dejas claro quién fue.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "mensaje cifrado: FLAG{d3b09a4f7c2e1b8d6041a5f3} residuo 842"
+      }
+    ],
     "steps": [
       {
         "raw": "pkill -f '[t]ransmisor$'",
@@ -13315,6 +14534,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La muñeca rusa real: base64 → tar.gz → zip → flag.txt. Cada nivel de empaque tiene su herramienta de apertura, y TU única disciplina es ir capa a capa con el pipeline correcto. En la vida real (logs, malware, backup) verás cada capa en combinaciones nuevas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Archive:  /tmp/e1/flag.zip\n extracting: /tmp/e2/flag.txt        \nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "base64 -d /var/dojo/paquete-final.b64 > /tmp/paquete.tar.gz\nmkdir -p /tmp/e1 /tmp/e2\ntar -xzf /tmp/paquete.tar.gz -C /tmp/e1\nunzip -o /tmp/e1/flag.zip -d /tmp/e2\ncat /tmp/e2/flag.txt",
@@ -13390,6 +14615,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El combo «señuelo + grep -c + test» es el patrón estándar de auditoría por lotes. Encadenarlo con head/tail te enseña las cabeceras de CADA log sospechoso sin abrir el editor.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "inicio del lote 4 formato ESTANDAR\ntrofeo del causante: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nERROR en componente 1\nERROR en componente 2\nERROR en componente 3\nERROR en componente 4\nERROR en componente 5\nERROR en componente 6\nERROR en componente 7\nERROR en componente 8\nERROR en componente 9\nERROR en componente 10\nERROR en componente 11\nERROR en componente 12\nERROR en componente 13\nERROR en componente 14\nERROR en componente 15\nERROR en componente 16\nERROR en componente 17\nERROR en componente 18\nERROR en componente 19\nERROR en componente 20\nERROR en componente 21\nERROR en componente 22\nERROR en componente 23\nERROR en componente 24\nERROR en componente 25\nERROR en componente 26\nERROR en componente 27\nERROR en componente 28\nERROR en componente 29\nERROR en componente 30\nERROR en componente 31\nERROR en componente 32\nERROR en componente 33\nERROR en componente 34\nERROR en componente 35\nERROR en componente 36\nERROR en componente 37\nERROR en componente 38\n  … (+22 líneas más — la forma es idéntica)"
+      }
+    ],
     "steps": [
       {
         "raw": "for f in /home/agent/logs/*.log",
@@ -13490,6 +14721,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Awk con arrays asociativos + bloque END es SQL de bolsillo (GROUP BY + SUM). El for (r in s) recorre las claves y el print saca el relatório. Ordena con sort -nr para ver al ganador.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "1250 torreon-FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F, '{s[$1]+=$2} END {for (r in s) print s[r], r}' /home/agent/ventas.csv | sort -nr | head -n 1",
@@ -13572,6 +14809,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "find + xargs/-exec es la dupla clásica de bash para procesar hallazgos en lote. Descomprimir en el flujo (zcat) permite encadenar pipes sin ensuciar disco: caza de la marca sin archivos intermedios.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "find /home/agent/caja -name '*.gz' -exec zcat {} ; | grep -oE 'FLAG\\{[^}]*\\}'",
@@ -13666,6 +14909,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La persistencia vía cron es una técnica clásica de los atacantes: SIEMPRE revisa /etc/cron.d en una investigación. Seguir la cadena fichero→script→destino flujo es la forma de reconstruir el plan del atacante.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la marca de la persistedencia: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep -oE 'path=[^ ]+' /etc/cron.d/backup | head -n1 | cut -d= -f2)",
@@ -13796,6 +15045,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "tar -O (mayúscula) escribe TODO el contenido AL stdout: el modo «cat del tar» sin extraer al disco. Es la forma forense de analizar un archivo sin contaminar la evidencia.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "tar -xzOf /home/agent/archivo.tar.gz | grep -oE 'FLAG\\{[^}]*\\}'",
@@ -13871,6 +15126,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los encadenamientos (rot13+base64, hex+rot…) son una evasión típica de DLP. Deshacer CAPAS EN ORDEN es la disciplina del oficio: primero transforma la capa de transporte, luego recupera el texto original.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la hospitalaria terminal: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "base64 -d /home/agent/ultimis.b64 | tr 'A-Za-z' 'N-ZA-Mn-za-m'",
@@ -13929,6 +15190,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los ofuscadores encadenan transformaciones y el analista las deshace IN VERSO. Aquí el truco es darte cuenta de que el texto \"rotado\" es hex: 1f 8b…: análisis de primer byte = decidir la próxima capa.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "base64 -d /home/agent/indomable.dat | tr 'A-Za-z' 'N-ZA-Mn-za-m' | xxd -r -p | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -14017,6 +15284,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "flujos sin tocar disco: unzip -p manda el BINARIO interior al stdout y tar -xzOf - lo consume: la cadena de compresores se descuelga sin ficheros temporales. Limpio y auditable.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "p=$(grep -oE 'claveDelFortin12' /home/agent/fortin.clave | head -n1)",
@@ -14130,6 +15403,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "\"rot13 el log\" es el truco de ofuscación núm 1 de logs mal protegidos: simétrico, sin clave, sin software. Tu contramedida es generar texto limpio + auditoría por anomalías de frecuencias.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -viE 'señuelo|test' /home/agent/traidor.log | tr 'A-Za-z' 'N-ZA-Mn-za-m' | grep -oE 'FLAG\\{[a-f0-9]+\\}'",
@@ -14211,6 +15490,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "file + tar -O es el par mágico forense: identificar el recipiente y verterlo sin intermediar disco. Cuando hay recipiente dentro de recipiente, SEGUIR la file cadenas de comprimido hasta el resultado.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1)",
@@ -14326,6 +15611,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Pipeline de análisis (el clásico de \"word count\"):\n\n    awk '{print $NF}' ~/diario.txt   # la última palabra de cada línea\n    | sort | uniq -c                 # cuenta repeticiones\n    | sort -n                        # de menor a mayor frecuencia\n    | tail -n 1                      # el ganador: \"  N ciudadano\"\n    | awk '{print $2}'               # el nombre del ganador\n    | xargs -I{} cat ~/casos/{}.txt  # lee SU expediente",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{print $NF}' ~/diario.txt | sort | uniq -c | sort -n | tail -n 1 | awk '{print $2}' | xargs -I{} cat ~/casos/{}.txt",
@@ -14431,6 +15722,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La transformación original fue: rot13 → luego invertir. Para deshacer se desmonta al revés (como los calcetines):\n\n    rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'\n\nrev arregla el orden de letras; tr re-desplaza el alfabeto 13 posiciones. rot13 es auto-inverso (rot13 de rot13 es identidad): el mismo tr sirve para cifrar y descifrar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'",
@@ -14483,6 +15780,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep busca un patrón en un fichero y muestra cada línea que lo contiene. Es la base de todo el filtrado en la terminal: las variantes siguientes (−i, −v, −o…) son solo ajustes de esta misma idea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "10:02 hallazgo FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep 'hallazgo' /home/agent/visitas.log",
@@ -14529,6 +15832,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -i ignora el caso: critico casa con cRiTiCo y CRITICO. Ojo con el acento: «crítico» con tilde NO casa con «critico» — en logs reales conviene decidir qué se busca y probarlo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "cRiTiCo refrigerante bajo: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nCRITICO simulacro programado a mediodía"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -i 'critico' /home/agent/reactor.log",
@@ -14580,6 +15889,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -v invierte el criterio: «muéstrame lo que NO casa». Combinar −v con un segundo grep es el patrón clásico de limpieza: quita lo inútil y entonces filtra lo importante.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "auth_secret FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -v '^#' /home/agent/proxy.conf | grep 'auth_secret'",
@@ -14637,6 +15952,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -n numeriza las coincidencias: imprescindible para decir «línea 12» al operador de guardia. Se combina con las demás opciones: -in, -rn, -on…",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "12:2026-10-22 08:12 anomalía FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -n 'anomalía' /home/agent/turnos.log",
@@ -14688,6 +16009,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -o cambia el foco: en lugar de líneas completas, extrae exactamente la coincidencia. Con -E y el patrón FLAG\\{[^}]*\\} sales las marcas en una línea limpia… y las truncadas sin cierre, descartadas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE 'FLAG\\{[^}]*\\}' /home/agent/carta.txt",
@@ -14744,6 +16071,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -E abre el vocabulario regex completo: +, clases y anclas ^. Los puntos literales se escapan: \\. — sin el escape casarían «cualquier carácter». La ancla ^ evita que una IP en medio de la línea engañe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "172.31.14.3 -> entrega del hallazgo: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n172.31.255.1 -> balanceador sin etiqueta"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E '^172\\.31\\.[0-9]+\\.[0-9]+' /home/agent/red.log",
@@ -14795,6 +16128,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -F (Fixed) trata el patrón como texto: ni + ni * ni puntos mágicos. Es además el grep más rápido en ficheros grandes porque se salta el motor de regex.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "plan maestro: detector.*laser activo esta noche FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -F 'detector.*laser' /home/agent/taller.txt",
@@ -14846,6 +16185,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -r recorre el árbol: imprime cada coincidencia con su ruta de origen. Con -rn numeras las líneas del hallazgo; con -rl recibes solo los nombres de fichero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/expedientes/2025/diciembre/h-05.txt:hallazgo confirmado (el disputado, sin marca)\n/home/agent/expedientes/2026/febrero/h-31.txt:hallazgo confirmado con la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r 'hallazgo confirmado' /home/agent/expedientes",
@@ -14897,6 +16242,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -w garantiza palabra entera: bruma casa, brumario no. Es el antídoto contra los falsos positivos cuando el vocabulario del dojo tiene familias completas de palabras parecidas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "bruma señal clara en el patio: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nniebla densa, sin bruma aparente"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -w 'bruma' /home/agent/indice.txt",
@@ -14954,6 +16305,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -A/-B/-C dan contexto alrededor del resultado: A de After (después), B de Before (antes), C de Contexto (ambos). Es la forma rápida de leer un log alrededor del evento sin abrir el fichero entero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "tarea 02: pinza marcada en el tablero\ntarea 03: repaso del oficial de guardia\ntarea 04: hallazgo asociado a la pinza: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -A2 'pinza marcada' /home/agent/tareas.txt",
@@ -15001,6 +16358,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -E con rangos y contadores exactos: {16} pide exactamente 16 repeticiones (ni una más). El ancla ^ fija el inicio y el espacio final delimita el campo: sin explore, casaría prefijos de líneas más largas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "1f2e3d4c5b6a7980 FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E '^[a-f0-9]{16} ' /home/agent/muestras.txt",
@@ -15052,6 +16415,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -r --include=\"*.conf\" filtra los ficheros por NOMBRE (no por contenido) — imprescindible cuando el árbol está lleno de logs, scripts y backups .conf.bak que no forman parte del servicio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/servicio/servidor.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3} (config servidor)\n/home/agent/servicio/cliente.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3} (config cliente)\n/home/agent/servicio/mon.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3} (config mon)"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r --include='*.conf' 'chip: ' /home/agent/servicio",
@@ -15107,6 +16476,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -x (exact) obliga a que la coincidencia cubra la línea entera. Con la clase negada [^[:space:]] eliminan trampas de espacios; combinado -xE demuestra que las opciones se acumulan.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "sec=FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -xE 'sec=[^[:space:]]+' /home/agent/accesos.txt",
@@ -15164,6 +16539,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La cadena -rh + -oE es el extractor forense: primero selecciona las líneas relevantes en el árbol (−h tira el ruido de rutas), luego −o entrega solo lo casado. Es el patrón grep-sobre-grep: «dime dónde, y luego dame solo la cosa».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -rh 'EXFIL' /home/agent/intrusion | grep -oE 'FLAG\\{[^}]*\\}'",
@@ -15233,6 +16614,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk parte cada línea en campos separados por espacios: $1 primero, $2 segundo y $NF último. La estructura patrón {acción} es el corazón de awk: filtro y acción en una sola línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$1 == \"vista\" {print $2}' /home/agent/cargos.txt",
@@ -15279,6 +16666,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk $NF apunta al último campo sin importar la longitud de la línea; NF es el número de campos. La pareja (NF, $NF) maneja registros de ancho variable sin bucles.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$1 == \"maniobra\" && NF == 5 {print $NF}' /home/agent/mensajes.txt",
@@ -15325,6 +16718,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "con -F: las líneas passwd se abren en 7 campos: usuario, contraseña, uid, gid, GECOS, home, shell. awk también acepta separadores multi-carácter o regex: -F\"[, ]+\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F: '$1 == \"asistente\" {print $2}' /home/agent/cuentas.dat",
@@ -15376,6 +16775,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk cuenta líneas con NR: puedes seleccionar filas concretas (NR==37), rangos (NR>=2 && NR<=5) o pares (NR%2==0) sin tocar nada más.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "lectura 37: pico FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'NR == 37 {print}' /home/agent/lecturas.txt",
@@ -15422,6 +16827,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk permite comparar variables internas (NF, NR, $N) con operadores: filtros «por número de columnas» sin escribir bucles. Comprueba con NR en la línea de arriba cuando te cuesten.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "uno dos tres cuatro cinco seis siete ocho FLAG{d3b09a4f7c2e1b8d6041a5f3}\nuno dos tres cuatro cinco seis siete ocho nueve"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'NF == 9' /home/agent/travesia.txt",
@@ -15468,6 +16879,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk es un motor de informáticos: coge una columna, aplica un umbral y Reporta otra columna. La comparación funciona con decimales también (19.5 > 19).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 > 120 {print $1}' /home/agent/cargamentos.txt",
@@ -15514,6 +16931,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk hace regex por campo: $2 ~ /patrón/ casa SOLO el campo dos. Con el delimitador ^…$ evitas códigos parciales; y como el awk del sistema (mawk) no garantiza contadores {3}, encadenamos las clases: portable y seguro.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/ {print $3}' /home/agent/equipos.txt",
@@ -15560,6 +16983,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El esquema «comparar en cada línea, guardar al mejor, imprimir en END» es awk streaming: acumulas en variables mientras lee y cierras con la conclusión. Las variables no inicializadas valen 0: no hay que declarlas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 > max {max = $2; best = $1} END {print best}' /home/agent/lotes.txt",
@@ -15606,6 +17035,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk no necesita bucles para ensamblar: la variable s acumula campos y END los vierte. La concatenación es por yuxtación: s = s $3 (sin +) une el campo tras la variable.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '/^trozo/ {s = s $3} END {print s}' /home/agent/trozos.txt",
@@ -15652,6 +17087,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los arrays asociativos de awk (c[$1]) cuentan, agrupan y deduplican sin sort ni uniq. ++c[$1]==3 usa el incremento de PREFIJO: primero incrementa, luego compara con el valor nuevo — con c[$1]++ (postfijo) dispararía en la cuarta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '++c[$1] == 3 {print $2}' /home/agent/sesiones.log",
@@ -15699,6 +17140,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "FNR (contador por fichero) y NR (global) distinstinguen los ficheros: FNR==NR es el truco clásico que convierte awk en \"SQL del shell\": un índice en el primer fichero y consultas contra el segundo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}' /home/agent/claves.txt /home/agent/valores.dat",
@@ -15745,6 +17192,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk acumulando bajo una condición: filtro escalar + END. Con umbral numérico seleccionas y con la yuxtación t = t $3. ensamblas piezas repartidas por el fichero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 > 50 {t = t $3} END {print t}' /home/agent/caudal.txt",
@@ -15792,6 +17245,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "match(sel, regex) llena RSTART/RLENGTH con la posición del casamiento: no necesitas imprimir la línea entera. Con las llaves dentro de clases de caracteres ([{], [}]) el patrón es portable a cualquier awk (gawk, mawk).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}\nFLAG{eco min}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'match($0, /FLAG[{][^}]*[}]/) {print substr($0, RSTART, RLENGTH)}' /home/agent/pistas.txt",
@@ -15839,6 +17298,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El boss de awk es el oficio: dos filtros de campo (igualdad exacta) más acumulador y END. Con esto ensamblas cualquier salida «señal repartida por un fichero» directo del shell.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 == \"OK\" && $3 == \"sig\" {t = t $4} END {print t}' /home/agent/canal.txt",
@@ -15887,6 +17352,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -oE convierte grep en extractor: cada coincidencia sale limpia en su propia línea. Con -E tienes {n,m}, clases por letra y punto; extrae el dato sin sed ni cut.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "agente.snorkel@dojo.exam\nsoporte@dojo.exam\nrelay@spam-farm.es\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log",
@@ -15954,6 +17425,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -c es el «wc -l del filtro»: la primera pregunta en diagnósticos siempre es «¿cuántas veces pasó?» antes de ver detalles.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "3\nERROR testigo de la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -c 'ERROR' /home/agent/accidente.log",
@@ -16018,6 +17495,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Combinar opciones cortas -ic (o -i -c) suma efectos. La apilación es la razón por la que grep sigue útil en árboles grandes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "6\nerrOr testigo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -ic 'error' /home/agent/visitas.log",
@@ -16089,6 +17572,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los greps -v encadenados son el patrón clásico de limpieza. El ^ y el $ son impacrables: ^# solo casa SI la línea ARRANCA con #, y ^$ solo si está vacía.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "buffer = 16\nmodo = estricto\nusuario = agent\npuerto = 8080 FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -v '^#' /home/agent/tomcat.conf | grep -v '^[[:space:]]*$'",
@@ -16152,6 +17641,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -l es la herramienta del «¿qué ficheros toca?» antes de entrar. Tras ella, alimenta un for/xargs con los nombres.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/negocio/clientes/nota.txt\n/home/agent/negocio/secretos.txt\n/home/agent/negocio/proveedores/suministro.csv\n/home/agent/negocio/secretos.txt:confidencial: el testigo FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -rl 'confidencial' /home/agent/negocio",
@@ -16223,6 +17718,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -L es la luz reversa: te parla los ficheros donde NO hubo señal. En auditorías de fuga, cualquier fichero en esa lista es sospechoso.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/auditoria/acta.txt\n/home/agent/auditoria/bitacora.txt\n/home/agent/auditoria/resumen.txt\n/home/agent/auditoria/testigo.txt\nmalargue asunto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -L 'comprometido' /home/agent/auditoria/*",
@@ -16280,6 +17781,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "-m N limita el nº de matches POR FICHERO. Con -m 1 pides el primer hallazgo y#----------------------------------------------------------------# para; en modo recursivo, cada fichero aportará su primera copia.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "t=001 BEACON primer latido: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -m 1 'BEACON' /home/agent/beacon.log",
@@ -16332,6 +17839,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -f fich-lista fich-destino construye una red de detección. Es clásico en filtrado de contenido: listas negras de IP, dominios de spam, etc.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "comunicado URGENTE del guardia\ninforme CONFIDENCIAL adjuntado: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nasuntos de crisis cerrando a tiempo"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -f /home/agent/patterns.txt -i /home/agent/carta.txt",
@@ -16387,6 +17900,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "A de after: incluye el contexto posterior. En logs de deploy es la vía rápida de leer «qué pasó tras el evento» sin abrir el fichero entero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "GO activación de despliegue\nconfig aplicada: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nretora ciclos 2-3"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -A 2 'GO' /home/agent/deploy.log",
@@ -16433,6 +17952,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El diagnóstico de logs casi siempre mira atrás: -B N da el «qué produjo esto». Con -A N en el mismo grep (o -C) ves la banda completa.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "descargar fuentes (ok)\ncompilar módulo B con la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nABORT pub-sub no responde"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -B 2 'ABORT' /home/agent/pipeline.log",
@@ -16479,6 +18004,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "C de context: la herramienta del «muéstrame la escena completa». Con -A y -C combinadas puedes personalizar la banda.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "inicio de la ceremonia\nstress bajo en el generador 1\n>>> BALIZA encendida <<<\nstress alto en el generador 2\nrestaus del ciclo\nstress bajo de regreso\n>>> BALIZA encendida: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -C 2 'BALIZA' /home/agent/baliza.log",
@@ -16525,6 +18056,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La alternancia en -E (a|b) es el «Y/O» de grep: da igual la rama que case. Con más variantes: (confirmad[oa]|declined).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ticket-2 confirmada por operador\nticket-4 declined por el cliente\nticket-5 confirmada seguida de FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E 'confirmada|declined' /home/agent/respuestas.log",
@@ -16577,6 +18114,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las ANCLAS en -E (^ y $) fijan el punto de inicio/fin de línea. En registros con timestamps, ^ es la base del filtrado por hora.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "domingo desayuno tardío\ndomingo a mitad de texto no vale\ndomingo correspondo real: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E '^domingo ' /home/agent/chicas.log",
@@ -16629,6 +18172,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Extraccion de IPs: \\b10\\.[0-9]+\\.[0-9]+\\b con -oE es el patrón más solicitado. No necesitas validar el rango 0-255 en logs normales.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "10.0.4.23\n10.0.255.200\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log",
@@ -16696,6 +18245,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Las llaves {n} en -E son contadores exactos. Con {n,m} fluctúa: {6} = exactamente 6, {6,} = 6 o más, {2,5} = entre 2 y 5.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "referencia de pago: 990210 correcto\ncódigo largo 1234567: incluso 7 dígitos\nlínea con nómina 050499 FLAG{d3b09a4f7c2e1b8d6041a5f3}\ndos candidata: 112233 y 445566"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E '[0-9]{6}' /home/agent/registros.txt",
@@ -16748,6 +18303,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En árboles grandes, --include/--exclude acotan por TIPO de fichero sin recurrir a find. Trabajan sobre el NOMBRE, no el contenido.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/home/agent/incidentes/2026/10/evento.log:intrusión en la sub carpeta\n/home/agent/incidentes/2026/10/tip.log:intrusión registrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}\n/home/agent/incidentes/oct.log:intrusión detectada en oct"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -r --include='*.log' 'intrusión' /home/agent/incidentes",
@@ -16805,6 +18366,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep + cut es el pipeline típico para piezas de un match más largo. -oE limita la línea de partida; corte acompaña el array; ext menjadi más fácil de aplicar el campo correcto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "9999\n22\n8999\n4444\n10.4.22.4:4444 el puerto a coger: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2",
@@ -16886,6 +18453,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Un pipeline con 2 greps simplifica. El primero reduce espectro, el segundo afina: nunca resuelvas en una sola línea si no llega.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "uid: 432198 correcto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'",
@@ -16944,6 +18517,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "-x es exacto sobre una línea completa. -F convierte el patrón en literal. La fórmula -xF es la herramienta definitiva para «buscar esta cadena exacta como línea».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "password:secreto\npassword:correcto FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -xF 'password:secreto' /home/agent/acceso.txt",
@@ -17011,6 +18590,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "No todas las subtareas son solo greps. Puedes combinar greps con head/tail/sed cut. Recuerda: la ventana de líneas 4-8 (head -n 8 | tail -n +4) tras un grep es una técnica común.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "cuatro DEEP en medio de todo\ncinco marca DEEP\nseis el resilient DEEP\nsiete DEEP profundo: FLAG{d3b09a4f7c2e1b8d6041a5f3}\nocho DEEP en el final"
+      }
+    ],
     "steps": [
       {
         "raw": "head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'",
@@ -17084,6 +18669,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Combinar -A y -B en el mismo comando da la banda de interés personalizada; cuando necesitas uno ≠ otro, evita la -C simétrica.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "preludio 1\npreludio 2\npreludio 3\nMARCAR evento en el medio\npostludio única: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -B 3 -A 1 'MARCAR' /home/agent/flujo.log",
@@ -17131,6 +18722,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "grep -o patrón | wc -l es el conteo TOTAL de coincidencias (distinto de -c, que cuenta LÍNEAS). Es la diferencia crucial entre \"cuántas líneas\" y \"cuántas veces\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "6\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -o 'secret' /home/agent/testigos.log | wc -l",
@@ -17204,6 +18801,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El patrón [0-9]{4}-[0-9]{2}-[0-9]{2} extrae las fechas ISO. La gracia -o + {n} es reemplazar el «recortar con cut/awk» por directamente un regex experto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2022-04-15\n2019-02-01\n2024-11-20\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log",
@@ -17271,6 +18874,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El triple-encadenado es el trabajo diario de los ingenieros de logs: filtra, excluye el ruido, y añade una ancla de fecha. El resultado final limpio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2026-10-25 08:01 trig sin más\n2026-10-25 09:02 trig limpio\n2026-10-25 10:00 trig música de fondo\n2026-10-25 11:07 trig con la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "grep 'trig' /home/agent/tuna.log | grep -v 'noise' | grep -E '^2026-10-25'",
@@ -17340,6 +18949,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "-F es la FLAG de DELIMITADOR: sin él, awk asume espacios y tabs. Si tu data no va separada por espacios, este es el PRIMER paso. El $2 apunta SIEMPRE al segundo campo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "admin\nFLAG{d3b09a4f7c2e1b8d6041a5f3}\nlector\nadmin"
+      }
+    ],
     "steps": [
       {
         "raw": "awk -F: '{print $2}' /home/agent/roles.txt",
@@ -17392,6 +19007,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El caso clásico de awk: comparación numérica de columnas sin cut/while. La ACCIÓN por defecto ({ print $0 }) hace el trabajo de print total si no la processes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "mysql 800 15\npython 620 22\njava 1500 2 FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 > 500' /home/agent/procesos.dat",
@@ -17440,6 +19061,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El patrón {acumular} + END {imprimir} es el «streaming» de awk: procesas líneas en caché y inv'mas un sólo resultado. Tu código va HEAD (procesoMedia,NR) + TAIL (END).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "docs 100\nnight 50\nnights 250\nair 1250\nnotas 0 FLAG{d3b09a4f7c2e1b8d6041a5f3}\ntotal: 1650"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ s += $2; print $0 } END { print \"total:\", s }' /home/agent/ventas.dat",
@@ -17487,6 +19114,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Patrón «compara-guarda-imprime» de awk: una variable max y una id, y el campeón se anuncia en END. Sin sort y sin bucles: el streaming atiende por ti.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat",
@@ -17533,6 +19166,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "awk NR cuenta las líneas procesadas: NR == 7 es un selector directo. Ante archivos enormes, es más rápido que sed -n 7p.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "línea-7 al adicion: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'NR == 7' /home/agent/lineas.log",
@@ -17579,6 +19218,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Con la doble condición en NR puedes reproducir el «sed -n 4,6p» con awk. Nota que el RANGO INCLUIVE ambos extremos (>= y <=).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "línea 4: humo\nlínea-5: el dato FLAG{d3b09a4f7c2e1b8d6041a5f3}\nlínea 6: humo"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'NR >= 4 && NR <= 6' /home/agent/escenas.log",
@@ -17626,6 +19271,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Confundir length($x) con la función length(). La combinación de length() + un regex con clases y ^$ es la forma robusta de validar un formato de CAMPO en awk (incluye mawk que no garantiza {32}).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "user-a 5f4dcc3b5aa765d61d8327deb882cf99\nuser-c 1234567890abcdef1234567890abcdef FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'length($2) == 32 && $2 ~ /^[0-9a-f]+$/' /home/agent/hashes.log",
@@ -17673,6 +19324,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En awk, if dentro de una acción con llaves acumula el «tope» y guarda una copia de la línea todas las vezes que mejora. END imprime al final.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line }' /home/agent/dumpe.log",
@@ -17721,6 +19378,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "substr(texto, inicio, longitud) corta CUALQUIER texto, por posición y tamaño. Combinando con length() puedes extraer «el final» solar de cualquier longitud.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "5b6a7980\nkkfeed\n90abcdef\n041a5f3}\ndani FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log",
@@ -17778,6 +19441,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "index(texto, subc) busca la posición 1-based de subc dentro de texto. Devuelve 0 si no aparece. Es la herramienta que awk da para «¿dónde está?» sin regex.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "un texto con MARK al medio\nMARK al principio directamente\nel token MARK esconde: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'index($0, \"MARK\")' /home/agent/posiciones.txt",
@@ -17824,6 +19493,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "split() separa una cadena en elementos ARRAY. Es útil cuando el delimitador varía por línea. Sin embargo, awk ya lo haga con $N… split y la ruta manual son m's comunes en el contexto actual.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "item-a\nFLAG{d3b09a4f7c2e1b8d6041a5f3}\nitem-c"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat",
@@ -17870,6 +19545,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sub(regex, valor) cambia la PRIMERA coincidencia. Es la awk-equivalencia de sed s/…/…/ (1 vez). Usela cuando ya hay awk: así evitas una tubería adicional.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "mail_dominio.presto.es\nweb_dominio.secundaria.es\notro_dato.con.puntos: FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ sub(/\\./, \"_\"); print }' /home/agent/dominios.txt",
@@ -17917,6 +19598,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "gsub(regex, valor) es la sustitución GLOBAL: cambia TODAS las coincidencias. Puedes usar la situación para formatear la línea entera $0 sin extra print (sólo el print default).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "palabra con varios espacios\notra línea con dos separaciones\nla marca: FLAG{d3b09a4f7c2e1b8d6041a5f3} con espacios después"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ gsub(/[ ]+/, \" \"); print }' /home/agent/ruido.txt",
@@ -17964,6 +19651,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "printf es C-style: imprime con formato; cada %obras substituye un argumento. Es la salida del awk, SIN salto automático (necesita \\n). Uso disponible para formatear la tabla ( %-6s, %.2f, %-8s etc).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "lat    12.35\nlon    -70.42\nalt    0.50\ntemp   23.00\nxco    0.00\nxco FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ printf \"%-6s %.2f\\n\", $1, $2 }' /home/agent/metrica.dat",
@@ -18021,6 +19714,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "sprintf es printf pero en texto: devuelve el valor en lugar de imprimir. Cumple con el patrón AWK-FORMATO-ACUMULAR-PRINTAR.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "alpha=FLAG{d3b09a4f7c2e1b8d6041a5f3};beta=2;gamma=3;alpha=10;"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ t = t sprintf(\"%s=%s;\", $1, $2) } END { print t }' /home/agent/informe.lst",
@@ -18067,6 +19766,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El bloque BEGIN se ejecuta UNA VEZ antes de processar líneas: ahí se inicializa FS (separador), OFS, variables, etc. Es la manera correcta cuando el separador es fijo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "1\nFLAG{d3b09a4f7c2e1b8d6041a5f3}\n3"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'BEGIN { FS = \";\" } { print $2 }' /home/agent/datos.dat",
@@ -18114,6 +19819,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "En awk los campos $N se pueden impresar en CUALQUIER orden: no hay que reordenar el fichero. El separador de cada WORKING fue el que manualmente se case: si print con comas, awk separa con OFS (por defecto, espacio).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "tres|uno|cinco\ntres|uno|cinco\ntres|uno|FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ print $3 \"|\" $1 \"|\" $5 }' /home/agent/amplio.dat",
@@ -18162,6 +19873,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Los ARRAYS de awk (a[$1]++) mapean arbitrary (numéricos o strings). El bucle for (k in arr) itera TODAS las CLAVES. Es el histograma más corto de escribir.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "10.0.0.1 3\n10.0.0.2 2\n10.0.0.3 1\n10.0.0.2 FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ a[$1]++ } END { for (k in a) print k, a[k] }' /home/agent/hits.log",
@@ -18220,6 +19937,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El idiom !a[k]++ es el revisor universal de duplicados: sin sort -u ni awk for-loop. Mantiene el ORDEN de llegada (a diferencia de sort -u).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "a\nb\nc\nd\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '!a[$0]++' /home/agent/revisados.lst",
@@ -18267,6 +19990,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Cuando awk recibe DOS ficheros, FNR == NR es el patrón deIGNORE \"estoy en el primero\". En NEXT hay que saltar el procesos restos. El patrón: primero llenar un índice y en el segundo, consultar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "101 evento del agent\n103 evento del usuario FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'FNR == NR { a[$1]; next } $1 in a' /home/agent/ids.txt /home/agent/eventos.log",
@@ -18300,7 +20029,7 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     ],
     "hints": [
       "match(s, /regex/) busca el regex en s y LLENA RSTART y RLENGTH.",
-      "awk extra con substr(\"$0, RSTART, RLENGTH) obtiene el texto casado.",
+      "awk extra con substr($0, RSTART, RLENGTH) obtiene el texto casado.",
       "awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }' /home/agent/fragments.dat"
     ],
     "cheatsheet": [
@@ -18314,6 +20043,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "match(s, /regex/) llena RSTART/RLENGTH. Es lo que awk hace comparable a grep -o. Especificar las llaves ([{], [}]) ARGUMENTES para no escape it inside class char.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{abc123}\nFLAG{zz}\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'match($0, /FLAG[{][^}]*[}]/) { print substr($0, RSTART, RLENGTH) }' /home/agent/fragments.dat",
@@ -18361,6 +20096,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "La condición de awk solo deja pasar las líneas que casan; la ACCIÓN puede hacer varias cosas (imprimir + acumular) y END cierra con el total. Filtro y cálculo en una línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "guardo 10\nguardo 30\nguardo 50 FLAG{d3b09a4f7c2e1b8d6041a5f3}\ntotal: 90"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '$1 == \"guardo\" { print $0; total += $2 } END { print \"total:\", total }' /home/agent/entregas.dat",
@@ -18408,6 +20149,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "Promedio = acumular + contar + dividir en END. awk yprintf están. YOUR atajo aquí son las variables NR (contadores) y tot (sum).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "a 4\nb 8\nc 6\nd FLAG{d3b09a4f7c2e1b8d6041a5f3}\nmedia: 4.50"
+      }
+    ],
     "steps": [
       {
         "raw": "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }' /home/agent/puntajes.lst",
@@ -18457,6 +20204,12 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "teach": "El boss de awk envuelve el \"SQL del shell\": un join (fichero de índices + consulta), un FILTRO NEGADO (NO está en la lista) y la SUMA con END. Es el patrón más potente en awk en un único comando.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "admin 5000\nmanager 6000 FLAG{d3b09a4f7c2e1b8d6041a5f3}\ntotal: 11000"
+      }
+    ],
     "steps": [
       {
         "raw": "awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total }' /home/agent/blacklist.txt /home/agent/pagos.dat",

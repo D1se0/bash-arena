@@ -5,37 +5,50 @@ subtitle: regex extendida
 xp: 45
 difficulty: 2
 brief: >
-  El operador trimó la flag entre paréntesis y corchetes, paralelo a un
-  montón de textos de relleno. La regex es la herramienta del detective.
+  El operador trimó la flag entre paréntesis y corchetes, paralelo a un montón
+  de textos de relleno. La regex es la herramienta del detective.
 goal: >
   En /var/dojo/correspondencia.txt cada línea es una frase. La única que
-  contiene FLAG{ seguido de hex y } es la buena. Extrae SOLO la parte
-  FLAG{...} (sin el resto de la frase) usando grep -oE.
-setup: |
+  contiene FLAG{ seguido de hex y } es la buena. Extrae SOLO la parte FLAG{...}
+  (sin el resto de la frase) usando grep -oE.
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 03" "Búsqueda"
+
   {
     printf 'Querido_BIT: la carta llegue a manos del sysop lo antes posible.\\n'
     printf 'PS. lo nuestro queda entre nosotros y el disco duro.\\n'
     printf 'Recordatorio:_pw es: (FLAG{%s}) revisarla sin microcats.\\n' "$DOJO_FLAG"
     printf 'Saludos cordiales a todo el staff del dojo.\\n'
   } > /var/dojo/correspondencia.txt
+
   chown agent:agent /var/dojo/correspondencia.txt
 hints:
-  - "grep -oE imprime SOLO la parte que casa con la regex (no la línea entera)."
-  - 'Regex: FLAG\{[0-9a-f]{24}\}  (escapa la llave con barra invertida).'
+  - grep -oE imprime SOLO la parte que casa con la regex (no la línea entera).
+  - "Regex: FLAG\\{[0-9a-f]{24}\\}  (escapa la llave con barra invertida)."
 teach: >
-  `-E` activa regex extendida: {24} significa «24 repeticiones»,
-  [0-9a-f] es la clase de dígitos hex. `-o` (only-matching) imprime únicamente el
-  match: perfecto para extraer datos.
+  `-E` activa regex extendida: {24} significa «24 repeticiones», [0-9a-f] es la
+  clase de dígitos hex. `-o` (only-matching) imprime únicamente el match:
+  perfecto para extraer datos.
 cheatsheet:
-  - {cmd: 'grep -oE "regex" f', desc: solo muestra la parte que casa}
-  - {cmd: 'grep -E "a{2,4}"', desc: límites de repetición}
-  - {cmd: 'grep "\\[ficheros\\]"', desc: escapar especiales con barra invertida}
+  - cmd: grep -oE "regex" f
+    desc: solo muestra la parte que casa
+  - cmd: grep -E "a{2,4}"
+    desc: límites de repetición
+  - cmd: grep "\\[ficheros\\]"
+    desc: escapar especiales con barra invertida
 solution: |
   grep -oE 'FLAG\{[0-9a-f]+\}' /var/dojo/correspondencia.txt
-
-keywords: [grep, regex, -oE]
+keywords:
+  - grep
+  - regex
+  - -oE
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

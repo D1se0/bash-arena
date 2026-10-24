@@ -5,8 +5,8 @@ title: La fila 37
 subtitle: "awk NR: fila concreta"
 xp: 40
 difficulty: 2
-brief: "El registro de lecturas lleva 42 filas de calma. La 37 guarda la lectura crítica:
-  awk sabe dirigirse directo a ella con NR."
+brief: "El registro de lecturas lleva 42 filas de calma. La 37 guarda la lectura
+  crítica: awk sabe dirigirse directo a ella con NR."
 goal: Imprime únicamente la línea 37 del registro lecturas.txt.
 setup: >
   #!/bin/bash
@@ -24,8 +24,8 @@ hints:
   - NR es el número de la línea que awk va procesando (empieza en 1).
   - NR == 37 imprime la 37.ª línea y nada más.
   - awk 'NR == 37 {print}' /home/agent/lecturas.txt
-teach: "awk cuenta líneas con NR: puedes seleccionar filas concretas (NR==37), rangos
-  (NR>=2 && NR<=5) o pares (NR%2==0) sin tocar nada más."
+teach: "awk cuenta líneas con NR: puedes seleccionar filas concretas (NR==37),
+  rangos (NR>=2 && NR<=5) o pares (NR%2==0) sin tocar nada más."
 cheatsheet:
   - cmd: awk 'NR <= 5' f
     desc: las 5 primeras líneas
@@ -36,3 +36,6 @@ keywords:
   - NR
   - línea
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "lectura 37: pico FLAG{d3b09a4f7c2e1b8d6041a5f3}"

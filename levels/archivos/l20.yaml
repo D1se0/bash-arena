@@ -1,31 +1,34 @@
 id: archivos-l20
 track: archivos
 index: 20
-title: "Los gemelos del estante"
+title: Los gemelos del estante
 subtitle: "md5sum + uniq: invariantes"
 xp: 55
 difficulty: 4
 brief: >
-  > En el estante "estante" hay pila de ficheros; dos son IDÉNTICOS byte a
-  > byte (mismo contenido), y solo uno de LOS DOS lleva la contrapartida
-  > dentro. Regla de la casa: los gemelos comparten huella MD5; una vez
-  > detectados, "el de la izquierda" (alfabéticamente primero) es el bueno.
+  > En el estante "estante" hay pila de ficheros; dos son IDÉNTICOS byte a >
+  byte (mismo contenido), y solo uno de LOS DOS lleva la contrapartida > dentro.
+  Regla de la casa: los gemelos comparten huella MD5; una vez > detectados, "el
+  de la izquierda" (alfabéticamente primero) es el bueno.
 goal: >
-  Detecta la huella md5 duplicada en ~/estante usando md5sum + sort + uniq, y muestra el contenido del fichero duplicado (que es el que lleva la flag).
+  Detecta la huella md5 duplicada en ~/estante usando md5sum + sort + uniq, y
+  muestra el contenido del fichero duplicado (que es el que lleva la flag).
 hints:
-  - "md5sum fichero imprime \"hash fichero\"."
-  - "md5sum ~/estante/* | sort | uniq -D -w32 agrupa por los 32 primeros caracteres (el hash)."
-  - "La línea duplicada contiene el nombre del fichero con la flag: cat ese fichero."
+  - md5sum fichero imprime "hash fichero".
+  - md5sum ~/estante/* | sort | uniq -D -w32 agrupa por los 32 primeros
+    caracteres (el hash).
+  - "La línea duplicada contiene el nombre del fichero con la flag: cat ese
+    fichero."
 teach: >
   Los ficheros idénticos comparten hash MD5. Se listan las huellas y se agrupan:
-  
+
       md5sum ~/estante/*           # "hash  fichero" por fichero
       | sort                       # adyacentes las iguales
       | uniq -D -w32               # muestra TODAS las filas con igual hash (32 chars)
-  
+
   extract: los nombres duplicados; el que contiene la flag es el alfabético
   primero de los gemelos:
-  
+
       md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat
 setup: |
   #!/bin/bash
@@ -40,12 +43,18 @@ setup: |
   printf '%s' "$flag" > /home/agent/estante/j_joya_temprana.txt
   printf '%s' "$flag" > /home/agent/estante/k_joya_tardia.txt
   chown -R agent:agent /home/agent/estante
-solution: |
-  md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat
+solution: >
+  md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}'
+  | xargs cat
 cheatsheet:
-  - {cmd: "md5sum FICHEROS", desc: "huella MD5 de cada fichero"}
-  - {cmd: "uniq -D -w32", desc: "agrupa por los 32 primeros caracteres"}
+  - cmd: md5sum FICHEROS
+    desc: huella MD5 de cada fichero
+  - cmd: uniq -D -w32
+    desc: agrupa por los 32 primeros caracteres
 keywords:
-  - "md5sum"
-  - "uniq"
+  - md5sum
+  - uniq
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

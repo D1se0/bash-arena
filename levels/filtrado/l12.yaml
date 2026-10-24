@@ -5,10 +5,10 @@ title: Basura de Windows
 subtitle: "tr: limpiar CR y espacios repetidos"
 xp: 45
 difficulty: 3
-brief: Un fichero importado de Windows trae retornos de carro (\\r) y espacios dobles; la línea de
-  la clave está enterrada ahí, deformada.
-goal: Limpia /home/agent/importado.txt (quita \\r y comprime espacios múltiples a uno) y muestra la
-  línea de la clave.
+brief: Un fichero importado de Windows trae retornos de carro (\\r) y espacios
+  dobles; la línea de la clave está enterrada ahí, deformada.
+goal: Limpia /home/agent/importado.txt (quita \\r y comprime espacios múltiples
+  a uno) y muestra la línea de la clave.
 setup: >-
   #!/bin/bash
 
@@ -25,8 +25,9 @@ hints:
   - La \\r (retorno de carro de Windows) se borra con tr -d '\\r'.
   - tr -s ' ' aprieta las repeticiones del espacio a una sola.
   - tr -d '\\r' < importado.txt | tr -s ' ' | grep clave
-teach: "tr traduce o borra caracteres de stdin: -d borra, -s comprime repeticiones. Normalizar la
-  entrada (CRLF, espacios, mayúsculas) antes de filtrar evita falsos negativos."
+teach: "tr traduce o borra caracteres de stdin: -d borra, -s comprime
+  repeticiones. Normalizar la entrada (CRLF, espacios, mayúsculas) antes de
+  filtrar evita falsos negativos."
 cheatsheet:
   - cmd: tr -d '\\r'
     desc: borra retorno de carro
@@ -37,3 +38,6 @@ keywords:
   - CRLF
   - normalizar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "clave maestra: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

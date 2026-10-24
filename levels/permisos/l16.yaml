@@ -5,9 +5,10 @@ title: El espejo sin ventana
 subtitle: "chmod u+r: escribir sin leer"
 xp: 45
 difficulty: 3
-brief: "llave.txt es -w- para ti: puedes escribir, no leer (raro, pero es el buen test de bits). Dá
-  por transferérse la lectura y místralo."
-goal: Restaura los permisos de /home/agent/caja-negra/llave.txt (dueño puede leer) y muéstralo.
+brief: "llave.txt es -w- para ti: puedes escribir, no leer (raro, pero es el
+  buen test de bits). Dá por transferérse la lectura y místralo."
+goal: Restaura los permisos de /home/agent/caja-negra/llave.txt (dueño puede
+  leer) y muéstralo.
 setup: |-
   #!/bin/bash
   set -e
@@ -17,13 +18,14 @@ setup: |-
   chmod 200 /home/agent/caja-negra/llave.txt
   chown agent:agent /home/agent/caja-negra/llave.txt
   chown -R agent:agent /home/agent
-solution: chmod 644 /home/agent/caja-negra/llave.txt && cat /home/agent/caja-negra/llave.txt
+solution: chmod 644 /home/agent/caja-negra/llave.txt && cat
+  /home/agent/caja-negra/llave.txt
 hints:
   - chmod 644 = dueño r+w (4+2), grupo y otros r (4).
   - "Es tu fichero: puedes cambiar los permisos libremente."
   - chmod 644 f && cat f
-teach: "w sin r es un modo aníritu: como dueño puedes autocorregirte. chown SIEMPRE requiere root —
-  chmod no. La cuadrícula octal: 4=r, 2=w, 1=x."
+teach: "w sin r es un modo aníritu: como dueño puedes autocorregirte. chown
+  SIEMPRE requiere root — chmod no. La cuadrícula octal: 4=r, 2=w, 1=x."
 cheatsheet:
   - cmd: stat -c %a f
     desc: permisos en octal
@@ -34,3 +36,6 @@ keywords:
   - octal
   - dueño
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "la llave de espejo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,10 +5,10 @@ title: El bloque de la copia
 subtitle: sed -n con rango de patrones
 xp: 45
 difficulty: 3
-brief: inventario.txt es un registro largo. Entre las líneas del inciso COPIA-INTERNA y FIN-COPIA
-  escondió la marca.
-goal: Imprime solo el bloque entre COPIA-INTERNA y FIN-COPIA de /home/agent/inventario.txt y extrae
-  la marca.
+brief: inventario.txt es un registro largo. Entre las líneas del inciso
+  COPIA-INTERNA y FIN-COPIA escondió la marca.
+goal: Imprime solo el bloque entre COPIA-INTERNA y FIN-COPIA de
+  /home/agent/inventario.txt y extrae la marca.
 setup: |-
   #!/bin/bash
   set -e
@@ -23,13 +23,17 @@ setup: |-
   } > /home/agent/inventario.txt
   chown agent:agent /home/agent/inventario.txt
   chown -R agent:agent /home/agent
-solution: sed -n '/COPIA-INTERNA/,/FIN-COPIA/p' /home/agent/inventario.txt | grep -oE 'FLAG\{[a-f0-9]+\}'
+solution: sed -n '/COPIA-INTERNA/,/FIN-COPIA/p' /home/agent/inventario.txt |
+  grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
-  - sed -n '/inicio/,/fin/p' imprime el rango entre ambos patrones (el -n silencia el resto).
-  - El bloque incluye las delimitadoras; grep -oE con la forma de la marca limpia todo.
+  - sed -n '/inicio/,/fin/p' imprime el rango entre ambos patrones (el -n
+    silencia el resto).
+  - El bloque incluye las delimitadoras; grep -oE con la forma de la marca
+    limpia todo.
   - sed -n '/COPIA/,/FIN/p' f | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: El rango de patrones de sed es la "zona de interés en extracto":/logs de configuración con
-  bloques BEGIN/END son su habitat natural. awk entre triviales /pat/,/pat/ hace lo mismo con gsub…
+teach: El rango de patrones de sed es la "zona de interés en extracto":/logs de
+  configuración con bloques BEGIN/END son su habitat natural. awk entre
+  triviales /pat/,/pat/ hace lo mismo con gsub…
 cheatsheet:
   - cmd: sed -n '/a/,/b/p' f
     desc: rango a→b
@@ -40,3 +44,6 @@ keywords:
   - rango
   - bloque
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

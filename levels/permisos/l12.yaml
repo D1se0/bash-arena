@@ -5,39 +5,63 @@ title: Corrección masiva
 subtitle: chmod -R y la X mayúscula
 xp: 55
 difficulty: 4
-brief: cadena/ es un árbol de scripts donde TODOS perdieron el permiso de ejecución. La restauración
-  es recursiva.
-goal: Devuelve ejecución al dueño en TODO el árbol de /home/agent/cadena y ejecuta el último paso.
-setup: |-
+brief: cadena/ es un árbol de scripts donde TODOS perdieron el permiso de
+  ejecución. La restauración es recursiva.
+goal: Devuelve ejecución al dueño en TODO el árbol de /home/agent/cadena y
+  ejecuta el último paso.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 12" "Permisos"
+
   mkdir -p /home/agent/cadena/paso1/paso2/paso3
-  echo "cadena completa: $DOJO_FLAG" > /home/agent/cadena/paso1/paso2/paso3/final.sh
+
+  echo "cadena completa: $DOJO_FLAG" >
+  /home/agent/cadena/paso1/paso2/paso3/final.sh
+
   cat > /home/agent/cadena/paso1/a.sh <<FIN
+
   #!/bin/bash
+
   echo "eslabon 1 ok"
+
   FIN
+
   cat > /home/agent/cadena/paso1/paso2/b.sh <<FIN
+
   #!/bin/bash
+
   echo "eslabon 2 ok"
+
   FIN
+
   cat > /home/agent/cadena/paso1/paso2/paso3/final.sh <<FIN
+
   #!/bin/bash
+
   echo "eslabon 3"
+
   FIN
-  echo "fin realmente: $DOJO_FLAG" > /home/agent/cadena/paso1/paso2/paso3/realfinal.txt
+
+  echo "fin realmente: $DOJO_FLAG" >
+  /home/agent/cadena/paso1/paso2/paso3/realfinal.txt
+
   chown -R agent:agent /home/agent/cadena
+
   chmod -R u-x /home/agent/cadena
-solution: chmod -R u+x /home/agent/cadena && /home/agent/cadena/paso1/paso2/paso3/final.sh; cat
+solution: chmod -R u+x /home/agent/cadena &&
+  /home/agent/cadena/paso1/paso2/paso3/final.sh; cat
   /home/agent/cadena/paso1/paso2/paso3/realfinal.txt
 hints:
   - chmod -R recorre el árbol entero.
-  - "Distingue: +x lo da a TODO fichero; +X (mayúscula) solo a directorios y ficheros ya
-    ejecutables."
+  - "Distingue: +x lo da a TODO fichero; +X (mayúscula) solo a directorios y
+    ficheros ya ejecutables."
   - chmod -R u+x cadena && ./cadena/paso1/paso2/paso3/final.sh
-teach: "chmod -R es la restauración en bloque de un árbol maltratado. +X (mayúscula) es la variante
-  fina: x solo en directorios y en los ficheros que YA la tenían."
+teach: "chmod -R es la restauración en bloque de un árbol maltratado. +X
+  (mayúscula) es la variante fina: x solo en directorios y en los ficheros que
+  YA la tenían."
 cheatsheet:
   - cmd: chmod -R u+x d
     desc: recursivo para el dueño
@@ -48,3 +72,8 @@ keywords:
   - arbol
   - script
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      eslabon 3
+      fin realmente: FLAG{d3b09a4f7c2e1b8d6041a5f3}

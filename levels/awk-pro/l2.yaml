@@ -5,8 +5,8 @@ title: Umbral sobre columna
 subtitle: "awk $2 > N: filtro numérico"
 xp: 60
 difficulty: 4
-brief: El fichero procesos.dat trae usuario, memoria (MB), cpu. Son procesos de la columna
-  memoria los CRÍTICOS.
+brief: El fichero procesos.dat trae usuario, memoria (MB), cpu. Son procesos de
+  la columna memoria los CRÍTICOS.
 goal: De procesos.dat, imprime las líneas cuya segunda columna (memoria) supere 500.
 setup: |
   #!/bin/bash
@@ -25,10 +25,12 @@ setup: |
 solution: awk '$2 > 500' /home/agent/procesos.dat
 hints:
   - "awk compara NUMÉRICAMENTE si ambos operandos son numéricos: $2 > 500."
-  - "No necesitas un if: la CONDICIÓN sola (sin acción) imprime la LÍNEA COMPLETA."
+  - "No necesitas un if: la CONDICIÓN sola (sin acción) imprime la LÍNEA
+    COMPLETA."
   - awk '$2 > 500' /home/agent/procesos.dat
-teach: "El caso clásico de awk: comparación numérica de columnas sin cut/while. La ACCIÓN
-  por defecto ({ print $0 }) hace el trabajo de print total si no la processes."
+teach: "El caso clásico de awk: comparación numérica de columnas sin cut/while.
+  La ACCIÓN por defecto ({ print $0 }) hace el trabajo de print total si no la
+  processes."
 cheatsheet:
   - cmd: awk '$2 > 500' f
     desc: líneas con col. 2 > 500
@@ -40,3 +42,9 @@ keywords:
   - numérico
   - filtro
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      mysql 800 15
+      python 620 22
+      java 1500 2 FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,9 +5,10 @@ title: El intruso en el log
 subtitle: grep en sucesos.log
 xp: 45
 difficulty: 3
-brief: 'un caso: en sucesos.log se registra un "intruso" con su clave entre colegas legales y ruido
-  administrativo.'
-goal: Localiza en /home/agent/sucesos.log la línea del intruso y extrae de ella solo la FLAG que aparece.
+brief: 'un caso: en sucesos.log se registra un "intruso" con su clave entre
+  colegas legales y ruido administrativo.'
+goal: Localiza en /home/agent/sucesos.log la línea del intruso y extrae de ella
+  solo la FLAG que aparece.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +26,9 @@ hints:
   - Primero grep intruso sucesos.log para leer el contexto.
   - "Luego te queda SOLO la flag: grep -oE FLAG con la clase [^}]*"
   - grep intruso sucesos.log | grep -oE 'FLAG\{[^}]*\}'
-teach: "La revisión de logs con grep en dos fases: primero identifica al actor sospechoso, después
-  extrae el trozo exacto con la clase [^}]*. Leer primero y extraer después reduce el ruido a cero."
+teach: "La revisión de logs con grep en dos fases: primero identifica al actor
+  sospechoso, después extrae el trozo exacto con la clase [^}]*. Leer primero y
+  extraer después reduce el ruido a cero."
 cheatsheet:
   - cmd: grep 'actor' f | grep -oE 'x'
     desc: actor + extraer
@@ -38,3 +40,6 @@ keywords:
   - intruso
   - sucesos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,10 +5,10 @@ title: Índice triangular
 subtitle: arrays de bash
 xp: 45
 difficulty: 3
-brief: "El monstruo de ~/almenas ordena sus marcas por posición: la del índice 2 (el tercero de la
-  lista ordenada) es la buena."
-goal: Carga el contenido de /home/agent/almenas en un array ordenado y muestra el elemento de índice
-  2 con su contenido.
+brief: "El monstruo de ~/almenas ordena sus marcas por posición: la del índice 2
+  (el tercero de la lista ordenada) es la buena."
+goal: Carga el contenido de /home/agent/almenas en un array ordenado y muestra
+  el elemento de índice 2 con su contenido.
 setup: |-
   #!/bin/bash
   set -e
@@ -19,13 +19,15 @@ setup: |-
   echo "marca gamma: $DOJO_FLAG" > /home/agent/almenas/3-gamma.txt
   echo "marca delta: nada" > /home/agent/almenas/4-delta.txt
   chown -R agent:agent /home/agent
-solution: arr=($(ls /home/agent/almenas)); echo "${arr[2]}"; cat "/home/agent/almenas/${arr[2]}"
+solution: arr=($(ls /home/agent/almenas)); echo "${arr[2]}"; cat
+  "/home/agent/almenas/${arr[2]}"
 hints:
   - "Los arrays en bash empiezan en 0: arr[2] es el TERCER miembro de la lista."
   - Con ls ordenado alfabético 1-alfa…4-delta, el tercero es 3-gamma.
   - arr=($(ls /home/agent/almenas)); echo "${arr[2]}"
-teach: "Bash nace de Savoy arrays: arr=(...) crea, ${arr[0]} lee el PRIMER elemento y ${#arr[@]}
-  cuenta. Los índices empiezan si en 0, y la expansión entre comillas evita split por espacios."
+teach: "Bash nace de Savoy arrays: arr=(...) crea, ${arr[0]} lee el PRIMER
+  elemento y ${#arr[@]} cuenta. Los índices empiezan si en 0, y la expansión
+  entre comillas evita split por espacios."
 cheatsheet:
   - cmd: arr=(a b c)
     desc: constructor de array
@@ -36,3 +38,8 @@ keywords:
   - bash
   - indice
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      3-gamma.txt
+      marca gamma: FLAG{d3b09a4f7c2e1b8d6041a5f3}

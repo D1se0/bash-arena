@@ -5,9 +5,10 @@ title: La cadena de enlaces
 subtitle: "readlink -f: llegar al real"
 xp: 40
 difficulty: 2
-brief: acceso es un enlace simbólico que conduce (a través de otro enlace) al fichero real con la
-  clave. Los decoys pululan.
-goal: Resuelve la cadena de enlaces de /home/agent/acceso (real f) y muestra el fichero REAL.
+brief: acceso es un enlace simbólico que conduce (a través de otro enlace) al
+  fichero real con la clave. Los decoys pululan.
+goal: Resuelve la cadena de enlaces de /home/agent/acceso (real f) y muestra el
+  fichero REAL.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +26,9 @@ hints:
   - ls -l muestra las flechas -> de cada enlace.
   - readlink -f RUTA resuelve TODA la cadena hasta el fichero real.
   - cat $(readlink -f acceso)
-teach: "Un enlace simbólico es un puntero textual que se resuelve al abrir. readlink -f desmonta la
-  cadena entera: útil para scripts (no te fies del nombre del fichero que recibes)."
+teach: "Un enlace simbólico es un puntero textual que se resuelve al abrir.
+  readlink -f desmonta la cadena entera: útil para scripts (no te fies del
+  nombre del fichero que recibes)."
 cheatsheet:
   - cmd: readlink -f ruta
     desc: ruta real del enlace
@@ -37,3 +39,6 @@ keywords:
   - symlink
   - readlink
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "el auténtico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

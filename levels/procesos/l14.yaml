@@ -5,10 +5,10 @@ title: El tozudo
 subtitle: kill -9 cuando TERM no llega
 xp: 45
 difficulty: 3
-brief: 'Un proceso se protege del SIGTERM con trap "". La educacion aquí es inútl: hay que cortar
-  por lo sanos.KILL.'
-goal: Termina con SIGKILL el proceso cuyo PID está en /tmp/quisquilla.pid y confirma leyendo
-  /tmp/manifesto.txt.
+brief: 'Un proceso se protege del SIGTERM con trap "". La educacion aquí es
+  inútl: hay que cortar por lo sanos.KILL.'
+goal: Termina con SIGKILL el proceso cuyo PID está en /tmp/quisquilla.pid y
+  confirma leyendo /tmp/manifesto.txt.
 setup: |-
   #!/bin/bash
   set -e
@@ -27,11 +27,14 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: kill -9 $(cat /tmp/quisquilla.pid); cat /tmp/manifesto.txt
 hints:
-  - trap "TERM" hace al proceso inmune al SIGTERM; hasta un SIGKILL (kill -9) no refunfuna.
-  - kill -9 $(cat /tmp/quisquilla.pid) — el pidfile es la forma limpia de apuntar.
+  - trap "TERM" hace al proceso inmune al SIGTERM; hasta un SIGKILL (kill -9) no
+    refunfuna.
+  - kill -9 $(cat /tmp/quisquilla.pid) — el pidfile es la forma limpia de
+    apuntar.
   - kill -9 $(cat /tmp/quisquilla.pid); cat /tmp/manifesto.txt
-teach: 'SIGTERM es negociable (trap); SIGKILL es judicial: el kernel saca el proceso y TERMINA.
-  Nunca uses -9 de primeras: "a veces el trap es el que hace el backup".'
+teach: 'SIGTERM es negociable (trap); SIGKILL es judicial: el kernel saca el
+  proceso y TERMINA. Nunca uses -9 de primeras: "a veces el trap es el que hace
+  el backup".'
 cheatsheet:
   - cmd: kill -9 PID
     desc: SIGKILL, indetectable por trap
@@ -42,3 +45,6 @@ keywords:
   - SIGKILL
   - term
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "manifesto del tozudo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

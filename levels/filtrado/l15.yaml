@@ -5,8 +5,10 @@ title: El menor de todos
 subtitle: sort -n sobre números
 xp: 35
 difficulty: 2
-brief: cuenta.csv lista codigosnuméricos desordenados. La fila con el número más pequeño lleva la pieza.
-goal: Ordena numéricamente /home/agent/cuenta.csv y muestra la primera fila (el menor).
+brief: cuenta.csv lista codigosnuméricos desordenados. La fila con el número más
+  pequeño lleva la pieza.
+goal: Ordena numéricamente /home/agent/cuenta.csv y muestra la primera fila (el
+  menor).
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +27,8 @@ hints:
   - "sort sin flags ordena LEXICOGRÁFICAMENTE: 1500 quedará antes que 87."
   - sort -n compara la cabecera numérica de cada línea.
   - sort -n /home/agent/cuenta.csv | head -n1
-teach: 'sort -n ordena por valor numérico (sort -h entiende sufijos 2K/3M). Sin -n, "10" < "9": el
-  bug clásico de los informes mal ordenados.'
+teach: 'sort -n ordena por valor numérico (sort -h entiende sufijos 2K/3M). Sin
+  -n, "10" < "9": el bug clásico de los informes mal ordenados.'
 cheatsheet:
   - cmd: sort -n f
     desc: orden numérico
@@ -37,3 +39,6 @@ keywords:
   - numericos
   - head
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "3 nota: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

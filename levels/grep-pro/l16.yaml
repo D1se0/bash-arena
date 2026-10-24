@@ -5,29 +5,41 @@ title: Profundo, con filtro
 subtitle: grep -r --include
 xp: 70
 difficulty: 5
-brief: En árboles de muchos tipos de fichero, solo interesa CON los .log. Filtrálo por el
-  NOMBRE del fichero (no por contenido).
-goal: Del árbol incidentes/, muestra las líneas que contengan intrusión pero UNICAMENTE
-  entre los ficheros .log (a cualquier profundidad).
-setup: |
+brief: En árboles de muchos tipos de fichero, solo interesa CON los .log.
+  Filtrálo por el NOMBRE del fichero (no por contenido).
+goal: Del árbol incidentes/, muestra las líneas que contengan intrusión pero
+  UNICAMENTE entre los ficheros .log (a cualquier profundidad).
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 16" "Grep-Pro"
+
   mkdir -p /home/agent/incidentes/2026/10
+
   echo "intrusión detectada en oct" > /home/agent/incidentes/oct.log
+
   echo "intrusión en la sub carpeta" > /home/agent/incidentes/2026/10/evento.log
+
   echo "intrusión en el README" > /home/agent/incidentes/README.md
+
   echo "intrusión en el respaldo" > /home/agent/incidentes/oct.log.bak
+
   echo "intrusión en el py" > /home/agent/incidentes/dev.py
-  echo "intrusión registrada: $DOJO_FLAG" > /home/agent/incidentes/2026/10/tip.log
+
+  echo "intrusión registrada: $DOJO_FLAG" >
+  /home/agent/incidentes/2026/10/tip.log
+
   chown -R agent:agent /home/agent/incidentes
 solution: grep -r --include='*.log' 'intrusión' /home/agent/incidentes
 hints:
-  - --include="*.log" restringe la búsqueda recursiva a ese patrón de NOMBRE de fichero.
+  - --include="*.log" restringe la búsqueda recursiva a ese patrón de NOMBRE de
+    fichero.
   - --exclude="*.log.bak" descarta patrones específicos (excluye).
   - grep -r --include='*.log' 'intrusión' /home/agent/incidentes
-teach: En árboles grandes, --include/--exclude acotan por TIPO de fichero sin recurrir a
-  find. Trabajan sobre el NOMBRE, no el contenido.
+teach: En árboles grandes, --include/--exclude acotan por TIPO de fichero sin
+  recurrir a find. Trabajan sobre el NOMBRE, no el contenido.
 cheatsheet:
   - cmd: grep -r --include="*.log" p dir
     desc: solo ficheros .log
@@ -39,3 +51,12 @@ keywords:
   - --include
   - -r
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      /home/agent/incidentes/2026/10/evento.log:intrusión en la sub carpeta
+
+      /home/agent/incidentes/2026/10/tip.log:intrusión registrada:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+
+      /home/agent/incidentes/oct.log:intrusión detectada en oct

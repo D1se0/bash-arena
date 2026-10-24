@@ -23,8 +23,8 @@ hints:
   - "NR es el contador de línea leídas (1-based): NR == 7 selecciona esa."
   - Con solo la condición, awk imprime la LÍNEA entera por defecto.
   - awk 'NR == 7' /home/agent/lineas.log
-teach: "awk NR cuenta las líneas procesadas: NR == 7 es un selector directo. Ante archivos
-  enormes, es más rápido que sed -n 7p."
+teach: "awk NR cuenta las líneas procesadas: NR == 7 es un selector directo.
+  Ante archivos enormes, es más rápido que sed -n 7p."
 cheatsheet:
   - cmd: awk 'NR == 7' f
     desc: solo la línea 7
@@ -35,3 +35,6 @@ keywords:
   - NR
   - línea
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "línea-7 al adicion: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,37 +5,49 @@ subtitle: auth.log con ruido de fuerza bruta
 xp: 60
 difficulty: 3
 brief: >
-  Un ataque de fuerza bruta llenó el auth.log de fallos. Entre ellos
-  hay UNA entrada de "Nivel 2 autenticado" con la sesión del intruso:
-  su contraseña quedó registrada.
+  Un ataque de fuerza bruta llenó el auth.log de fallos. Entre ellos hay UNA
+  entrada de "Nivel 2 autenticado" con la sesión del intruso: su contraseña
+  quedó registrada.
 goal: >
-  En /var/log/auth-dojo.log, solo UNA línea es de acceso CONCEDIDO
-  (todas las demás son passwords de fallo). Filtra esa línea y
-  recupera la contraseña del intruso.
-setup: |
+  En /var/log/auth-dojo.log, solo UNA línea es de acceso CONCEDIDO (todas las
+  demás son passwords de fallo). Filtra esa línea y recupera la contraseña del
+  intruso.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 01" "Forense"
+
   {
     awk 'BEGIN{for(i=1;i<=480;i++) printf "(auth padlock) Attempt #d op cosine attempt: clave.pifia_%d\n", i}'
     printf '(auth okay) Session granted: user=ghost passwd=%s\n' "$DOJO_FLAG"
     awk 'BEGIN{for(i=481;i<=900;i++) printf "(auth padlock) Attempt #d o attempt: clave.pifia_%d\n", i}'
   } > /var/log/auth-dojo.log
+
   chown agent:agent /var/log/auth-dojo.log
 hints:
-  - "grep -v 'pifia' /var/log/auth-dojo.log descarta todo lo que no sea éxito."
+  - grep -v 'pifia' /var/log/auth-dojo.log descarta todo lo que no sea éxito.
   - "Alternativa: grep 'granted' /var/log/auth-dojo.log"
 teach: >
-  En logs de autenticación lo que importa es separar fallos de
-  éxitos: `grep -v` descarta (la forma amortiguada) y `grep texto`
-  localiza el patrón de interés — aquí la línea de sesión concedida.
-  Con `grep -c` entenderás el volumen de la fuerza bruta.
+  En logs de autenticación lo que importa es separar fallos de éxitos: `grep -v`
+  descarta (la forma amortiguada) y `grep texto` localiza el patrón de interés —
+  aquí la línea de sesión concedida. Con `grep -c` entenderás el volumen de la
+  fuerza bruta.
 cheatsheet:
-  - {cmd: 'grep patrón log', desc: deja solo líneas que casan}
-  - {cmd: 'grep -v patrón log', desc: descarta líneas que casan}
-  - {cmd: 'grep -c patrón log', desc: cuenta las coincidencias}
+  - cmd: grep patrón log
+    desc: deja solo líneas que casan
+  - cmd: grep -v patrón log
+    desc: descarta líneas que casan
+  - cmd: grep -c patrón log
+    desc: cuenta las coincidencias
 solution: |
   grep -v pifia /var/log/auth-dojo.log
-
-keywords: [grep, logs]
+keywords:
+  - grep
+  - logs
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "(auth okay) Session granted: user=ghost
+      passwd=FLAG{d3b09a4f7c2e1b8d6041a5f3}"

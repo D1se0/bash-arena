@@ -5,11 +5,11 @@ title: "Boss: la firma del operador"
 subtitle: "awk: doble filtro + acumulador + END"
 xp: 130
 difficulty: 5
-brief: "canal.txt trae eventos «id estado señal token». Solo los eventos con estado OK y
-  señal sig son firmas válidas: sus tokens unidos en orden componen la firma completa. El
-  resto son trampas de caso o estado."
-goal: Concatena de canal.txt los tokens (4.º campo) de las filas con estado OK (2.º campo)
-  y señal sig exacta (3.º campo), e imprime la firma completa.
+brief: "canal.txt trae eventos «id estado señal token». Solo los eventos con
+  estado OK y señal sig son firmas válidas: sus tokens unidos en orden componen
+  la firma completa. El resto son trampas de caso o estado."
+goal: Concatena de canal.txt los tokens (4.º campo) de las filas con estado OK
+  (2.º campo) y señal sig exacta (3.º campo), e imprime la firma completa.
 setup: |
   #!/bin/bash
   set -e
@@ -28,11 +28,13 @@ setup: |
 solution: awk '$2 == "OK" && $3 == "sig" {t = t $4} END {print t}' /home/agent/canal.txt
 hints:
   - Filtrar $2 == "OK" deja fuera los FAI y aviso de error.
-  - 'El 3.º campo debe ser EXACTO "sig": ni SIG ni ok minúscula estafan el estado.'
-  - awk '$2 == "OK" && $3 == "sig" {t = t $4} END {print t}' /home/agent/canal.txt
-teach: "El boss de awk es el oficio: dos filtros de campo (igualdad exacta) más acumulador
-  y END. Con esto ensamblas cualquier salida «señal repartida por un fichero» directo del
-  shell."
+  - 'El 3.º campo debe ser EXACTO "sig": ni SIG ni ok minúscula estafan el
+    estado.'
+  - awk '$2 == "OK" && $3 == "sig" {t = t $4} END {print t}'
+    /home/agent/canal.txt
+teach: "El boss de awk es el oficio: dos filtros de campo (igualdad exacta) más
+  acumulador y END. Con esto ensamblas cualquier salida «señal repartida por un
+  fichero» directo del shell."
 cheatsheet:
   - cmd: awk 'c1 && c2 {t = t $n} END {print t}' f
     desc: doble filtro + acumular
@@ -44,3 +46,6 @@ keywords:
   - filtro
   - acumulador
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

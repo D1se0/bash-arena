@@ -5,10 +5,10 @@ title: El visitante solitario
 subtitle: "uniq -c: contar repetidos"
 xp: 40
 difficulty: 3
-brief: "Un usuario accedió solo UNA vez al sistema: los demás repiten decenas de veces. El solitario
-  dejó su marca."
-goal: Encuentra la línea que aparece exactamente una vez en /home/agent/accesos.txt (tras quitar
-  repetidos) y muéstrala.
+brief: "Un usuario accedió solo UNA vez al sistema: los demás repiten decenas de
+  veces. El solitario dejó su marca."
+goal: Encuentra la línea que aparece exactamente una vez en
+  /home/agent/accesos.txt (tras quitar repetidos) y muéstrala.
 setup: >-
   #!/bin/bash
 
@@ -18,8 +18,8 @@ setup: >-
 
   i=1
 
-  while [ $i -le 31 ]; do echo "nova"; echo "fang"; echo "kali"; i=$((i+1)); done >
-  /home/agent/accesos.txt
+  while [ $i -le 31 ]; do echo "nova"; echo "fang"; echo "kali"; i=$((i+1));
+  done > /home/agent/accesos.txt
 
   echo "firma única: $DOJO_FLAG" >> /home/agent/accesos.txt
 
@@ -29,8 +29,9 @@ hints:
   - "uniq solo agrupa repetidos CONSECUTIVOS: antes pásalo por sort."
   - uniq -c antepone el contador a cada línea.
   - sort accesos.txt | uniq -c | grep " 1 "
-teach: "El tándem sort | uniq -c es la herramienta de frecuencias: cuenta cuántas veces aparece cada
-  valor. El contador ocupa la primera columna: úsalo para filtrar."
+teach: "El tándem sort | uniq -c es la herramienta de frecuencias: cuenta
+  cuántas veces aparece cada valor. El contador ocupa la primera columna: úsalo
+  para filtrar."
 cheatsheet:
   - cmd: sort f | uniq -c
     desc: cuenta repeticiones
@@ -41,3 +42,6 @@ keywords:
   - sort
   - frecuencia
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "      1 firma única: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

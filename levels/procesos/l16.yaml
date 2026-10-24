@@ -5,26 +5,37 @@ title: Quién manda
 subtitle: "PPID: el padre de un proceso"
 xp: 45
 difficulty: 3
-brief: "El proceso identificado en /tmp/pantalla.pid es el hijo. Su PADRE (el PID que lo engendró)
-  esconde la marca en su argv0."
-goal: Descubre el PADRE del proceso /tmp/pantalla.pid y muestra su línea de comando con ps.
-setup: |-
+brief: El proceso identificado en /tmp/pantalla.pid es el hijo. Su PADRE (el PID
+  que lo engendró) esconde la marca en su argv0.
+goal: Descubre el PADRE del proceso /tmp/pantalla.pid y muestra su línea de
+  comando con ps.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 16" "Procesos"
-  sudo -u agent bash -c "exec -a 'pantalla-$DOJO_FLAG' sleep 600" >/dev/null 2>&1 </dev/null &
+
+  sudo -u agent bash -c "exec -a 'pantalla-$DOJO_FLAG' sleep 600" >/dev/null
+  2>&1 </dev/null &
+
   sudo -u agent sleep 600 >/dev/null 2>&1 </dev/null &
+
   sleep 1
+
   PRIMARY=$(pgrep -u agent -f '^pantalla-' | head -n1)
+
   echo "$PRIMARY" > /tmp/pantalla.pid
+
   chown -R agent:agent /home/agent
 solution: pp=$(ps -o ppid= -p $(cat /tmp/pantalla.pid) | tr -d ' '); ps -o args= -p "$pp"
 hints:
   - ps -o ppid= -p PID imprime solo el PID del padre (el = quita la cabecera).
-  - "Con ese PPID, ps -o args= -p PADRE muestra el argv0 del padre: allí está la marca."
+  - "Con ese PPID, ps -o args= -p PADRE muestra el argv0 del padre: allí está la
+    marca."
   - pp=$(ps -o ppid= -p $(cat /tmp/pantalla.pid)); ps -o args= -p $pp
-teach: 'Cada proceso tiene PPID: usarlo es el modo de "¿quién lanzó esto?" — parentage forense
-  básico. ps -o ppid= y ps -o args= van de la mano.'
+teach: 'Cada proceso tiene PPID: usarlo es el modo de "¿quién lanzó esto?" —
+  parentage forense básico. ps -o ppid= y ps -o args= van de la mano.'
 cheatsheet:
   - cmd: ps -o ppid= -p PID
     desc: PID del padre
@@ -35,3 +46,7 @@ keywords:
   - ppid
   - padre
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: sudo -u agent bash -c exec -a 'pantalla-FLAG{d3b09a4f7c2e1b8d6041a5f3}'
+      sleep 600

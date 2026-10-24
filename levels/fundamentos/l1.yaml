@@ -5,18 +5,19 @@ subtitle: ls, cat y ficheros ocultos
 xp: 25
 difficulty: 1
 brief: >
-  Acabas de aterrizar en el dojo. Un instructor dejó algo en tu home…
-  pero discretamente. Los buenos agentes siempre revisan lo que no se ve.
+  Acabas de aterrizar en el dojo. Un instructor dejó algo en tu home… pero
+  discretamente. Los buenos agentes siempre revisan lo que no se ve.
 goal: >
-  Localiza el fichero oculto de tu home que contiene la flag y muéstrala en pantalla.
+  Localiza el fichero oculto de tu home que contiene la flag y muéstrala en
+  pantalla.
 hints:
   - "ls solo muestra lo visible: -a desvela lo oculto."
   - "El fichero empieza por punto: .secreto"
-  - "cat ~/.secreto lo imprime."
+  - cat ~/.secreto lo imprime.
 teach: >
-  `ls -a` muestra ficheros cuyo nombre empieza por `.` — ocultos para
-  `ls` normal. `cat` volca el contenido. Para explorar directorios usa
-  `pwd` (dónde estás) y `cd` (para moverte).
+  `ls -a` muestra ficheros cuyo nombre empieza por `.` — ocultos para `ls`
+  normal. `cat` volca el contenido. Para explorar directorios usa `pwd` (dónde
+  estás) y `cd` (para moverte).
 setup: |
   #!/bin/bash
   set -e
@@ -27,9 +28,19 @@ setup: |
 solution: |
   cat ~/.secreto
 cheatsheet:
-  - {cmd: ls, desc: lista ficheros del directorio actual}
-  - {cmd: ls -a, desc: incluye ocultos (los que empiezan por .)}
-  - {cmd: cat fichero, desc: muestra el contenido de un fichero}
-  - {cmd: pwd, desc: muestra tu ruta actual}
-keywords: [ls, cat, hidden]
+  - cmd: ls
+    desc: lista ficheros del directorio actual
+  - cmd: ls -a
+    desc: incluye ocultos (los que empiezan por .)
+  - cmd: cat fichero
+    desc: muestra el contenido de un fichero
+  - cmd: pwd
+    desc: muestra tu ruta actual
+keywords:
+  - ls
+  - cat
+  - hidden
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

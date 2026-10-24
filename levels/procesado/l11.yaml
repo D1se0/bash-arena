@@ -5,10 +5,10 @@ title: Partición de un gigante
 subtitle: split + grep en trozos
 xp: 50
 difficulty: 4
-brief: "grande.log es demasiado para editores: dividir por trozos y filtrar es más rápido que
-  abrirlo entero."
-goal: Divide grande.log en 5 trozos por líneas con prefijo trozo_ y muestra las líneas de la clave
-  entre todos.
+brief: "grande.log es demasiado para editores: dividir por trozos y filtrar es
+  más rápido que abrirlo entero."
+goal: Divide grande.log en 5 trozos por líneas con prefijo trozo_ y muestra las
+  líneas de la clave entre todos.
 setup: >-
   #!/bin/bash
 
@@ -29,8 +29,9 @@ hints:
   - "Hazlo en tu home: cd ~ antes de dividir (los trozos se quedan junto a ti)."
   - split -n l/5 divide en 5 trozos por líneas (sin romper líneas).
   - grep -h busca en los trozos sin mostrar el nombre de fichero.
-teach: "split trocea ficheros gigantes por tamaño (-b) o por líneas (-n l/K). Filtrar en trozos es
-  lo que hacen las herramientas de streaming: menos memoria, más paralelismo."
+teach: "split trocea ficheros gigantes por tamaño (-b) o por líneas (-n l/K).
+  Filtrar en trozos es lo que hacen las herramientas de streaming: menos
+  memoria, más paralelismo."
 cheatsheet:
   - cmd: split -n l/5 f pre_
     desc: cinco trozos por líneas
@@ -41,3 +42,6 @@ keywords:
   - grande.log
   - trozo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "linea 333 ancla: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

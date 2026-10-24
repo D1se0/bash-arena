@@ -5,10 +5,10 @@ title: La cadena de pasos
 subtitle: "&&, || y códigos de salida"
 xp: 50
 difficulty: 3
-brief: "Los pasos corren en orden: solo si el paso1 pasa (exit 0), el paso2 corre y entrega la
-  pieza; si no, el ruido."
-goal: "Ejecuta en cadena: si /home/agent/paso1.sh pasa, corre paso2.sh y muestra la marca querena
-  escrita en /tmp/corredor.txt."
+brief: "Los pasos corren en orden: solo si el paso1 pasa (exit 0), el paso2
+  corre y entrega la pieza; si no, el ruido."
+goal: "Ejecuta en cadena: si /home/agent/paso1.sh pasa, corre paso2.sh y muestra
+  la marca querena escrita en /tmp/corredor.txt."
 setup: |-
   #!/bin/bash
   set -e
@@ -29,9 +29,9 @@ hints:
   - cmd1 && cmd2 ejecuta cmd2 solo si cmd1 salió con 0.
   - A la inversa, || corre SOLO si el anterior falla.
   - paso1.sh && paso2.sh && cat /tmp/corredor.txt
-teach: '&& y || son los "and / or" de comandos encasquetados: exit 0 = TRUE, resto = FALSE. La
-  cadena cmd1 && cmd2 && cmd3 es un flujo de puerta: falla al primero, para. Escondido en todos los
-  CI.'
+teach: '&& y || son los "and / or" de comandos encasquetados: exit 0 = TRUE,
+  resto = FALSE. La cadena cmd1 && cmd2 && cmd3 es un flujo de puerta: falla al
+  primero, para. Escondido en todos los CI.'
 cheatsheet:
   - cmd: cmd1 && cmd2
     desc: si pasa, si no, no
@@ -42,3 +42,6 @@ keywords:
   - cadena
   - codigos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "corredor en su muelle: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

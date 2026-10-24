@@ -5,7 +5,8 @@ title: Servicios por puerto
 subtitle: "awk -F: con cadena"
 xp: 45
 difficulty: 3
-brief: servicios.conf usa formato svc:puerto:dueño. La fila del puerto 8081 guarda el alias y su marca.
+brief: servicios.conf usa formato svc:puerto:dueño. La fila del puerto 8081
+  guarda el alias y su marca.
 goal: Imprime la línea completa cuya segunda columna sea exactamente 8081.
 setup: |-
   #!/bin/bash
@@ -25,8 +26,9 @@ hints:
   - El separador aquí son los DOS PUNTOS.
   - 'Con awk puedes comparar cadenas: $2 == "8081" (o por número, sin comillas).'
   - "awk -F: '$2 == 8081' servicios.conf"
-teach: "awk funciona igual de bien con : , ; o espacios como separador: -F define tu mundo tabular.
-  La comparación == funciona con números y cadenas sin drama."
+teach: "awk funciona igual de bien con : , ; o espacios como separador: -F
+  define tu mundo tabular. La comparación == funciona con números y cadenas sin
+  drama."
 cheatsheet:
   - cmd: "awk -F: '$2==22' f"
     desc: fila cuyo campo 2 es 22
@@ -37,3 +39,6 @@ keywords:
   - "F:"
   - puerto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: puente-defensa:8081:FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,24 +5,34 @@ title: El intruso visible
 subtitle: "ps: la línea de comandos delata"
 xp: 40
 difficulty: 3
-brief: "Un proceso estrafalario quedó ARRANCADO y su línea de argumentos lleva la marca. No hay
-  ficheros: solo la tabla de procesos."
+brief: "Un proceso estrafalario quedó ARRANCADO y su línea de argumentos lleva
+  la marca. No hay ficheros: solo la tabla de procesos."
 goal: Localiza la marca que aparece en los argumentos de algún proceso en ejecución.
-setup: |-
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 06" "Procesos"
-  nohup bash -c 'while true; do sleep 5; done' demonio-sospechoso "secreto-sophos-$DOJO_FLAG" >/dev/null 2>&1 &
-  nohup bash -c 'while true; do sleep 5; done' receptor-normal a b c >/dev/null 2>&1 &
+
+  nohup bash -c 'while true; do sleep 5; done' demonio-sospechoso
+  "secreto-sophos-$DOJO_FLAG" >/dev/null 2>&1 &
+
+  nohup bash -c 'while true; do sleep 5; done' receptor-normal a b c >/dev/null
+  2>&1 &
+
   sleep 1
+
   chown -R agent:agent /home/agent
 solution: ps ax -o args | grep -oE 'FLAG\{[^}]*\}' | tail -n 1
 hints:
   - ps ax lista procesos con su línea de comandos completa.
-  - Los argumentos con los que nació un proceso se ven en ps (no confundir con el env).
+  - Los argumentos con los que nació un proceso se ven en ps (no confundir con
+    el env).
   - ps ax -o args | grep -oE 'FLAG\{[^}]*\}'
-teach: "ps no solo muestra nombres: la columna args revela TODOS los argumentos con que un proceso
-  nació. Auditar ps regularmente saca a la luz procesos intrusos."
+teach: "ps no solo muestra nombres: la columna args revela TODOS los argumentos
+  con que un proceso nació. Auditar ps regularmente saca a la luz procesos
+  intrusos."
 cheatsheet:
   - cmd: ps ax -o args
     desc: argumentos de cada proceso
@@ -33,3 +43,6 @@ keywords:
   - args
   - argumentos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

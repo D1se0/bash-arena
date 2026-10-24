@@ -5,7 +5,8 @@ title: Un saludo y fuera
 subtitle: nc -l servidor de una sóla línea
 xp: 45
 difficulty: 3
-brief: Un mini servidor netcat espera UNA única conexión en el puerto 7077 y suelta la pieza al puerta.
+brief: Un mini servidor netcat espera UNA única conexión en el puerto 7077 y
+  suelta la pieza al puerta.
 goal: Conéctate una vez con nc al puerto 7077 de localhost y lee lo que envía.
 setup: |-
   #!/bin/bash
@@ -21,8 +22,9 @@ hints:
   - nc HOST PUERTO abierto conexión y baraja lo que llega al stdout hasta cerrar.
   - Con timeout evistas quedarte colgado si el servidor ya cerró.
   - nc 127.0.0.1 7077
-teach: "nc -l -p N es un servidor mínimo: una línea de TCP sin HTTP. Para probar servicios custom,
-  juniors y pipelines: es EL petardazo de las redes del shell."
+teach: "nc -l -p N es un servidor mínimo: una línea de TCP sin HTTP. Para probar
+  servicios custom, juniors y pipelines: es EL petardazo de las redes del
+  shell."
 cheatsheet:
   - cmd: nc -l -p 7077 -q0 < f
     desc: un envío y cierra
@@ -33,3 +35,6 @@ keywords:
   - netcat
   - tcp
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "saludado por nc: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

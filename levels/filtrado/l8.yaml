@@ -5,8 +5,8 @@ title: Ranking de puntuaciones
 subtitle: sort numérico descendente
 xp: 35
 difficulty: 2
-brief: puntuaciones.txt lista jugadores y puntos desordenados. El campeón (el que más suma) lleva un
-  premio especial en su renglón.
+brief: puntuaciones.txt lista jugadores y puntos desordenados. El campeón (el
+  que más suma) lleva un premio especial en su renglón.
 goal: Ordena por puntos de mayor a menor y muestra la primera línea.
 setup: |-
   #!/bin/bash
@@ -28,8 +28,8 @@ hints:
   - sort necesita saber que la columna 2 es numérica.
   - -k2 elige el campo, -n lo trata por valor y -r invierte el orden.
   - sort -k2 -nr puntuaciones.txt | head -n 1
-teach: sort ordena líneas completas por defecto; -k2 -nr ordena por el segundo campo numéricamente y
-  en descenso. head -n 1 toma el campeón.
+teach: sort ordena líneas completas por defecto; -k2 -nr ordena por el segundo
+  campo numéricamente y en descenso. head -n 1 toma el campeón.
 cheatsheet:
   - cmd: sort -k2 -nr f
     desc: mayor a menor por columna 2
@@ -40,3 +40,6 @@ keywords:
   - ranking
   - numérico
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "campeon 1600 nota del orgullo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

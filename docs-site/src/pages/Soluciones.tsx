@@ -116,6 +116,21 @@ function LevelCard({ level }: { level: WalkthroughData }) {
           </div>
         )}
 
+        {level.examples.length > 0 && (
+          <div>
+            <p className="text-[11px] uppercase tracking-widest text-verde/90 mb-1">salida esperada (flag demo · comando oculto)</p>
+            {level.examples.map((ex) => (
+              <div key={ex.title} className="rounded-lg border border-verde/30 overflow-hidden">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-verde/10 border-b border-verde/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-verde" aria-hidden />
+                  <span className="text-xs text-verde/90">{ex.title}</span>
+                </div>
+                <pre className="px-3 py-2.5 text-xs leading-relaxed text-text bg-nord0/80 whitespace-pre-wrap break-words overflow-x-auto">{ex.content}</pre>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div>
           <p className="text-[11px] uppercase tracking-widest text-frost/60 mb-1">comandos de referencia (cheat sheet)</p>
           <ul className="space-y-1 text-xs font-mono">

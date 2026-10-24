@@ -5,8 +5,8 @@ title: La franja horaria
 subtitle: grep -E con regex de hora
 xp: 40
 difficulty: 3
-brief: El registro de intentos usa formato HH:MM. Todo lo salido entre las 15:00 y las 15:59 es
-  investigación legítima.
+brief: El registro de intentos usa formato HH:MM. Todo lo salido entre las 15:00
+  y las 15:59 es investigación legítima.
 goal: Imprime las líneas cuyo campo de hora empiece por "15:".
 setup: |-
   #!/bin/bash
@@ -26,8 +26,9 @@ hints:
   - El ancla ^ fija el patrón al principio de cada línea.
   - grep -E activa expresiones regulares extendidas.
   - grep -E '^15:' intentos.log
-teach: "grep -E abre el repertorio de regex: ^ ancla al inicio, $ al final, [] clases de caracteres.
-  Anclar evita falsos positivos en cualquier parte del texto."
+teach: "grep -E abre el repertorio de regex: ^ ancla al inicio, $ al final, []
+  clases de caracteres. Anclar evita falsos positivos en cualquier parte del
+  texto."
 cheatsheet:
   - cmd: grep -E '^17:' f
     desc: filtra por prefijo
@@ -39,3 +40,8 @@ keywords:
   - ancla
   - log
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      15:20 baliza registrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      15:47 segunda baliza confirmada

@@ -5,10 +5,10 @@ title: El detector de dos etapa
 subtitle: "grep | grep: filtrado en cadena"
 xp: 70
 difficulty: 5
-brief: "El fichero ficha.txt repleta de patrones. Dos filtros en cadena son la opción más
-  segura: primero el formato, luego la señal."
-goal: "De ficha.txt imprime las líneas con patrón uid: TENGAN cuatro dígitos y CONTÉNGAN
-  la marca (tenga FLAG)."
+brief: "El fichero ficha.txt repleta de patrones. Dos filtros en cadena son la
+  opción más segura: primero el formato, luego la señal."
+goal: "De ficha.txt imprime las líneas con patrón uid: TENGAN cuatro dígitos y
+  CONTÉNGAN la marca (tenga FLAG)."
 setup: |
   #!/bin/bash
   set -e
@@ -27,8 +27,8 @@ hints:
   - grep uid:[0-9]{6} lista las líneas con formato correcto.
   - El segundo grep (FLAG) filtra la línea con la marca.
   - "grep -E 'uid: [0-9]{6}' /home/agent/ficha.txt | grep 'FLAG'"
-teach: "Un pipeline con 2 greps simplifica. El primero reduce espectro, el segundo afina:
-  nunca resuelvas en una sola línea si no llega."
+teach: "Un pipeline con 2 greps simplifica. El primero reduce espectro, el
+  segundo afina: nunca resuelvas en una sola línea si no llega."
 cheatsheet:
   - cmd: grep 1 | grep 2
     desc: filtro lógico AND
@@ -39,3 +39,6 @@ keywords:
   - pipeline
   - AND
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "uid: 432198 correcto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

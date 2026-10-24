@@ -1,25 +1,26 @@
 id: fundamentos-l19
 track: fundamentos
 index: 19
-title: "Vecindad sin nombre"
-subtitle: "find por nombre (n Go a buscar sin extensión)"
+title: Vecindad sin nombre
+subtitle: find por nombre (n Go a buscar sin extensión)
 xp: 30
 difficulty: 2
 brief: >
-  > El barrio "barrio" está lleno de vecinos con apellidos (extensiones).
-  > Pero el contrabando viaja en el único vecino SIN apellido: un fichero
-  > cuyo nombre no lleva ningún punto. Encuéntralo y lee su contenido.
+  > El barrio "barrio" está lleno de vecinos con apellidos (extensiones). > Pero
+  el contrabando viaja en el único vecino SIN apellido: un fichero > cuyo nombre
+  no lleva ningún punto. Encuéntralo y lee su contenido.
 goal: >
-  Muestra el contenido del único fichero del árbol ~/barrio cuyo nombre NO contiene punto (los demás son señuelos con extensiones).
+  Muestra el contenido del único fichero del árbol ~/barrio cuyo nombre NO
+  contiene punto (los demás son señuelos con extensiones).
 hints:
   - "find recorre árboles: find ~/barrio -type f lista todos los ficheros."
-  - "El patrón ! -name '*.*' niega nombres con punto."
+  - El patrón ! -name '*.*' niega nombres con punto.
   - "find permite ejecutar sobre los resultados: -exec cat {} +"
 teach: >
   find busca ficheros en un árbol. Con `-name '*.*'` fichas los que llevan punto
   (una "extensión"); el `!` delante niega la condición. Los múltiples {}` de
   `-exec ... {}` se llenan con cada resultado y el `+` agrupa en un solo cat.
-  
+
       find ~/barrio -type f ! -name '*.*' -exec cat {} +
 setup: |
   #!/bin/bash
@@ -35,11 +36,17 @@ setup: |
 solution: |
   find ~/barrio -type f ! -name '*.*' -exec cat {} +
 cheatsheet:
-  - {cmd: "find DIR -name PATRÓN", desc: "busca por nombre dentro de DIR"}
-  - {cmd: "! -name ...", desc: "niega el patrón (lo que NO coincide)"}
-  - {cmd: "-exec cmd {} +", desc: "ejecuta cmd con los resultados"}
+  - cmd: find DIR -name PATRÓN
+    desc: busca por nombre dentro de DIR
+  - cmd: "! -name ..."
+    desc: niega el patrón (lo que NO coincide)
+  - cmd: -exec cmd {} +
+    desc: ejecuta cmd con los resultados
 keywords:
-  - "find"
+  - find
   - "!"
-  - "-exec"
+  - -exec
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

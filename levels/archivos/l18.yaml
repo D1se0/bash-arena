@@ -5,27 +5,42 @@ title: Nombres sin lazar
 subtitle: find + nombres con espacios
 xp: 45
 difficulty: 3
-brief: 'En ~/desorden los ficheros parecen tesoros de traslación: espacios, guiones, puntos raros.
-  Solo un "salida" (con espacios y guiones) guarda la pieza.'
-goal: Localiza con find el fichero con "salida" en su nombre dentro de /home/agent/desorden y muéstralo.
-setup: |-
+brief: 'En ~/desorden los ficheros parecen tesoros de traslación: espacios,
+  guiones, puntos raros. Solo un "salida" (con espacios y guiones) guarda la
+  pieza.'
+goal: Localiza con find el fichero con "salida" en su nombre dentro de
+  /home/agent/desorden y muéstralo.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 18" "Archivos"
+
   mkdir -p /home/agent/desorden
+
   echo "no importante" > "/home/agent/desorden/nota con  espacios.txt"
+
   echo "falso 1" > "/home/agent/desorden/prueba -- salida falsa.txt"
+
   echo "falso 2" > "/home/agent/desorden/out.txt"
+
   echo "falso 3" > "/home/agent/desorden/salida  falso.txt"
-  echo "guardada con espacios: $DOJO_FLAG" > "/home/agent/desorden/salida -- final (ok).txt"
+
+  echo "guardada con espacios: $DOJO_FLAG" > "/home/agent/desorden/salida --
+  final (ok).txt"
+
   chown -R agent:agent /home/agent
 solution: cat "$(find /home/agent/desorden -name '*salida*' | grep 'final' | head -n1)"
 hints:
-  - 'find -name "*salida*" es con COMILLAS: sin ellas, el glob explota en tu shell.'
-  - Del resultado filtra el que va de "final" (solo él es el buen camino), con grep.
+  - 'find -name "*salida*" es con COMILLAS: sin ellas, el glob explota en tu
+    shell.'
+  - Del resultado filtra el que va de "final" (solo él es el buen camino), con
+    grep.
   - cat "$(find /home/agent/desorden -name "*salida*" | grep final)"
-teach: 'Nombres con espacios son el pecado de un 50% de los scripts: SIEMPRE entre comillas
-  "$(...)". Con find -print0 | xargs -0 nulos separan sin ambigüedad.'
+teach: 'Nombres con espacios son el pecado de un 50% de los scripts: SIEMPRE
+  entre comillas "$(...)". Con find -print0 | xargs -0 nulos separan sin
+  ambigüedad.'
 cheatsheet:
   - cmd: find d -name '*salida*'
     desc: por nombre con comillas
@@ -36,3 +51,6 @@ keywords:
   - espacios
   - quoting
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "guardada con espacios: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

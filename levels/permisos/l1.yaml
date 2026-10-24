@@ -5,11 +5,11 @@ subtitle: chmod y sudo
 xp: 50
 difficulty: 3
 brief: >
-  El dueño anterior dejó un fichero con la clave pero con permisos 0600
-  y propietario root. Un admin legítimo corrige permisos, no fuerza.
+  El dueño anterior dejó un fichero con la clave pero con permisos 0600 y
+  propietario root. Un admin legítimo corrige permisos, no fuerza.
 goal: >
-  El fichero /home/agent/bóveda.txt es de root con permiso 600. Dale
-  permiso de lectura al agente (chmod) de forma correcta y léelo.
+  El fichero /home/agent/bóveda.txt es de root con permiso 600. Dale permiso de
+  lectura al agente (chmod) de forma correcta y léelo.
 setup: |
   #!/bin/bash
   set -e
@@ -18,18 +18,26 @@ setup: |
   chown root:root /home/agent/bóveda.txt
   chmod 600 /home/agent/bóveda.txt
 hints:
-  - "sudo chmod 0644 /home/agent/bóveda.txt"
+  - sudo chmod 0644 /home/agent/bóveda.txt
 teach: >
-  `chmod 644 fichero` = dueño escribe/lee, grupo lee, otros leen. `chmod
-  u+x` activa ejecución del dueño. Cambiar permisos de ficheros ajenos
-  exige root (sudo). En el dojo tienes sudo de confianza.
+  `chmod 644 fichero` = dueño escribe/lee, grupo lee, otros leen. `chmod u+x`
+  activa ejecución del dueño. Cambiar permisos de ficheros ajenos exige root
+  (sudo). En el dojo tienes sudo de confianza.
 cheatsheet:
-  - {cmd: 'chmod 644 f', desc: dueño rw, grupo/otros r}
-  - {cmd: 'chmod u+x f', desc: añade ejecución al dueño}
-  - {cmd: 'sudo chmod …', desc: eleva permisos con sudo}
+  - cmd: chmod 644 f
+    desc: dueño rw
+    grupo/otros r: null
+  - cmd: chmod u+x f
+    desc: añade ejecución al dueño
+  - cmd: sudo chmod …
+    desc: eleva permisos con sudo
 solution: |
   sudo chmod 0644 /home/agent/bóveda.txt
   cat /home/agent/bóveda.txt
-
-keywords: [chmod, sudo]
+keywords:
+  - chmod
+  - sudo
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

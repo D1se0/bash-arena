@@ -5,8 +5,8 @@ title: El mejor lote
 subtitle: "awk: máximo del fichero con END"
 xp: 60
 difficulty: 4
-brief: lotes.txt lista «lote tonelaje». El lote mayor lleva la marca por nombre. awk
-  mantiene al actual campeón mientras recorre y lo anuncia al FINAL.
+brief: lotes.txt lista «lote tonelaje». El lote mayor lleva la marca por nombre.
+  awk mantiene al actual campeón mientras recorre y lo anuncia al FINAL.
 goal: Imprime de lotes.txt el NOMBRE del lote de mayor tonelaje.
 setup: |
   #!/bin/bash
@@ -22,13 +22,14 @@ setup: |
   chown agent:agent /home/agent/lotes.txt
 solution: awk '$2 > max {max = $2; best = $1} END {print best}' /home/agent/lotes.txt
 hints:
-  - Sin END, el "resultado" solo vive dentro de línea a línea; con una variable y
-    comparación guardas al mejor.
-  - "END se ejecuta UNA VEZ, cuando acaba el fichero: es el sitio del resultado final."
+  - Sin END, el "resultado" solo vive dentro de línea a línea; con una variable
+    y comparación guardas al mejor.
+  - "END se ejecuta UNA VEZ, cuando acaba el fichero: es el sitio del resultado
+    final."
   - awk '$2 > max {max = $2; best = $1} END {print best}' /home/agent/lotes.txt
-teach: "El esquema «comparar en cada línea, guardar al mejor, imprimir en END» es awk
-  streaming: acumulas en variables mientras lee y cierras con la conclusión. Las variables
-  no inicializadas valen 0: no hay que declarlas."
+teach: "El esquema «comparar en cada línea, guardar al mejor, imprimir en END»
+  es awk streaming: acumulas en variables mientras lee y cierras con la
+  conclusión. Las variables no inicializadas valen 0: no hay que declarlas."
 cheatsheet:
   - cmd: awk '$2 > max {max=$2} END {print max}' f
     desc: máximo de la 2.ª columna
@@ -39,3 +40,6 @@ keywords:
   - END
   - máximo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

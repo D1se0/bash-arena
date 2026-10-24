@@ -5,36 +5,51 @@ subtitle: gzip, zcat
 xp: 45
 difficulty: 2
 brief: >
-  Un mensaje importante quedó comprimido con gzip para ahorrar bytes en
-  el floppy del dojo. Solo alguien que sepa desinflar lo leerá.
+  Un mensaje importante quedó comprimido con gzip para ahorrar bytes en el
+  floppy del dojo. Solo alguien que sepa desinflar lo leerá.
 goal: >
-  En /var/dojo/diario.txt.gz está un texto comprimido con la flag.
-  Descomprimelo SIN destruir el original (no borres el .gz al leerlo) y
-  muéstralo.
-setup: |
+  En /var/dojo/diario.txt.gz está un texto comprimido con la flag. Descomprimelo
+  SIN destruir el original (no borres el .gz al leerlo) y muéstralo.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 02" "Archivos"
+
   mkdir -p /var/dojo
+
   {
     printf 'Diario del operador. Hoy ha sido un gran día. Todo listo para la entrega.\n'
     printf 'Y por supuesto, el final: %s\n' "$DOJO_FLAG"
   } > /var/dojo/diario.txt
+
   gzip -kf /var/dojo/diario.txt
+
   chown agent:agent /var/dojo/diario.txt.gz
 hints:
-  - "zcat fichero.gz muestra el contenido descomprimido SIN borrar ni tocar el fichero."
-  - "gunzip -c fichero.gz es equivalente."
+  - zcat fichero.gz muestra el contenido descomprimido SIN borrar ni tocar el
+    fichero.
+  - gunzip -c fichero.gz es equivalente.
 teach: >
   `gzip fichero` comprime y renombra a .gz en el sitio. `zcat`/`gunzip -c`
-  descomprimen a stdout SIN tocar el fichero original. Con `zcat fichero.gz
-  | head` te ahorras descomprimir a un fichero temporal.
+  descomprimen a stdout SIN tocar el fichero original. Con `zcat fichero.gz |
+  head` te ahorras descomprimir a un fichero temporal.
 cheatsheet:
-  - {cmd: zcat fichero.gz, desc: descomprime a stdout}
-  - {cmd: 'gzip fichero', desc: comprime in situ}
-  - {cmd: 'gunzip fichero.gz', desc: descomprime y borra .gz (cuidado)}
+  - cmd: zcat fichero.gz
+    desc: descomprime a stdout
+  - cmd: gzip fichero
+    desc: comprime in situ
+  - cmd: gunzip fichero.gz
+    desc: descomprime y borra .gz (cuidado)
 solution: |
   zcat /var/dojo/diario.txt.gz
-
-keywords: [gzip, zcat]
+keywords:
+  - gzip
+  - zcat
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      Diario del operador. Hoy ha sido un gran día. Todo listo para la entrega.
+      Y por supuesto, el final: FLAG{d3b09a4f7c2e1b8d6041a5f3}

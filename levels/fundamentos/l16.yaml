@@ -5,9 +5,10 @@ title: Cara o cruz
 subtitle: "file: el tipo verdadero"
 xp: 35
 difficulty: 2
-brief: "En ~/cofre hay tres ficheros .txt, pero uno miente: internamente es otro formato. file
-  revela la verdad."
-goal: Identifica el fichero de ~/cofre cuyo contenido REAL es gzip y muestralo descomprimido.
+brief: "En ~/cofre hay tres ficheros .txt, pero uno miente: internamente es otro
+  formato. file revela la verdad."
+goal: Identifica el fichero de ~/cofre cuyo contenido REAL es gzip y muestralo
+  descomprimido.
 setup: |-
   #!/bin/bash
   set -e
@@ -22,8 +23,9 @@ hints:
   - file fichero dice el tipo por su contenido, no por su nombre.
   - Filtra los que salgan como gzip y descomprímelos al stdout con zcat.
   - 'f=$(file /home/agent/cofre/* | grep gzip | cut -d: -f1); zcat "$f"'
-teach: 'file Lee los "magic bytes" del principio del fichero: la extensión se puede fingir, los
-  primeros bytes no. Útil cuando algo "debería ser X" y no abre.'
+teach: 'file Lee los "magic bytes" del principio del fichero: la extensión se
+  puede fingir, los primeros bytes no. Útil cuando algo "debería ser X" y no
+  abre.'
 cheatsheet:
   - cmd: file *
     desc: tipo real de cada fichero
@@ -34,3 +36,6 @@ keywords:
   - gzip
   - magic
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "la pieza real: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

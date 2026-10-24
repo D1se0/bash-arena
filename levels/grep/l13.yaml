@@ -5,10 +5,10 @@ title: La línea exacta
 subtitle: "grep -x: coincidencia de línea completa"
 xp: 75
 difficulty: 4
-brief: "El registro de accesos guarda pares sec=valor con trampas: indentados, con cola,
-  comentados… Solo una línea es limpia de la forma sec=valor_entero."
-goal: Imprime del registro únicamente las líneas que son exactamente sec=valor (sin
-  espacios antes o después del valor).
+brief: "El registro de accesos guarda pares sec=valor con trampas: indentados,
+  con cola, comentados… Solo una línea es limpia de la forma sec=valor_entero."
+goal: Imprime del registro únicamente las líneas que son exactamente sec=valor
+  (sin espacios antes o después del valor).
 setup: |
   #!/bin/bash
   set -e
@@ -26,12 +26,12 @@ setup: |
 solution: grep -xE 'sec=[^[:space:]]+' /home/agent/accesos.txt
 hints:
   - −x exige que el patrón case TODA la línea (equivale a ^patrón$).
-  - "[^[:space:]]+ es «uno o más símbolos que no sean espacios»: descarta indentados,
-    colas y tabs."
+  - "[^[:space:]]+ es «uno o más símbolos que no sean espacios»: descarta
+    indentados, colas y tabs."
   - grep -xE 'sec=[^[:space:]]+' /home/agent/accesos.txt
-teach: grep -x (exact) obliga a que la coincidencia cubra la línea entera. Con la clase
-  negada [^[:space:]] eliminan trampas de espacios; combinado -xE demuestra que las
-  opciones se acumulan.
+teach: grep -x (exact) obliga a que la coincidencia cubra la línea entera. Con
+  la clase negada [^[:space:]] eliminan trampas de espacios; combinado -xE
+  demuestra que las opciones se acumulan.
 cheatsheet:
   - cmd: grep -x 'palabra' f
     desc: coincidencia de línea entera
@@ -42,3 +42,6 @@ keywords:
   - -x
   - exacto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: sec=FLAG{d3b09a4f7c2e1b8d6041a5f3}

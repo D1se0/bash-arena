@@ -5,8 +5,8 @@ title: El alijo del pesado
 subtitle: "du: encontrar la carpeta que pesa"
 xp: 55
 difficulty: 4
-brief: En workspace/ hay varios contenedores; uno pesa más que todos por su relleno y guardó la
-  clave dentro.
+brief: En workspace/ hay varios contenedores; uno pesa más que todos por su
+  relleno y guardó la clave dentro.
 goal: Localiza el CONTENEDOR más pesado con du y muestra su fichero clave.txt.
 setup: |-
   #!/bin/bash
@@ -22,10 +22,12 @@ setup: |-
 solution: m=$(du -sk /workspace/* | sort -rn | head -n1 | cut -f2); cat "$m/clave.txt"
 hints:
   - du -sk lista cada contenedor con su tamaño EN KILOBYTES (k).
-  - Ordenando por el número, el primero es el más pesado; la ruta queda en la 2ª columna.
+  - Ordenando por el número, el primero es el más pesado; la ruta queda en la 2ª
+    columna.
   - m=$(du -sk /workspace/* | sort -rn | head -n1 | cut -f2); cat "$m/clave.txt"
-teach: du -sk + sort -rn es la rutina clásica de «quién llena el disco». El -k normaliza unidades
-  para que el orden numérico no traicione nada mezclando Mega y Kilo.
+teach: du -sk + sort -rn es la rutina clásica de «quién llena el disco». El -k
+  normaliza unidades para que el orden numérico no traicione nada mezclando Mega
+  y Kilo.
 cheatsheet:
   - cmd: du -sk dir/* | sort -rn | head
     desc: mayores por KB
@@ -36,3 +38,6 @@ keywords:
   - sort
   - espacio
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "aqui estoy: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

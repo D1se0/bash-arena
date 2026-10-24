@@ -5,9 +5,10 @@ title: Historia reciente
 subtitle: bash_history como pista forense
 xp: 40
 difficulty: 3
-brief: "Alguien dejó su .bash_history sin limpiar: entre comandos rutinarios quedó impresa la ruta
-  del fichero con la pieza."
-goal: Encuentra en /home/agent/.bash_history la única ruta bajo /var que aparece y muestra ese fichero.
+brief: "Alguien dejó su .bash_history sin limpiar: entre comandos rutinarios
+  quedó impresa la ruta del fichero con la pieza."
+goal: Encuentra en /home/agent/.bash_history la única ruta bajo /var que aparece
+  y muestra ese fichero.
 setup: >-
   #!/bin/bash
 
@@ -19,8 +20,8 @@ setup: >-
 
   rm -f /home/agent/.bash_history
 
-  printf 'ls /home/agent\nexport TERM=xterm-256color\ncat /var/local/notas/salida.txt\ncd /tmp\n' >
-  /home/agent/.bash_history
+  printf 'ls /home/agent\nexport TERM=xterm-256color\ncat
+  /var/local/notas/salida.txt\ncd /tmp\n' > /home/agent/.bash_history
 
   echo "$DOJO_FLAG" > /var/local/notas/salida.txt
 
@@ -29,13 +30,15 @@ setup: >-
   chown agent:agent /home/agent/.bash_history
 
   chown -R agent:agent /home/agent
-solution: p=$(grep -oE '/var/[a-z/.]+' /home/agent/.bash_history | sort -u | head -n1); cat "$p"
+solution: p=$(grep -oE '/var/[a-z/.]+' /home/agent/.bash_history | sort -u |
+  head -n1); cat "$p"
 hints:
   - history y cat ~/.bash_history muestran lo mismo; el fichero es lo greppable.
   - grep -oE con regex de ruta deja solo la ruta; sort -u la desduplica.
   - p=$(grep -oE '/var/[a-z/.]+' ~/.bash_history); cat "$p"
-teach: ".bash_history es oro forense: comandos, rutas y hasta errores revelan lo que pasó. grep -oE
-  sobre history es una receta de incident response de verdad."
+teach: ".bash_history es oro forense: comandos, rutas y hasta errores revelan lo
+  que pasó. grep -oE sobre history es una receta de incident response de
+  verdad."
 cheatsheet:
   - cmd: history
     desc: comandos de la sesión
@@ -46,3 +49,6 @@ keywords:
   - grep
   - forense
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,10 +5,10 @@ title: El ladrón de direcciones
 subtitle: "grep -oE: extracción con clases y cuantificadores"
 xp: 60
 difficulty: 4
-brief: "El registro de contactos está lleno de nombres, notas y aprender tanto como se
-  pueda: solo las direcciones de correo son la señal."
-goal: Extrae de emails.log ÚNICAMENTE las direcciones de correo (una por línea); la línea
-  del testigo lleva la marca y se lista aparte.
+brief: "El registro de contactos está lleno de nombres, notas y aprender tanto
+  como se pueda: solo las direcciones de correo son la señal."
+goal: Extrae de emails.log ÚNICAMENTE las direcciones de correo (una por línea);
+  la línea del testigo lleva la marca y se lista aparte.
 setup: |
   #!/bin/bash
   set -e
@@ -21,18 +21,19 @@ setup: |
    escudo: relay@spam-farm.es NO es confiable
   EOF
   chown agent:agent /home/agent/emails.log
-solution: grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log ; grep
-  'FLAG{' /home/agent/emails.log
+solution: grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}'
+  /home/agent/emails.log ; grep 'FLAG{' /home/agent/emails.log
 hints:
   - "-o imprime solo la parte que casa; con -E tienes cuantificadores: +, {n,m},
     alternancia |."
-  - "El patrón canonical del correo: usuario@dominio.tld, con clases [a-z0-9._-]+ y el
-    punto como [.]."
+  - "El patrón canonical del correo: usuario@dominio.tld, con clases
+    [a-z0-9._-]+ y el punto como [.]."
   - "El testigo no tiene email: su línea completa sale aparte con grep 'FLAG{'."
-  - grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log ; grep 'FLAG{'
-    /home/agent/emails.log
-teach: "grep -oE convierte grep en extractor: cada coincidencia sale limpia en su propia
-  línea. Con -E tienes {n,m}, clases por letra y punto; extrae el dato sin sed ni cut."
+  - grep -oE '[a-z0-9._-]+@[a-z0-9.-]+[.][a-z]{2,4}' /home/agent/emails.log ;
+    grep 'FLAG{' /home/agent/emails.log
+teach: "grep -oE convierte grep en extractor: cada coincidencia sale limpia en
+  su propia línea. Con -E tienes {n,m}, clases por letra y punto; extrae el dato
+  sin sed ni cut."
 cheatsheet:
   - cmd: grep -oE 'patr\\.' f
     desc: extrae solo lo que casa
@@ -44,3 +45,10 @@ keywords:
   - extraer
   - correo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      agente.snorkel@dojo.exam
+      soporte@dojo.exam
+      relay@spam-farm.es
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

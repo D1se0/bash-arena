@@ -45,9 +45,11 @@ export function createLevelsService(levelsDir: string): LevelsService {
         difficulty: level.difficulty,
         brief: level.brief,
         goal: level.goal,
-        cheatsheet: level.cheatsheet,
-        hintsCount: level.hints.length,
-        keywords: level.keywords,
+      cheatsheet: level.cheatsheet,
+      hintsCount: level.hints.length,
+      keywords: level.keywords,
+      /** ejemplos visuales (sin comando): cómo debe verse la salida */
+      examples: level.examples ?? [],
         teach: solved ? level.teach : null, // solo tras resolver
         solved,
       };

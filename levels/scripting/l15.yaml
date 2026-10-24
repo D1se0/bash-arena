@@ -5,10 +5,10 @@ title: La taquilla numérica
 subtitle: aritmética $(( ))
 xp: 45
 difficulty: 3
-brief: Dos ficheros de la taquilla, dos números. La SUMA de ambos es el número de la celda que
-  guarda la pieza.
-goal: Suma el contenido de a.num y b.num de /home/agent/taquilla y muestra la celda ~/taquilla/N.txt
-  que sea el resultado.
+brief: Dos ficheros de la taquilla, dos números. La SUMA de ambos es el número
+  de la celda que guarda la pieza.
+goal: Suma el contenido de a.num y b.num de /home/agent/taquilla y muestra la
+  celda ~/taquilla/N.txt que sea el resultado.
 setup: |-
   #!/bin/bash
   set -e
@@ -20,14 +20,14 @@ setup: |-
   echo "celda acertada: $DOJO_FLAG" > /home/agent/taquilla/80.txt
   echo "vacía" > /home/agent/taquilla/84.txt
   chown -R agent:agent /home/agent
-solution: a=$(cat /home/agent/taquilla/a.num); b=$(cat /home/agent/taquilla/b.num); cat
-  "/home/agent/taquilla/$((a+b)).txt"
+solution: a=$(cat /home/agent/taquilla/a.num); b=$(cat
+  /home/agent/taquilla/b.num); cat "/home/agent/taquilla/$((a+b)).txt"
 hints:
   - $((expr)) hace matemáticas en bash (y no creche chamuscados).
   - La celda correcta se llama con el RESULTADO de la suma.
   - cat "$((a+b))"
-teach: "La aritmética de bash es nativa con $(( )): no necesitas expr ni bc para enteras (bc sí para
-  decimales). Asignaciones también van dentro: s=$((s+1))."
+teach: "La aritmética de bash es nativa con $(( )): no necesitas expr ni bc para
+  enteras (bc sí para decimales). Asignaciones también van dentro: s=$((s+1))."
 cheatsheet:
   - cmd: echo $((3*7))
     desc: "21"
@@ -38,3 +38,6 @@ keywords:
   - contar
   - bash
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "celda acertada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

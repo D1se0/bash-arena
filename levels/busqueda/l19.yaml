@@ -1,48 +1,67 @@
 id: busqueda-l19
 track: busqueda
 index: 19
-title: "La talla exacta"
-subtitle: "find -size con bytes"
+title: La talla exacta
+subtitle: find -size con bytes
 xp: 40
 difficulty: 3
 brief: >
-  > Los archivos del armario "medidas" son todos de tallas sospechosas
-  > (2 KiB, 4 KiB...) porque el chapucero que los creó los rellenó con
-  > basura. Solo uno escapó a la hinchazón: ocupa JUSTO 512 bytes.
-  > Ese es el contrabando.
+  > Los archivos del armario "medidas" son todos de tallas sospechosas > (2 KiB,
+  4 KiB...) porque el chapucero que los creó los rellenó con > basura. Solo uno
+  escapó a la hinchazón: ocupa JUSTO 512 bytes. > Ese es el contrabando.
 goal: >
-  Encuentra dentro de ~/medidas el fichero cuyo tamaño es EXACTAMENTE 512 bytes (los demás son más grandes) y muestra su contenido.
+  Encuentra dentro de ~/medidas el fichero cuyo tamaño es EXACTAMENTE 512 bytes
+  (los demás son más grandes) y muestra su contenido.
 hints:
-  - "find acepta tamaños: -size Nc interpreta N como bytes (\"c\" de chars)."
-  - "Los señuelos ocupan más (relleno con head -c y /dev/zero)."
-  - "find ~/medidas -type f -size 512c"
+  - 'find acepta tamaños: -size Nc interpreta N como bytes ("c" de chars).'
+  - Los señuelos ocupan más (relleno con head -c y /dev/zero).
+  - find ~/medidas -type f -size 512c
 teach: >
   Con `-size` find filtra por tamaño. El sufijo importa: `c` = bytes exactos,
   `k` = kibibytes, `M` = mebibytes (y sin sufijo redondea a bloques de 512).
-  
+
       find ~/medidas -type f -size 512c
-  
+
   Y con -exec se lee al vuelo:
-  
+
       find ~/medidas -type f -size 512c -exec cat {} +
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Búsqueda"
+
   rm -rf /home/agent/medidas
+
   mkdir -p /home/agent/medidas/{g1,g2,g3}
+
   head -c 2048 /dev/zero | tr '\0' 'a' > /home/agent/medidas/relleno_a.dat
+
   head -c 4096 /dev/zero | tr '\0' 'b' > /home/agent/medidas/g1/relleno_b.dat
+
   head -c 1024 /dev/zero | tr '\0' 'c' > /home/agent/medidas/g3/relleno_c.dat
-  { printf 'la joya del gabinete: %s\n' "$DOJO_FLAG"; head -c 700 /dev/zero | tr '\0' 'd'; } > /home/agent/medidas/g2/joya.txt
+
+  { printf 'la joya del gabinete: %s\n' "$DOJO_FLAG"; head -c 700 /dev/zero | tr
+  '\0' 'd'; } > /home/agent/medidas/g2/joya.txt
+
   truncate -s 512 /home/agent/medidas/g2/joya.txt
+
   chown -R agent:agent /home/agent/medidas
 solution: |
   find ~/medidas -type f -size 512c -exec cat {} +
 cheatsheet:
-  - {cmd: "-size 512c", desc: "tamaño exacto en bytes"}
-  - {cmd: "-size +2k", desc: "mayor que 2 KiB"}
-  - {cmd: "-size -1M", desc: "menor que 1 MiB"}
+  - cmd: -size 512c
+    desc: tamaño exacto en bytes
+  - cmd: -size +2k
+    desc: mayor que 2 KiB
+  - cmd: -size -1M
+    desc: menor que 1 MiB
 keywords:
-  - "-size"
+  - -size
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      la joya del gabinete: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd

@@ -5,37 +5,53 @@ subtitle: find + grep + base64
 xp: 90
 difficulty: 4
 brief: >
-  La flag está oculta en un fichero con nombre genérico dentro de un
-  árbol ancho, y encima codificada en base64. Pipeline creíble:
-  find para localizar, base64 -d para abrir, y ojo al output.
+  La flag está oculta en un fichero con nombre genérico dentro de un árbol
+  ancho, y encima codificada en base64. Pipeline creíble: find para localizar,
+  base64 -d para abrir, y ojo al output.
 goal: >
-  En /var/dojo/jungla hay varios ficheros .payload; solo uno contiene
-  datos base64 decodificables con la flag (los demás son texto). Localízalo
-  y muéstrame ya decodificado.
-setup: |
+  En /var/dojo/jungla hay varios ficheros .payload; solo uno contiene datos
+  base64 decodificables con la flag (los demás son texto). Localízalo y
+  muéstrame ya decodificado.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "BOSS 01" "Boss"
+
   mkdir -p /var/dojo/jungla/selva
+
   for i in $(seq 1 8); do
     printf 'payload-trampa-%d: texto plano sin codificar\n' "$i" > "/var/dojo/jungla/selva/payload-$i"
   done
-  printf 'desierto: %s\n' "$DOJO_FLAG" | base64 -w0 > /var/dojo/jungla/selva/.payload-oculto
+
+  printf 'desierto: %s\n' "$DOJO_FLAG" | base64 -w0 >
+  /var/dojo/jungla/selva/.payload-oculto
+
   chown -R agent:agent /var/dojo/jungla
 hints:
-  - "find /var/dojo/jungla -type f | xargs file | grep -v ASCII marca la diferencia… pero instaló file, no lo olvides."
+  - find /var/dojo/jungla -type f | xargs file | grep -v ASCII marca la
+    diferencia… pero instaló file, no lo olvides.
   - "El fichero bueno empieza por punto: find /var/dojo/jungla -name '.*'"
-  - 'find /var/dojo/jungla -name ".*"'
+  - find /var/dojo/jungla -name ".*"
 teach: >
-  El truco de nivel boss es encadenar herramientas: `find` da el
-  fichero objetivo, el fichero oculto evita las trampas y `base64 -d`
-  abre la carga útil. La disciplina de pipelines cubrirá tu caos.
+  El truco de nivel boss es encadenar herramientas: `find` da el fichero
+  objetivo, el fichero oculto evita las trampas y `base64 -d` abre la carga
+  útil. La disciplina de pipelines cubrirá tu caos.
 cheatsheet:
-  - {cmd: 'find /ruta -name ".*"', desc: ficheros ocultos por nombre}
-  - {cmd: 'file fichero', desc: tipo de fichero (texto/binario/etc.)}
-  - {cmd: 'cat fichero | base64 -d', desc: decodifica y muestra}
+  - cmd: find /ruta -name ".*"
+    desc: ficheros ocultos por nombre
+  - cmd: file fichero
+    desc: tipo de fichero (texto/binario/etc.)
+  - cmd: cat fichero | base64 -d
+    desc: decodifica y muestra
 solution: |
   cat "$(find /var/dojo/jungla -name '.*')" | base64 -d
-
-keywords: [find, base64, pipeline]
+keywords:
+  - find
+  - base64
+  - pipeline
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "desierto: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

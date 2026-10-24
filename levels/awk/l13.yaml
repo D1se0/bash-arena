@@ -5,9 +5,11 @@ title: Detección dinámica
 subtitle: awk match() + RSTART/RLENGTH
 xp: 85
 difficulty: 5
-brief: "pistas.txt mezcla prosa con marcas enterradas: la elegante FLAG{…} está dentro de
-  la línea, no siempre al principio. match() la revela donde quiera que esté."
-goal: "De pistas.txt: imprime únicamente la subcadena FLAG{…} (con match() y substr())."
+brief: "pistas.txt mezcla prosa con marcas enterradas: la elegante FLAG{…} está
+  dentro de la línea, no siempre al principio. match() la revela donde quiera
+  que esté."
+goal: "De pistas.txt: imprime únicamente la subcadena FLAG{…} (con match() y
+  substr())."
 setup: |
   #!/bin/bash
   set -e
@@ -22,14 +24,14 @@ setup: |
 solution: awk 'match($0, /FLAG[{][^}]*[}]/) {print substr($0, RSTART, RLENGTH)}'
   /home/agent/pistas.txt
 hints:
-  - "match($0, /regex/) devuelve la posición 0-base: si casó, llena RSTART (inicio) y
-    RLENGTH (longitud)."
+  - "match($0, /regex/) devuelve la posición 0-base: si casó, llena RSTART
+    (inicio) y RLENGTH (longitud)."
   - substr(texto, RSTART, RLENGTH) recorta la subcadena.
   - awk 'match($0, /FLAG[{][^}]*[}]/) {print substr($0, RSTART, RLENGTH)}'
     /home/agent/pistas.txt
-teach: "match(sel, regex) llena RSTART/RLENGTH con la posición del casamiento: no
-  necesitas imprimir la línea entera. Con las llaves dentro de clases de caracteres ([{],
-  [}]) el patrón es portable a cualquier awk (gawk, mawk)."
+teach: "match(sel, regex) llena RSTART/RLENGTH con la posición del casamiento:
+  no necesitas imprimir la línea entera. Con las llaves dentro de clases de
+  caracteres ([{], [}]) el patrón es portable a cualquier awk (gawk, mawk)."
 cheatsheet:
   - cmd: awk 'match($0, /p/) {print substr($0, RSTART, RLENGTH)}'
     desc: extraer lo que casó
@@ -41,3 +43,8 @@ keywords:
   - substr
   - RSTART
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      FLAG{eco min}

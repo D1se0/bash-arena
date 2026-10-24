@@ -5,10 +5,11 @@ title: La línea exacta
 subtitle: "grep -xF: exactitud de línea completa"
 xp: 75
 difficulty: 5
-brief: El fichero acceso.txt miles de variantes. SOLO la línea EXACTA password:secreto es
-  válida (ni indentada, ni con texto extra).
-goal: De acceso.txt imprime SOLO la línea EXACTA password:secreto (línea completa, sin
-  nada antes o después) y, aparte, la línea del testigo con la marca.
+brief: El fichero acceso.txt miles de variantes. SOLO la línea EXACTA
+  password:secreto es válida (ni indentada, ni con texto extra).
+goal: De acceso.txt imprime SOLO la línea EXACTA password:secreto (línea
+  completa, sin nada antes o después) y, aparte, la línea del testigo con la
+  marca.
 setup: |
   #!/bin/bash
   set -e
@@ -22,15 +23,17 @@ setup: |
   password:correcto $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/acceso.txt
-solution: grep -xF 'password:secreto' /home/agent/acceso.txt ; grep 'FLAG{' /home/agent/acceso.txt
+solution: grep -xF 'password:secreto' /home/agent/acceso.txt ; grep 'FLAG{'
+  /home/agent/acceso.txt
 hints:
   - -x casa TODO el patrón con la LÍNEA COMPLETA; -F hace el patrón LITERAL.
-  - "La línea del testigo (password:correcto con la marca) NO es exacta: sale aparte con
-    grep 'FLAG{'."
+  - "La línea del testigo (password:correcto con la marca) NO es exacta: sale
+    aparte con grep 'FLAG{'."
   - grep -xF 'password:secreto' /home/agent/acceso.txt ; grep 'FLAG{'
     /home/agent/acceso.txt
-teach: -x es exacto sobre una línea completa. -F convierte el patrón en literal. La
-  fórmula -xF es la herramienta definitiva para «buscar esta cadena exacta como línea».
+teach: -x es exacto sobre una línea completa. -F convierte el patrón en literal.
+  La fórmula -xF es la herramienta definitiva para «buscar esta cadena exacta
+  como línea».
 cheatsheet:
   - cmd: grep -Ff lista.txt f
     desc: patrones literales desde fichero
@@ -42,3 +45,8 @@ keywords:
   - -F
   - exacto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      password:secreto
+      password:correcto FLAG{d3b09a4f7c2e1b8d6041a5f3}

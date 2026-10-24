@@ -5,10 +5,10 @@ title: La señal de usuario
 subtitle: kill -USR1 y trap personalizado
 xp: 45
 difficulty: 3
-brief: "El cubridor solo contesta a una señal de usuario (USR1): su trap escribe la confesión en
-  fichero como regalo."
-goal: Envía SIGUSR1 al proceso con PID en /tmp/cubridor.pid y muestra su confesión en
-  /tmp/confesion-usr.txt.
+brief: "El cubridor solo contesta a una señal de usuario (USR1): su trap escribe
+  la confesión en fichero como regalo."
+goal: Envía SIGUSR1 al proceso con PID en /tmp/cubridor.pid y muestra su
+  confesión en /tmp/confesion-usr.txt.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,11 +25,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: kill -USR1 $(cat /tmp/cubridor.pid); sleep 1; cat /tmp/confesion-usr.txt
 hints:
-  - "SIGUSR1 es una señal definida por el usuario: kill -USR1 PID la envía sin teclado."
+  - "SIGUSR1 es una señal definida por el usuario: kill -USR1 PID la envía sin
+    teclado."
   - El trap USR1 del proceso escribe al fichero antes de salir; dale 1 segundo.
   - kill -USR1 $(cat /tmp/cubridor.pid); sleep 1; cat /tmp/confesion-usr.txt
-teach: "Señales trappables: TERM (la educada), INT (Ctrl+C) y las de usuario USR1/USR2, pensadas
-  para acciones del programa. kill SIN sufijo es TERM. KILL no es trappable: el kernel mata."
+teach: "Señales trappables: TERM (la educada), INT (Ctrl+C) y las de usuario
+  USR1/USR2, pensadas para acciones del programa. kill SIN sufijo es TERM. KILL
+  no es trappable: el kernel mata."
 cheatsheet:
   - cmd: kill -USR1 PID
     desc: señal de usuario 1
@@ -40,3 +42,6 @@ keywords:
   - usr1
   - trap
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "confesion USR1: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

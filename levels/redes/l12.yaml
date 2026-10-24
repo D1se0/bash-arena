@@ -5,19 +5,25 @@ title: Auditoría de escucha
 subtitle: ss + json + curl a medida
 xp: 55
 difficulty: 4
-brief: "Un API en 7700 solo responde con la cabecera correcta: Accept: application/arena-json. Ojo
-  también al puerto, que puede caminar."
-goal: "Consulta http://127.0.0.1:7700/api con la cabecera Accept: application/arena-json y muéstrala
-  (el puerto correcto lo delata ss)."
-setup: |-
+brief: "Un API en 7700 solo responde con la cabecera correcta: Accept:
+  application/arena-json. Ojo también al puerto, que puede caminar."
+goal: "Consulta http://127.0.0.1:7700/api con la cabecera Accept:
+  application/arena-json y muéstrala (el puerto correcto lo delata ss)."
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 12" "Redes"
+
 
   mkdir -p /etc/arena
 
+
   cat > /etc/arena/api7.py <<FIN
+
   from http.server import BaseHTTPRequestHandler, HTTPServer
+
   class H(BaseHTTPRequestHandler):
       def do_GET(self):
           if self.headers.get("Accept", "") == "application/arena-json":
@@ -31,20 +37,25 @@ setup: |-
       def log_message(self, *a):
           pass
   HTTPServer(("127.0.0.1", 7700), H).serve_forever()
+
   FIN
+
   sed -i "s/__BANDERA__/$DOJO_FLAG/" /etc/arena/api7.py
+
   nohup python3 /etc/arena/api7.py >/dev/null 2>&1 &
+
   sleep 2
+
   chown -R agent:agent /home/agent
 solution: "curl -s -H 'Accept: application/arena-json' http://127.0.0.1:7700/api"
 hints:
   - ss -tln te confirma que el puerto escucha.
-  - 'La cabecera se manda con curl -H "Accept: application/arena-json" (el GET 406 se arregla
-    exactamente así).'
+  - 'La cabecera se manda con curl -H "Accept: application/arena-json" (el GET
+    406 se arregla exactamente así).'
   - "curl -s -H 'Accept: application/arena-json' http://127.0.0.1:7700/api"
-teach: "Las cabeceras de PETICIÓN son la mitad de la conversación HTTP: Accept, Authorization,
-  Content-Type… curl -H las teclea por ti. Los errores 406 normalmente delatan una cabecera
-  ausente."
+teach: "Las cabeceras de PETICIÓN son la mitad de la conversación HTTP: Accept,
+  Authorization, Content-Type… curl -H las teclea por ti. Los errores 406
+  normalmente delatan una cabecera ausente."
 cheatsheet:
   - cmd: 'curl -H "X: y" URL'
     desc: mandar cabecera a medida
@@ -56,3 +67,6 @@ keywords:
   - accept
   - api
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "secreto del api: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

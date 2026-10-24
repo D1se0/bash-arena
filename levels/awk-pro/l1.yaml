@@ -5,9 +5,10 @@ title: Campos con delimitador custom
 subtitle: awk -F con split por los dos puntos
 xp: 60
 difficulty: 4
-brief: El fichero roles.txt usa delimitador ":". La 1.ª columna es el usuario, la 2.ª el
-  rol. El dato relevante sólo es el ROL.
-goal: De roles.txt imprime la SEGUNDA columna (el rol) respetando su delimitador del fichero.
+brief: El fichero roles.txt usa delimitador ":". La 1.ª columna es el usuario,
+  la 2.ª el rol. El dato relevante sólo es el ROL.
+goal: De roles.txt imprime la SEGUNDA columna (el rol) respetando su delimitador
+  del fichero.
 setup: |
   #!/bin/bash
   set -e
@@ -21,12 +22,13 @@ setup: |
   chown agent:agent /home/agent/roles.txt
 solution: "awk -F: '{print $2}' /home/agent/roles.txt"
 hints:
-  - "awk separa por espacios cuando no le dices nada: -F: cambia el separador a «dos
-    puntos»."
+  - "awk separa por espacios cuando no le dices nada: -F: cambia el separador a
+    «dos puntos»."
   - "Con -F: el campo $2 es la columna delimitada por :."
   - "awk -F: '{print $2}' /home/agent/roles.txt"
-teach: "-F es la FLAG de DELIMITADOR: sin él, awk asume espacios y tabs. Si tu data no va
-  separada por espacios, este es el PRIMER paso. El $2 apunta SIEMPRE al segundo campo."
+teach: "-F es la FLAG de DELIMITADOR: sin él, awk asume espacios y tabs. Si tu
+  data no va separada por espacios, este es el PRIMER paso. El $2 apunta SIEMPRE
+  al segundo campo."
 cheatsheet:
   - cmd: "awk -F: '{print $2}' f"
     desc: "segundo campo separado por :"
@@ -38,3 +40,10 @@ keywords:
   - delimitador
   - campos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      admin
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      lector
+      admin

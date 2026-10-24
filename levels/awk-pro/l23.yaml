@@ -5,9 +5,10 @@ title: El promedio contabilizado
 subtitle: awk suma + END (promedio)
 xp: 75
 difficulty: 5
-brief: El fichero puntajes.lst trae «id puntaje». Se necesita el PROMEDIO de la columna puntaje.
-goal: De puntajes.lst imprime cada línea tal cual y al final el PROMEDIO de la 2.ª columna
-  con printf (2 decimales).
+brief: El fichero puntajes.lst trae «id puntaje». Se necesita el PROMEDIO de la
+  columna puntaje.
+goal: De puntajes.lst imprime cada línea tal cual y al final el PROMEDIO de la
+  2.ª columna con printf (2 decimales).
 setup: |
   #!/bin/bash
   set -e
@@ -19,16 +20,16 @@ setup: |
   d $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/puntajes.lst
-solution: "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }'
-  /home/agent/puntajes.lst"
+solution: "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR
+  }' /home/agent/puntajes.lst"
 hints:
   - tot += $2 acumula la base; NR es el número de líneas vistas.
-  - printf "%.2f\n" redondea a dos decimales; el print intermedio deja a la vista la línea
-    del testigo.
+  - printf "%.2f\n" redondea a dos decimales; el print intermedio deja a la
+    vista la línea del testigo.
   - "awk '{ tot += $2; print $0 } END { printf \"media: %.2f\\n\", tot/NR }'
     /home/agent/puntajes.lst"
-teach: Promedio = acumular + contar + dividir en END. awk yprintf están. YOUR atajo aquí
-  son las variables NR (contadores) y tot (sum).
+teach: Promedio = acumular + contar + dividir en END. awk yprintf están. YOUR
+  atajo aquí son las variables NR (contadores) y tot (sum).
 cheatsheet:
   - cmd: awk '{ tot += $2 } END { print tot/NR }' f
     desc: promedio col. 2 con NR
@@ -40,3 +41,11 @@ keywords:
   - NR
   - END
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      a 4
+      b 8
+      c 6
+      d FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      media: 4.50

@@ -8,8 +8,8 @@ brief: >
   Otro clásico: el fichero es de root y el agente no debe forzarlo, sino
   reclamar la propiedad legítima. chown es la herramienta del dueño.
 goal: >
-  Cambia la propiedad del fichero /home/agent/config-premium.conf de root
-  a agent y muéstralo (contiene la flag).
+  Cambia la propiedad del fichero /home/agent/config-premium.conf de root a
+  agent y muéstralo (contiene la flag).
 setup: |
   #!/bin/bash
   set -e
@@ -18,18 +18,25 @@ setup: |
   chown root:root /home/agent/config-premium.conf
   chmod 600 /home/agent/config-premium.conf
 hints:
-  - "sudo chown agent:agent /home/agent/config-premium.conf"
-  - "tras el chown los permisos 600 ya te dejan leer como dueño."
+  - sudo chown agent:agent /home/agent/config-premium.conf
+  - tras el chown los permisos 600 ya te dejan leer como dueño.
 teach: >
   `chown usuario:grupo fichero` transfiere propiedad; solo root puede
   quitar/poner dueños ajenos. La forma `chown :grupo` cambia solo grupo.
 cheatsheet:
-  - {cmd: 'chown user f', desc: cambia propietario}
-  - {cmd: 'chown user:grupo f', desc: cambia propietario y grupo}
-  - {cmd: 'ls -l f', desc: muestra permisos y dueños}
+  - cmd: chown user f
+    desc: cambia propietario
+  - cmd: chown user:grupo f
+    desc: cambia propietario y grupo
+  - cmd: ls -l f
+    desc: muestra permisos y dueños
 solution: |
   sudo chown agent:agent /home/agent/config-premium.conf
   cat /home/agent/config-premium.conf
-
-keywords: [chown, sudo]
+keywords:
+  - chown
+  - sudo
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

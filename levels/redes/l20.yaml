@@ -1,45 +1,63 @@
 id: redes-l20
 track: redes
 index: 20
-title: "La llave del puerto"
-subtitle: "leer un valor JSON y montar una URL"
+title: La llave del puerto
+subtitle: leer un valor JSON y montar una URL
 xp: 60
 difficulty: 4
 brief: >
-  > La estación sur del dojo abre un canal web OSCURO: nadie recuerda el
-  > número de puerto… pero quedó grabado en /var/dojo/canal.json. Localiza
-  > la llave (el número) y consúltala a mano con curl en el localhost.
+  > La estación sur del dojo abre un canal web OSCURO: nadie recuerda el >
+  número de puerto… pero quedó grabado en /var/dojo/canal.json. Localiza > la
+  llave (el número) y consúltala a mano con curl en el localhost.
 goal: >
-  Lee el número de puerto que está dentro de /var/dojo/canal.json y usa curl para pedir http://127.0.0.1:PUERTO/tarjeta.txt, donde viaja la flag.
+  Lee el número de puerto que está dentro de /var/dojo/canal.json y usa curl
+  para pedir http://127.0.0.1:PUERTO/tarjeta.txt, donde viaja la flag.
 hints:
-  - "cat /var/dojo/canal.json muestra el fichero con el campo \"puerto\"."
-  - "grep -oE '[0-9]+' canal.json | head -n 1 extrae el número."
-  - "curl -s http://127.0.0.1:PUERTO/tarjeta.txt se lo come."
-teach: >
+  - cat /var/dojo/canal.json muestra el fichero con el campo "puerto".
+  - grep -oE '[0-9]+' canal.json | head -n 1 extrae el número.
+  - curl -s http://127.0.0.1:PUERTO/tarjeta.txt se lo come.
+teach: |
   Un mini-parse de un JSON plano: localiza el valor del campo y úsalo en la URL.
-  
+
       cat /var/dojo/canal.json        → {"instancia": "sur", "puerto": 9341}
       port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1)
       curl -s http://127.0.0.1:$port/tarjeta.txt
-  
+
   Con la variable de shell $port la URL se compone al vuelo.
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 20" "Redes"
+
   mkdir -p /srv/estacion /var/dojo
+
   printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /srv/estacion/tarjeta.txt
-  printf '{"instancia": "estacion-sur", "puerto": 9341}\n' > /var/dojo/canal.json
-  (setsid python3 -m http.server 9341 --directory /srv/estacion --bind 127.0.0.1 &)
-  for i in 1 2 3 4 5 6 7 8 9 10; do ss -tln | grep -q ':9341' && break; sleep 0.3; done
-solution: |
-  port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1); curl -s http://127.0.0.1:$port/tarjeta.txt
+
+  printf '{"instancia": "estacion-sur", "puerto": 9341}\n' >
+  /var/dojo/canal.json
+
+  (setsid python3 -m http.server 9341 --directory /srv/estacion --bind 127.0.0.1
+  &)
+
+  for i in 1 2 3 4 5 6 7 8 9 10; do ss -tln | grep -q ':9341' && break; sleep
+  0.3; done
+solution: >
+  port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1); curl -s
+  http://127.0.0.1:$port/tarjeta.txt
 cheatsheet:
-  - {cmd: "grep -oE PATRÓN fich", desc: "extrae solo el texto que encaja"}
-  - {cmd: "var=$(CMD)", desc: "captura la salida de un comando en una variable"}
-  - {cmd: "curl -s http://127.0.0.1:$port/…", desc: "petición HTTP al puerto guardado"}
+  - cmd: grep -oE PATRÓN fich
+    desc: extrae solo el texto que encaja
+  - cmd: var=$(CMD)
+    desc: captura la salida de un comando en una variable
+  - cmd: curl -s http://127.0.0.1:$port/…
+    desc: petición HTTP al puerto guardado
 keywords:
-  - "grep"
-  - "var=$(CMD)"
-  - "curl"
+  - grep
+  - var=$(CMD)
+  - curl
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

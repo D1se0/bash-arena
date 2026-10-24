@@ -5,10 +5,11 @@ title: Fragmentos en el canal
 subtitle: base64 troceado por el log
 xp: 50
 difficulty: 4
-brief: Un exfiltrado partió la marca en bloques base64 de línea suelta, mezclados con líneas
-  normales del canal. Recoge TODO, une y decodifica una vez.
-goal: Extrae las líneas que parezcan base64 (solo para A-Z a-z 0-9 +/=) de /home/agent/canal.log,
-  cóncatenas sin saltos y decodifica.
+brief: Un exfiltrado partió la marca en bloques base64 de línea suelta,
+  mezclados con líneas normales del canal. Recoge TODO, une y decodifica una
+  vez.
+goal: Extrae las líneas que parezcan base64 (solo para A-Z a-z 0-9 +/=) de
+  /home/agent/canal.log, cóncatenas sin saltos y decodifica.
 setup: |-
   #!/bin/bash
   set -e
@@ -24,17 +25,19 @@ setup: |-
   echo "fin del canal: normal" >> /home/agent/canal.log
   chown agent:agent /home/agent/canal.log
   chown -R agent:agent /home/agent
-solution: "grep -oE 'chip [0-9]+: [A-Za-z0-9+/=]+' /home/agent/canal.log | sed 's/.*: //' | tr -d
-  '\\n' | base64 -d"
+solution: "grep -oE 'chip [0-9]+: [A-Za-z0-9+/=]+' /home/agent/canal.log | sed
+  's/.*: //' | tr -d '\\n' | base64 -d"
 hints:
-  - 'Los bloques van como "chip N: BLOQUE": grep -oE "chip [0-9]+: [A-Za-z0-9+/=]+" piesa el patrón.'
+  - 'Los bloques van como "chip N: BLOQUE": grep -oE "chip [0-9]+:
+    [A-Za-z0-9+/=]+" piesa el patrón.'
   - |-
     sed "s/.*: //" quita el label; tr -d "
     " une; base64 -d decodifica una sola vez.
-  - "grep -oE 'chip [0-9]+: [A-Za-z0-9+/=]+' canal.log | sed 's/.*: //' | tr -d '\\n' | base64 -d"
-teach: "Exfiltrar es trocear: base64 troceado por líneas sueltas de un log es una canal clásico. La
-  receta del analista: extraer los candidatos con regex, unir (tr -d '\\n') y decodificar UNA VEZ al
-  final."
+  - "grep -oE 'chip [0-9]+: [A-Za-z0-9+/=]+' canal.log | sed 's/.*: //' | tr -d
+    '\\n' | base64 -d"
+teach: "Exfiltrar es trocear: base64 troceado por líneas sueltas de un log es
+  una canal clásico. La receta del analista: extraer los candidatos con regex,
+  unir (tr -d '\\n') y decodificar UNA VEZ al final."
 cheatsheet:
   - cmd: grep -oE '[A-Za-z0-9+/=]{8,}' f
     desc: candidatos b64
@@ -45,3 +48,6 @@ keywords:
   - trazos
   - exfiltracion
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

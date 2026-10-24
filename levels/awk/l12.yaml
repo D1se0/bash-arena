@@ -5,10 +5,11 @@ title: Cadena del caudal
 subtitle: awk acumulador con filtro
 xp: 80
 difficulty: 5
-brief: El medidor de caudal escribe «estación valor token». Solo las estaciones con valor
-  superior a 50 llevan fragmentos de la marca; el resto suelta señuelos.
-goal: "De caudal.txt: imprime la concatenación de los tokens (3.º campo) de las filas con
-  valor superior a 50."
+brief: El medidor de caudal escribe «estación valor token». Solo las estaciones
+  con valor superior a 50 llevan fragmentos de la marca; el resto suelta
+  señuelos.
+goal: "De caudal.txt: imprime la concatenación de los tokens (3.º campo) de las
+  filas con valor superior a 50."
 setup: |
   #!/bin/bash
   set -e
@@ -27,8 +28,9 @@ hints:
   - Filtrar $2 > 50 deja solo las filas del caudal crítico.
   - La variable t acumula el campo 3 de cada fila válida; END lo imprime.
   - awk '$2 > 50 {t = t $3} END {print t}' /home/agent/caudal.txt
-teach: "awk acumulando bajo una condición: filtro escalar + END. Con umbral numérico
-  seleccionas y con la yuxtación t = t $3. ensamblas piezas repartidas por el fichero."
+teach: "awk acumulando bajo una condición: filtro escalar + END. Con umbral
+  numérico seleccionas y con la yuxtación t = t $3. ensamblas piezas repartidas
+  por el fichero."
 cheatsheet:
   - cmd: awk 'cond {t = t $n} END {print t}' f
     desc: acumulador con filtro
@@ -39,3 +41,6 @@ keywords:
   - acumulador
   - END
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,30 +1,32 @@
 id: busqueda-l20
 track: busqueda
 index: 20
-title: "La colmena silenciosa"
+title: La colmena silenciosa
 subtitle: "find por mtime: el fichero más reciente"
 xp: 40
 difficulty: 3
 brief: >
-  > La colmena guarda panales con fechas de fabricación distintas (algunas
-  > desde hace meses). La abeja reina dejó su mensaje en el panal MÁS
-  > NOVEDOSO: el único marcado con fecha de hoy.
+  > La colmena guarda panales con fechas de fabricación distintas (algunas >
+  desde hace meses). La abeja reina dejó su mensaje en el panal MÁS > NOVEDOSO:
+  el único marcado con fecha de hoy.
 goal: >
-  Encuentra en ~/colmena el fichero modificado más recientemente (los demás tienenfechas antiguas) y muestra su contenido.
+  Encuentra en ~/colmena el fichero modificado más recientemente (los demás
+  tienenfechas antiguas) y muestra su contenido.
 hints:
-  - "ls -t ordena por fecha de modificación (la más nueva primero)."
-  - "find permite probar antigüedad: -mmin -1 son los tocados hace menos de 1 minuto."
+  - ls -t ordena por fecha de modificación (la más nueva primero).
+  - "find permite probar antigüedad: -mmin -1 son los tocados hace menos de 1
+    minuto."
   - "jj: ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}"
 teach: >
   ls -t reordena por mtime (modificación): el primero es el más reciente.
   Combinando con head/xargs se lee directamente:
-  
+
       ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}
-  
+
   O con find, para árboles grandes:
-  
+
       find ~/colmena -mmin -1 -type f -exec cat {} +
-  
+
   (-mmin -1 = modificado hace menos de 1 minuto).
 setup: |
   #!/bin/bash
@@ -41,10 +43,16 @@ setup: |
 solution: |
   ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}
 cheatsheet:
-  - {cmd: "ls -t", desc: "ordena por fecha de modificación"}
-  - {cmd: "find -mmin -N", desc: "modificado hace menos de N minutos"}
-  - {cmd: "find -newer FICHERO", desc: "modificado después que otro fichero"}
+  - cmd: ls -t
+    desc: ordena por fecha de modificación
+  - cmd: find -mmin -N
+    desc: modificado hace menos de N minutos
+  - cmd: find -newer FICHERO
+    desc: modificado después que otro fichero
 keywords:
-  - "ls"
-  - "find"
+  - ls
+  - find
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

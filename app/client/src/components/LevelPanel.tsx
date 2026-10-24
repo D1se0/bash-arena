@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useArena } from '../store';
+import { ExamplesModal } from './ExamplesModal';
 
 export default function LevelPanel() {
   const level = useArena((s) => s.level);
   const send = useArena((s) => s.send);
   const [showSheet, setShowSheet] = useState(false);
+  const [showExamples, setShowExamples] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [flag, setFlag] = useState('');
   const [shake, setShake] = useState(false);
@@ -234,7 +236,20 @@ export default function LevelPanel() {
         >
           {showSheet ? 'cerrar cheat sheet' : 'cheat sheet'}
         </button>
+        {(level.examples?.length ?? 0) > 0 && (
+          <button
+            onClick={() => setShowExamples(true)}
+            className="rounded-lg bg-frost/10 hover:bg-frost/20 text-frost/90 hover:text-nord6 px-3 py-1.5"
+            title="cómo debe verse la salida (sin revelar el comando)"
+          >
+            ⚗️ ejemplos
+          </button>
+        )}
       </div>
+
+      {showExamples && (
+        <ExamplesModal levelId={level.id} examples={level.examples ?? []} onClose={() => setShowExamples(false)} />
+      )}
 
       {showSheet && (
         <div className="arena-pop rounded-lg bg-[#161a20] border border-edge focus:border-ice max-h-64 overflow-y-auto p-3 text-xs font-mono">

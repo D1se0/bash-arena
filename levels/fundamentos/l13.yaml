@@ -5,8 +5,8 @@ title: El más reciente
 subtitle: ordenar por fecha con ls -t
 xp: 30
 difficulty: 2
-brief: En ~/registro hay fichas con fechas distintas. Solo la ficha modificada más recientemente
-  lleva la marca del dojo.
+brief: En ~/registro hay fichas con fechas distintas. Solo la ficha modificada
+  más recientemente lleva la marca del dojo.
 goal: Descubre qué ficha de ~/registro se tocó por última vez y muéstrala.
 setup: |-
   #!/bin/bash
@@ -25,8 +25,9 @@ hints:
   - ls -t ordena por fecha de modificación (la más nueva primero).
   - "Combina: cat $(ls -t | head -n1) dentro del directorio."
   - cat /home/agent/registro/$(ls -t /home/agent/registro | head -n1)
-teach: ls -t es el modo cronológico de ls; con -t | head tienes el último fichero tocado en una sola
-  tubería. Perfecto para "¿qué cambió aquí hace un rato?".
+teach: ls -t es el modo cronológico de ls; con -t | head tienes el último
+  fichero tocado en una sola tubería. Perfecto para "¿qué cambió aquí hace un
+  rato?".
 cheatsheet:
   - cmd: ls -t
     desc: ordena por fecha (nuevo→viejo)
@@ -37,3 +38,6 @@ keywords:
   - touch
   - orden
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "última entrada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

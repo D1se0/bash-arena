@@ -5,39 +5,63 @@ subtitle: diff y patch
 xp: 55
 difficulty: 3
 brief: >
-  Hay un fichero en su versión primitiva. Existe un parche que lo
-  actualiza (y de paso inserta la clave en la línea correcta).
+  Hay un fichero en su versión primitiva. Existe un parche que lo actualiza (y
+  de paso inserta la clave en la línea correcta).
 goal: >
-  Aplica el parche /var/dojo/mejora.patch al fichero /var/dojo/libretas.md
-  y muestra el fichero actualizado: ahí está la flag nueva.
-setup: |
+  Aplica el parche /var/dojo/mejora.patch al fichero /var/dojo/libretas.md y
+  muestra el fichero actualizado: ahí está la flag nueva.
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 04" "Archivos"
-  printf '%s\n' 'Libretas vueltas v1: sin nada a la vista. Toca parchear.' > /var/dojo/libretas.md
+
+  printf '%s\n' 'Libretas vueltas v1: sin nada a la vista. Toca parchear.' >
+  /var/dojo/libretas.md
+
   # versión nueva (con flag) → diff -u genera el parche real
+
   cp /var/dojo/libretas.md /var/dojo/libretas.md.orig
-  printf '%s\n' "Libretas vueltas v2: parche aplicado con éxito. Código: $DOJO_FLAG" > /var/dojo/.libretas-v2
+
+  printf '%s\n' "Libretas vueltas v2: parche aplicado con éxito. Código:
+  $DOJO_FLAG" > /var/dojo/.libretas-v2
+
   diff -u /var/dojo/libretas.md.orig /var/dojo/.libretas-v2 \
     | sed 's|\.libretas-v2|libretas.md|' \
     > /var/dojo/mejora.patch
   rm -f /var/dojo/.libretas-v2
+
   chown agent:agent /var/dojo /var/dojo/libretas.md /var/dojo/mejora.patch
 hints:
-  - "cp una copia antes de parchear si quieres conservar el original."
-  - "cd /var/dojo && patch -p0 libretas.md < mejora.patch  (o patch libretas.md < mejora.patch)"
+  - cp una copia antes de parchear si quieres conservar el original.
+  - cd /var/dojo && patch -p0 libretas.md < mejora.patch  (o patch libretas.md <
+    mejora.patch)
 teach: >
-  `diff` genera el parche (diff -u viejo nuevo > parche.diff) y `patch
-  fichero < parche.diff` lo aplica. El formato unificado (-u) es el que
-  usan git y los diffs de código: contexto con espacio, + añade, - quita.
+  `diff` genera el parche (diff -u viejo nuevo > parche.diff) y `patch fichero <
+  parche.diff` lo aplica. El formato unificado (-u) es el que usan git y los
+  diffs de código: contexto con espacio, + añade, - quita.
 cheatsheet:
-  - {cmd: 'patch fichero < parche', desc: aplica un diff}
-  - {cmd: 'diff -u viejo nuevo', desc: genera parche unificado}
-  - {cmd: 'patch -R < parche', desc: deshace el parche (reverse)}
+  - cmd: patch fichero < parche
+    desc: aplica un diff
+  - cmd: diff -u viejo nuevo
+    desc: genera parche unificado
+  - cmd: patch -R < parche
+    desc: deshace el parche (reverse)
 solution: |
   cd /var/dojo
   patch libretas.md < mejora.patch
   cat libretas.md
-keywords: [patch, diff]
+keywords:
+  - patch
+  - diff
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      patching file libretas.md
+
+      Libretas vueltas v2: parche aplicado con éxito. Código:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

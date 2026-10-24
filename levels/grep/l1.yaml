@@ -5,8 +5,8 @@ title: El diario del dojo
 subtitle: "grep básico: líneas que contienen algo"
 xp: 25
 difficulty: 1
-brief: "El diario de visitas registra cada paso por el dojo. Una entrada anómala dejó
-  constancia del hallazgo: es la única que habla de «hallazgo»."
+brief: "El diario de visitas registra cada paso por el dojo. Una entrada anómala
+  dejó constancia del hallazgo: es la única que habla de «hallazgo»."
 goal: Imprime la línea del diario que contiene la palabra hallazgo.
 setup: |
   #!/bin/bash
@@ -26,9 +26,9 @@ hints:
   - grep PATRÓN FICHERO imprime las líneas que contienen PATRÓN.
   - "El patrón es una palabra plana: hallazgo."
   - grep 'hallazgo' /home/agent/visitas.log
-teach: "grep busca un patrón en un fichero y muestra cada línea que lo contiene. Es la
-  base de todo el filtrado en la terminal: las variantes siguientes (−i, −v, −o…) son solo
-  ajustes de esta misma idea."
+teach: "grep busca un patrón en un fichero y muestra cada línea que lo contiene.
+  Es la base de todo el filtrado en la terminal: las variantes siguientes (−i,
+  −v, −o…) son solo ajustes de esta misma idea."
 cheatsheet:
   - cmd: grep patrón fichero
     desc: líneas que contienen el patrón
@@ -39,3 +39,6 @@ keywords:
   - filtrado
   - log
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 10:02 hallazgo FLAG{d3b09a4f7c2e1b8d6041a5f3}

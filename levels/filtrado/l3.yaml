@@ -5,11 +5,11 @@ subtitle: wc, cut
 xp: 35
 difficulty: 2
 brief: >
-  Una exportación CSV del personal guarda en una columna plants secreta el
-  token de la cúpula. Solo lo sabe quien sea capaz de extraer columnas.
+  Una exportación CSV del personal guarda en una columna plants secreta el token
+  de la cúpula. Solo lo sabe quien sea capaz de extraer columnas.
 goal: >
-  En /var/dojo/personal.csv hay una fila que empieza por sysadmin;
-  recupera la columna secreta (última) de esa fila. Necesitas cut.
+  En /var/dojo/personal.csv hay una fila que empieza por sysadmin; recupera la
+  columna secreta (última) de esa fila. Necesitas cut.
 setup: |
   #!/bin/bash
   set -e
@@ -24,19 +24,26 @@ setup: |
   } > /var/dojo/personal.csv
   chown agent:agent /var/dojo/personal.csv
 hints:
-  - "cut -d, -f4 fichero saca la 4ª columna separada por comas."
+  - cut -d, -f4 fichero saca la 4ª columna separada por comas.
   - "Combina cut con grep si prefieres: grep sysadmin fichero | cut -d, -f4."
-  - "Si el CSV se te resiste, wc -l te dice cuántas filas mirar."
+  - Si el CSV se te resiste, wc -l te dice cuántas filas mirar.
 teach: >
-  `cut -d SEP -f N` recorta campos de texto delimitado. Con -f3-4 pides
-  varios y range 5- hasta el final. `cut` no entiende comillas dentro de
-  campo con espacios: para CSVs con comillas usa awk.
+  `cut -d SEP -f N` recorta campos de texto delimitado. Con -f3-4 pides varios y
+  range 5- hasta el final. `cut` no entiende comillas dentro de campo con
+  espacios: para CSVs con comillas usa awk.
 cheatsheet:
-  - {cmd: 'cut -d, -f4 fichero', desc: saca la 4ª columna separada por comas}
-  - {cmd: 'cut -f2- fichero', desc: desde el 2º campo (por defecto tabulación)}
-  - {cmd: 'wc -l fichero', desc: cuenta líneas}
+  - cmd: cut -d, -f4 fichero
+    desc: saca la 4ª columna separada por comas
+  - cmd: cut -f2- fichero
+    desc: desde el 2º campo (por defecto tabulación)
+  - cmd: wc -l fichero
+    desc: cuenta líneas
 solution: |
   grep sysadmin /var/dojo/personal.csv | cut -d, -f4
-
-keywords: [cut, wc]
+keywords:
+  - cut
+  - wc
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

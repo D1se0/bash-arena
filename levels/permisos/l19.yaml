@@ -1,31 +1,32 @@
 id: permisos-l19
 track: permisos
 index: 19
-title: "El sello del grupo"
-subtitle: "chmod con sudo para el dueño root"
+title: El sello del grupo
+subtitle: chmod con sudo para el dueño root
 xp: 50
 difficulty: 4
 brief: >
-  > El acta del consejo (/var/dojo/acta.txt) es de root y su grupo
-  > "auditores" —del que tú formas parte, pero no es tu grupo primario.
-  > Con los permisos 640 actuales, el grupo debería poder leerla... y
-  > aunque ERES miembro del grupo, el fichero está sellado: faltan los
-  > bits correctos. Solo un superpoder la abrirá.
-goal: >
+  > El acta del consejo (/var/dojo/acta.txt) es de root y su grupo > "auditores"
+  —del que tú formas parte, pero no es tu grupo primario. > Con los permisos 640
+  actuales, el grupo debería poder leerla... y > aunque ERES miembro del grupo,
+  el fichero está sellado: faltan los > bits correctos. Solo un superpoder la
+  abrirá.
+goal: |
   Haz legible el acta para el grupo (o para todos) con sudo y muestra la flag.
 hints:
   - "sudo ejecuta el comando como root: sudo chmod …"
-  - "El 6 en 640 son lectura+escritura del DUEÑO; el grupo tiene un 4 (leer)… ¿o no?"
-  - "Los bits se pueden dar numéricos (644) o simbólicos (g+r / a+r)."
+  - El 6 en 640 son lectura+escritura del DUEÑO; el grupo tiene un 4 (leer)… ¿o
+    no?
+  - Los bits se pueden dar numéricos (644) o simbólicos (g+r / a+r).
 teach: >
-  Un fichero root:auditores con -rw-r----- debería dejar leer al grupo… pero
-  si el sello se puso en 600 (grupo sin permisos), el miembro del grupo no lee.
-  Como agente (miembro del grupo pero SIN ser root), no puedes chmod; para
-  ello está sudo:
-  
+  Un fichero root:auditores con -rw-r----- debería dejar leer al grupo… pero si
+  el sello se puso en 600 (grupo sin permisos), el miembro del grupo no lee.
+  Como agente (miembro del grupo pero SIN ser root), no puedes chmod; para ello
+  está sudo:
+
       sudo chmod 644 /var/dojo/acta.txt
       cat /var/dojo/acta.txt
-  
+
   644 = dueño lee/escribe, grupo y otros leen.
 setup: |
   #!/bin/bash
@@ -40,11 +41,17 @@ setup: |
 solution: |
   sudo chmod 644 /var/dojo/acta.txt && cat /var/dojo/acta.txt
 cheatsheet:
-  - {cmd: "sudo chmod 644 F", desc: "da permisos de lectura a todos"}
-  - {cmd: "chmod g+r F", desc: "variante simbólica: grupo puede leer"}
-  - {cmd: "id", desc: "revisa a qué grupos perteneces"}
+  - cmd: sudo chmod 644 F
+    desc: da permisos de lectura a todos
+  - cmd: chmod g+r F
+    desc: "variante simbólica: grupo puede leer"
+  - cmd: id
+    desc: revisa a qué grupos perteneces
 keywords:
-  - "sudo"
-  - "chmod"
-  - "id"
+  - sudo
+  - chmod
+  - id
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

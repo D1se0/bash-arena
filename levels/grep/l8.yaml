@@ -5,10 +5,10 @@ title: El bosque de expedientes
 subtitle: "grep -r: búsqueda recursiva"
 xp: 55
 difficulty: 3
-brief: Los expedientes están repartidos en carpetas por año y mes. Solo quien mira en
-  profundidad encuentra la entrada con la marca.
-goal: Recorre todo el árbol expedientes/ y muestra la línea que contiene la palabra
-  confirmada (con su ruta y línea).
+brief: Los expedientes están repartidos en carpetas por año y mes. Solo quien
+  mira en profundidad encuentra la entrada con la marca.
+goal: Recorre todo el árbol expedientes/ y muestra la línea que contiene la
+  palabra confirmada (con su ruta y línea).
 setup: >
   #!/bin/bash
 
@@ -16,8 +16,8 @@ setup: >
 
   arena-prompt "LVL 08" "Grep"
 
-  mkdir -p /home/agent/expedientes/2026/enero /home/agent/expedientes/2025/diciembre
-  /home/agent/expedientes/2026/febrero
+  mkdir -p /home/agent/expedientes/2026/enero
+  /home/agent/expedientes/2025/diciembre /home/agent/expedientes/2026/febrero
 
   echo 'otro hallazgo en la mesa: la copia sin marca' >
   /home/agent/expedientes/2026/enero/h-12.txt
@@ -37,8 +37,9 @@ hints:
   - "−r baja recursivamente por los subdirectorios: grep PATRÓN DIRECTORIO."
   - Dos líneas dicen «hallazgo confirmado»; la verdadera trae la marca.
   - grep -r 'hallazgo confirmado' /home/agent/expedientes
-teach: "grep -r recorre el árbol: imprime cada coincidencia con su ruta de origen. Con -rn
-  numeras las líneas del hallazgo; con -rl recibes solo los nombres de fichero."
+teach: "grep -r recorre el árbol: imprime cada coincidencia con su ruta de
+  origen. Con -rn numeras las líneas del hallazgo; con -rl recibes solo los
+  nombres de fichero."
 cheatsheet:
   - cmd: grep -r patrón dir
     desc: "recursivo: ruta + línea"
@@ -49,3 +50,11 @@ keywords:
   - -r
   - recursivo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      /home/agent/expedientes/2025/diciembre/h-05.txt:hallazgo confirmado (el
+      disputado, sin marca)
+
+      /home/agent/expedientes/2026/febrero/h-31.txt:hallazgo confirmado con la
+      marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}

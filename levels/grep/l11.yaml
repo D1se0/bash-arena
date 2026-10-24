@@ -5,9 +5,9 @@ title: Clases con contadores
 subtitle: "grep -E: {n} exacto y rangos"
 xp: 70
 difficulty: 4
-brief: "El registro del laboratorio guarda muestras con identificador hex compacto. Solo
-  una fila respeta el formato EXACTO: 16 símbolos hexadecimales minúsculas seguidos de un
-  espacio."
+brief: "El registro del laboratorio guarda muestras con identificador hex
+  compacto. Solo una fila respeta el formato EXACTO: 16 símbolos hexadecimales
+  minúsculas seguidos de un espacio."
 goal: Imprime del registro solo la línea cuyo primer campo sea exactamente 16
   hexadecimales en minúscula seguidos de un espacio.
 setup: |
@@ -27,12 +27,12 @@ setup: |
 solution: grep -E '^[a-f0-9]{16} ' /home/agent/muestras.txt
 hints:
   - "[a-f0-9] es un rango: solo letras a–f y dígitos en minúscula."
-  - "{16} pide EXACTAMENTE 16 repeticiones del expediente anterior; el espacio después
-    delimita la columna."
+  - "{16} pide EXACTAMENTE 16 repeticiones del expediente anterior; el espacio
+    después delimita la columna."
   - grep -E '^[a-f0-9]{16} ' /home/agent/muestras.txt
-teach: "grep -E con rangos y contadores exactos: {16} pide exactamente 16 repeticiones (ni
-  una más). El ancla ^ fija el inicio y el espacio final delimita el campo: sin explore,
-  casaría prefijos de líneas más largas."
+teach: "grep -E con rangos y contadores exactos: {16} pide exactamente 16
+  repeticiones (ni una más). El ancla ^ fija el inicio y el espacio final
+  delimita el campo: sin explore, casaría prefijos de líneas más largas."
 cheatsheet:
   - cmd: grep -E '^[a-f0-9]{16} ' f
     desc: ID hex exacto de 16
@@ -44,3 +44,6 @@ keywords:
   - clases
   - contador
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 1f2e3d4c5b6a7980 FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,9 +5,10 @@ title: Purga de basura
 subtitle: find -name + -delete
 xp: 35
 difficulty: 2
-brief: work/ está lleno de ficheros .tmp que ocultan los reales a simple vista. Limpia primero,
-  busca después.
-goal: Borra todos los .tmp de /home/agent/work y muestra la línea de la clave que queda.
+brief: work/ está lleno de ficheros .tmp que ocultan los reales a simple vista.
+  Limpia primero, busca después.
+goal: Borra todos los .tmp de /home/agent/work y muestra la línea de la clave
+  que queda.
 setup: >-
   #!/bin/bash
 
@@ -19,8 +20,8 @@ setup: >-
 
   i=1
 
-  while [ $i -le 12 ]; do echo "ruido temporal $i" > /home/agent/work/sesion-$i.tmp; i=$((i+1));
-  done
+  while [ $i -le 12 ]; do echo "ruido temporal $i" >
+  /home/agent/work/sesion-$i.tmp; i=$((i+1)); done
 
   echo "el resto no es basura: $DOJO_FLAG" > /home/agent/work/nota-real-01.txt
 
@@ -32,8 +33,9 @@ hints:
   - find -name "*.tmp" selecciona por patrón de nombre.
   - La acción -delete elimina lo que casa (haz un ls antes para confirmar).
   - find work -name '*.tmp' -delete && grep -r FLAG work
-teach: "find + -delete es la escoba quirúrgica: muy potente, así que previsualiza el listado sin
-  ella antes. Tras la limpieza, los nombres verdaderos emergen."
+teach: "find + -delete es la escoba quirúrgica: muy potente, así que
+  previsualiza el listado sin ella antes. Tras la limpieza, los nombres
+  verdaderos emergen."
 cheatsheet:
   - cmd: find d -name '*.tmp'
     desc: previsualiza qué borrarás
@@ -44,3 +46,7 @@ keywords:
   - limpieza
   - xargs
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "/home/agent/work/nota-real-01.txt:el resto no es basura:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}"

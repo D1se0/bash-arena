@@ -1,34 +1,39 @@
 id: forense-l19
 track: forense
 index: 19
-title: "El paquete sellado"
-subtitle: "base64 en un log"
+title: El paquete sellado
+subtitle: base64 en un log
 xp: 65
 difficulty: 5
 brief: >
-  > En el sucio registro ~/registro.log un "paquete" viaja codificado en
-  > base64 en la línea que empieza por PAYLOAD. Al decodificarlo, la flag
-  > asoma. Los logs del dojo guardan todo; incluso lo que no deberían.
+  > En el sucio registro ~/registro.log un "paquete" viaja codificado en >
+  base64 en la línea que empieza por PAYLOAD. Al decodificarlo, la flag > asoma.
+  Los logs del dojo guardan todo; incluso lo que no deberían.
 goal: >
-  Extrae el segmento base64 de la línea PAYLOAD de ~/registro.log y decodifícalo para mostrar la flag.
+  Extrae el segmento base64 de la línea PAYLOAD de ~/registro.log y decodifícalo
+  para mostrar la flag.
 hints:
-  - "grep PAYLOAD fichero encuentra la línea; con awk '{print $3}' se saca el 3.º campo."
-  - "base64 -d decodifica en el otro sentido."
-  - "grep -F … | awk \"{print \\$2}\" | base64 -d"
-teach: >
+  - grep PAYLOAD fichero encuentra la línea; con awk '{print $3}' se saca el 3.º
+    campo.
+  - base64 -d decodifica en el otro sentido.
+  - grep -F … | awk "{print \$2}" | base64 -d
+teach: |
   El flujo forense minero: localizar la línea, recortar el campo, decodificar:
-  
+
       grep 'PAYLOAD' registro.log      → "PAYLOAD cod BxOx…"
       awk '{print $4}'                 → solo el bloque base64
       base64 -d                        → texto en claro
-  
+
   encadenado:
-  
+
       grep 'PAYLOAD' /home/agent/registro.log | awk '{print $4}' | base64 -d
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Forense"
+
   { printf '2024-01-01 08:00 INFO  arranque normal\n';
     printf '2024-01-01 08:01 DEBUG ruido de fondo\n';
     printf '2024-01-01 08:02 PAYLOAD %s\n' "$(printf '%s' "$DOJO_FLAG" | base64 -w 0)";
@@ -37,11 +42,17 @@ setup: |
 solution: |
   grep 'PAYLOAD' ~/registro.log | awk '{print $4}' | base64 -d; echo
 cheatsheet:
-  - {cmd: "grep TEXTO fich", desc: "localiza la línea clave"}
-  - {cmd: "awk '{print $N}'", desc: "extrae el campo N de la línea"}
-  - {cmd: "base64 -d", desc: "decodifica un bloque base64"}
+  - cmd: grep TEXTO fich
+    desc: localiza la línea clave
+  - cmd: awk '{print $N}'
+    desc: extrae el campo N de la línea
+  - cmd: base64 -d
+    desc: decodifica un bloque base64
 keywords:
-  - "grep"
-  - "awk"
-  - "base64"
+  - grep
+  - awk
+  - base64
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

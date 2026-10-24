@@ -5,8 +5,10 @@ title: El paquete tar
 subtitle: "tar -xzf: unpack en una cartella distinta"
 xp: 40
 difficulty: 2
-brief: paquete.tar.gz trae un árbol de ficheros con la marca en el fondo. La firma ya empacó y se fue.
-goal: Extrae /home/agent/paquete.tar.gz en /tmp y muestra las líneas de la clave que quedan dentro.
+brief: paquete.tar.gz trae un árbol de ficheros con la marca en el fondo. La
+  firma ya empacó y se fue.
+goal: Extrae /home/agent/paquete.tar.gz en /tmp y muestra las líneas de la clave
+  que quedan dentro.
 setup: |-
   #!/bin/bash
   set -e
@@ -22,8 +24,9 @@ hints:
   - "Las opciones tar: x = extraer, z = gzip, f = fichero."
   - -C DIR decide el DESTINO de la extracción (el origen se pasa separadamente).
   - tar -xzf paquete.tar.gz -C /tmp && grep -r FLAG /tmp
-teach: "tar es el archivador por excelencia de UNIX. Siempre: -x extragir(C)/-c crear, -z/--gzip y
-  -f fichero. La extracción con -C evita la dispersión de ficheros en el cwd."
+teach: "tar es el archivador por excelencia de UNIX. Siempre: -x extragir(C)/-c
+  crear, -z/--gzip y -f fichero. La extracción con -C evita la dispersión de
+  ficheros en el cwd."
 cheatsheet:
   - cmd: tar -tzf f.tar.gz
     desc: ¿qué hay dentro?
@@ -34,3 +37,7 @@ keywords:
   - compresión
   - extracción
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "/tmp/raiz/carpeta-interna/llave.txt:nota profunda:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}"

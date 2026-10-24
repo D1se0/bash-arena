@@ -5,9 +5,10 @@ title: CSV de servidores
 subtitle: grep fila + cut columna
 xp: 35
 difficulty: 2
-brief: "servidores.csv guarda notas por columnas: nombre, rol, comentario. Las filas de backup traen
-  un comentario especial."
-goal: De las filas cuyo ROL sea "backup", imprime solo el COMENTARIO (tercera columna).
+brief: "servidores.csv guarda notas por columnas: nombre, rol, comentario. Las
+  filas de backup traen un comentario especial."
+goal: De las filas cuyo ROL sea "backup", imprime solo el COMENTARIO (tercera
+  columna).
 setup: |-
   #!/bin/bash
   set -e
@@ -27,8 +28,9 @@ hints:
   - "Primero selecciona filas: grep backup servidores.csv."
   - "Luego corta la tercera columna: cut -d, -f3 (el delimitador es la coma)."
   - grep backup servidores.csv | cut -d, -f3
-teach: cut descuartiza cada línea por un delimitador (-d) y elige campos con -f. Encadenar grep
-  (filas) + cut (columnas) resuelve la mayoría de tablas CSV del mundo real.
+teach: cut descuartiza cada línea por un delimitador (-d) y elige campos con -f.
+  Encadenar grep (filas) + cut (columnas) resuelve la mayoría de tablas CSV del
+  mundo real.
 cheatsheet:
   - cmd: cut -d, -f3 f
     desc: tercera columna separada por comas
@@ -40,3 +42,8 @@ keywords:
   - delimitador
   - grep
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      nota de boveda: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      nas secundario

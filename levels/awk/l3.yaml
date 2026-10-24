@@ -5,10 +5,10 @@ title: La contraseña del asistente
 subtitle: "awk -F: separador personalizado"
 xp: 35
 difficulty: 2
-brief: El dojo guarda cuentas como passwd, separadas por dos-puntos. La del asistente
-  quedó escrita EN CLARO en el segundo campo.
-goal: De cuentas.dat, imprime el SEGUNDO campo (la contraseña) de la cuenta cuyo primer
-  campo es asistente.
+brief: El dojo guarda cuentas como passwd, separadas por dos-puntos. La del
+  asistente quedó escrita EN CLARO en el segundo campo.
+goal: De cuentas.dat, imprime el SEGUNDO campo (la contraseña) de la cuenta cuyo
+  primer campo es asistente.
 setup: |
   #!/bin/bash
   set -e
@@ -25,8 +25,9 @@ hints:
   - "-F: cambia el separador de campos a «dos-puntos»."
   - El filtro $1 == "asistente" es comparación exacta; la acción imprime $2.
   - "awk -F: '$1 == \"asistente\" {print $2}' /home/agent/cuentas.dat"
-teach: 'con -F: las líneas passwd se abren en 7 campos: usuario, contraseña, uid, gid,
-  GECOS, home, shell. awk también acepta separadores multi-carácter o regex: -F"[, ]+".'
+teach: 'con -F: las líneas passwd se abren en 7 campos: usuario, contraseña,
+  uid, gid, GECOS, home, shell. awk también acepta separadores multi-carácter o
+  regex: -F"[, ]+".'
 cheatsheet:
   - cmd: "awk -F: '{print $1}' f"
     desc: primera columna de passwd
@@ -37,3 +38,6 @@ keywords:
   - -F
   - separador
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

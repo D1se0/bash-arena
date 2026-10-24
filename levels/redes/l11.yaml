@@ -5,29 +5,39 @@ title: Puerto en /etc/services
 subtitle: el fichero del mapa de servicios
 xp: 50
 difficulty: 4
-brief: El administrador registró un servicio con nombre arena-tesoro y un puerto asomado; el mapa
-  está en /etc/services.
-goal: Saca el puerto del servicio arena-tesoro desde /etc/services y consulta curl
-  http://127.0.0.1:PUERTO/
-setup: |-
+brief: El administrador registró un servicio con nombre arena-tesoro y un puerto
+  asomado; el mapa está en /etc/services.
+goal: Saca el puerto del servicio arena-tesoro desde /etc/services y consulta
+  curl http://127.0.0.1:PUERTO/
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 11" "Redes"
+
   mkdir -p /var/www/tesoro77
+
   echo "puerto dinamico: $DOJO_FLAG" > /var/www/tesoro77/index.html
+
   echo "arena-tesoro 7777/tcp # servicio interno del dojo" >> /etc/services
-  nohup python3 -m http.server 7777 --directory /var/www/tesoro77 >/dev/null 2>&1 &
+
+  nohup python3 -m http.server 7777 --directory /var/www/tesoro77 >/dev/null
+  2>&1 &
+
   sleep 2
+
   chown -R agent:agent /home/agent
-solution: p=$(grep '^arena-tesoro' /etc/services | awk '{print $2}' | cut -d/ -f1); curl -s
-  http://127.0.0.1:$p/
+solution: p=$(grep '^arena-tesoro' /etc/services | awk '{print $2}' | cut -d/
+  -f1); curl -s http://127.0.0.1:$p/
 hints:
   - /etc/services mapea nombre de servicio → puerto/protocolo.
   - grep la línea y aísla la columna del puerto con awk.
-  - p=$(grep "^arena-tesoro" /etc/services | awk "{print $2}" | cut -d/ -f1); curl -s
-    http://127.0.0.1:$p/
-teach: "/etc/services es el mapa clásico de puertos (80 http, 22 ssh…). Leerlo evita los memorizar:
-  el catálogo vive en el fichero donde empieza toda la revisión de un servidor."
+  - p=$(grep "^arena-tesoro" /etc/services | awk "{print $2}" | cut -d/ -f1);
+    curl -s http://127.0.0.1:$p/
+teach: "/etc/services es el mapa clásico de puertos (80 http, 22 ssh…). Leerlo
+  evita los memorizar: el catálogo vive en el fichero donde empieza toda la
+  revisión de un servidor."
 cheatsheet:
   - cmd: grep ssh /etc/services
     desc: puerto de un servicio
@@ -38,3 +48,6 @@ keywords:
   - puertos
   - awk
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "puerto dinamico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

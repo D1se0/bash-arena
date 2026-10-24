@@ -5,13 +5,13 @@ subtitle: /proc y ficheros borrados en uso
 xp: 60
 difficulty: 3
 brief: >
-  Un proceso python guarda en la memoria de su fd un fichero que otra mano
-  borró cómodamente de /tmp. En Linux, el fichero sigue vivo MIENTRAS el
-  proceso lo mantenga abierto: /proc/<PID>/fd/N lo revela.
+  Un proceso python guarda en la memoria de su fd un fichero que otra mano borró
+  cómodamente de /tmp. En Linux, el fichero sigue vivo MIENTRAS el proceso lo
+  mantenga abierto: /proc/<PID>/fd/N lo revela.
 goal: >
-  Un proceso python mantiene abierto /tmp/ocultad.sock (contiene la flag)
-  pero el fichero fue borrado. Localiza su PID (pgrep) y recupera su
-  contenido vía /proc/<PID>/fd/<N>. Muéstralo.
+  Un proceso python mantiene abierto /tmp/ocultad.sock (contiene la flag) pero
+  el fichero fue borrado. Localiza su PID (pgrep) y recupera su contenido vía
+  /proc/<PID>/fd/<N>. Muéstralo.
 setup: |
   #!/bin/bash
   set -e
@@ -28,24 +28,38 @@ setup: |
   sleep 1
   rm -f /tmp/.arena-hold.py /tmp/ocultad.sock
 hints:
-  - "pgrep -f arena-hold te da el PID del proceso que sostiene el fichero."
-  - "ls -l /proc/<PID>/fd  te muestra los fd del proceso (el 3 suele ser el abierto)."
+  - pgrep -f arena-hold te da el PID del proceso que sostiene el fichero.
+  - ls -l /proc/<PID>/fd  te muestra los fd del proceso (el 3 suele ser el
+    abierto).
   - "cat /proc/<PID>/fd/<N> — sin sudo: el proceso es tuyo (mismo uid)."
 teach: >
-  En Linux un fichero borrado subsiste mientras algún proceso lo tenga
-  abierto (referencia al inodo). `lsof` lista ficheros abiertos (con el
-  marcador deleted) pero puede ser lento/colgar en contenedores: la vía
-  universal de forense es /proc/<PID>/fd — el atajo ES el fichero: su
-  contenido se copia para recuperar datos "perdidos". Ojo: los fd de
-  otro usuario no se ven sin permisos de dueño (o root con permisos completos).
+  En Linux un fichero borrado subsiste mientras algún proceso lo tenga abierto
+  (referencia al inodo). `lsof` lista ficheros abiertos (con el marcador
+  deleted) pero puede ser lento/colgar en contenedores: la vía universal de
+  forense es /proc/<PID>/fd — el atajo ES el fichero: su contenido se copia para
+  recuperar datos "perdidos". Ojo: los fd de otro usuario no se ven sin permisos
+  de dueño (o root con permisos completos).
 cheatsheet:
-  - {cmd: 'pgrep -f patrón', desc: encuentra el PID por su cmdline}
-  - {cmd: 'ls -l /proc/PID/fd', desc: descriptores abiertos de un proceso}
-  - {cmd: 'lsof | grep deleted', desc: ficheros borrados aún abiertos (a veces lento en contenedor)}
-solution: |
+  - cmd: pgrep -f patrón
+    desc: encuentra el PID por su cmdline
+  - cmd: ls -l /proc/PID/fd
+    desc: descriptores abiertos de un proceso
+  - cmd: lsof | grep deleted
+    desc: ficheros borrados aún abiertos (a veces lento en contenedor)
+solution: >
   pid=$(pgrep -f 'arena-hold' | head -1)
+
   [ -n "$pid" ] || { echo 'no encontré el proceso dueño del fd'; exit 1; }
-  fd=$(ls -l /proc/$pid/fd 2>/dev/null | grep 'ocultad' | awk '{print $9}' | head -1)
+
+  fd=$(ls -l /proc/$pid/fd 2>/dev/null | grep 'ocultad' | awk '{print $9}' |
+  head -1)
+
   cat /proc/$pid/fd/$fd
-keywords: [proc, fd, pgrep]
+keywords:
+  - proc
+  - fd
+  - pgrep
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "testigo: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

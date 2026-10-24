@@ -5,8 +5,8 @@ title: Campos exactos
 subtitle: "awk NF: contar columnas"
 xp: 40
 difficulty: 3
-brief: En inventario.txt casi todas las filas están mal formadas; solo las filas de 7 campos son
-  válidas y UNA de ellas trae la marca.
+brief: En inventario.txt casi todas las filas están mal formadas; solo las filas
+  de 7 campos son válidas y UNA de ellas trae la marca.
 goal: Imprime las filas de inventario.txt que tienen exactamente 7 campos.
 setup: |-
   #!/bin/bash
@@ -25,8 +25,9 @@ hints:
   - awk cuenta los campos de cada línea en la variable NF.
   - "El patrón se escribe sin / /: NF == 7 es una comparación numérica."
   - awk 'NF == 7' inventario.txt
-teach: awk evalúa un patrón por línea y ejecuta la acción por defecto (imprimir la línea) si casa.
-  NF, NR, $1… son variables internas que hacen del awk un mini-lenguaje de relatórios.
+teach: awk evalúa un patrón por línea y ejecuta la acción por defecto (imprimir
+  la línea) si casa. NF, NR, $1… son variables internas que hacen del awk un
+  mini-lenguaje de relatórios.
 cheatsheet:
   - cmd: awk 'NF == 7' f
     desc: líneas de 7 campos
@@ -37,3 +38,8 @@ keywords:
   - NF
   - campos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      estante puente hierro roble pintura barniz cinta
+      cofre llave marca FLAG{d3b09a4f7c2e1b8d6041a5f3} zinc cobre tornillo

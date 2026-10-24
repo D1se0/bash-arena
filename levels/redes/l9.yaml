@@ -5,10 +5,10 @@ title: La cabecera reveladora
 subtitle: "curl -i: ver también los headers"
 xp: 40
 difficulty: 3
-brief: El auditor añadió una cabecera HTTP personalizada con la clave; el cuerpo de la respuesta
-  esta limpio.
-goal: Descarga http://127.0.0.1:7080/auditoria mostrando TAMBIÉN las cabeceras y localiza la
-  cabecera X-Arena-Flag.
+brief: El auditor añadió una cabecera HTTP personalizada con la clave; el cuerpo
+  de la respuesta esta limpio.
+goal: Descarga http://127.0.0.1:7080/auditoria mostrando TAMBIÉN las cabeceras y
+  localiza la cabecera X-Arena-Flag.
 setup: |-
   #!/bin/bash
   set -e
@@ -38,8 +38,9 @@ hints:
   - "La cabecera NO aparece en el cuerpo: hay que ver la respuesta cruda."
   - curl -i (o -I) imprime también los headers.
   - curl -s -i http://127.0.0.1:7080/auditoria
-teach: "Los headers HTTP son metadata donde se esconde casi todo (rate-limits, versiones, tokens de
-  sesión): curl -i los destapa junto al cuerpo. Curl -I solo los cabecera."
+teach: "Los headers HTTP son metadata donde se esconde casi todo (rate-limits,
+  versiones, tokens de sesión): curl -i los destapa junto al cuerpo. Curl -I
+  solo los cabecera."
 cheatsheet:
   - cmd: curl -i URL
     desc: cuerpo + cabeceras
@@ -50,3 +51,18 @@ keywords:
   - headers
   - cabecera
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "HTTP/1.0 200 OK\r
+
+      Server: BaseHTTP/0.6 Python/3.12.3\r
+
+      Date: Fri, 23 Oct 2026 11:37:17 GMT\r
+
+      X-Arena-Flag: FLAG{d3b09a4f7c2e1b8d6041a5f3}\r
+
+      Content-Type: text/plain\r
+
+      \r
+
+      auditoria ejecutada: todo limpio"

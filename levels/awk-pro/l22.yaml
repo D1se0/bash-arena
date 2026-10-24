@@ -5,10 +5,10 @@ title: Suma condicional
 subtitle: awk '$1 == "x" { total += $2 } + END
 xp: 75
 difficulty: 5
-brief: El fichero entregas.dat trae acción y cantidad. Solo las líneas con ACCIÓN guardo
-  acumulan en el total.
-goal: De entregas.dat imprime las líneas cuyo PRIMER campo es "guardo" y al final el TOTAL
-  (suma de la 2.ª columna) de esas líneas.
+brief: El fichero entregas.dat trae acción y cantidad. Solo las líneas con
+  ACCIÓN guardo acumulan en el total.
+goal: De entregas.dat imprime las líneas cuyo PRIMER campo es "guardo" y al
+  final el TOTAL (suma de la 2.ª columna) de esas líneas.
 setup: |
   #!/bin/bash
   set -e
@@ -21,16 +21,16 @@ setup: |
   guardo 50 $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/entregas.dat
-solution: awk '$1 == "guardo" { print $0; total += $2 } END { print "total:", total }'
-  /home/agent/entregas.dat
+solution: awk '$1 == "guardo" { print $0; total += $2 } END { print "total:",
+  total }' /home/agent/entregas.dat
 hints:
   - La condición $1 == "guardo" filtra; la ACCIÓN imprime la línea Y acumula $2.
   - En END imprime el total acumulado.
   - awk '$1 == "guardo" { print $0; total += $2 } END { print "total:", total }'
     /home/agent/entregas.dat
-teach: La condición de awk solo deja pasar las líneas que casan; la ACCIÓN puede hacer
-  varias cosas (imprimir + acumular) y END cierra con el total. Filtro y cálculo en una
-  línea.
+teach: La condición de awk solo deja pasar las líneas que casan; la ACCIÓN puede
+  hacer varias cosas (imprimir + acumular) y END cierra con el total. Filtro y
+  cálculo en una línea.
 cheatsheet:
   - cmd: awk '$1 == "x" { s += $2 } END { print s }' f
     desc: suma condicional
@@ -42,3 +42,10 @@ keywords:
   - suma
   - END
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      guardo 10
+      guardo 30
+      guardo 50 FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      total: 90

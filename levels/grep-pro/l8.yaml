@@ -5,10 +5,10 @@ title: El diccionario del operador
 subtitle: "grep -f: patrones desde fichero"
 xp: 70
 difficulty: 5
-brief: El equipo de filtrado tiene una lista de 3 palabras (patterns.txt) y un correo
-  largo. Cargarlas una a una sería tontería.
-goal: Usando patterns.txt como lista de patrones, imprime de carta.txt las líneas que
-  contengan CUALQUIERA de esos patrones.
+brief: El equipo de filtrado tiene una lista de 3 palabras (patterns.txt) y un
+  correo largo. Cargarlas una a una sería tontería.
+goal: Usando patterns.txt como lista de patrones, imprime de carta.txt las
+  líneas que contengan CUALQUIERA de esos patrones.
 setup: |
   #!/bin/bash
   set -e
@@ -31,8 +31,8 @@ hints:
   - -f fichero lee UN patrón POR LÍNEA del fichero dado; busca TODOS.
   - Puedes combinar con -i, -E, -r, -n como cualquier otro grep.
   - grep -if /home/agent/patterns.txt /home/agent/carta.txt
-teach: "grep -f fich-lista fich-destino construye una red de detección. Es clásico en
-  filtrado de contenido: listas negras de IP, dominios de spam, etc."
+teach: "grep -f fich-lista fich-destino construye una red de detección. Es
+  clásico en filtrado de contenido: listas negras de IP, dominios de spam, etc."
 cheatsheet:
   - cmd: grep -f patrones.txt f
     desc: múltiples patrones desde fichero
@@ -44,3 +44,9 @@ keywords:
   - patrones
   - lista
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      comunicado URGENTE del guardia
+      informe CONFIDENCIAL adjuntado: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      asuntos de crisis cerrando a tiempo

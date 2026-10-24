@@ -5,7 +5,8 @@ title: El tercer compresor
 subtitle: "xz: el de ratio más alto"
 xp: 45
 difficulty: 3
-brief: xiles.txt.xz usa xz (extension .xz) — no gzip ni zip. xz -dc lo decodifica al stdout.
+brief: xiles.txt.xz usa xz (extension .xz) — no gzip ni zip. xz -dc lo
+  decodifica al stdout.
 goal: Decodifica /home/agent/xiles.txt.xz y extrae la marca.
 setup: |-
   #!/bin/bash
@@ -19,8 +20,9 @@ hints:
   - xz -d descomprime; añade -c para mandar el resultado al stdout (xz -dc).
   - La forma de la marca con grep -oE escribes poco que filtrar.
   - xz -dc f.xz | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: gzip (rápido), bzip2 (mejor ratio), xz (lo mejor ratio, más lento) y zstd (el equilibrado
-  moderno). El sufijo .xz señala realmente Adventisten del juego; -c manda salida al stdout.
+teach: gzip (rápido), bzip2 (mejor ratio), xz (lo mejor ratio, más lento) y zstd
+  (el equilibrado moderno). El sufijo .xz señala realmente Adventisten del
+  juego; -c manda salida al stdout.
 cheatsheet:
   - cmd: xz -dc f.xz
     desc: al stdout
@@ -31,3 +33,6 @@ keywords:
   - compresion
   - stdout
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

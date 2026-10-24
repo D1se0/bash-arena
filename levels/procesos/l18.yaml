@@ -5,25 +5,34 @@ title: El esmirriado
 subtitle: nice y ni en ps
 xp: 50
 difficulty: 3
-brief: Un proceso camina ofendido con ni=19 (la menor prioridad). Es distinguido por la marca en su
-  argv0 — enciona por nice.
-goal: Encuentra con ps el proceso cuya prioridad (ni) es 19 y muestra su argv0, donde va la marca.
-setup: |-
+brief: Un proceso camina ofendido con ni=19 (la menor prioridad). Es distinguido
+  por la marca en su argv0 — enciona por nice.
+goal: Encuentra con ps el proceso cuya prioridad (ni) es 19 y muestra su argv0,
+  donde va la marca.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 18" "Procesos"
-  sudo -u agent nice -n 19 bash -c "exec -a '$DOJO_FLAG' sleep 600" >/dev/null 2>&1 </dev/null &
+
+  sudo -u agent nice -n 19 bash -c "exec -a '$DOJO_FLAG' sleep 600" >/dev/null
+  2>&1 </dev/null &
+
   sudo -u agent bash -c "sleep 600" >/dev/null 2>&1 </dev/null &
+
   sleep 1
+
   chown -R agent:agent /home/agent
 solution: ps -eo ni,args | awk '$1 == 19' | head -n1
 hints:
-  - ps -eo ni,args imprime prioridad y argv de todos; ni es 0 para lo normal, negativo para lo
-    urgente y 19 el pisoteado.
+  - ps -eo ni,args imprime prioridad y argv de todos; ni es 0 para lo normal,
+    negativo para lo urgente y 19 el pisoteado.
   - 'awk "$1 == 19" filtra por prioridad: solo uno encaja.'
   - ps -eo ni,args | awk '$1 == 19'
-teach: nice -n 19 baja la prioridad al mínimo (ni = 19). ps la muestra con la columna ni. Un proceso
-  ofendido sigue corriendo — solo corre cuando nadie más quiere la CPU.
+teach: nice -n 19 baja la prioridad al mínimo (ni = 19). ps la muestra con la
+  columna ni. Un proceso ofendido sigue corriendo — solo corre cuando nadie más
+  quiere la CPU.
 cheatsheet:
   - cmd: ps -eo ni,args
     desc: prioridad + argv
@@ -34,3 +43,6 @@ keywords:
   - ni
   - ps
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: " 19 FLAG{d3b09a4f7c2e1b8d6041a5f3} 600"

@@ -5,10 +5,10 @@ title: El máximo de la columna
 subtitle: awk $2 > max + END con dos variables
 xp: 65
 difficulty: 4
-brief: "El fichero medias.dat trae «id valor». Necesitas el id del VALOR MÁXIMO: la clave
-  que encabeza al campeón es la señal."
-goal: De medias.dat imprime el id (PRIMERA columna) de la fila con el valor MÁXIMO en la
-  segunda columna.
+brief: "El fichero medias.dat trae «id valor». Necesitas el id del VALOR MÁXIMO:
+  la clave que encabeza al campeón es la señal."
+goal: De medias.dat imprime el id (PRIMERA columna) de la fila con el valor
+  MÁXIMO en la segunda columna.
 setup: |
   #!/bin/bash
   set -e
@@ -23,12 +23,13 @@ setup: |
   chown agent:agent /home/agent/medias.dat
 solution: awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat
 hints:
-  - "max partierer sin declarar en 0: si el valor de la fila supera al máximo, guárdalo y
-    guarda su id."
+  - "max partierer sin declarar en 0: si el valor de la fila supera al máximo,
+    guárdalo y guarda su id."
   - END imprimi el id cuando todo el fichero ha sido procesado.
   - awk '$2 > max {max = $2; id = $1} END {print id}' /home/agent/medias.dat
-teach: "Patrón «compara-guarda-imprime» de awk: una variable max y una id, y el campeón se
-  anuncia en END. Sin sort y sin bucles: el streaming atiende por ti."
+teach: "Patrón «compara-guarda-imprime» de awk: una variable max y una id, y el
+  campeón se anuncia en END. Sin sort y sin bucles: el streaming atiende por
+  ti."
 cheatsheet:
   - cmd: awk '$2 > max {max=$2; id=$1} END {print id}' f
     desc: el id con el valor máximo
@@ -40,3 +41,6 @@ keywords:
   - END
   - variables
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

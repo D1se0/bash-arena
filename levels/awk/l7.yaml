@@ -5,10 +5,11 @@ title: El código de la antena
 subtitle: "awk: regex por campo (~)"
 xp: 55
 difficulty: 3
-brief: "El radar de equipos registra «equipo código estado». Solo un equipo sigue el
-  patrón H + 3 dígitos + mayúscula exacta: la marca viaja en su estado."
-goal: Imprime de equipos.txt el ESTADO (tercer campo) de la fila cuyo código (2.º campo)
-  es H seguido de 3 dígitos y una mayúscula, nada más.
+brief: "El radar de equipos registra «equipo código estado». Solo un equipo
+  sigue el patrón H + 3 dígitos + mayúscula exacta: la marca viaja en su
+  estado."
+goal: Imprime de equipos.txt el ESTADO (tercer campo) de la fila cuyo código
+  (2.º campo) es H seguido de 3 dígitos y una mayúscula, nada más.
 setup: |
   #!/bin/bash
   set -e
@@ -27,9 +28,9 @@ hints:
   - "El operador ~ aplica una regex al campo: $2 ~ /^H./."
   - "Sin contadores {3} (algunos awk no los admiten): encadena [0-9][0-9][0-9]."
   - awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/ {print $3}' /home/agent/equipos.txt
-teach: "awk hace regex por campo: $2 ~ /patrón/ casa SOLO el campo dos. Con el delimitador
-  ^…$ evitas códigos parciales; y como el awk del sistema (mawk) no garantiza contadores
-  {3}, encadenamos las clases: portable y seguro."
+teach: "awk hace regex por campo: $2 ~ /patrón/ casa SOLO el campo dos. Con el
+  delimitador ^…$ evitas códigos parciales; y como el awk del sistema (mawk) no
+  garantiza contadores {3}, encadenamos las clases: portable y seguro."
 cheatsheet:
   - cmd: awk '$2 ~ /^H[0-9][0-9][0-9][A-Z]$/' f
     desc: regex exacta sobre campo 2
@@ -40,3 +41,6 @@ keywords:
   - regex
   - "~"
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

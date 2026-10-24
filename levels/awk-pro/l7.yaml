@@ -5,10 +5,10 @@ title: El hash perfecto
 subtitle: awk longitud + regex de campo
 xp: 70
 difficulty: 5
-brief: El fichero hashes.log tiene usuario + hash (sin espacios). Necesitas las líneas
-  cuyo campo SI y SÓLO SI es un hash hex de 32 dígitos EXACTOS.
-goal: De hashes.log imprime las líneas cuyo SEGUNDO campo es un hash hex de 32 caracteres
-  EXACTOS (uso la facil length + regex).
+brief: El fichero hashes.log tiene usuario + hash (sin espacios). Necesitas las
+  líneas cuyo campo SI y SÓLO SI es un hash hex de 32 dígitos EXACTOS.
+goal: De hashes.log imprime las líneas cuyo SEGUNDO campo es un hash hex de 32
+  caracteres EXACTOS (uso la facil length + regex).
 setup: |
   #!/bin/bash
   set -e
@@ -25,9 +25,9 @@ hints:
   - length($2) == 32 es la COMPROBACIÓN de longitud EXACTA (hex 32 simbolos md5).
   - $2 ~ /^[0-9a-f]+$/ es el REGEX de la forma exclusivamente hex.
   - awk 'length($2) == 32 && $2 ~ /^[0-9a-f]+$/' /home/agent/hashes.log
-teach: Confundir length($x) con la función length(). La combinación de length() + un regex
-  con clases y ^$ es la forma robusta de validar un formato de CAMPO en awk (incluye mawk
-  que no garantiza {32}).
+teach: Confundir length($x) con la función length(). La combinación de length()
+  + un regex con clases y ^$ es la forma robusta de validar un formato de CAMPO
+  en awk (incluye mawk que no garantiza {32}).
 cheatsheet:
   - cmd: awk 'length($2) == 32' f
     desc: campo 2 con TAM 32
@@ -39,3 +39,8 @@ keywords:
   - regex
   - campo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      user-a 5f4dcc3b5aa765d61d8327deb882cf99
+      user-c 1234567890abcdef1234567890abcdef FLAG{d3b09a4f7c2e1b8d6041a5f3}

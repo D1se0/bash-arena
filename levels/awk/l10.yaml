@@ -5,10 +5,10 @@ title: La sesión del trío
 subtitle: "awk arrays asociativos: ++c[$1]"
 xp: 65
 difficulty: 4
-brief: sesiones.log registra ids con registros repetidos. Un id aparece TRES veces; solo
-  en su tercera repetición viaja la marca.
-goal: Imprime de sesiones.log el SEGUNDO campo de la fila cuyo id (primer campo) llega a
-  su tercera aparición.
+brief: sesiones.log registra ids con registros repetidos. Un id aparece TRES
+  veces; solo en su tercera repetición viaja la marca.
+goal: Imprime de sesiones.log el SEGUNDO campo de la fila cuyo id (primer campo)
+  llega a su tercera aparición.
 setup: |
   #!/bin/bash
   set -e
@@ -26,12 +26,14 @@ setup: |
 solution: awk '++c[$1] == 3 {print $2}' /home/agent/sesiones.log
 hints:
   - "c[$1] es un array asociativo: cuenta apariciones por id."
-  - "Con ++c[$1] == 3 el incremento es de PREFIJO: incrementa antes de comparar — dispara
-    justo en la tercera aparición (el postfijo c[$1]++ lo haría en la cuarta)."
+  - "Con ++c[$1] == 3 el incremento es de PREFIJO: incrementa antes de comparar
+    — dispara justo en la tercera aparición (el postfijo c[$1]++ lo haría en la
+    cuarta)."
   - awk '++c[$1] == 3 {print $2}' /home/agent/sesiones.log
-teach: "Los arrays asociativos de awk (c[$1]) cuentan, agrupan y deduplican sin sort ni
-  uniq. ++c[$1]==3 usa el incremento de PREFIJO: primero incrementa, luego compara con el
-  valor nuevo — con c[$1]++ (postfijo) dispararía en la cuarta."
+teach: "Los arrays asociativos de awk (c[$1]) cuentan, agrupan y deduplican sin
+  sort ni uniq. ++c[$1]==3 usa el incremento de PREFIJO: primero incrementa,
+  luego compara con el valor nuevo — con c[$1]++ (postfijo) dispararía en la
+  cuarta."
 cheatsheet:
   - cmd: awk '++c[$1] == 3 {print $2}' f
     desc: 3.ª aparición por grupo (prefijo)
@@ -42,3 +44,6 @@ keywords:
   - asociativo
   - contenido
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

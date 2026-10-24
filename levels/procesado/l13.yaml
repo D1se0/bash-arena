@@ -5,9 +5,10 @@ title: El máximo con awk
 subtitle: acumulador con if >
 xp: 45
 difficulty: 3
-brief: ventas.csv tiene zona,importe. La fila con el importe más alto esconde la pieza en su primera
-  columna.
-goal: Encuentra la fila con mayor importe en /home/agent/ventas.csv y muéstrala entera.
+brief: ventas.csv tiene zona,importe. La fila con el importe más alto esconde la
+  pieza en su primera columna.
+goal: Encuentra la fila con mayor importe en /home/agent/ventas.csv y muéstrala
+  entera.
 setup: |-
   #!/bin/bash
   set -e
@@ -21,13 +22,17 @@ setup: |-
   } > /home/agent/ventas.csv
   chown agent:agent /home/agent/ventas.csv
   chown -R agent:agent /home/agent
-solution: awk -F, '{if ($2+0 > max) {max=$2+0; line=$0}} END {print line}' /home/agent/ventas.csv
+solution: awk -F, '{if ($2+0 > max) {max=$2+0; line=$0}} END {print line}'
+  /home/agent/ventas.csv
 hints:
   - "awk con -F, separa por comas: $1 es la zona y $2 el importe."
-  - "El truco del acumulador: if ($2 > max) {max = $2; line = $0}, luego en END print line."
-  - awk -F, '{if ($2 > max) {max=$2; line=$0}} END {print line}' /home/agent/ventas.csv
-teach: 'awk mantiene variables entre líneas: el patrón "if ($n > max) {max=$n; line=$0} END {print
-  line}" es el modo awk canónica de "máximo con su contexto" — sin sort de por medio.'
+  - "El truco del acumulador: if ($2 > max) {max = $2; line = $0}, luego en END
+    print line."
+  - awk -F, '{if ($2 > max) {max=$2; line=$0}} END {print line}'
+    /home/agent/ventas.csv
+teach: 'awk mantiene variables entre líneas: el patrón "if ($n > max) {max=$n;
+  line=$0} END {print line}" es el modo awk canónica de "máximo con su contexto"
+  — sin sort de por medio.'
 cheatsheet:
   - cmd: awk -F, '$2>max{max=$2; li=$0} END{print li}' f
     desc: máximo con contexto
@@ -38,3 +43,6 @@ keywords:
   - max
   - csv
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "la clave: FLAG{d3b09a4f7c2e1b8d6041a5f3},3111"

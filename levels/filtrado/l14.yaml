@@ -5,9 +5,10 @@ title: Desde la línea doce
 subtitle: "tail -n +N: leer desde una línea"
 xp: 35
 difficulty: 2
-brief: bitacora.txt tiene una cabecera de once líneas de rutina. La primera línea ÚTIL (la doce)
-  lleva la marca.
-goal: Muestra únicamente la línea 12 de /home/agent/bitacora.txt (desde la 12, una sola).
+brief: bitacora.txt tiene una cabecera de once líneas de rutina. La primera
+  línea ÚTIL (la doce) lleva la marca.
+goal: Muestra únicamente la línea 12 de /home/agent/bitacora.txt (desde la 12,
+  una sola).
 setup: |-
   #!/bin/bash
   set -e
@@ -22,11 +23,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: tail -n +12 /home/agent/bitacora.txt | head -n1
 hints:
-  - tail -n +12 imprime DESDE la línea 12 hasta el final (¡el + cambia el significado!).
+  - tail -n +12 imprime DESDE la línea 12 hasta el final (¡el + cambia el
+    significado!).
   - Encadena con head -n1 para quedarte solo la primera.
   - tail -n +12 /home/agent/bitacora.txt | head -n1
-teach: 'tail -n +N es "desde la línea N": el + invierte el papel de tail. La pareja tail -n +N |
-  head -nM es la ventana de lectura clásica de logs gigantes.'
+teach: 'tail -n +N es "desde la línea N": el + invierte el papel de tail. La
+  pareja tail -n +N | head -nM es la ventana de lectura clásica de logs
+  gigantes.'
 cheatsheet:
   - cmd: tail -n +12 f
     desc: desde la línea 12
@@ -37,3 +40,6 @@ keywords:
   - head
   - lineas
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "entrada útil: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

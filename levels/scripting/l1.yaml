@@ -8,34 +8,49 @@ brief: >
   Veinte ficheros numerados contienen notas de estudio. Solo UNO de ellos
   contiene la marca FLAG{…}. Escribir la comprobación a mano es de novator.
 goal: >
-  Recorre los ficheros de /var/dojo/apuntes con un bucle for; para cada
-  uno, si contiene FLAG{ muéstramelo (solo ese fichero).
-setup: |
+  Recorre los ficheros de /var/dojo/apuntes con un bucle for; para cada uno, si
+  contiene FLAG{ muéstramelo (solo ese fichero).
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 01" "Scripting"
+
   mkdir -p /var/dojo/apuntes
+
   for i in $(seq -w 1 20); do
     printf 'apunte %s: sed, grep, cut… clásicos que paga el alquiler.\n' "$i" > "/var/dojo/apuntes/cla-$i.txt"
   done
-  printf 'el apunte premiado contendía esta línea: %s\n' "$DOJO_FLAG" > /var/dojo/apuntes/cla-neutrales.txt
+
+  printf 'el apunte premiado contendía esta línea: %s\n' "$DOJO_FLAG" >
+  /var/dojo/apuntes/cla-neutrales.txt
+
   chown -R agent:agent /var/dojo/apuntes
 hints:
-  - "for f in /var/dojo/apuntes/*; do … ; done"
-  - "if grep -q 'FLAG{' \"$f\"; then cat \"$f\"; fi dentro del bucle."
+  - for f in /var/dojo/apuntes/*; do … ; done
+  - if grep -q 'FLAG{' "$f"; then cat "$f"; fi dentro del bucle.
 teach: >
-  El clásico `for f in lista; do cmd; done` itera palabras e
-  expandición de globs. `grep -q` queda en silencio y devuelve 0 si
-  hay match — perfecto para condicionales if/then. Cambia {} por
-  los comodines correctos y el shell hace el resto.
+  El clásico `for f in lista; do cmd; done` itera palabras e expandición de
+  globs. `grep -q` queda en silencio y devuelve 0 si hay match — perfecto para
+  condicionales if/then. Cambia {} por los comodines correctos y el shell hace
+  el resto.
 cheatsheet:
-  - {cmd: 'for f in /ruta/*; do cat "$f"; done', desc: itera y actúa}
-  - {cmd: 'if cmd; then …; fi', desc: condicional por exit code}
-  - {cmd: 'grep -q patrón f', desc: silencioso — ideal en condiciones}
+  - cmd: for f in /ruta/*; do cat "$f"; done
+    desc: itera y actúa
+  - cmd: if cmd; then …; fi
+    desc: condicional por exit code
+  - cmd: grep -q patrón f
+    desc: silencioso — ideal en condiciones
 solution: |
   for f in /var/dojo/apuntes/*; do
     if grep -q "FLAG{" "$f"; then cat "$f"; fi
   done
-
-keywords: [for, if, grep-q]
+keywords:
+  - for
+  - if
+  - grep-q
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "el apunte premiado contendía esta línea: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -23,6 +23,12 @@ export interface CheatsheetEntry {
   desc: string;
 }
 
+/** Un «ejemplo» del nivel: cómo se ve la SALIDA esperada (sin revelar el comando). */
+export interface LevelExample {
+  title: string;   // p. ej. «salida esperada (flag demo)»
+  content: string; // bloque terminal pre-formateado
+}
+
 export type TrackId = (typeof TRACKS)[number]['id'];
 export type SecurityProfile = 'default' | 'sudo';
 export type TrackMetadata = (typeof TRACKS)[number];
@@ -50,4 +56,6 @@ export interface LevelDefinition {
   teach: string;           // explicación post-nivel
   keywords: string[];
   profile: SecurityProfile;
+  /** Ejemplos visuales de la salida esperada (generados con scripts/gen-examples.mjs). */
+  examples?: LevelExample[];
 }

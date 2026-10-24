@@ -5,24 +5,32 @@ title: La lectura del disco
 subtitle: "df: espacios y su registro"
 xp: 40
 difficulty: 2
-brief: Antes de la limpieza conviene medir. El registro del uso del disco (var/log/arena) guarda una
-  nota con la marca.
-goal: Comprueba el espacio libre de / con df y después muestra /var/log/arena/uso.log.
-setup: |-
+brief: Antes de la limpieza conviene medir. El registro del uso del disco
+  (var/log/arena) guarda una nota con la marca.
+goal: Comprueba el espacio libre de / con df y después muestra
+  /var/log/arena/uso.log.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 10" "Procesos"
+
   mkdir -p /var/log/arena
-  echo "mediciones del dia: espacio sano, disco estable: $DOJO_FLAG" > /var/log/arena/uso.log
+
+  echo "mediciones del dia: espacio sano, disco estable: $DOJO_FLAG" >
+  /var/log/arena/uso.log
+
   chmod 644 /var/log/arena/uso.log
+
   chown -R agent:agent /home/agent
 solution: df -h / && cat /var/log/arena/uso.log
 hints:
   - df -h muestra uso y espacio libre por sistema de ficheros (h=humanos).
   - El fichero del registro es legible para todos (644).
   - df -h /; cat /var/log/arena/uso.log
-teach: "df mide PARTICIONES y du mide CARPETAS. Antes de cualquier limpieza: df para saber dónde
-  aprieta y du para saber a quién culpar."
+teach: "df mide PARTICIONES y du mide CARPETAS. Antes de cualquier limpieza: df
+  para saber dónde aprieta y du para saber a quién culpar."
 cheatsheet:
   - cmd: df -h
     desc: espacio por partición
@@ -33,3 +41,12 @@ keywords:
   - disco
   - espacio
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      Filesystem      Size  Used Avail Use% Mounted on
+
+      overlay          79G   63G   12G  85% /
+
+      mediciones del dia: espacio sano, disco estable:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

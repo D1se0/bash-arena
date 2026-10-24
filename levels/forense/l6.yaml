@@ -5,10 +5,10 @@ title: Caza en el binario
 subtitle: "grep -a: buscar texto dentro de bytes"
 xp: 40
 difficulty: 3
-brief: blob.bin es un fichero binario (basura aleatoria). Entre los bytes, la cadena de la marca
-  sobrevive.
-goal: Extrae TODAS las ocurrencias de la marca (patrón FLAG{...}) dentro del binario
-  /home/agent/blob.bin.
+brief: blob.bin es un fichero binario (basura aleatoria). Entre los bytes, la
+  cadena de la marca sobrevive.
+goal: Extrae TODAS las ocurrencias de la marca (patrón FLAG{...}) dentro del
+  binario /home/agent/blob.bin.
 setup: |-
   #!/bin/bash
   set -e
@@ -22,8 +22,8 @@ hints:
   - "grep sin -a te dirá Binary file matches: -a proporciona el modo texto."
   - -o imprime solo el trozo casado, muy útil en binarios.
   - grep -a -oE 'FLAG\{[^}]*\}' blob.bin
-teach: "grep -a trata los ficheros binarios como texto (binary→text). La pareja -a -o es el kit
-  forense para extraer cadenas sin instolar strings:"
+teach: "grep -a trata los ficheros binarios como texto (binary→text). La pareja
+  -a -o es el kit forense para extraer cadenas sin instolar strings:"
 cheatsheet:
   - cmd: grep -a -oE 'x' f.bin
     desc: extrae cadenas de un binario
@@ -34,3 +34,6 @@ keywords:
   - binario
   - strings
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

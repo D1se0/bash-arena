@@ -5,9 +5,10 @@ title: Coincidencia awk
 subtitle: regex con ~ en awk
 xp: 45
 difficulty: 3
-brief: schemas.txt lista esquemas con su versión. El registro cuyo segundo campo empieza por 9
-  esconde la pieza.
-goal: Encuentra en /home/agent/schemas.txt la línea cuyo segundo campo empieza por 9 y muéstrala.
+brief: schemas.txt lista esquemas con su versión. El registro cuyo segundo campo
+  empieza por 9 esconde la pieza.
+goal: Encuentra en /home/agent/schemas.txt la línea cuyo segundo campo empieza
+  por 9 y muéstrala.
 setup: |-
   #!/bin/bash
   set -e
@@ -23,11 +24,12 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: awk '$2 ~ /^9/ {print}' /home/agent/schemas.txt
 hints:
-  - 'El operador ~ de awk es "encaje de patrón": $2 ~ /^9/ significa "el 2º campo empieza por 9".'
+  - 'El operador ~ de awk es "encaje de patrón": $2 ~ /^9/ significa "el 2º
+    campo empieza por 9".'
   - El ^ ancla al inicio del campo.
   - awk '$2 ~ /^9/ {print}' /home/agent/schemas.txt
-teach: "awk permite regex per columna: '/pat/' filtra por la línea completa pero $n ~ /pat/ es
-  selectivo por field: precisión quirúrgica en logs anchos."
+teach: "awk permite regex per columna: '/pat/' filtra por la línea completa pero
+  $n ~ /pat/ es selectivo por field: precisión quirúrgica en logs anchos."
 cheatsheet:
   - cmd: awk '$1 ~ /^9/ {print}' f
     desc: regex sobre campo
@@ -38,3 +40,6 @@ keywords:
   - regex
   - campo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "subtotal 9-esquema: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,45 +5,70 @@ subtitle: tar + gzip + zip + base64
 xp: 120
 difficulty: 5
 brief: >
-  La carga final viaja como muñeca rusa: un .txt metido en zip, metido
-  en tar.gz, y el tar.gz codificado en base64. Solo los pacientes con
-  pipelines escalan este tramo.
+  La carga final viaja como muñeca rusa: un .txt metido en zip, metido en
+  tar.gz, y el tar.gz codificado en base64. Solo los pacientes con pipelines
+  escalan este tramo.
 goal: >
-  En /var/dojo/paquete-final.b64 está un base64 que decodifica a un
-  .tar.gz con un .zip dentro; dentro del zip hay un flag.txt. Extrae
-  hasta el final y muéstrame su contenido.
-setup: |
+  En /var/dojo/paquete-final.b64 está un base64 que decodifica a un .tar.gz con
+  un .zip dentro; dentro del zip hay un flag.txt. Extrae hasta el final y
+  muéstrame su contenido.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "BOSS 04" "Boss"
+
   rm -rf /var/dojo/tmpf
+
   mkdir -p /var/dojo/tmpf/nivel1/nivel2/nivel3
+
   printf '%s\n' "$DOJO_FLAG" > /var/dojo/tmpf/nivel1/nivel2/nivel3/flag.txt
+
   cd /var/dojo/tmpf/nivel1/nivel2/nivel3 && zip -q flag.zip flag.txt && cd /
-  tar -czf /var/dojo/paquete-final.tar.gz -C /var/dojo/tmpf/nivel1/nivel2/nivel3 flag.zip
+
+  tar -czf /var/dojo/paquete-final.tar.gz -C /var/dojo/tmpf/nivel1/nivel2/nivel3
+  flag.zip
+
   rm -rf /var/dojo/tmpf /var/dojo/paquete-final.tar.gz.b64
+
   base64 -w0 /var/dojo/paquete-final.tar.gz > /var/dojo/paquete-final.b64
+
   rm -f /var/dojo/paquete-final.tar.gz
+
   chown agent:agent /var/dojo/paquete-final.b64
 hints:
-  - "base64 -d paquete-final.b64 > /tmp/paquete.tar.gz"
-  - "tar -xzf /tmp/paquete.tar.gz -C /tmp/extrae  →  unzip /tmp/extrae/flag.zip -d /tmp/extrae2"
-  - "cat /tmp/extrae2/flag.txt"
+  - base64 -d paquete-final.b64 > /tmp/paquete.tar.gz
+  - tar -xzf /tmp/paquete.tar.gz -C /tmp/extrae  →  unzip /tmp/extrae/flag.zip
+    -d /tmp/extrae2
+  - cat /tmp/extrae2/flag.txt
 teach: >
-  La muñeca rusa real: base64 → tar.gz → zip → flag.txt. Cada nivel de
-  empaque tiene su herramienta de apertura, y TU única disciplina es
-  ir capa a capa con el pipeline correcto. En la vida real (logs,
-  malware, backup) verás cada capa en combinaciones nuevas.
+  La muñeca rusa real: base64 → tar.gz → zip → flag.txt. Cada nivel de empaque
+  tiene su herramienta de apertura, y TU única disciplina es ir capa a capa con
+  el pipeline correcto. En la vida real (logs, malware, backup) verás cada capa
+  en combinaciones nuevas.
 cheatsheet:
-  - {cmd: 'base64 -d in.b64 > out.bin', desc: desembala capa 1}
-  - {cmd: 'tar -xzf pack.tar.gz -C dir', desc: desembala capa tar.gz}
-  - {cmd: 'unzip pack.zip -d dir', desc: capa zip y leer}
+  - cmd: base64 -d in.b64 > out.bin
+    desc: desembala capa 1
+  - cmd: tar -xzf pack.tar.gz -C dir
+    desc: desembala capa tar.gz
+  - cmd: unzip pack.zip -d dir
+    desc: capa zip y leer
 solution: |
   base64 -d /var/dojo/paquete-final.b64 > /tmp/paquete.tar.gz
   mkdir -p /tmp/e1 /tmp/e2
   tar -xzf /tmp/paquete.tar.gz -C /tmp/e1
   unzip -o /tmp/e1/flag.zip -d /tmp/e2
   cat /tmp/e2/flag.txt
-
-keywords: [tar, zip, base64, boss]
+keywords:
+  - tar
+  - zip
+  - base64
+  - boss
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      Archive:  /tmp/e1/flag.zip
+       extracting: /tmp/e2/flag.txt        
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,7 +5,8 @@ title: El rey de la longitud
 subtitle: awk length($0) + guardado del máximo
 xp: 65
 difficulty: 4
-brief: En dumpe.log, hay una línea anómala MUY LARGA. À veces tiene la marca, a veces no.
+brief: En dumpe.log, hay una línea anómala MUY LARGA. À veces tiene la marca, a
+  veces no.
 goal: De dumpe.log imprime la línea MÁS LARGA (contenido, no la longitud).
 setup: |
   #!/bin/bash
@@ -18,15 +19,15 @@ setup: |
   breve
   EOF
   chown agent:agent /home/agent/dumpe.log
-solution: awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line
-  }' /home/agent/dumpe.log
+solution: awk '{ if (length($0) > max) { max = length($0); line = $0 } } END {
+  print line }' /home/agent/dumpe.log
 hints:
   - length($0) da el TAM de la línea ACTUAL.
   - Guarda la línea si supera al máximo; al final imprímela con END.
-  - awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print line }'
-    /home/agent/dumpe.log
-teach: En awk, if dentro de una acción con llaves acumula el «tope» y guarda una copia de
-  la línea todas las vezes que mejora. END imprime al final.
+  - awk '{ if (length($0) > max) { max = length($0); line = $0 } } END { print
+    line }' /home/agent/dumpe.log
+teach: En awk, if dentro de una acción con llaves acumula el «tope» y guarda una
+  copia de la línea todas las vezes que mejora. END imprime al final.
 cheatsheet:
   - cmd: awk '{ print length($0) }' f
     desc: longitud de cada línea
@@ -38,3 +39,6 @@ keywords:
   - if
   - máximo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

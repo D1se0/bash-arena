@@ -5,10 +5,10 @@ title: Ensamblaje del sello
 subtitle: awk concatenación + END
 xp: 60
 difficulty: 4
-brief: "trozos.txt guarda la marca partido en tres líneas: «trozo n fragmento». awk los
-  junta en orden y al final los suelta de una tacada con END."
-goal: Concatena los 3.er campos de las líneas trozo de trozos.txt (en el orden del
-  fichero) e imprime TODO en una línea.
+brief: "trozos.txt guarda la marca partido en tres líneas: «trozo n fragmento».
+  awk los junta en orden y al final los suelta de una tacada con END."
+goal: Concatena los 3.er campos de las líneas trozo de trozos.txt (en el orden
+  del fichero) e imprime TODO en una línea.
 setup: |
   #!/bin/bash
   set -e
@@ -20,12 +20,13 @@ setup: |
   chown agent:agent /home/agent/trozos.txt
 solution: awk '/^trozo/ {s = s $3} END {print s}' /home/agent/trozos.txt
 hints:
-  - "awk permite manipular variables: s = s $3 añade el tercer campo a lo acumulado."
+  - "awk permite manipular variables: s = s $3 añade el tercer campo a lo
+    acumulado."
   - "Pago en una línea: END {print s} al terminar, no en el patrón."
   - awk '/^trozo/ {s = s $3} END {print s}' /home/agent/trozos.txt
-teach: "awk no necesita bucles para ensamblar: la variable s acumula campos y END los
-  vierte. La concatenación es por yuxtación: s = s $3 (sin +) une el campo tras la
-  variable."
+teach: "awk no necesita bucles para ensamblar: la variable s acumula campos y
+  END los vierte. La concatenación es por yuxtación: s = s $3 (sin +) une el
+  campo tras la variable."
 cheatsheet:
   - cmd: awk '{s = s $1} END {print s}' f
     desc: concatena los primeros campos
@@ -36,3 +37,6 @@ keywords:
   - concatenar
   - END
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

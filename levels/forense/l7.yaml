@@ -5,9 +5,10 @@ title: Mensaje blindado en b64
 subtitle: "base64 -d: decodificar"
 xp: 40
 difficulty: 2
-brief: "adjunto.b64 es texto base64: un formato clásico de correo para eludir filtros. Decodifícalo
-  en el flujo para recuperar el origen."
-goal: Decodifica /home/agent/adjunto.b64 y muestra el mensaje original (que trae la marca).
+brief: "adjunto.b64 es texto base64: un formato clásico de correo para eludir
+  filtros. Decodifícalo en el flujo para recuperar el origen."
+goal: Decodifica /home/agent/adjunto.b64 y muestra el mensaje original (que trae
+  la marca).
 setup: |-
   #!/bin/bash
   set -e
@@ -20,8 +21,9 @@ hints:
   - base64 -d decodifica en el flujo (stdout).
   - También puedes cat fichero | base64 -d si prefieres.
   - base64 -d adjunto.b64
-teach: "base64 codifica a 64 caracteres binarios seguros; -d deshace. Appears en logs, adjuntos,
-  tokens JWT (la parte media) y exfiltraciones: reconocerla es obligatorio en forense."
+teach: "base64 codifica a 64 caracteres binarios seguros; -d deshace. Appears en
+  logs, adjuntos, tokens JWT (la parte media) y exfiltraciones: reconocerla es
+  obligatorio en forense."
 cheatsheet:
   - cmd: base64 -d f
     desc: decodifica
@@ -32,3 +34,6 @@ keywords:
   - codificar
   - decodificar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "adjunto normal: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

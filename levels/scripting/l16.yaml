@@ -5,10 +5,10 @@ title: Dos mitades, un todo
 subtitle: paste -d'' + printf
 xp: 45
 difficulty: 3
-brief: "La marca está partida: la mitad izquierda en parteA.txt, la derecha en parteB.txt. Sin
-  espacios entre ellas, el todo ES la marca."
-goal: Concatena la primera línea de ambas partes (paste sin delimitador) y muéstrala como una sola
-  cadena.
+brief: "La marca está partida: la mitad izquierda en parteA.txt, la derecha en
+  parteB.txt. Sin espacios entre ellas, el todo ES la marca."
+goal: Concatena la primera línea de ambas partes (paste sin delimitador) y
+  muéstrala como una sola cadena.
 setup: |-
   #!/bin/bash
   set -e
@@ -23,10 +23,11 @@ hints:
   - "cat A B concatena: la línea de la 1ª parte y la de la 2ª."
   - "tr -d '\\n' quita los saltos de línea: las dos mitades quedan pegadas."
   - cat parteA.txt parteB.txt | tr -d '\n'
-teach: "cat une ficheros y tr -d '\\n' elimina los saltos: el pegado de mitades sin herramientas
-  sofisticadas. (GNU paste con delimitador vacío es quisquilloso: queda como dato curioso.)"
+teach: "cat une ficheros y tr -d '\\n' elimina los saltos: el pegado de mitades
+  sin herramientas sofisticadas. (GNU paste con delimitador vacío es
+  quisquilloso: queda como dato curioso.)"
 cheatsheet:
-  - cmd: "cat a b | tr -d '\\n'"
+  - cmd: cat a b | tr -d '\n'
     desc: pegar sin saltos
   - cmd: paste a b
     desc: unidos con TAB
@@ -35,3 +36,6 @@ keywords:
   - concatenar
   - printf
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

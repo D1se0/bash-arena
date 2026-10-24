@@ -5,8 +5,10 @@ title: El turno de las 09:42
 subtitle: grep por marca horaria
 xp: 45
 difficulty: 3
-brief: turno.log lista millones de líneas por HH:MM. Solo las del minuto 09:42 reportan el hallazgo.
-goal: Filtra de /home/agent/turno.log solo las líneas de la hora 09:42 y extrae la marca.
+brief: turno.log lista millones de líneas por HH:MM. Solo las del minuto 09:42
+  reportan el hallazgo.
+goal: Filtra de /home/agent/turno.log solo las líneas de la hora 09:42 y extrae
+  la marca.
 setup: |-
   #!/bin/bash
   set -e
@@ -26,8 +28,9 @@ hints:
   - El ancla ^ obliga a que el patrón esté al INICIO de línea (la marca horaria).
   - grep "^09:42" fichero filtra el minuto; el segundo grep extrae la marca.
   - grep '^09:42' f | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: 'Los logs estructurados se filtran mejor que se buscan: si la fecha es el primer campo, grep
-  "^HH:MM" y awk $1=="HH:MM" son equivalentes. Elige el que dé menos falsos positivos en cada log.'
+teach: 'Los logs estructurados se filtran mejor que se buscan: si la fecha es el
+  primer campo, grep "^HH:MM" y awk $1=="HH:MM" son equivalentes. Elige el que
+  dé menos falsos positivos en cada log.'
 cheatsheet:
   - cmd: grep '^09:42' f
     desc: por hora al inicio
@@ -38,3 +41,6 @@ keywords:
   - timestamp
   - grep
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

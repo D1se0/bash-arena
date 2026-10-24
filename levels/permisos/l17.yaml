@@ -5,10 +5,11 @@ title: La pila congelada
 subtitle: "find -perm 000: ficheros muertos"
 xp: 45
 difficulty: 3
-brief: En ~/redactar todos los ficheros menos uno tienen por cerrado (000). Dáles lectura a los
-  muertos y extrae la pieza del que hasta ahora estaba blanco.
-goal: Encuentra en /home/agent/redactar el fichero con permisos 000, restáura su lectura para el
-  dueño y muéstralo.
+brief: En ~/redactar todos los ficheros menos uno tienen por cerrado (000).
+  Dáles lectura a los muertos y extrae la pieza del que hasta ahora estaba
+  blanco.
+goal: Encuentra en /home/agent/redactar el fichero con permisos 000, restáura su
+  lectura para el dueño y muéstralo.
 setup: >-
   #!/bin/bash
 
@@ -18,8 +19,8 @@ setup: >-
 
   mkdir -p /home/agent/redactar
 
-  for i in 1 2 3 4 5; do echo "acta $i: normal" > /home/agent/redactar/a$i.txt; chmod 600
-  /home/agent/redactar/a$i.txt; done
+  for i in 1 2 3 4 5; do echo "acta $i: normal" > /home/agent/redactar/a$i.txt;
+  chmod 600 /home/agent/redactar/a$i.txt; done
 
   echo "acta 6: $DOJO_FLAG" > /home/agent/redactar/a6.txt
 
@@ -31,8 +32,9 @@ hints:
   - find -perm 000 encuentra exactamente los ficheros sin ningún permiso.
   - chmod 600 los deja r+w para el dueño (o 644).
   - f=$(find d -perm 000); chmod 600 "$f"; cat "$f"
-teach: Un 000 es un fichero invisible para el contenido y visible por nombre. find -perm 000 es su
-  buscador idóneo — igual que -perm 400 desenmáscara esos "solo lectura" que confunden.
+teach: Un 000 es un fichero invisible para el contenido y visible por nombre.
+  find -perm 000 es su buscador idóneo — igual que -perm 400 desenmáscara esos
+  "solo lectura" que confunden.
 cheatsheet:
   - cmd: find d -perm 000
     desc: ficheros soldados
@@ -43,3 +45,6 @@ keywords:
   - "000"
   - chmod
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "acta 6: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,12 +5,12 @@ subtitle: enlaces simbólicos y readlink
 xp: 60
 difficulty: 3
 brief: >
-  La clave está detrás de una cadena de enlaces simbólicos que se van
-  pasando la pelota. Algunos van a ficheros trampa. cat SYM
-  sigue la cadena completa; readlink -f te da la ruta física final.
+  La clave está detrás de una cadena de enlaces simbólicos que se van pasando la
+  pelota. Algunos van a ficheros trampa. cat SYM sigue la cadena completa;
+  readlink -f te da la ruta física final.
 goal: >
-  Sigue la cadena de enlaces desde /home/agent/pomer-result y muéstrame
-  el fichero que la contiene (la flag).Hay varios enlaces; solo uno es bueno.
+  Sigue la cadena de enlaces desde /home/agent/pomer-result y muéstrame el
+  fichero que la contiene (la flag).Hay varios enlaces; solo uno es bueno.
 setup: |
   #!/bin/bash
   set -e
@@ -25,19 +25,26 @@ setup: |
   printf 'El símbolo correcto NO es el primero.\n' > /home/agent/hint.txt
   chown -R agent:agent /var/dojo /home/agent
 hints:
-  - "readlink -f fichero te dice a qué fichero REAL apunta un enlace (con cadena completa)."
+  - readlink -f fichero te dice a qué fichero REAL apunta un enlace (con cadena
+    completa).
   - "Alternativa: ls -l para ver todas las flechas →, y probar la buena."
-  - "cat $(readlink -f /home/agent/pomer-c)"
+  - cat $(readlink -f /home/agent/pomer-c)
 teach: >
-  Un enlace simbólico (symlink) es un atajo a otro fichero/ruta; los
-  duros (hard link) comparten inodo. `readlink -f` resuelve la cadena
-  completa al fichero real. `ln -s destino link` crea; `ls -l` mue
-  stras flechas →.
+  Un enlace simbólico (symlink) es un atajo a otro fichero/ruta; los duros (hard
+  link) comparten inodo. `readlink -f` resuelve la cadena completa al fichero
+  real. `ln -s destino link` crea; `ls -l` mue stras flechas →.
 cheatsheet:
-  - {cmd: 'ln -s destino enlace', desc: crea symlink}
-  - {cmd: 'readlink -f enlace', desc: ruta real del fichero apuntado}
+  - cmd: ln -s destino enlace
+    desc: crea symlink
+  - cmd: readlink -f enlace
+    desc: ruta real del fichero apuntado
 solution: |
   cat "$(readlink -f /home/agent/pomer-c)"
-
-keywords: [ln, symlink, readlink]
+keywords:
+  - ln
+  - symlink
+  - readlink
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "clave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

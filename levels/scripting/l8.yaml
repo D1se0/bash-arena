@@ -5,10 +5,10 @@ title: El menú por parámetros
 subtitle: posicionales $1 $2 y case
 xp: 40
 difficulty: 3
-brief: "menu.sh acepta un ACCION y una CLAVE: hay que invocarlo correctamente para que lea el
-  fichero que interesa."
-goal: Invoca /home/agent/menu.sh (con bash) con acción "mostrar" y clave "centro-2" para leer la
-  ficha correcta.
+brief: "menu.sh acepta un ACCION y una CLAVE: hay que invocarlo correctamente
+  para que lea el fichero que interesa."
+goal: Invoca /home/agent/menu.sh (con bash) con acción "mostrar" y clave
+  "centro-2" para leer la ficha correcta.
 setup: |-
   #!/bin/bash
   set -e
@@ -32,8 +32,9 @@ hints:
   - Dentro del script, $1 y $2 son el primer y segundo parámetro que le pasas.
   - El case $1 ejecuta la rama cuyo patrón case la acción.
   - bash menu.sh mostrar centro-2
-teach: "$0 $1 $2… son los argumentos posicionales de un script (como argv de C). case sobre $1 es el
-  switch de bash: la forma idiomática de depender del parámetro a ser."
+teach: "$0 $1 $2… son los argumentos posicionales de un script (como argv de C).
+  case sobre $1 es el switch de bash: la forma idiomática de depender del
+  parámetro a ser."
 cheatsheet:
   - cmd: ./script a b
     desc: invoca con parámetros
@@ -45,3 +46,6 @@ keywords:
   - $1
   - script
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "ficha correcta: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

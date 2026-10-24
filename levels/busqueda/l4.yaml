@@ -5,40 +5,74 @@ subtitle: find por tamaño y nombre
 xp: 45
 difficulty: 2
 brief: >
-  Un agente minucioso dejó la clave en un fichero cuyo nombre es revelador,
-  pero el árbol es enorme y se llenó de isotopos de directorios con otros
-  ficheros .flag falsos. Los criterios de find son tus binoculares.
+  Un agente minucioso dejó la clave en un fichero cuyo nombre es revelador, pero
+  el árbol es enorme y se llenó de isotopos de directorios con otros ficheros
+  .flag falsos. Los criterios de find son tus binoculares.
 goal: >
   En /var/dojo/archivo hay MÚLTIPLES ficheros llamados .flag (trampas vacías);
   solo uno pesa 700 bytes cerca del patrón discour. Encuéntralo con find y
   muéstralo.
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 04" "Búsqueda"
+
   mkdir -p /var/dojo/archivo
+
   for i in $(seq 1 12); do
     printf 'isotopo %d sin nada: trampa de find.\n' "$i" > "/var/dojo/archivo/trampa-$i.flag"
   done
+
   {
     printf 'FICHERO REAL — cooldown del agente Skywalker.\\n'
     printf 'Código entregable: %s\\n' "$DOJO_FLAG"
     for i in $(seq 1 400); do printf 'comentario viajero %d\\n' "$i"; done
   } > "/var/dojo/archivo/discour.flag"
+
   chmod 0644 /var/dojo/archivo/*.flag
+
   find /var/dojo/archivo -type f -exec chown agent:agent {} +
 hints:
-  - "find carpeta -name '*.flag' -size +400c lista candidatos."
+  - find carpeta -name '*.flag' -size +400c lista candidatos.
 teach: >
-  `find carpeta -name X -size +Nc` te filtra por tamaño exacto +
-  nombre. Los criterios se combinan y actúan sobre la salida con
-  `-exec cmd {} \\;`; para pipes más libres usa xargs.
+  `find carpeta -name X -size +Nc` te filtra por tamaño exacto + nombre. Los
+  criterios se combinan y actúan sobre la salida con `-exec cmd {} \\;`; para
+  pipes más libres usa xargs.
 cheatsheet:
-  - {cmd: 'find /ruta -name "*.flag"', desc: búsqueda por nombre}
-  - {cmd: 'find /ruta -size +1k', desc: tamaño en bloques (c=bytes, k=KB, M=MB)}
-  - {cmd: 'find /ruta -type d', desc: solo directorios}
+  - cmd: find /ruta -name "*.flag"
+    desc: búsqueda por nombre
+  - cmd: find /ruta -size +1k
+    desc: tamaño en bloques (c=bytes
+    k=KB: null
+    M=MB): null
+  - cmd: find /ruta -type d
+    desc: solo directorios
 solution: |
   cat "$(find /var/dojo/archivo -name '*.flag' -size +400c)"
-
-keywords: [find]
+keywords:
+  - find
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      FICHERO REAL  cooldown del agente Skywalker.\nCódigo entregable:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}\ncomentario viajero 1\ncomentario viajero
+      2\ncomentario viajero 3\ncomentario viajero 4\ncomentario viajero
+      5\ncomentario viajero 6\ncomentario viajero 7\ncomentario viajero
+      8\ncomentario viajero 9\ncomentario viajero 10\ncomentario viajero
+      11\ncomentario viajero 12\ncomentario viajero 13\ncomentario viajero
+      14\ncomentario viajero 15\ncomentario viajero 16\ncomentario viajero
+      17\ncomentario viajero 18\ncomentario viajero 19\ncomentario viajero
+      20\ncomentario viajero 21\ncomentario viajero 22\ncomentario viajero
+      23\ncomentario viajero 24\ncomentario viajero 25\ncomentario viajero
+      26\ncomentario viajero 27\ncomentario viajero 28\ncomentario viajero
+      29\ncomentario viajero 30\ncomentario viajero 31\ncomentario viajero
+      32\ncomentario viajero 33\ncomentario viajero 34\ncomentario viajero
+      35\ncomentario viajero 36\ncomentario viajero 37\ncomentario viajero
+      38\ncomentario viajero 39\ncomentario viajero 40\ncomentario viajero
+      41\ncomentario viajero 42\ncomentario viajero 43\ncomentario viajero
+      44\ncomentario viajero 45\ncomentario viajero 46\ncomentario viajero
+      47\ncomentario viajero 48\ncomentar
+        … (+8389 caracteres más — la forma es idéntica)

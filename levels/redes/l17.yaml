@@ -5,9 +5,11 @@ title: Mira por el puerto
 subtitle: "/proc/net/tcp: puertos en hexadecimal"
 xp: 45
 difficulty: 3
-brief: Un servicio corre en el 9009. En /proc/net/tcp los puertos viajan en hexadecimal — 9009 se
-  convierte en 2339. Recherche y confirma descargando la web.
-goal: Comprueba en /proc/net/tcp el puerto 9009 en hexadecimal (2339) y descarga http://127.0.0.1:9009/.
+brief: Un servicio corre en el 9009. En /proc/net/tcp los puertos viajan en
+  hexadecimal — 9009 se convierte en 2339. Recherche y confirma descargando la
+  web.
+goal: Comprueba en /proc/net/tcp el puerto 9009 en hexadecimal (2339) y descarga
+  http://127.0.0.1:9009/.
 setup: |-
   #!/bin/bash
   set -e
@@ -19,11 +21,14 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: grep -i ':2339 ' /proc/net/tcp | head -n1; curl -s http://127.0.0.1:9009/
 hints:
-  - /proc/net/tcp muestra local_address como ip:PUERTO en hexadecimal (9009 = 2339).
-  - "grep con los espacios alrededor de 2339: :2339 (y ojo de mayúsculas con -i)."
+  - /proc/net/tcp muestra local_address como ip:PUERTO en hexadecimal (9009 =
+    2339).
+  - "grep con los espacios alrededor de 2339: :2339 (y ojo de mayúsculas con
+    -i)."
   - grep -i ':2339 ' /proc/net/tcp
-teach: "/proc/net/tcp es la mine de oro de TCP (ss/lo lee de ahí). Puertos/file states en
-  hexadecimal: 1F90=8080, 2339=9009. ¿Parser portátil sin tools? /proc/net/tcp."
+teach: "/proc/net/tcp es la mine de oro de TCP (ss/lo lee de ahí). Puertos/file
+  states en hexadecimal: 1F90=8080, 2339=9009. ¿Parser portátil sin tools?
+  /proc/net/tcp."
 cheatsheet:
   - cmd: grep :2339 /proc/net/tcp
     desc: port en hex 0x23399009
@@ -34,3 +39,6 @@ keywords:
   - tcp
   - hex
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "a la vista del 9009: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

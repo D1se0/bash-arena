@@ -5,39 +5,56 @@ subtitle: tar (listar y extraer)
 xp: 50
 difficulty: 2
 brief: >
-  Un obsesivo del orden empacó todas sus notas en un tar.gz. Dentro hay
-  un fichero de sonido con la clave… pero de literación textual.
+  Un obsesivo del orden empacó todas sus notas en un tar.gz. Dentro hay un
+  fichero de sonido con la clave… pero de literación textual.
 goal: >
-  En /var/dojo/notas.tar.gz hay un fichero que contiene la flag.
-  Lista el tar con tar -tzf, extrae con tar -xzf y muéstralo por cat.
-setup: |
+  En /var/dojo/notas.tar.gz hay un fichero que contiene la flag. Lista el tar
+  con tar -tzf, extrae con tar -xzf y muéstralo por cat.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 01" "Archivos"
+
   mkdir -p /var/dojo/tmp/notas
-  printf 'idea 01: invertir en teclados mecánicos\n' > /var/dojo/tmp/notas/nota_01.txt
-  printf 'nota ultra-privada: %s\n' "$DOJO_FLAG" > /var/dojo/tmp/notas/nota_clave.txt
+
+  printf 'idea 01: invertir en teclados mecánicos\n' >
+  /var/dojo/tmp/notas/nota_01.txt
+
+  printf 'nota ultra-privada: %s\n' "$DOJO_FLAG" >
+  /var/dojo/tmp/notas/nota_clave.txt
+
   printf 'idea 03: hacer un dojo de linux\n' > /var/dojo/tmp/notas/nota_03.txt
+
   tar -czf /var/dojo/notas.tar.gz -C /var/dojo/tmp notas
+
   rm -rf /var/dojo/tmp
+
   chown agent:agent /var/dojo/notas.tar.gz
 hints:
-  - "tar -tzf fichero.tar.gz lista sin extraer (t=list, z=gzip, f=archivo)."
-  - "tar -xzf notas.tar.gz -C /tmp/notas-extraer lo extrae en /tmp/notas-extraer."
-  - "cat /tmp/notas-extraer/notas/nota_clave.txt"
+  - tar -tzf fichero.tar.gz lista sin extraer (t=list, z=gzip, f=archivo).
+  - tar -xzf notas.tar.gz -C /tmp/notas-extraer lo extrae en /tmp/notas-extraer.
+  - cat /tmp/notas-extraer/notas/nota_clave.txt
 teach: >
-  `tar -czf paquete.tar.gz fichero...` comprime; `tar -tzf` lista; 
-  `tar -xzf` extrae. La `-C destino` redirige la extracción — sin ella
-  tar desempaca en el actual. En tar moderno la extensión insinúa el
-  formato y se puede omitir la z/j/J.
+  `tar -czf paquete.tar.gz fichero...` comprime; `tar -tzf` lista;  `tar -xzf`
+  extrae. La `-C destino` redirige la extracción — sin ella tar desempaca en el
+  actual. En tar moderno la extensión insinúa el formato y se puede omitir la
+  z/j/J.
 cheatsheet:
-  - {cmd: 'tar -czf pack.tar.gz ficheros', desc: crear comprimido}
-  - {cmd: 'tar -tzf pack.tar.gz', desc: listar contenido}
-  - {cmd: 'tar -xzf pack.tar.gz -C dir', desc: extraer en dir}
+  - cmd: tar -czf pack.tar.gz ficheros
+    desc: crear comprimido
+  - cmd: tar -tzf pack.tar.gz
+    desc: listar contenido
+  - cmd: tar -xzf pack.tar.gz -C dir
+    desc: extraer en dir
 solution: |
   mkdir -p /tmp/x
   tar -xzf /var/dojo/notas.tar.gz -C /tmp/x
   cat /tmp/x/notas/nota_clave.txt
-
-keywords: [tar]
+keywords:
+  - tar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "nota ultra-privada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

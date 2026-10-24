@@ -5,9 +5,10 @@ title: Volcado hexadecimal
 subtitle: "xxd -r: reconstruir del hex"
 xp: 45
 difficulty: 3
-brief: volcado.hex proviene de un volcado xxd del fichero original. Los bytes están ahí, solo hay
-  que re-ensamblar.
-goal: Reconstruye /home/agent/volcado.hex con xxd -r y muestra el texto original (que contiene la marca).
+brief: volcado.hex proviene de un volcado xxd del fichero original. Los bytes
+  están ahí, solo hay que re-ensamblar.
+goal: Reconstruye /home/agent/volcado.hex con xxd -r y muestra el texto original
+  (que contiene la marca).
 setup: |-
   #!/bin/bash
   set -e
@@ -21,8 +22,9 @@ hints:
   - xxd muestra bytes en hex; la opción -r hace la máscara inversa.
   - "La salida vuelve al stdout: puedes encadenerla con grep."
   - xxd -r volcado.hex
-teach: "xxd -r revierte un volcado hex a bytes: la forensic reconstrucción de ficheros que ya no
-  existen. Grabar claves hexa es exactamente lo mismo que las marcas hexa frecuentes en el foro."
+teach: "xxd -r revierte un volcado hex a bytes: la forensic reconstrucción de
+  ficheros que ya no existen. Grabar claves hexa es exactamente lo mismo que las
+  marcas hexa frecuentes en el foro."
 cheatsheet:
   - cmd: xxd -r f.hex
     desc: hex → bytes
@@ -33,3 +35,6 @@ keywords:
   - hex
   - reversa
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "volcado real de la sala: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,7 +5,8 @@ title: Hexdump invertido
 subtitle: "xxd -r: reconstituir desde hex"
 xp: 45
 difficulty: 3
-brief: volcado.hex guarda la pieza como volcado hexadecimal. xxd -r es su inverso EXACTO.
+brief: volcado.hex guarda la pieza como volcado hexadecimal. xxd -r es su
+  inverso EXACTO.
 goal: Reconstruye /home/agent/volcado.hex con xxd -r y muestra la marca.
 setup: |-
   #!/bin/bash
@@ -16,11 +17,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: xxd -r /home/agent/volcado.hex | grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
-  - "xxd fichero produce el volcado hex; xxd -r fichero.hex hace lo inverso: bytes desde hex."
-  - "La marea de texto uxxd lleva offsets y ASCII: -r reconstruye SOLO desde la columna hex."
+  - "xxd fichero produce el volcado hex; xxd -r fichero.hex hace lo inverso:
+    bytes desde hex."
+  - "La marea de texto uxxd lleva offsets y ASCII: -r reconstruye SOLO desde la
+    columna hex."
   - xxd -r /home/agent/volcado.hex | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: xxd y xxd -r son par par (hex ↔ bytes). Es la forma de desempacar trozos binarios que solo
-  existen como texto en otra capa (datos de un log, chat…).
+teach: xxd y xxd -r son par par (hex ↔ bytes). Es la forma de desempacar trozos
+  binarios que solo existen como texto en otra capa (datos de un log, chat…).
 cheatsheet:
   - cmd: xxd f | head
     desc: volcado hex
@@ -31,3 +34,6 @@ keywords:
   - hex
   - reverso
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

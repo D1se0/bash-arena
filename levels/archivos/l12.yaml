@@ -5,8 +5,8 @@ title: El paquete de 7
 subtitle: "7z: el multi-formato"
 xp: 45
 difficulty: 3
-brief: paquete.7z viene del equipo de backup con gran compresión. Dentro hay una nota.txt que trae
-  la marca
+brief: paquete.7z viene del equipo de backup con gran compresión. Dentro hay una
+  nota.txt que trae la marca
 goal: Extrae /home/agent/paquete.7z en /tmp/7z-salida y muestra nota.txt.
 setup: |-
   #!/bin/bash
@@ -21,13 +21,16 @@ setup: |-
   cd /
   rm -rf /tmp/lvl-N12
   chown agent:agent /home/agent/paquete.7z
-solution: 7z x -y -o/tmp/7z-salida /home/agent/paquete.7z >/dev/null && cat /tmp/7z-salida/nota.txt
+solution: 7z x -y -o/tmp/7z-salida /home/agent/paquete.7z >/dev/null && cat
+  /tmp/7z-salida/nota.txt
 hints:
   - 7z a comprime; 7z x extrae.
-  - La carpeta destino se define con -oRUTA (sin espacio tras -o) (y evita el ok con -y).
+  - La carpeta destino se define con -oRUTA (sin espacio tras -o) (y evita el ok
+    con -y).
   - 7z x -y -o/tmp/7z-salida paquete.7z
-teach: "7z acepta docenas de formatos (tar, zip, gz, iso…) con el mismo interfazo: a/extracto, -o
-  destino, -l listar. Para archivos raros, 7z casi siempre tiene la respuesta."
+teach: "7z acepta docenas de formatos (tar, zip, gz, iso…) con el mismo
+  interfazo: a/extracto, -o destino, -l listar. Para archivos raros, 7z casi
+  siempre tiene la respuesta."
 cheatsheet:
   - cmd: 7z l f.7z
     desc: lista el paquete
@@ -38,3 +41,6 @@ keywords:
   - p7zip
   - compresión
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "marca empacada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,16 +5,21 @@ title: El rey del error
 subtitle: grep -c + bucle + cat selectivo
 xp: 80
 difficulty: 4
-brief: Cinco logs grandes en logs/. Solo el loberrimo tiene MÁS de 50 líneas ERROR; su cabecera
-  lleva el avanzado trofeo.
-goal: Encuenposition el .log de /home/agent/logs con más de 50 líneas ERROR y MUESTRA su contenido
-  (los errores Y su cabecera con el trofeo).
-setup: |-
+brief: Cinco logs grandes en logs/. Solo el loberrimo tiene MÁS de 50 líneas
+  ERROR; su cabecera lleva el avanzado trofeo.
+goal: Encuenposition el .log de /home/agent/logs con más de 50 líneas ERROR y
+  MUESTRA su contenido (los errores Y su cabecera con el trofeo).
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 05" "Boss"
+
   mkdir -p /home/agent/logs
+
   i=1
+
   while [ $i -le 5 ]; do
     name=$i
     case $i in
@@ -31,14 +36,17 @@ setup: |-
     while [ $j -le $num ]; do echo "ERROR en componente $j" >> "$log"; j=$((j+1)); done
     i=$((i+1))
   done
+
   chown -R agent:agent /home/agent
-solution: for f in /home/agent/logs/*.log; do if [ "$(grep -c ERROR "$f")" -gt 50 ]; then cat "$f"; fi; done
+solution: for f in /home/agent/logs/*.log; do if [ "$(grep -c ERROR "$f")" -gt
+  50 ]; then cat "$f"; fi; done
 hints:
   - grep -c ERROR f cuenta las líneas ERROR de cada log.
   - "El número lo decide el bucle: compara la cuenta con -gt 50."
   - for f in logs/*.log; do [ "$(grep -c ERROR "$f")" -gt 50 ] && cat "$f"; done
-teach: El combo «señuelo + grep -c + test» es el patrón estándar de auditoría por lotes. Encadenarlo
-  con head/tail te enseña las cabeceras de CADA log sospechoso sin abrir el editor.
+teach: El combo «señuelo + grep -c + test» es el patrón estándar de auditoría
+  por lotes. Encadenarlo con head/tail te enseña las cabeceras de CADA log
+  sospechoso sin abrir el editor.
 cheatsheet:
   - cmd: grep -c ERROR f
     desc: cuenta ERRORS
@@ -49,3 +57,47 @@ keywords:
   - bucle
   - logs
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      inicio del lote 4 formato ESTANDAR
+      trofeo del causante: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      ERROR en componente 1
+      ERROR en componente 2
+      ERROR en componente 3
+      ERROR en componente 4
+      ERROR en componente 5
+      ERROR en componente 6
+      ERROR en componente 7
+      ERROR en componente 8
+      ERROR en componente 9
+      ERROR en componente 10
+      ERROR en componente 11
+      ERROR en componente 12
+      ERROR en componente 13
+      ERROR en componente 14
+      ERROR en componente 15
+      ERROR en componente 16
+      ERROR en componente 17
+      ERROR en componente 18
+      ERROR en componente 19
+      ERROR en componente 20
+      ERROR en componente 21
+      ERROR en componente 22
+      ERROR en componente 23
+      ERROR en componente 24
+      ERROR en componente 25
+      ERROR en componente 26
+      ERROR en componente 27
+      ERROR en componente 28
+      ERROR en componente 29
+      ERROR en componente 30
+      ERROR en componente 31
+      ERROR en componente 32
+      ERROR en componente 33
+      ERROR en componente 34
+      ERROR en componente 35
+      ERROR en componente 36
+      ERROR en componente 37
+      ERROR en componente 38
+        … (+22 líneas más — la forma es idéntica)

@@ -5,10 +5,10 @@ title: Dos ficheros, una clave
 subtitle: "awk FNR==NR: joins"
 xp: 70
 difficulty: 4
-brief: claves.txt lista ids autorizados; valores.dat trae «id valor». Solo la fila del id
-  que aparece en claves lleva la marca en el valor.
-goal: "Del par claves.txt + valores.dat: imprime el VALOR (2.º campo) de las filas cuyo id
-  está presente en claves.txt."
+brief: claves.txt lista ids autorizados; valores.dat trae «id valor». Solo la
+  fila del id que aparece en claves lleva la marca en el valor.
+goal: "Del par claves.txt + valores.dat: imprime el VALOR (2.º campo) de las
+  filas cuyo id está presente en claves.txt."
 setup: |
   #!/bin/bash
   set -e
@@ -25,16 +25,16 @@ setup: |
   q5 eco extrao
   EOF
   chown agent:agent /home/agent/claves.txt /home/agent/valores.dat
-solution: awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}' /home/agent/claves.txt
-  /home/agent/valores.dat
+solution: awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}'
+  /home/agent/claves.txt /home/agent/valores.dat
 hints:
   - Cuando hacka recibe dos ficheros, FNR==NR significa «estoy en el primero».
   - "En el primero: llenar el array; con next saltas sin procesar más."
   - awk 'FNR==NR {cl[$1]; next} $1 in cl {print $2}' /home/agent/claves.txt
     /home/agent/valores.dat
-teach: 'FNR (contador por fichero) y NR (global) distinstinguen los ficheros: FNR==NR es
-  el truco clásico que convierte awk en "SQL del shell": un índice en el primer fichero y
-  consultas contra el segundo.'
+teach: 'FNR (contador por fichero) y NR (global) distinstinguen los ficheros:
+  FNR==NR es el truco clásico que convierte awk en "SQL del shell": un índice en
+  el primer fichero y consultas contra el segundo.'
 cheatsheet:
   - cmd: awk 'FNR==NR {k[$1]; next} $1 in k'
     desc: join simple de dos ficheros
@@ -46,3 +46,6 @@ keywords:
   - NR
   - join
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

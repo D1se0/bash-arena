@@ -6,43 +6,61 @@ xp: 95
 difficulty: 4
 brief: >
   Un transmisor bombea la clave codificada cada pocos segundos al log.
-  Necesitas: leer la última emisión, matar el transmisor (la señal de
-  apagado es parte del oficio) y decodificar.
+  Necesitas: leer la última emisión, matar el transmisor (la señal de apagado es
+  parte del oficio) y decodificar.
 goal: >
   En /var/log/transmisor.log se acumula la salida codificada (base64) del
-  transmisor. Mata el proceso (term o kill), decodifica la ÚLTIMA línea
-  completa y muéstrame el mensaje en claro (contiene la flag).
-setup: |
+  transmisor. Mata el proceso (term o kill), decodifica la ÚLTIMA línea completa
+  y muéstrame el mensaje en claro (contiene la flag).
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "BOSS 03" "Boss"
+
   cat > /usr/local/bin/transmisor <<EOF
+
   #!/bin/bash
+
   while true; do
     printf '%s\n' "\$(printf 'mensaje cifrado: %s residuo 842\n' "$DOJO_FLAG" | base64 -w0)" >> /var/log/transmisor.log
     sleep 2
   done
+
   EOF
+
   chmod 0755 /usr/local/bin/transmisor
+
   touch /var/log/transmisor.log && chown agent:agent /var/log/transmisor.log
+
   su agent -c 'setsid /usr/local/bin/transmisor >/dev/null 2>&1 &'
+
   sleep 3
 hints:
-  - "tail -1 /var/log/transmisor.log | base64 -d te muestra el último mensaje."
-  - "pkill -f transmisor para frenar la emisión."
+  - tail -1 /var/log/transmisor.log | base64 -d te muestra el último mensaje.
+  - pkill -f transmisor para frenar la emisión.
 teach: >
-  Combinación boss: `pkill -f` te limpia el proceso ruidoso, `tail -1`
-  saca la última emisión, `base64 -d` la abre. ¿Por qué matar primero?
-  Evitas leer una emisión PARTIDA a mitad de escritura (atomicidad
-  práctica) y dejas claro quién fue.
+  Combinación boss: `pkill -f` te limpia el proceso ruidoso, `tail -1` saca la
+  última emisión, `base64 -d` la abre. ¿Por qué matar primero? Evitas leer una
+  emisión PARTIDA a mitad de escritura (atomicidad práctica) y dejas claro quién
+  fue.
 cheatsheet:
-  - {cmd: 'pkill -f nombre', desc: mata por patrón}
-  - {cmd: 'tail -n 2 fichero', desc: últimas 2 líneas}
-  - {cmd: 'base64 -d', desc: decodifica stdin}
+  - cmd: pkill -f nombre
+    desc: mata por patrón
+  - cmd: tail -n 2 fichero
+    desc: últimas 2 líneas
+  - cmd: base64 -d
+    desc: decodifica stdin
 solution: |
   pkill -f '[t]ransmisor$' || true
   sleep 1
   tail -1 /var/log/transmisor.log | base64 -d
-
-keywords: [pkill, tail, base64]
+keywords:
+  - pkill
+  - tail
+  - base64
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "mensaje cifrado: FLAG{d3b09a4f7c2e1b8d6041a5f3} residuo 842"

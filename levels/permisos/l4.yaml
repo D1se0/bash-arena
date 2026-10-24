@@ -5,10 +5,10 @@ subtitle: SUID
 xp: 60
 difficulty: 4
 brief: >
-  Un operador decidió de manera causal: marcó /bin/cat como SUID con
-  chmod u+s. Eso hará que cat se ejecute con los poderes de su dueño
-  (root)… y ahora cualquiera puede leer ficheros privados. Suid es
-  escalofriante: este nivel te lo demuestra.
+  Un operador decidió de manera causal: marcó /bin/cat como SUID con chmod u+s.
+  Eso hará que cat se ejecute con los poderes de su dueño (root)… y ahora
+  cualquiera puede leer ficheros privados. Suid es escalofriante: este nivel te
+  lo demuestra.
 goal: >
   Usa el binario con el bit SUID activado para leer el fichero
   /etc/dojo/confidencial — solo root leía ese fichero (chmod 600).
@@ -24,15 +24,21 @@ setup: |
 hints:
   - "Nada especial: cat simplemente ya corre como root (su euid es root)."
 teach: >
-  El bit SUID da al ejecutable los permisos de SU DUEÑO (no del que lo
-  lanza). Es la base de utilidades como `su` o `passwd`. Demasiados
-  SUID/sudoers sin control = hueco de seguridad. Busca los binarios
-  SUID del sistema con `find / -perm -u+s -type f 2>/dev/null`.
+  El bit SUID da al ejecutable los permisos de SU DUEÑO (no del que lo lanza).
+  Es la base de utilidades como `su` o `passwd`. Demasiados SUID/sudoers sin
+  control = hueco de seguridad. Busca los binarios SUID del sistema con `find /
+  -perm -u+s -type f 2>/dev/null`.
 cheatsheet:
-  - {cmd: 'chmod u+s binario', desc: activa SUID}
-  - {cmd: 'find / -perm -4000 2>/dev/null', desc: lista binarios SUID}
+  - cmd: chmod u+s binario
+    desc: activa SUID
+  - cmd: find / -perm -4000 2>/dev/null
+    desc: lista binarios SUID
 solution: |
   cat /etc/dojo/confidencial
-
-keywords: [suid, setuid]
+keywords:
+  - suid
+  - setuid
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

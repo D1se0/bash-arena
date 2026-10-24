@@ -5,10 +5,10 @@ title: Solo en los conf
 subtitle: grep -r con --include
 xp: 70
 difficulty: 4
-brief: El directorio servicio mezcla configuraciones .conf con logs, scripts y respaldos.
-  La señal «chip» interesa SOLO entre los ficheros .conf vivos.
-goal: "Recursivamente, muestra las coincidencias con chip: solo entre ficheros *.conf (con
-  ruta y línea)."
+brief: El directorio servicio mezcla configuraciones .conf con logs, scripts y
+  respaldos. La señal «chip» interesa SOLO entre los ficheros .conf vivos.
+goal: "Recursivamente, muestra las coincidencias con chip: solo entre ficheros
+  *.conf (con ruta y línea)."
 setup: >
   #!/bin/bash
 
@@ -23,7 +23,8 @@ setup: >
 
   echo 'chip: eco en un log de eventos' > /home/agent/servicio/evento.log
 
-  echo '# chip mencionado en comentario de código' > /home/agent/servicio/ajuste.py
+  echo '# chip mencionado en comentario de código' >
+  /home/agent/servicio/ajuste.py
 
   echo 'chip en el respaldo antiguo, fuera de servicio' >
   /home/agent/servicio/ajuste.conf.bak
@@ -34,11 +35,12 @@ setup: >
 solution: "grep -r --include='*.conf' 'chip: ' /home/agent/servicio"
 hints:
   - --include="*.conf" restringe QUÉ ficheros participan en la recursiva.
-  - 'El patrón "chip: " (con espacio y dos puntos) deja fuera los ecos sin valor.'
+  - 'El patrón "chip: " (con espacio y dos puntos) deja fuera los ecos sin
+    valor.'
   - "grep -r --include='*.conf' 'chip: ' /home/agent/servicio"
-teach: grep -r --include="*.conf" filtra los ficheros por NOMBRE (no por contenido) —
-  imprescindible cuando el árbol está lleno de logs, scripts y backups .conf.bak que no
-  forman parte del servicio.
+teach: grep -r --include="*.conf" filtra los ficheros por NOMBRE (no por
+  contenido) — imprescindible cuando el árbol está lleno de logs, scripts y
+  backups .conf.bak que no forman parte del servicio.
 cheatsheet:
   - cmd: grep -r --include="*.conf" p dir
     desc: solo ficheros .conf
@@ -49,3 +51,14 @@ keywords:
   - -r
   - --include
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      /home/agent/servicio/servidor.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      (config servidor)
+
+      /home/agent/servicio/cliente.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      (config cliente)
+
+      /home/agent/servicio/mon.conf:chip: FLAG{d3b09a4f7c2e1b8d6041a5f3} (config
+      mon)

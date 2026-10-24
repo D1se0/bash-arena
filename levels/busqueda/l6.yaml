@@ -5,27 +5,39 @@ title: Recorrer el árbol
 subtitle: grep -r recursivo
 xp: 35
 difficulty: 2
-brief: En proyecto/ hay subcarpetas y subcarpetas de subcarpetas. La clave está en UN fichero
-  cualquiera del árbol.
-goal: Encuentra y muestra la línea que contiene la clave en todo /home/agent/proyecto.
-setup: |-
+brief: En proyecto/ hay subcarpetas y subcarpetas de subcarpetas. La clave está
+  en UN fichero cualquiera del árbol.
+goal: Encuentra y muestra la línea que contiene la clave en todo
+  /home/agent/proyecto.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 06" "Búsqueda"
-  mkdir -p /home/agent/proyecto/src/lib /home/agent/proyecto/docs/dev /home/agent/proyecto/tests
+
+  mkdir -p /home/agent/proyecto/src/lib /home/agent/proyecto/docs/dev
+  /home/agent/proyecto/tests
+
   echo "codigo fuente sufriente" > /home/agent/proyecto/src/main.c
+
   echo "documentacion obsoleta" > /home/agent/proyecto/docs/oficial.md
+
   echo "pruebas de humo" > /home/agent/proyecto/tests/smoke.sh
+
   echo "-> $DOJO_FLAG" > /home/agent/proyecto/docs/dev/secretos.md
+
   echo "libreria abandonada" > /home/agent/proyecto/src/lib/inutil.c
+
   chown -R agent:agent /home/agent/proyecto
 solution: grep -r 'FLAG{' /home/agent/proyecto
 hints:
   - "Una búsqueda en una sola carpeta NO basta: el tesoro está en un subnivel."
   - grep -r desciende por todo el árbol de directorios.
   - grep -r 'FLAG{' /home/agent/proyecto
-teach: grep -r busca recursivamente en todos los ficheros de un árbol; combinado con -n indica
-  fichero y línea del hallazgo. Es la linterna para cuando no sabes dónde está.
+teach: grep -r busca recursivamente en todos los ficheros de un árbol; combinado
+  con -n indica fichero y línea del hallazgo. Es la linterna para cuando no
+  sabes dónde está.
 cheatsheet:
   - cmd: grep -rn 'x' dir/
     desc: busca e indica línea
@@ -36,3 +48,6 @@ keywords:
   - recursivo
   - arbol
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: /home/agent/proyecto/docs/dev/secretos.md:-> FLAG{d3b09a4f7c2e1b8d6041a5f3}

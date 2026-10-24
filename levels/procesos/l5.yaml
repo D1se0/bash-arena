@@ -5,13 +5,13 @@ subtitle: systemctl simulado (status, list-units)
 xp: 60
 difficulty: 3
 brief: >
-  En este dojo no corre systemd: corremos un clon minimalista. Un agente
-  puso la clave en la unit 'forge.service' y dejó un systemctl simulado
-  que lista units y sus ficheros de definición.
+  En este dojo no corre systemd: corremos un clon minimalista. Un agente puso la
+  clave en la unit 'forge.service' y dejó un systemctl simulado que lista units
+  y sus ficheros de definición.
 goal: >
-  Usa el systemctl simulado para LISTAR las unidades del dojo (list-units
-  o --list-units), encuentra cuál lleva la FLAG en su descripción
-  (Description=…) y muestrala leyendo el fichero de la unit correspondiente.
+  Usa el systemctl simulado para LISTAR las unidades del dojo (list-units o
+  --list-units), encuentra cuál lleva la FLAG en su descripción (Description=…)
+  y muestrala leyendo el fichero de la unit correspondiente.
 setup: |
   #!/bin/bash
   set -e
@@ -51,19 +51,39 @@ setup: |
   SCTL
   chmod 0755 /usr/local/bin/systemctl
 hints:
-  - "systemctl list-units  |  systemctl --list-units"
+  - systemctl list-units  |  systemctl --list-units
   - "lee la unit interessante: cat /etc/systemd/system/forge.service"
 teach: >
-  El systemctl real gestiona systemd units (servicios del sistema); el
-  dojo lo SIMULA para que practiques la mecánica. `systemctl status
-  unidad` te dice cómo está y qué fichero la define; el fichero .service
-  guarda metadatos (Description=) y qué ejecutar (ExecStart=).
+  El systemctl real gestiona systemd units (servicios del sistema); el dojo lo
+  SIMULA para que practiques la mecánica. `systemctl status unidad` te dice cómo
+  está y qué fichero la define; el fichero .service guarda metadatos
+  (Description=) y qué ejecutar (ExecStart=).
 cheatsheet:
-  - {cmd: 'systemctl list-units', desc: lista servicios (simulado)}
-  - {cmd: 'systemctl status forge.service', desc: cómo está una unit}
+  - cmd: systemctl list-units
+    desc: lista servicios (simulado)
+  - cmd: systemctl status forge.service
+    desc: cómo está una unit
 solution: |
   systemctl list-units
   cat /etc/systemd/system/forge.service
-
-keywords: [systemctl, unidades]
+keywords:
+  - systemctl
+  - unidades
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      cache.service                cache simulada del dojo
+
+      forge.service                forge that stores the code:
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+
+      web.service                  web simulada del dojo
+
+      [Unit]
+
+      Description=forge that stores the code: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+
+      [Service]
+
+      ExecStart=/bin/true

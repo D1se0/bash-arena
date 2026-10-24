@@ -5,10 +5,10 @@ title: Caza mayor VII — el log del traidor
 subtitle: exclusiones + strings + rot13
 xp: 90
 difficulty: 5
-brief: traidor.log mezcla líneas de señuelo, líneas de test y UNA línea legible con texto rotado
-  (rot13) que esconde la marca.
-goal: Filtra /home/agent/traidor.log quitando las líneas con señuelo o test, extrae su texto con
-  rot13 y pescá la marca.
+brief: traidor.log mezcla líneas de señuelo, líneas de test y UNA línea legible
+  con texto rotado (rot13) que esconde la marca.
+goal: Filtra /home/agent/traidor.log quitando las líneas con señuelo o test,
+  extrae su texto con rot13 y pescá la marca.
 setup: >-
   #!/bin/bash
 
@@ -16,8 +16,8 @@ setup: >-
 
   arena-prompt "LVL 13" "Boss"
 
-  printf 'la confesion del traidor: %s\n' "$DOJO_FLAG" | tr 'A-Za-z' 'N-ZA-Mn-za-m' >
-  /tmp/traidor13.txt
+  printf 'la confesion del traidor: %s\n' "$DOJO_FLAG" | tr 'A-Za-z'
+  'N-ZA-Mn-za-m' > /tmp/traidor13.txt
 
   {
     echo "señuelo: FLAG{aaaaaaaaaaaaaaaaaaaaaaaa} ruido de distracción"
@@ -31,14 +31,16 @@ setup: >-
   chown agent:agent /home/agent/traidor.log
 
   chown -R agent:agent /home/agent
-solution: grep -viE 'señuelo|test' /home/agent/traidor.log | tr 'A-Za-z' 'N-ZA-Mn-za-m' | grep -oE
-  'FLAG\{[a-f0-9]+\}'
+solution: grep -viE 'señuelo|test' /home/agent/traidor.log | tr 'A-Za-z'
+  'N-ZA-Mn-za-m' | grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
   - Primero grep -viE 'señuelo|test' para excluir las trampas por nombre.
-  - "La línea restante está rotada +13: tr A-Za-z N-ZA-Mn-za-m la deshace (es simétrica)."
+  - "La línea restante está rotada +13: tr A-Za-z N-ZA-Mn-za-m la deshace (es
+    simétrica)."
   - grep -vE 'señuelo|test' traidor.log | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-teach: '"rot13 el log" es el truco de ofuscación núm 1 de logs mal protegidos: simétrico, sin clave,
-  sin software. Tu contramedida es generar texto limpio + auditoría por anomalías de frecuencias.'
+teach: '"rot13 el log" es el truco de ofuscación núm 1 de logs mal protegidos:
+  simétrico, sin clave, sin software. Tu contramedida es generar texto limpio +
+  auditoría por anomalías de frecuencias.'
 cheatsheet:
   - cmd: tr 'A-Za-z' 'N-ZA-Mn-za-m'
     desc: rot13 ida y vuelta
@@ -50,3 +52,6 @@ keywords:
   - log
   - excluir
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

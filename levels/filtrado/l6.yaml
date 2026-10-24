@@ -5,9 +5,10 @@ title: La cola de la bitácora
 subtitle: tail -n +N y recortes con head
 xp: 35
 difficulty: 2
-brief: "La bitácora acumula cientos de líneas de latidos. El incidente quedó anotado en la cola:
-  desde la línea 360."
-goal: Imprime las 20 primeras líneas a partir del renglón 360 de /home/agent/bitacora.log.
+brief: "La bitácora acumula cientos de líneas de latidos. El incidente quedó
+  anotado en la cola: desde la línea 360."
+goal: Imprime las 20 primeras líneas a partir del renglón 360 de
+  /home/agent/bitacora.log.
 setup: >-
   #!/bin/bash
 
@@ -17,14 +18,15 @@ setup: >-
 
   i=1
 
-  while [ $i -le 359 ]; do echo "linea $i latido rutinario del sistema"; i=$((i+1)); done >
-  /home/agent/bitacora.log
+  while [ $i -le 359 ]; do echo "linea $i latido rutinario del sistema";
+  i=$((i+1)); done > /home/agent/bitacora.log
 
   echo "linea 360 anomalia detectada: $DOJO_FLAG" >> /home/agent/bitacora.log
 
   i=365
 
-  while [ $i -le 400 ]; do echo "linea $i latido"; i=$((i+1)); done >> /home/agent/bitacora.log
+  while [ $i -le 400 ]; do echo "linea $i latido"; i=$((i+1)); done >>
+  /home/agent/bitacora.log
 
   chown agent:agent /home/agent/bitacora.log
 solution: tail -n +360 /home/agent/bitacora.log | head -n 20
@@ -32,8 +34,9 @@ hints:
   - tail -n +360 incluye la línea 360 como primera de la salida.
   - Encadena con head -n 20 para recortar la ventana.
   - tail -n +360 bitacora.log | head -n 20
-teach: tail -n +N lee DESDE la línea N hasta el final; head -n M corta. La combinación «desde +
-  recorte» es el patrón estándar para inspeccionar tramos de logs enormes.
+teach: tail -n +N lee DESDE la línea N hasta el final; head -n M corta. La
+  combinación «desde + recorte» es el patrón estándar para inspeccionar tramos
+  de logs enormes.
 cheatsheet:
   - cmd: tail -n +N f
     desc: desde la línea N al final
@@ -45,3 +48,26 @@ keywords:
   - ventana
   - logs
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      linea 360 anomalia detectada: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      linea 365 latido
+      linea 366 latido
+      linea 367 latido
+      linea 368 latido
+      linea 369 latido
+      linea 370 latido
+      linea 371 latido
+      linea 372 latido
+      linea 373 latido
+      linea 374 latido
+      linea 375 latido
+      linea 376 latido
+      linea 377 latido
+      linea 378 latido
+      linea 379 latido
+      linea 380 latido
+      linea 381 latido
+      linea 382 latido
+      linea 383 latido

@@ -5,14 +5,14 @@ subtitle: boss — sudo + find + permisos repartidos
 xp: 75
 difficulty: 4
 brief: >
-  El admin protegió su bóveda con directorios sin permiso de lectura y
-  ficheros solo para root. Un buen admin lo sabe rodear: como root via
-  sudo, puedes mirar dentro sin cambiar NADA de permisos (cat sí puede,
-  o bien find con el ojo del root).
+  El admin protegió su bóveda con directorios sin permiso de lectura y ficheros
+  solo para root. Un buen admin lo sabe rodear: como root via sudo, puedes mirar
+  dentro sin cambiar NADA de permisos (cat sí puede, o bien find con el ojo del
+  root).
 goal: >
-  En /etc/dojo/bóveda hay una estructura de directorios sin permiso
-  +x y ficheros exclusivamente de root con modo 0600. Con sudo, localiza
-  el fichero atajo.notes y muéstralo: contiene la clave.
+  En /etc/dojo/bóveda hay una estructura de directorios sin permiso +x y
+  ficheros exclusivamente de root con modo 0600. Con sudo, localiza el fichero
+  atajo.notes y muéstralo: contiene la clave.
 setup: |
   #!/bin/bash
   set -e
@@ -25,19 +25,28 @@ setup: |
   chmod 0700 /etc/dojo/bóveda/cajon/.profunda
   chmod 0600 /etc/dojo/bóveda/cajon/.profunda/atajo.notes
 hints:
-  - "sudo find /etc/dojo/bóveda -name 'atajo.notes'"
-  - "sudo cat /etc/dojo/bóveda/cajónsurdos/.profunda/atajo.notes"
+  - sudo find /etc/dojo/bóveda -name 'atajo.notes'
+  - sudo cat /etc/dojo/bóveda/cajónsurdos/.profunda/atajo.notes
 teach: >
-  Para LEER dentro de un directorio se necesita permiso de ejecución (x)
-  — no basta con r. El admin cerró x, así que ni ls ni cd; pero root
-  siempre puede. Guarda el principio de menor privilegio: sin permisos
-  de más y con sudo solo cuando toque.
+  Para LEER dentro de un directorio se necesita permiso de ejecución (x) — no
+  basta con r. El admin cerró x, así que ni ls ni cd; pero root siempre puede.
+  Guarda el principio de menor privilegio: sin permisos de más y con sudo solo
+  cuando toque.
 cheatsheet:
-  - {cmd: 'sudo find /ruta -name f', desc: buscar como root}
-  - {cmd: 'chmod 0700 dir', desc: solo el dueño puede entrar (rwx)}
+  - cmd: sudo find /ruta -name f
+    desc: buscar como root
+  - cmd: chmod 0700 dir
+    desc: solo el dueño puede entrar (rwx)
 solution: |
   sudo find /etc/dojo/bóveda -name 'atajo.notes'
   sudo cat /etc/dojo/bóveda/cajon/.profunda/atajo.notes
-
-keywords: [sudo, find, boss]
+keywords:
+  - sudo
+  - find
+  - boss
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      /etc/dojo/bóveda/cajon/.profunda/atajo.notes
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

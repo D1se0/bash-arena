@@ -5,27 +5,39 @@ title: La letra pequeña
 subtitle: leer instrucciones y seguirlas
 xp: 40
 difficulty: 3
-brief: 'El README del dojo da una ruta absoluta "-donde está la pieza". Leer y OBEDECER: la ruta
-  está impresa en el propio fichero.'
+brief: 'El README del dojo da una ruta absoluta "-donde está la pieza". Leer y
+  OBEDECER: la ruta está impresa en el propio fichero.'
 goal: Lee /home/agent/README, extrae la ruta que menciona y muestra ese fichero.
-setup: |-
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 17" "Fundamentos"
+
   mkdir -p /etc/arena
+
   echo "README del dojo" > /home/agent/README
-  echo "la pieza del nivel está archivada en /etc/arena/letra-pequena.txt" >> /home/agent/README
-  echo "recuerda: no hay accesos rápidos, solo lectura atenta" >> /home/agent/README
+
+  echo "la pieza del nivel está archivada en /etc/arena/letra-pequena.txt" >>
+  /home/agent/README
+
+  echo "recuerda: no hay accesos rápidos, solo lectura atenta" >>
+  /home/agent/README
+
   echo "$DOJO_FLAG" > /etc/arena/letra-pequena.txt
+
   chmod 644 /etc/arena/letra-pequena.txt /home/agent/README
+
   chown -R agent:agent /home/agent
 solution: p=$(grep -oE '/etc/arena/[a-z.-]+' /home/agent/README | head -n1); cat "$p"
 hints:
   - grep -oE con una regex de ruta saca la ruta sin el resto del texto.
   - Las rutas absolutas del README empiezan por /etc/arena/.
   - p=$(grep -oE '/etc/arena/[a-z.-]+' /home/agent/README); cat "$p"
-teach: 'Leer documentación ES una habilidad de terminal: grep -oE "\w+\.\w+|/ruta" sobre README y
-  man página el salto de "se que existo" a "hago lo que pide".'
+teach: 'Leer documentación ES una habilidad de terminal: grep -oE
+  "\w+\.\w+|/ruta" sobre README y man página el salto de "se que existo" a "hago
+  lo que pide".'
 cheatsheet:
   - cmd: grep -oE '/ruta/[a-z.-]+' f
     desc: extrae rutas de un texto
@@ -36,3 +48,6 @@ keywords:
   - grep
   - rutas
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

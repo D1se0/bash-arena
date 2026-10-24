@@ -5,7 +5,8 @@ title: Conversación de un solo sentido
 subtitle: "nc: hablar con un servicio TCP"
 xp: 45
 difficulty: 3
-brief: "Un oráculo escucha en el TCP 9999: al conectarte, te susurra la clave y cierra."
+brief: "Un oráculo escucha en el TCP 9999: al conectarte, te susurra la clave y
+  cierra."
 goal: Conéctate al servicio del puerto 9999 con netcat y recoge la marca.
 setup: |-
   #!/bin/bash
@@ -37,8 +38,9 @@ hints:
   - "netcat es el cliente TCP mínimo: nc HOST PUERTO."
   - "Sin stdin abierto nc esperaría prohibido el cierre: redirige /dev/null"
   - nc -w 2 127.0.0.1 9999 </dev/null
-teach: "nc habla TCP crudo: ni HTTP ni protocolos, bytes. Es la herramienta para sondear servicios a
-  mano (banners SMTP, SSH…) y suele despejar dudas en la fase de reconocimiento."
+teach: "nc habla TCP crudo: ni HTTP ni protocolos, bytes. Es la herramienta para
+  sondear servicios a mano (banners SMTP, SSH…) y suele despejar dudas en la
+  fase de reconocimiento."
 cheatsheet:
   - cmd: nc HOST PUERTO
     desc: conexión TCP simple
@@ -50,3 +52,6 @@ keywords:
   - tcp
   - socket
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

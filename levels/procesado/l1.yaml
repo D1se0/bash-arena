@@ -5,38 +5,49 @@ subtitle: awk por columnas
 xp: 45
 difficulty: 3
 brief: >
-  Un servidor registreó intentos de acceso con usuario, IP y mensaje. La
-  única fila del usuario 'root' contiene la clave, pero ocupando la última
-  columna en una línea larga.
+  Un servidor registreó intentos de acceso con usuario, IP y mensaje. La única
+  fila del usuario 'root' contiene la clave, pero ocupando la última columna en
+  una línea larga.
 goal: >
-  En /var/dojo/accesos.db cada línea tiene 4 campos separados por espacio.
-  Busca con awk la línea cuyo primer campo es "root" e imprime SOLO el
-  último campo (contiene FLAG{...}).
-setup: |
+  En /var/dojo/accesos.db cada línea tiene 4 campos separados por espacio. Busca
+  con awk la línea cuyo primer campo es "root" e imprime SOLO el último campo
+  (contiene FLAG{...}).
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 01" "Procesado"
+
   {
     awk 'BEGIN{for(i=1;i<=300;i++) printf "user%d 10.0.0.%d:8080 estado-x nota-%d\n", i, (i%254), i}'
     printf 'root 10.0.0.1:22 exito %s\n' "$DOJO_FLAG"
     printf 'user302 10.0.0.77:8080 fallo registrado\n'
   } > /var/dojo/accesos.db
+
   chown agent:agent /var/dojo/accesos.db
 hints:
-  - "En awk, $1 es el primer campo y $NF el último campo de la línea."
-  - '$1 == "root" {print $NF} /var/dojo/accesos.db'
+  - En awk, $1 es el primer campo y $NF el último campo de la línea.
+  - $1 == "root" {print $NF} /var/dojo/accesos.db
 teach: >
-  `awk '{print $N}'` imprime el campo N de cada línea. `$NF` es el último
-  campo y `NR` el número de línea. Con `-F:` cambias el separador de
-  campo (los registros * WTF * con espacios se separan por defecto con
-  espacios).
+  `awk '{print $N}'` imprime el campo N de cada línea. `$NF` es el último campo
+  y `NR` el número de línea. Con `-F:` cambias el separador de campo (los
+  registros * WTF * con espacios se separan por defecto con espacios).
 cheatsheet:
-  - {cmd: "awk -F: '{print $1}' f", desc: primer campo, separado por dos puntos}
-  - {cmd: "awk '$1==\"root\"{print}' f", desc: filtra por condición en awk}
-  - {cmd: "awk '{print $NF}' f", desc: último campo de cada línea}
+  - cmd: "awk -F: '{print $1}' f"
+    desc: primer campo
+    separado por dos puntos: null
+  - cmd: awk '$1=="root"{print}' f
+    desc: filtra por condición en awk
+  - cmd: awk '{print $NF}' f
+    desc: último campo de cada línea
 solution: |
   awk '$1=="root"{print $NF}' /var/dojo/accesos.db
-
-keywords: [awk]
+keywords:
+  - awk
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

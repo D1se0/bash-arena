@@ -5,36 +5,52 @@ subtitle: rot13 vía tr
 xp: 65
 difficulty: 3
 brief: >
-  El agente paranoico cifró su nota con rot13: cada letra avanzó 13
-  posiciones del alfabeto (si pasaba la Z, volvía por la A).
-  tr es la herramienta del descifrador artesanal.
+  El agente paranoico cifró su nota con rot13: cada letra avanzó 13 posiciones
+  del alfabeto (si pasaba la Z, volvía por la A). tr es la herramienta del
+  descifrador artesanal.
 goal: >
-  En /var/dojo/rot13.txt está la nota cifrada. Descífrala con tr y
-  muestra la flag resultante.
-setup: |
+  En /var/dojo/rot13.txt está la nota cifrada. Descífrala con tr y muestra la
+  flag resultante.
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 04" "Forense"
+
   wrapper13() {
     printf '%s' "$1" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
   }
-  nota="$(wrapper13 "$DOJO_FLAG" 2>/dev/null) resto de la nota: firma del mensaje en código César 13."
+
+  nota="$(wrapper13 "$DOJO_FLAG" 2>/dev/null) resto de la nota: firma del
+  mensaje en código César 13."
+
   printf '%s\n' "$nota" > /var/dojo/rot13.txt
+
   chown agent:agent /var/dojo/rot13.txt
 hints:
-  - 'tr "A-Z a-z" "N-Z A-M n-z a-m" es el mapa rot13 (con los espacios del conjunto).'
-  - "El secreto está al principio de la línea."
+  - tr "A-Z a-z" "N-Z A-M n-z a-m" es el mapa rot13 (con los espacios del
+    conjunto).
+  - El secreto está al principio de la línea.
 teach: >
-  `tr` traduce entre DOS conjuntos del mismo tamaño: cada byte del
-  primero se cambia por su par. El clásico rot13: 'A-Za-z' →
-  'N-ZA-Mn-za-m'. El cifrado César/rot13 se decodifica aplicand PROPIO tr
-  de nuevo (es su inversa).
+  `tr` traduce entre DOS conjuntos del mismo tamaño: cada byte del primero se
+  cambia por su par. El clásico rot13: 'A-Za-z' → 'N-ZA-Mn-za-m'. El cifrado
+  César/rot13 se decodifica aplicand PROPIO tr de nuevo (es su inversa).
 cheatsheet:
-  - {cmd: "tr 'a-z' 'A-Z'", desc: mayusculiza}
-  - {cmd: "tr 'A-Za-z' 'N-ZA-Mn-za-m'", desc: rot13, cifrado y descifrado}
+  - cmd: tr 'a-z' 'A-Z'
+    desc: mayusculiza
+  - cmd: tr 'A-Za-z' 'N-ZA-Mn-za-m'
+    desc: rot13
+    cifrado y descifrado: null
 solution: |
   cat /var/dojo/rot13.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-
-keywords: [tr, rot13]
+keywords:
+  - tr
+  - rot13
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "FLAG{d3b09a4f7c2e1b8d6041a5f3} erfgb qr yn abgn: svezn qry zrafnwr ra
+      póqvtb Péfne 13."

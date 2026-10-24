@@ -5,10 +5,11 @@ title: La IP del incidente
 subtitle: grep -oE de IPs IPv4
 xp: 70
 difficulty: 5
-brief: El registro guarda muchas IPs, pero solo una es de la subred 10.0. Extraela LIMPIA
-  (solo la IP, sin el resto del texto).
-goal: Del registro connexion.log, extrae TODAS las IPs de la subred 10.0.X.X (formato
-  D.D.D.D, una por línea); la línea del testigo (sin IP) sale aparte con su marca.
+brief: El registro guarda muchas IPs, pero solo una es de la subred 10.0.
+  Extraela LIMPIA (solo la IP, sin el resto del texto).
+goal: Del registro connexion.log, extrae TODAS las IPs de la subred 10.0.X.X
+  (formato D.D.D.D, una por línea); la línea del testigo (sin IP) sale aparte
+  con su marca.
 setup: |
   #!/bin/bash
   set -e
@@ -22,16 +23,17 @@ setup: |
   host con texto 10.0.255.200 sobresaliente
   EOF
   chown agent:agent /home/agent/connexion.log
-solution: grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{'
-  /home/agent/connexion.log
+solution: grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep
+  'FLAG{' /home/agent/connexion.log
 hints:
-  - Para extraer LIMPIO usa -oE; con clases 10[.]0[...[0-9]+ evitas escapar el punto.
+  - Para extraer LIMPIO usa -oE; con clases 10[.]0[...[0-9]+ evitas escapar el
+    punto.
   - El patrón casa solo la subred 10.0 y deja fuera la IP mal formada 10.0d...
   - La línea del testigo (sin IP) sale aparte con grep 'FLAG{'.
   - grep -oE '10[.]0[.][0-9]+[.][0-9]+' /home/agent/connexion.log ; grep 'FLAG{'
     /home/agent/connexion.log
-teach: "Extraccion de IPs: \\b10\\.[0-9]+\\.[0-9]+\\b con -oE es el patrón más solicitado.
-  No necesitas validar el rango 0-255 en logs normales."
+teach: "Extraccion de IPs: \\b10\\.[0-9]+\\.[0-9]+\\b con -oE es el patrón más
+  solicitado. No necesitas validar el rango 0-255 en logs normales."
 cheatsheet:
   - cmd: grep -oE 'IP_pattern' f
     desc: extrae IPs limpias
@@ -42,3 +44,9 @@ keywords:
   - -oE
   - IP
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      10.0.4.23
+      10.0.255.200
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

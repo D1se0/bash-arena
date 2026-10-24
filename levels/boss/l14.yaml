@@ -5,10 +5,10 @@ title: Caza mayor VIII — nido de comprimidos
 subtitle: file → zcat → tar flujo al stdout
 xp: 100
 difficulty: 5
-brief: En /home/agent/nido hay tres ficheros SIN extensión; SOLO uno es un tar.gz (los otros son
-  gzip planos y texto). En el tar.gz vive la marca.
-goal: Identifica el único tar.gz de /home/agent/nido con file -z y extrae su contenido al vuelo
-  (tar -xzOf) hasta la marca.
+brief: En /home/agent/nido hay tres ficheros SIN extensión; SOLO uno es un
+  tar.gz (los otros son gzip planos y texto). En el tar.gz vive la marca.
+goal: Identifica el único tar.gz de /home/agent/nido con file -z y extrae su
+  contenido al vuelo (tar -xzOf) hasta la marca.
 setup: |-
   #!/bin/bash
   set -e
@@ -21,15 +21,18 @@ setup: |-
   tar -czf /home/agent/nido/tres -C /tmp/nido14 tmpf
   rm -rf /tmp/nido14
   chown -R agent:agent /home/agent
-solution: "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar -xzOf \"$f\" | grep
-  -oE 'FLAG\\{[a-f0-9]+\\}'"
+solution: "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1);
+  tar -xzOf \"$f\" | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
 hints:
-  - "file -z mira DENTRO de los comprimidos: solo el tar.gz sale como 'tar archive'."
-  - "cut -d: -f1 isola el nombre; tar -xzOf FICHERO imprime su contenu al stdout."
-  - "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar -xzOf \"$f\""
-teach: "file + tar -O es el par mágico forense: identificar el recipiente y verterlo sin intermediar
-  disco. Cuando hay recipiente dentro de recipiente, SEGUIR la file cadenas de comprimido hasta el
-  resultado."
+  - "file -z mira DENTRO de los comprimidos: solo el tar.gz sale como 'tar
+    archive'."
+  - "cut -d: -f1 isola el nombre; tar -xzOf FICHERO imprime su contenu al
+    stdout."
+  - "f=$(file -z /home/agent/nido/* | grep 'tar archive' | cut -d: -f1); tar
+    -xzOf \"$f\""
+teach: "file + tar -O es el par mágico forense: identificar el recipiente y
+  verterlo sin intermediar disco. Cuando hay recipiente dentro de recipiente,
+  SEGUIR la file cadenas de comprimido hasta el resultado."
 cheatsheet:
   - cmd: file * | grep tst
     desc: identifica entre nombres mudos
@@ -41,3 +44,6 @@ keywords:
   - file
   - nido
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

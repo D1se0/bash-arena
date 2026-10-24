@@ -5,10 +5,10 @@ title: Palabras, no fragmentos
 subtitle: "grep -w: palabra entera"
 xp: 60
 difficulty: 4
-brief: "El índice de niebla trae variantes: brumario, desbrumar, brumelia… Solo el
-  registro con literalmente la palabra bruma aislada guarda la señal."
-goal: Imprime del índice ÚNICAMENTE las líneas donde aparece bruma como palabra entera (ni
-  brumario ni desbrumar ni brumelia).
+brief: "El índice de niebla trae variantes: brumario, desbrumar, brumelia… Solo
+  el registro con literalmente la palabra bruma aislada guarda la señal."
+goal: Imprime del índice ÚNICAMENTE las líneas donde aparece bruma como palabra
+  entera (ni brumario ni desbrumar ni brumelia).
 setup: |
   #!/bin/bash
   set -e
@@ -23,13 +23,13 @@ setup: |
   chown agent:agent /home/agent/indice.txt
 solution: grep -w 'bruma' /home/agent/indice.txt
 hints:
-  - −w exige que la coincidencia sea una PALABRA completa (delimitada por espacios,
-    puntuación, inicio/fin de línea).
+  - −w exige que la coincidencia sea una PALABRA completa (delimitada por
+    espacios, puntuación, inicio/fin de línea).
   - Sin -w, «bruma» casaría dentro de «brumario»; con -w no.
   - grep -w 'bruma' /home/agent/indice.txt
-teach: "grep -w garantiza palabra entera: bruma casa, brumario no. Es el antídoto contra
-  los falsos positivos cuando el vocabulario del dojo tiene familias completas de palabras
-  parecidas."
+teach: "grep -w garantiza palabra entera: bruma casa, brumario no. Es el
+  antídoto contra los falsos positivos cuando el vocabulario del dojo tiene
+  familias completas de palabras parecidas."
 cheatsheet:
   - cmd: grep -w palabra f
     desc: solo palabras completas
@@ -40,3 +40,8 @@ keywords:
   - -w
   - palabra
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      bruma señal clara en el patio: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      niebla densa, sin bruma aparente

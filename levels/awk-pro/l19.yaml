@@ -5,9 +5,10 @@ title: Sólo los únicos
 subtitle: awk idiom !a[$0]++
 xp: 75
 difficulty: 5
-brief: El fichero revisados.lst tiene valores repetidos. Necesitas SOLO la PRIMERA
-  aparición de cada valor.
-goal: De revisados.lst imprime cada valor UNA VEZ (PRIMERA aparición; en el orden de llegada).
+brief: El fichero revisados.lst tiene valores repetidos. Necesitas SOLO la
+  PRIMERA aparición de cada valor.
+goal: De revisados.lst imprime cada valor UNA VEZ (PRIMERA aparición; en el
+  orden de llegada).
 setup: |
   #!/bin/bash
   set -e
@@ -25,12 +26,13 @@ setup: |
   chown agent:agent /home/agent/revisados.lst
 solution: awk '!a[$0]++' /home/agent/revisados.lst
 hints:
-  - "!a[$0]++ es el deduplicador famoso: la PRIMERA vez que se ve un valor imprime, ya que
-    a[valor] era 0 (undefined→false), y las siguientes ya no."
-  - Con la negación !, awk hace "si NO estaba presente, imprime" y luego marca presente.
+  - "!a[$0]++ es el deduplicador famoso: la PRIMERA vez que se ve un valor
+    imprime, ya que a[valor] era 0 (undefined→false), y las siguientes ya no."
+  - Con la negación !, awk hace "si NO estaba presente, imprime" y luego marca
+    presente.
   - awk '!a[$0]++' /home/agent/revisados.lst
-teach: "El idiom !a[k]++ es el revisor universal de duplicados: sin sort -u ni awk
-  for-loop. Mantiene el ORDEN de llegada (a diferencia de sort -u)."
+teach: "El idiom !a[k]++ es el revisor universal de duplicados: sin sort -u ni
+  awk for-loop. Mantiene el ORDEN de llegada (a diferencia de sort -u)."
 cheatsheet:
   - cmd: awk '!a[$0]++' f
     desc: dedup por línea com.aleta
@@ -42,3 +44,11 @@ keywords:
   - array
   - idioma
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      a
+      b
+      c
+      d
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

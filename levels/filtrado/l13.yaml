@@ -5,23 +5,30 @@ title: Veinte bytes
 subtitle: "head -c: cortar por bytes"
 xp: 35
 difficulty: 2
-brief: data.bin empieza exactamente con la pieza (y luego basura de relleno). El flag completo cabe
-  en los primeros 40 bytes.
+brief: data.bin empieza exactamente con la pieza (y luego basura de relleno). El
+  flag completo cabe en los primeros 40 bytes.
 goal: Muestra los primeros 40 bytes de /home/agent/data.bin.
-setup: |-
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 13" "Filtrado"
-  printf '%s RELLENO RELLENO RELLENO RELLENO RELLENO\n' "$DOJO_FLAG" > /home/agent/data.bin
+
+  printf '%s RELLENO RELLENO RELLENO RELLENO RELLENO\n' "$DOJO_FLAG" >
+  /home/agent/data.bin
+
   chown agent:agent /home/agent/data.bin
+
   chown -R agent:agent /home/agent
 solution: head -c 40 /home/agent/data.bin
 hints:
   - "-n cuenta LÍNEAS; -c cuenta BYTES: para binarios usa -c."
   - "La pieza (30 caracteres) más relleno: 40 bytes bastan."
   - head -c 40 /home/agent/data.bin
-teach: 'head -c es la navaja para binarios y logs binarios mezclados: cortas por bytes sin cortar
-  líneas imposibles. Combinado con tail -c +S lees "ventanas" de ficheros gigantes.'
+teach: 'head -c es la navaja para binarios y logs binarios mezclados: cortas por
+  bytes sin cortar líneas imposibles. Combinado con tail -c +S lees "ventanas"
+  de ficheros gigantes.'
 cheatsheet:
   - cmd: head -c 40 f
     desc: primeros 40 bytes
@@ -32,3 +39,6 @@ keywords:
   - bytes
   - binario
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3} RELLENO R

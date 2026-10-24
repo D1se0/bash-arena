@@ -5,8 +5,8 @@ title: Compresión moderna
 subtitle: "xz: descomprimir con -d -c"
 xp: 40
 difficulty: 3
-brief: volcado.xz es un fichero comprimido con el algoritmo moderno de alto ratio. Su contenido
-  lleva la marca.
+brief: volcado.xz es un fichero comprimido con el algoritmo moderno de alto
+  ratio. Su contenido lleva la marca.
 goal: Descomprime /home/agent/volcado.xz en el flujo y muestra su contenido.
 setup: |-
   #!/bin/bash
@@ -19,8 +19,8 @@ hints:
   - "xz comprime con mucho mejor ratio que gzip: una opción -d descomprime."
   - Para NO perder el original, -c escribe la salida en stdout.
   - xz -dc volcado.xz
-teach: "xz supera a gzip en ratio al precio de más CPU. La trilogía -x/-d/-c funciona igual en gzip,
-  bzip2 y xz: una sola sintaxis para tres compresores."
+teach: "xz supera a gzip en ratio al precio de más CPU. La trilogía -x/-d/-c
+  funciona igual en gzip, bzip2 y xz: una sola sintaxis para tres compresores."
 cheatsheet:
   - cmd: xz -dc f.xz
     desc: descomprime a stdout
@@ -31,3 +31,6 @@ keywords:
   - compresión
   - fluxo
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "papel volcado con marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

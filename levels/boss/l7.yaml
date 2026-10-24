@@ -5,10 +5,10 @@ title: Caza en los comprimidos
 subtitle: find + xargs zcat/gunzip
 xp: 85
 difficulty: 4
-brief: En caja/ hay un árbol de ficheros .gz y decoys sueltos. Todas las marcas interesantes están
-  DENTRO de los comprimidos.
-goal: Encuentra candidatos .gz en /home/agent/caja con find, descomprímelos de una pasada (xargs
-  zcat) y extrae la marca real.
+brief: En caja/ hay un árbol de ficheros .gz y decoys sueltos. Todas las marcas
+  interesantes están DENTRO de los comprimidos.
+goal: Encuentra candidatos .gz en /home/agent/caja con find, descomprímelos de
+  una pasada (xargs zcat) y extrae la marca real.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,9 +25,9 @@ hints:
   - find -name "*.gz" localiza TODOS los comprimidos del árbol.
   - "zcat no acepta múltiples slots? sí: puedes lanzarlo con xargs o por -exec."
   - find caja -name '*.gz' -exec zcat {} \;… con grep -oE extraes SOLO la marca.
-teach: "find + xargs/-exec es la dupla clásica de bash para procesar hallazgos en lote. Descomprimir
-  en el flujo (zcat) permite encadenar pipes sin ensuciar disco: caza de la marca sin archivos
-  intermedios."
+teach: "find + xargs/-exec es la dupla clásica de bash para procesar hallazgos
+  en lote. Descomprimir en el flujo (zcat) permite encadenar pipes sin ensuciar
+  disco: caza de la marca sin archivos intermedios."
 cheatsheet:
   - cmd: find d -name '*.gz' | xargs zcat
     desc: descomprimir lote
@@ -39,3 +39,6 @@ keywords:
   - xargs
   - lote
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

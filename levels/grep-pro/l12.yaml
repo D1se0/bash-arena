@@ -5,10 +5,10 @@ title: Soporte de multiplicidad
 subtitle: "grep -E con |: alternancia"
 xp: 65
 difficulty: 4
-brief: "Las líneas de interés viven en dos variantes: confirmada o declined. Ambas
-  importan idénticamente."
-goal: De respuestas.log imprime solo las líneas que contengan confirmada o declined (en
-  una sola pasada).
+brief: "Las líneas de interés viven en dos variantes: confirmada o declined.
+  Ambas importan idénticamente."
+goal: De respuestas.log imprime solo las líneas que contengan confirmada o
+  declined (en una sola pasada).
 setup: |
   #!/bin/bash
   set -e
@@ -27,8 +27,8 @@ hints:
   - -E activa la regex extendida, donde el | significa ALTERNANCIA.
   - "Sin -E, el | se interpreta literalmente y tendrías que escaparlo: \\|."
   - grep -E 'confirmada|declined' /home/agent/respuestas.log
-teach: "La alternancia en -E (a|b) es el «Y/O» de grep: da igual la rama que case. Con más
-  variantes: (confirmad[oa]|declined)."
+teach: "La alternancia en -E (a|b) es el «Y/O» de grep: da igual la rama que
+  case. Con más variantes: (confirmad[oa]|declined)."
 cheatsheet:
   - cmd: grep -E 'a|b' f
     desc: acepta una u otra
@@ -39,3 +39,9 @@ keywords:
   - -E
   - alternancia
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ticket-2 confirmada por operador
+      ticket-4 declined por el cliente
+      ticket-5 confirmada seguida de FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -9,35 +9,55 @@ brief: >
   Necesitas juntarlas: crea una carpeta de trabajo, copia las evidencias y
   renombra la pieza clave para que el equipo pueda procesarla.
 goal: >
-  1) Crea ~/evidencias   2) Copia ahí todos los /var/dojo/evidencias/*.png
-  3) Renombra (mv) la copia de pieza-clave.png → pieza-clave-final.png
-  4) Muéstralo y recupera la flag escondida dentro de pieza-clave-final.png.
-setup: |
+  1) Crea ~/evidencias   2) Copia ahí todos los /var/dojo/evidencias/*.png 3)
+  Renombra (mv) la copia de pieza-clave.png → pieza-clave-final.png 4) Muéstralo
+  y recupera la flag escondida dentro de pieza-clave-final.png.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 03" "Fundamentos"
+
   mkdir -p /var/dojo/evidencias
-  printf 'PNG falsa con texto dentro:\nClave interna: %s\n' "$DOJO_FLAG" > /var/dojo/evidencias/pieza-clave.png
-  printf 'PNG falsa sin nada interesante.\n' > /var/dojo/evidencias/captura-01.png
+
+  printf 'PNG falsa con texto dentro:\nClave interna: %s\n' "$DOJO_FLAG" >
+  /var/dojo/evidencias/pieza-clave.png
+
+  printf 'PNG falsa sin nada interesante.\n' >
+  /var/dojo/evidencias/captura-01.png
+
   printf 'PNG falsa del firewall.\n' > /var/dojo/evidencias/captura-02.png
+
   chown -R agent:agent /var/dojo
 hints:
-  - "mkdir ~/evidencias crea tu carpeta de trabajo."
-  - "cp /var/dojo/evidencias/*.png ~/evidencias/ copia todas de golpe."
-  - "mv ~/evidencias/pieza-clave.png ~/evidencias/pieza-clave-final.png"
+  - mkdir ~/evidencias crea tu carpeta de trabajo.
+  - cp /var/dojo/evidencias/*.png ~/evidencias/ copia todas de golpe.
+  - mv ~/evidencias/pieza-clave.png ~/evidencias/pieza-clave-final.png
 teach: >
-  `cp` copia, `mv` mueve o renombra (segundo argumento define destino),
-  `mkdir` crea directorios y `-p` los crea anidados. El asterisco `*` es un
-  comodín de expansión de nombre (globbing) manejado por el shell.
+  `cp` copia, `mv` mueve o renombra (segundo argumento define destino), `mkdir`
+  crea directorios y `-p` los crea anidados. El asterisco `*` es un comodín de
+  expansión de nombre (globbing) manejado por el shell.
 cheatsheet:
-  - {cmd: mkdir -p ruta, desc: crea carpetas (con rutas anidadas)}
-  - {cmd: cp a b, desc: copia ficheros o carpetas (-r para recursivo)}
-  - {cmd: mv a b, desc: mueve o renombra}
+  - cmd: mkdir -p ruta
+    desc: crea carpetas (con rutas anidadas)
+  - cmd: cp a b
+    desc: copia ficheros o carpetas (-r para recursivo)
+  - cmd: mv a b
+    desc: mueve o renombra
 solution: |
   mkdir -p ~/evidencias
   cp /var/dojo/evidencias/*.png ~/evidencias/
   mv ~/evidencias/pieza-clave.png ~/evidencias/pieza-clave-final.png
   cat ~/evidencias/pieza-clave-final.png
-
-keywords: [cp, mv, mkdir, glob]
+keywords:
+  - cp
+  - mv
+  - mkdir
+  - glob
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      PNG falsa con texto dentro:
+      Clave interna: FLAG{d3b09a4f7c2e1b8d6041a5f3}

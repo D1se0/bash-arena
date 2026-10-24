@@ -5,9 +5,10 @@ title: strings reveladoras
 subtitle: binario con texto enterrado
 xp: 45
 difficulty: 3
-brief: mechero.bin es un binario auténtico con los stamp de la marca enterreado entre bytes que no
-  son texto.
-goal: Extrae con strings las cadenas legibles de /home/agent/mechero.bin y pescar la marca.
+brief: mechero.bin es un binario auténtico con los stamp de la marca enterreado
+  entre bytes que no son texto.
+goal: Extrae con strings las cadenas legibles de /home/agent/mechero.bin y
+  pescar la marca.
 setup: |-
   #!/bin/bash
   set -e
@@ -21,16 +22,18 @@ setup: |-
     printf '\x00\x0a'; } > /home/agent/mechero.bin
   chown agent:agent /home/agent/mechero.bin
   chown -R agent:agent /home/agent
-solution: cat /home/agent/mechero.bin | tr -c '[:print:]\n' '\n' | grep -oE 'FLAG\{[a-f0-9]+\}'
+solution: cat /home/agent/mechero.bin | tr -c '[:print:]\n' '\n' | grep -oE
+  'FLAG\{[a-f0-9]+\}'
 hints:
-  - "tr -c '[:print:]' '\\n' sustituye todo lo NO imprimible por saltos de línea: deja solo el texto limpio."
+  - "tr -c '[:print:]' '\\n' sustituye todo lo NO imprimible por saltos de
+    línea: deja solo el texto limpio."
   - Después, grep -oE con la forma de la marca saca el hallazgo.
-  - "tr -c '[:print:]' '\\n' < f.bin | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
-teach: 'En binarios con NUL y bytes raros hay que dest textar: tr -c [:print:] los limpia a saltos y
-  el texto true resalta. (Si binutils está instalada, strings hace lo mismo: filtra "lo que
-  parece texto".)'
+  - tr -c '[:print:]' '\n' < f.bin | grep -oE 'FLAG\{[a-f0-9]+\}'
+teach: 'En binarios con NUL y bytes raros hay que dest textar: tr -c [:print:]
+  los limpia a saltos y el texto true resalta. (Si binutils está instalada,
+  strings hace lo mismo: filtra "lo que parece texto".)'
 cheatsheet:
-  - cmd: "tr -c '[:print:]' '\\n' < f.bin"
+  - cmd: tr -c '[:print:]' '\n' < f.bin
     desc: solo el texto imprimible
   - cmd: strings -n 4 f.bin
     desc: mínimo 4 chars
@@ -39,3 +42,6 @@ keywords:
   - binario
   - forense
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

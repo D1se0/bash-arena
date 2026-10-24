@@ -6,8 +6,8 @@ subtitle: "grep + sed: líneas con número en rango"
 xp: 75
 difficulty: 5
 brief: En el log, la marca PROFUNDO vive entre las líneas 4 y 8 (y solo hay).
-goal: De marcas.txt imprime las líneas que contengan DEEP pero EXCLUSIVAMENTE entre las
-  líneas 4 a 8 (incluyendo los extremos).
+goal: De marcas.txt imprime las líneas que contengan DEEP pero EXCLUSIVAMENTE
+  entre las líneas 4 a 8 (incluyendo los extremos).
 setup: |
   #!/bin/bash
   set -e
@@ -26,12 +26,13 @@ setup: |
   chown agent:agent /home/agent/marcas.txt
 solution: head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'
 hints:
-  - "Goala en la línea 4-8: head -n 8 da las primeras 8; tail -n +4 salta las 3 primeras."
+  - "Goala en la línea 4-8: head -n 8 da las primeras 8; tail -n +4 salta las 3
+    primeras."
   - El último grep 'DEEP' filtra de ese bloque.
   - head -n 8 /home/agent/marcas.txt | tail -n +4 | grep 'DEEP'
-teach: "No todas las subtareas son solo greps. Puedes combinar greps con head/tail/sed
-  cut. Recuerda: la ventana de líneas 4-8 (head -n 8 | tail -n +4) tras un grep es una
-  técnica común."
+teach: "No todas las subtareas son solo greps. Puedes combinar greps con
+  head/tail/sed cut. Recuerda: la ventana de líneas 4-8 (head -n 8 | tail -n +4)
+  tras un grep es una técnica común."
 cheatsheet:
   - cmd: head -n 8 f | tail -n +4
     desc: líneas 4 a 8
@@ -43,3 +44,11 @@ keywords:
   - tail
   - rango
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      cuatro DEEP en medio de todo
+      cinco marca DEEP
+      seis el resilient DEEP
+      siete DEEP profundo: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      ocho DEEP en el final

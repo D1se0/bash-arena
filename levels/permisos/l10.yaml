@@ -5,9 +5,10 @@ title: Mundo escribible
 subtitle: "find -perm: cazar ficheros expuestos"
 xp: 50
 difficulty: 3
-brief: "Alguien dejó ficheros con permiso de escritura para TODOS (666): una de esas exposiciones
-  esconde la marca."
-goal: Encuentra los ficheros world-writable de /home/agent/reinado y muestra su contenido.
+brief: "Alguien dejó ficheros con permiso de escritura para TODOS (666): una de
+  esas exposiciones esconde la marca."
+goal: Encuentra los ficheros world-writable de /home/agent/reinado y muestra su
+  contenido.
 setup: |-
   #!/bin/bash
   set -e
@@ -24,8 +25,8 @@ hints:
   - find -perm -o+w casa ficheros que al menos tienen escritura para otros.
   - "La acción pueden combinarse: ! -perm daría lo contrario."
   - find dir -perm -o+w -type f -exec cat {} \\;
-teach: "Los ficheros escribibles por el mundo son una vulnerabilidad clásica: cualquiera puede
-  modificarlos. find -perm te los caza sin abrirlos uno a uno."
+teach: "Los ficheros escribibles por el mundo son una vulnerabilidad clásica:
+  cualquiera puede modificarlos. find -perm te los caza sin abrirlos uno a uno."
 cheatsheet:
   - cmd: find d -perm -o+w
     desc: world-writable
@@ -36,3 +37,6 @@ keywords:
   - world writable
   - auditoría
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "exposicion: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

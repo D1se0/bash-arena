@@ -5,35 +5,46 @@ subtitle: base64 -d
 xp: 60
 difficulty: 3
 brief: >
-  La interceptación de tráfico (de ficción, de laboratorio) pilló un
-  mensaje codificado. Base64 es la basilica de los encodings: los
-  operadores la decodifican en un suspiro.
+  La interceptación de tráfico (de ficción, de laboratorio) pilló un mensaje
+  codificado. Base64 es la basilica de los encodings: los operadores la
+  decodifican en un suspiro.
 goal: >
-  En /var/dojo/interceptado.b64 hay un mensaje en base64. Decodilo
-  y muestrame su contenido — dentro va la flag.
-setup: |
+  En /var/dojo/interceptado.b64 hay un mensaje en base64. Decodilo y muestrame
+  su contenido — dentro va la flag.
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 02" "Forense"
+
   {
     printf 'Message intercepted at 03:14 from NODE-07:\n'
     printf '%s\n' "$(printf 'contraseña confidencial: %s\n' "$DOJO_FLAG" | base64 -w0)"
   } > /var/dojo/interceptado.b64
+
   chown agent:agent /var/dojo/interceptado.b64
 hints:
   - "La 2ª línea del fichero es el bloque base64: decodifica con base64 -d."
-  - "tail -1 fichero | base64 -d — pero asegúrate de apuntar a la línea correcta."
+  - tail -1 fichero | base64 -d — pero asegúrate de apuntar a la línea correcta.
 teach: >
-  El base64 convierte binario en texto (4 chars por 3 bytes) — por eso
-  sale de sigilos en mails y logs. `base64 fichero` codifica;
-  `base64 -d fichero` descodifica. En pipes: `cmd | base64 -d`.
+  El base64 convierte binario en texto (4 chars por 3 bytes) — por eso sale de
+  sigilos en mails y logs. `base64 fichero` codifica; `base64 -d fichero`
+  descodifica. En pipes: `cmd | base64 -d`.
 cheatsheet:
-  - {cmd: 'base64 fichero', desc: codifica}
-  - {cmd: 'base64 -d fichero', desc: decodifica}
-  - {cmd: 'base64 -w0', desc: sin saltos de línea al codificar}
+  - cmd: base64 fichero
+    desc: codifica
+  - cmd: base64 -d fichero
+    desc: decodifica
+  - cmd: base64 -w0
+    desc: sin saltos de línea al codificar
 solution: |
   tail -1 /var/dojo/interceptado.b64 | base64 -d
-
-keywords: [base64]
+keywords:
+  - base64
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "contraseña confidencial: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

@@ -5,34 +5,48 @@ subtitle: curl contra un server http nativo
 xp: 60
 difficulty: 3
 brief: >
-  Un servidor http interno sirve la flag en la ruta /secreto de la
-  propia máquina (127.0.0.1:8501). El dojo bloquea el internet exterior
-  a propósito… tu misión es solo interna.
+  Un servidor http interno sirve la flag en la ruta /secreto de la propia
+  máquina (127.0.0.1:8501). El dojo bloquea el internet exterior a propósito… tu
+  misión es solo interna.
 goal: >
-  Con curl descarga el contenido de http://127.0.0.1:8501/secreto y
-  muéstralo (grep o cat después si hace falta).
-setup: |
+  Con curl descarga el contenido de http://127.0.0.1:8501/secreto y muéstralo
+  (grep o cat después si hace falta).
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 02" "Redes"
+
   mkdir -p /srv/http/secreto
+
   echo "$DOJO_FLAG" > /srv/http/secreto/.cargo
-  setsid python3 -m http.server 8501 --bind 127.0.0.1 --directory /srv/http >/dev/null 2>&1 &
+
+  setsid python3 -m http.server 8501 --bind 127.0.0.1 --directory /srv/http
+  >/dev/null 2>&1 &
+
   sleep 1
 hints:
-  - "curl http://127.0.0.1:8501 — el listing muestra la respuesta."
-  - "El contenido está en http://127.0.0.1:8501/secreto/" 
+  - curl http://127.0.0.1:8501 — el listing muestra la respuesta.
+  - El contenido está en http://127.0.0.1:8501/secreto/
   - "Ojos bien abiertos: el fichero es .cargo (fichero oculto)."
 teach: >
-  `curl URL` descarga; `-I` pide cabeceras; `-o fichero` guarda. Monstramos
-  un server nativo de python en loopback para jugar con curl sin salir
-  a internet. `curl localhost:8501` te enseña el index del servidor.
+  `curl URL` descarga; `-I` pide cabeceras; `-o fichero` guarda. Monstramos un
+  server nativo de python en loopback para jugar con curl sin salir a internet.
+  `curl localhost:8501` te enseña el index del servidor.
 cheatsheet:
-  - {cmd: 'curl URL', desc: descarga una URL}
-  - {cmd: 'curl -I URL', desc: solo cabeceras}
-  - {cmd: 'curl -o fichero URL', desc: guarda a fichero}
+  - cmd: curl URL
+    desc: descarga una URL
+  - cmd: curl -I URL
+    desc: solo cabeceras
+  - cmd: curl -o fichero URL
+    desc: guarda a fichero
 solution: |
   curl -s http://127.0.0.1:8501/secreto/.cargo
-
-keywords: [curl, loopback]
+keywords:
+  - curl
+  - loopback
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

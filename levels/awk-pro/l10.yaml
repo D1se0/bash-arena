@@ -6,8 +6,8 @@ subtitle: awk index()
 xp: 65
 difficulty: 4
 brief: El fichero posiciones.txt tiene textos largos con posibles FICHAS.
-goal: De posiciones.txt imprime las LÍNEAS donde aparece el token MARK (usa index() como
-  condición de línea).
+goal: De posiciones.txt imprime las LÍNEAS donde aparece el token MARK (usa
+  index() como condición de línea).
 setup: |
   #!/bin/bash
   set -e
@@ -22,11 +22,12 @@ setup: |
 solution: awk 'index($0, "MARK")' /home/agent/posiciones.txt
 hints:
   - index(cadena, subcadena) devuelve posición 1-based (0 si no aparece).
-  - Como condición de línea, index($0, "MARK") es verdad SOLO en las líneas que lo
-    contienen; awk imprime la línea entera.
+  - Como condición de línea, index($0, "MARK") es verdad SOLO en las líneas que
+    lo contienen; awk imprime la línea entera.
   - awk 'index($0, "MARK")' /home/agent/posiciones.txt
-teach: index(texto, subc) busca la posición 1-based de subc dentro de texto. Devuelve 0 si
-  no aparece. Es la herramienta que awk da para «¿dónde está?» sin regex.
+teach: index(texto, subc) busca la posición 1-based de subc dentro de texto.
+  Devuelve 0 si no aparece. Es la herramienta que awk da para «¿dónde está?» sin
+  regex.
 cheatsheet:
   - cmd: awk '{ print index($0, "sub") }' f
     desc: posición de la subcadena
@@ -37,3 +38,9 @@ keywords:
   - index
   - posición
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      un texto con MARK al medio
+      MARK al principio directamente
+      el token MARK esconde: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,9 +5,9 @@ subtitle: boss — bucles + base64
 xp: 85
 difficulty: 4
 brief: >
-  La clave fue codificada a base64 y troceada en 5 ficheros (a..e).
-  Los pedazos solo valen juntos: concatenados EN ORDEN alfabético
-  forman el base64 completo, que decodificado revela la flag.
+  La clave fue codificada a base64 y troceada en 5 ficheros (a..e). Los pedazos
+  solo valen juntos: concatenados EN ORDEN alfabético forman el base64 completo,
+  que decodificado revela la flag.
 goal: >
   Concatena en orden alfabético los ficheros .b64 de /var/dojo/fragmentos,
   decodifica el resultado UNA VEZ y muestra la flag completa.
@@ -29,20 +29,31 @@ setup: |
   rm -f /var/dojo/.frag
   chown -R agent:agent /var/dojo/fragmentos
 hints:
-  - "cat /var/dojo/fragmentos/a.b64 /var/dojo/fragmentos/b.b64 … (en orden) une los base64."
-  - "cat /var/dojo/fragmentos/*.b64 | base64 -d hace todo de golpe: el globo * sigue el orden alfabético."
-  - "atención: decodifica UNA sola vez sobre la concatenación, no fragmento a fragmento."
+  - cat /var/dojo/fragmentos/a.b64 /var/dojo/fragmentos/b.b64 … (en orden) une
+    los base64.
+  - "cat /var/dojo/fragmentos/*.b64 | base64 -d hace todo de golpe: el globo *
+    sigue el orden alfabético."
+  - "atención: decodifica UNA sola vez sobre la concatenación, no fragmento a
+    fragmento."
 teach: >
-  El glob `*` expande en orden alfabético: por eso `cat fragdir/*.b64
-  | base64 -d` rearma lo troceado. Recuerda: base64 exige bloques de
-  4 caracteres — si troceas en el medio, cada fragmento por separado
-  NO es base64 válido; solo la concatenación lo es.
+  El glob `*` expande en orden alfabético: por eso `cat fragdir/*.b64 | base64
+  -d` rearma lo troceado. Recuerda: base64 exige bloques de 4 caracteres — si
+  troceas en el medio, cada fragmento por separado NO es base64 válido; solo la
+  concatenación lo es.
 cheatsheet:
-  - {cmd: 'cat /dir/*.b64', desc: concatena en orden alfabético}
-  - {cmd: 'base64 -d', desc: decodifica base64 de stdin}
-  - {cmd: 'cmd; echo', desc: añade salto de línea final para verlo limpio}
+  - cmd: cat /dir/*.b64
+    desc: concatena en orden alfabético
+  - cmd: base64 -d
+    desc: decodifica base64 de stdin
+  - cmd: cmd; echo
+    desc: añade salto de línea final para verlo limpio
 solution: |
   cat /var/dojo/fragmentos/*.b64 | base64 -d; echo
-
-keywords: [for, base64, boss]
+keywords:
+  - for
+  - base64
+  - boss
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

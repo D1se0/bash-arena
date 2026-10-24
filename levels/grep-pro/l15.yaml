@@ -5,10 +5,10 @@ title: Rangos dentro de línea
 subtitle: grep -E con {n} y clases
 xp: 70
 difficulty: 5
-brief: "El fichero de fichas tiene muchos formatos, pero solo un formato pasa el test: un
-  ID de SEIS dígitos exactos (aunque vaya rodeado de texto)."
-goal: De registros.txt imprime las líneas que contengan un número de EXACTAMENTE 6 dígitos
-  (aunque el número forme parte de otro mayor).
+brief: "El fichero de fichas tiene muchos formatos, pero solo un formato pasa el
+  test: un ID de SEIS dígitos exactos (aunque vaya rodeado de texto)."
+goal: De registros.txt imprime las líneas que contengan un número de EXACTAMENTE
+  6 dígitos (aunque el número forme parte de otro mayor).
 setup: |
   #!/bin/bash
   set -e
@@ -24,12 +24,13 @@ setup: |
   chown agent:agent /home/agent/registros.txt
 solution: grep -E '[0-9]{6}' /home/agent/registros.txt
 hints:
-  - "[0-9]{6} casa cualquier SECUENCIA de 6 dígitos consecutivos ( incluso como parte de
-    un número más largo)."
-  - "Con -o verías solo el NUMERO extraído: pero aquí hay que imprimir la LÍNEA completa."
+  - "[0-9]{6} casa cualquier SECUENCIA de 6 dígitos consecutivos ( incluso como
+    parte de un número más largo)."
+  - "Con -o verías solo el NUMERO extraído: pero aquí hay que imprimir la LÍNEA
+    completa."
   - grep -E '[0-9]{6}' /home/agent/registros.txt
-teach: "Las llaves {n} en -E son contadores exactos. Con {n,m} fluctúa: {6} = exactamente
-  6, {6,} = 6 o más, {2,5} = entre 2 y 5."
+teach: "Las llaves {n} en -E son contadores exactos. Con {n,m} fluctúa: {6} =
+  exactamente 6, {6,} = 6 o más, {2,5} = entre 2 y 5."
 cheatsheet:
   - cmd: grep -E '[0-9]{4}' f
     desc: números de 4 cifras
@@ -41,3 +42,10 @@ keywords:
   - contadores
   - clases
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      referencia de pago: 990210 correcto
+      código largo 1234567: incluso 7 dígitos
+      línea con nómina 050499 FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      dos candidata: 112233 y 445566

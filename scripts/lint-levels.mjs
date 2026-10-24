@@ -25,6 +25,10 @@ for (const track of TRACKS) {
       const missing = req.filter((k) => def[k] === undefined || def[k] === null);
       if (missing.length) { console.log(`✗ ${rel}: faltan [${missing.join(', ')}]`); bad++; }
       else if (Array.isArray(def.hints) && def.hints.length < 2) { console.log(`⚠ ${rel}: pocas hints`); }
+      if (def.examples === undefined) console.log(`⚠ ${rel}: sin examples`);
+      else if (!Array.isArray(def.examples) || !def.examples.every((e) => e && typeof e.title === 'string' && typeof e.content === 'string')) {
+        console.log(`✗ ${rel}: examples inválido (debe ser [{title, content}])`); bad++;
+      }
     } catch (e) {
       console.log(`✗ ${rel}: YAML inválido → ${e.message.split('\n')[0]}`);
       bad++;

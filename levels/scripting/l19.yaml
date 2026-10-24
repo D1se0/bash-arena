@@ -1,33 +1,33 @@
 id: scripting-l19
 track: scripting
 index: 19
-title: "El caso del argumento"
-subtitle: "case + $1 en un script"
+title: El caso del argumento
+subtitle: case + $1 en un script
 xp: 60
 difficulty: 4
 brief: >
-  > El conserje ha dejado un script "caja.sh" en tu home. Se maneja con
-  > una ÚNICA palabra-clave como argumento; si la aciertas, la caja
-  > suelta el contrabando. Míralo primero: con head verás el case y qué
-  > palabra espera.
+  > El conserje ha dejado un script "caja.sh" en tu home. Se maneja con > una
+  ÚNICA palabra-clave como argumento; si la aciertas, la caja > suelta el
+  contrabando. Míralo primero: con head verás el case y qué > palabra espera.
 goal: >
-  Lee ~/caja.sh para descubrir el argumento que acepta y ejecútalo con la palabra correcta para que imprima la flag.
+  Lee ~/caja.sh para descubrir el argumento que acepta y ejecútalo con la
+  palabra correcta para que imprima la flag.
 hints:
   - "En un script, $1 es su primer argumento: caja.sh palabra"
-  - "case \"$1\" in patrón) comando;; esac elige por coincidencia."
-  - "head ~/caja.sh te muestra qué patrón imprime la flag."
+  - case "$1" in patrón) comando;; esac elige por coincidencia.
+  - head ~/caja.sh te muestra qué patrón imprime la flag.
 teach: >
   Los scripts reciben argumentos por posición: $1 es el primero. case los
   compara con patrones:
-  
+
       case "$1" in
         desbloquear) echo "..." ;;
         *) echo "uso: caja.sh desconocido" ;;
       esac
-  
+
   procedimiento: mira el script (head ~/caja.sh), detecta qué palabra encaja con
   la rama que imprime la flag, y ejecuta:
-  
+
       bash ~/caja.sh desbloquear
 setup: |
   #!/bin/bash
@@ -50,11 +50,28 @@ setup: |
 solution: |
   head ~/caja.sh; bash ~/caja.sh desbloquear
 cheatsheet:
-  - {cmd: "case \"$1\" in … esac", desc: "elige una rama según el primer argumento"}
-  - {cmd: "$1, $2, $#", desc: "argumentos y número de argumentos"}
-  - {cmd: "bash script.sh arg", desc: "ejecuta un script con argumento"}
+  - cmd: case "$1" in … esac
+    desc: elige una rama según el primer argumento
+  - cmd: $1, $2, $#
+    desc: argumentos y número de argumentos
+  - cmd: bash script.sh arg
+    desc: ejecuta un script con argumento
 keywords:
-  - "case"
-  - "$1,"
-  - "bash"
+  - case
+  - $1,
+  - bash
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      #!/bin/bash
+      case "$1" in
+        desbloquear)
+          echo "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+          ;;
+        *)
+          echo "uso: caja.sh <palabra>" >&2
+          exit 1
+          ;;
+      esac
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,10 +5,11 @@ title: Reglas literales
 subtitle: "grep -F: patrón sin regex"
 xp: 50
 difficulty: 3
-brief: El cuaderno del taller guarda órdenes con símbolos que parecerían regex (*. ?). Los
-  decoys escribieron variantes sin símbolos. −F toma el patrón tal cual.
-goal: Encuentra en taller.txt la línea que contiene la instrucción detector.*laser escrita
-  tal cual, con sus símbolos.
+brief: El cuaderno del taller guarda órdenes con símbolos que parecerían regex
+  (*. ?). Los decoys escribieron variantes sin símbolos. −F toma el patrón tal
+  cual.
+goal: Encuentra en taller.txt la línea que contiene la instrucción
+  detector.*laser escrita tal cual, con sus símbolos.
 setup: |
   #!/bin/bash
   set -e
@@ -24,11 +25,12 @@ setup: |
 solution: grep -F 'detector.*laser' /home/agent/taller.txt
 hints:
   - "−F significa Fixed: el patrón es TEXTO PLANO, sin interpretación regex."
-  - "Como regex, detector.*laser casaría «detectorXlaser»; con -F solo casa los caracteres
-    exactos: detector.*laser."
+  - "Como regex, detector.*laser casaría «detectorXlaser»; con -F solo casa los
+    caracteres exactos: detector.*laser."
   - grep -F 'detector.*laser' /home/agent/taller.txt
-teach: "grep -F (Fixed) trata el patrón como texto: ni + ni * ni puntos mágicos. Es además
-  el grep más rápido en ficheros grandes porque se salta el motor de regex."
+teach: "grep -F (Fixed) trata el patrón como texto: ni + ni * ni puntos mágicos.
+  Es además el grep más rápido en ficheros grandes porque se salta el motor de
+  regex."
 cheatsheet:
   - cmd: grep -F 'a.*b' f
     desc: coincidencia literal
@@ -39,3 +41,7 @@ keywords:
   - -F
   - literal
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "plan maestro: detector.*laser activo esta noche
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}"

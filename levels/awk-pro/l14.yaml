@@ -5,12 +5,12 @@ title: Formato C-style en la salida
 subtitle: awk printf()
 xp: 70
 difficulty: 5
-brief: "El fichero metrica.dat trae clave y valor. Necesitas la salida con FORMA ESTRICTA:
-  la clave en 6 caracteres alineada izquierda, espacio, el valor flotante con DOS
-  decimales."
-goal: "De metrica.dat imprime cada línea formateada con printf: clave alineada a la
-  izquierda en 6 espacios y valor con 2 decimales. La fila del testigo (no numérica) la
-  muestras aparte tal cual."
+brief: "El fichero metrica.dat trae clave y valor. Necesitas la salida con FORMA
+  ESTRICTA: la clave en 6 caracteres alineada izquierda, espacio, el valor
+  flotante con DOS decimales."
+goal: "De metrica.dat imprime cada línea formateada con printf: clave alineada a
+  la izquierda en 6 espacios y valor con 2 decimales. La fila del testigo (no
+  numérica) la muestras aparte tal cual."
 setup: |
   #!/bin/bash
   set -e
@@ -23,19 +23,20 @@ setup: |
   xco $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/metrica.dat
-solution: awk '{ printf "%-6s %.2f\n", $1, $2 }' /home/agent/metrica.dat ; grep 'FLAG{'
-  /home/agent/metrica.dat
+solution: awk '{ printf "%-6s %.2f\n", $1, $2 }' /home/agent/metrica.dat ; grep
+  'FLAG{' /home/agent/metrica.dat
 hints:
   - "printf de awk imprime con formato C-style: %-6s es campo de 6 alineado a la
     izquierda; %.2f es float de 2 decimales."
-  - "printf NO añade salto automático: cierra el formato con \\n dentro del string del
-    formato."
-  - "La fila del testigo no es numérica (su «valor» da 0.00): muéstrala aparte con grep."
-  - awk '{ printf "%-6s %.2f\n", $1, $2 }' /home/agent/metrica.dat ; grep 'FLAG{'
-    /home/agent/metrica.dat
-teach: "printf es C-style: imprime con formato; cada %obras substituye un argumento. Es la
-  salida del awk, SIN salto automático (necesita \\n). Uso disponible para formatear la
-  tabla ( %-6s, %.2f, %-8s etc)."
+  - "printf NO añade salto automático: cierra el formato con \\n dentro del
+    string del formato."
+  - "La fila del testigo no es numérica (su «valor» da 0.00): muéstrala aparte
+    con grep."
+  - awk '{ printf "%-6s %.2f\n", $1, $2 }' /home/agent/metrica.dat ; grep
+    'FLAG{' /home/agent/metrica.dat
+teach: "printf es C-style: imprime con formato; cada %obras substituye un
+  argumento. Es la salida del awk, SIN salto automático (necesita \\n). Uso
+  disponible para formatear la tabla ( %-6s, %.2f, %-8s etc)."
 cheatsheet:
   - cmd: awk '{ printf "%s\\n", $1 }' f
     desc: printf del campo 1
@@ -46,3 +47,12 @@ keywords:
   - printf
   - formato
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      lat    12.35
+      lon    -70.42
+      alt    0.50
+      temp   23.00
+      xco    0.00
+      xco FLAG{d3b09a4f7c2e1b8d6041a5f3}

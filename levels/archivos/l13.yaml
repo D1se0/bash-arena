@@ -5,9 +5,10 @@ title: Pieza en cuatro trozos
 subtitle: split + cat de reunición
 xp: 45
 difficulty: 3
-brief: El tar quedó dividido en trozos de 200 bytes por split. Reune los fragmentos en orden y
-  descomprime al vuelo.
-goal: Une los trozos de /home/agent/partes/ con cat y extrae el tar.gz resultante leyendo su contenido.
+brief: El tar quedó dividido en trozos de 200 bytes por split. Reune los
+  fragmentos en orden y descomprime al vuelo.
+goal: Une los trozos de /home/agent/partes/ con cat y extrae el tar.gz
+  resultante leyendo su contenido.
 setup: |-
   #!/bin/bash
   set -e
@@ -20,12 +21,14 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: cat /home/agent/partes/trozo-* | tar -xzOf - | grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
-  - "Los trozos de split nombran con sufijo ordenado (trozo-aa, trozo-ab…): por orden alfabético ya
-    están en orden."
-  - cat trozo-* reconstruye el original; tar -xzOf - lee el catenado sin tocar disco.
+  - "Los trozos de split nombran con sufijo ordenado (trozo-aa, trozo-ab…): por
+    orden alfabético ya están en orden."
+  - cat trozo-* reconstruye el original; tar -xzOf - lee el catenado sin tocar
+    disco.
   - cat /home/agent/partes/trozo-* | tar -xzOf - | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: split parte a bytes fijos (-b) o por líneas (-l); cat * los regresa. El estándar de envíos
-  por fichero pequeño (cuota de tamaño de mail/FTP) es este par siempre alfligido.
+teach: split parte a bytes fijos (-b) o por líneas (-l); cat * los regresa. El
+  estándar de envíos por fichero pequeño (cuota de tamaño de mail/FTP) es este
+  par siempre alfligido.
 cheatsheet:
   - cmd: split -b 1M f trozo-
     desc: divide por megabytes
@@ -36,3 +39,6 @@ keywords:
   - cat
   - tar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

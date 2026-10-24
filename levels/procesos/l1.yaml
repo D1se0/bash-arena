@@ -8,8 +8,8 @@ brief: >
   Un demonio despistado fue arrancado con su secreto en la propia línea de
   comando. Los argumentos de un proceso son públicos para quien sepa mirar.
 goal: >
-  Encuentra el proceso cuyo comando contiene FLAG{ y muestra su full
-  commandline (la línea completa del ps aux).
+  Encuentra el proceso cuyo comando contiene FLAG{ y muestra su full commandline
+  (la línea completa del ps aux).
 setup: |
   #!/bin/bash
   set -e
@@ -20,19 +20,27 @@ setup: |
   disown
   chown agent:agent /home/agent/pista.txt
 hints:
-  - "ps aux | grep FLAG"
+  - ps aux | grep FLAG
 teach: >
-  `ps aux` lista todos los procesos con PID, CPU, usuario y el
-  commandline completo — que es público: cualquiera puede verlo con
-  `ps -ef` o leyendo /proc/PID/cmdline. NUNCA pongas secretos en la
-  línea de comandos de un proceso real: ese es el educativo punto.
-  `pgrep -f 'patrón'` te devuelve los PIDs que casan directamente.
+  `ps aux` lista todos los procesos con PID, CPU, usuario y el commandline
+  completo — que es público: cualquiera puede verlo con `ps -ef` o leyendo
+  /proc/PID/cmdline. NUNCA pongas secretos en la línea de comandos de un proceso
+  real: ese es el educativo punto. `pgrep -f 'patrón'` te devuelve los PIDs que
+  casan directamente.
 cheatsheet:
-  - {cmd: 'ps aux | grep patrón', desc: busca un proceso concreto}
-  - {cmd: 'pgrep -f patrón', desc: solo PIDs que casan}
-  - {cmd: 'ps -ef', desc: formato alternativo con PPID}
+  - cmd: ps aux | grep patrón
+    desc: busca un proceso concreto
+  - cmd: pgrep -f patrón
+    desc: solo PIDs que casan
+  - cmd: ps -ef
+    desc: formato alternativo con PPID
 solution: |
   ps aux | grep 'FLAG{' | grep -v grep
-
-keywords: [ps, pgrep]
+keywords:
+  - ps
+  - pgrep
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: root          18  4.6  0.1  15112  9232 ?        Ss   11:35   0:00
+      python3 -c import time time.sleep(30000) FLAG{d3b09a4f7c2e1b8d6041a5f3}

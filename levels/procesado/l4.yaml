@@ -5,12 +5,12 @@ subtitle: diff, comm y sort -u
 xp: 50
 difficulty: 3
 brief: >
-  Un replicador escribió el mismo catálogo en dos ficheros, pero en uno
-  de ellos se escapó una línea con la clave. La sincronización está
-  rota y solo el diff la revela.
+  Un replicador escribió el mismo catálogo en dos ficheros, pero en uno de ellos
+  se escapó una línea con la clave. La sincronización está rota y solo el diff
+  la revela.
 goal: >
-  En /var/dojo/replica-a y replica-b hay catálogos idénticos excepto una
-  línea que solo está en replica-a y que empieza por "CLAVE". Muéstrala.
+  En /var/dojo/replica-a y replica-b hay catálogos idénticos excepto una línea
+  que solo está en replica-a y que empieza por "CLAVE". Muéstrala.
 setup: |
   #!/bin/bash
   set -e
@@ -24,18 +24,28 @@ setup: |
   grep -v '^CLAVE' /var/dojo/replica-a > /var/dojo/replica-b
   chown agent:agent /var/dojo/replica-a /var/dojo/replica-b
 hints:
-  - "diff fichero-a fichero-b enseña las diferencias; `>` marca lo añadido en el 2º…"
-  - "Cuando solo existe en el 1º, la línea sale con el prefijo 'a ' en modo diff normal."
+  - diff fichero-a fichero-b enseña las diferencias; `>` marca lo añadido en el
+    2º…
+  - Cuando solo existe en el 1º, la línea sale con el prefijo 'a ' en modo diff
+    normal.
 teach: >
-  `diff` muestra qué cambia de un fichero a otro; `diff -u` muestra con
-  contexto y `comm` compara ficheros ordenados con columnas por único
-  en cada uno. Ambos huelen a UNIX clásicos.
+  `diff` muestra qué cambia de un fichero a otro; `diff -u` muestra con contexto
+  y `comm` compara ficheros ordenados con columnas por único en cada uno. Ambos
+  huelen a UNIX clásicos.
 cheatsheet:
-  - {cmd: diff a b, desc: diferencias entre dos ficheros}
-  - {cmd: 'diff -u a b', desc: formato unificado}
-  - {cmd: 'comm -12 a b', desc: líneas comunes (ficheros ordenados)}
+  - cmd: diff a b
+    desc: diferencias entre dos ficheros
+  - cmd: diff -u a b
+    desc: formato unificado
+  - cmd: comm -12 a b
+    desc: líneas comunes (ficheros ordenados)
 solution: |
   diff /var/dojo/replica-a /var/dojo/replica-b || true
-
-keywords: [diff]
+keywords:
+  - diff
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      61d60
+      < CLAVE FLAG{d3b09a4f7c2e1b8d6041a5f3}

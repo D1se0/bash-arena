@@ -5,10 +5,10 @@ title: El contador de errores
 subtitle: "grep -c: cuenta, no liste"
 xp: 60
 difficulty: 4
-brief: Tres servidores tributes a un solo log; el turno pide la cifra de errores, no la
-  lista entera.
-goal: De accidente.log imprime CUÁNTAS líneas contienen la palabra ERROR (número) y,
-  aparte, la línea del testigo con la marca.
+brief: Tres servidores tributes a un solo log; el turno pide la cifra de
+  errores, no la lista entera.
+goal: De accidente.log imprime CUÁNTAS líneas contienen la palabra ERROR
+  (número) y, aparte, la línea del testigo con la marca.
 setup: |
   #!/bin/bash
   set -e
@@ -22,14 +22,17 @@ setup: |
   INFO hoy opera correcto
   EOF
   chown agent:agent /home/agent/accidente.log
-solution: grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{' /home/agent/accidente.log
+solution: grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{'
+  /home/agent/accidente.log
 hints:
   - "-c es el CONTADOR de líneas casadas: emite un número, no el listado."
   - No confundir -C (mayúscula, contexto) con -c (minúscula, contador).
-  - "El testigo también es de ERROR: su línea completa sale aparte con grep 'FLAG{'."
-  - grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{' /home/agent/accidente.log
-teach: "grep -c es el «wc -l del filtro»: la primera pregunta en diagnósticos siempre es
-  «¿cuántas veces pasó?» antes de ver detalles."
+  - "El testigo también es de ERROR: su línea completa sale aparte con grep
+    'FLAG{'."
+  - grep -c 'ERROR' /home/agent/accidente.log ; grep 'FLAG{'
+    /home/agent/accidente.log
+teach: "grep -c es el «wc -l del filtro»: la primera pregunta en diagnósticos
+  siempre es «¿cuántas veces pasó?» antes de ver detalles."
 cheatsheet:
   - cmd: grep -c patrón f
     desc: cuántas líneas casan
@@ -40,3 +43,8 @@ keywords:
   - -c
   - contador
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      3
+      ERROR testigo de la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}

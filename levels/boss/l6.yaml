@@ -5,10 +5,10 @@ title: Agregación de ventas
 subtitle: awk con acumulador por grupo
 xp: 85
 difficulty: 4
-brief: ventas.csv reparte montos por regiones (varias filas por region). Una region esconde su
-  nombre la marca; la ganadora es la que MÁS acuminula.
-goal: Suma por region con awk y muestra el par importe-region de la region que más acumula (su
-  nombre trae la marca).
+brief: ventas.csv reparte montos por regiones (varias filas por region). Una
+  region esconde su nombre la marca; la ganadora es la que MÁS acuminula.
+goal: Suma por region con awk y muestra el par importe-region de la region que
+  más acumula (su nombre trae la marca).
 setup: |-
   #!/bin/bash
   set -e
@@ -25,14 +25,17 @@ setup: |-
   este,860
   FIN
   chown agent:agent /home/agent/ventas.csv
-solution: awk -F, '{s[$1]+=$2} END {for (r in s) print s[r], r}' /home/agent/ventas.csv | sort -nr |
-  head -n 1
+solution: awk -F, '{s[$1]+=$2} END {for (r in s) print s[r], r}'
+  /home/agent/ventas.csv | sort -nr | head -n 1
 hints:
-  - "awk puede ACRECER un array asociativo: s[r] += monto por salida de cada fila."
+  - "awk puede ACRECER un array asociativo: s[r] += monto por salida de cada
+    fila."
   - "El bloque END corre una vez al terminar: recorre el array con un for."
-  - awk -F, '{s[$1]+=$2} END {for (r in s) print s[r], r}' ventas.csv | sort -nr | head -1
-teach: Awk con arrays asociativos + bloque END es SQL de bolsillo (GROUP BY + SUM). El for (r in s)
-  recorre las claves y el print saca el relatório. Ordena con sort -nr para ver al ganador.
+  - awk -F, '{s[$1]+=$2} END {for (r in s) print s[r], r}' ventas.csv | sort -nr
+    | head -1
+teach: Awk con arrays asociativos + bloque END es SQL de bolsillo (GROUP BY +
+  SUM). El for (r in s) recorre las claves y el print saca el relatório. Ordena
+  con sort -nr para ver al ganador.
 cheatsheet:
   - cmd: awk '{s[$1]+=$2} END…'
     desc: suma por grupo
@@ -44,3 +47,6 @@ keywords:
   - END
   - agregación
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 1250 torreon-FLAG{d3b09a4f7c2e1b8d6041a5f3}

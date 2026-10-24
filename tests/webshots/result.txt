@@ -13,7 +13,7 @@ app: terminal ampliada a pantalla completa sobre el resto de la página
 fullscreen: ↑ trae el comando anterior y ←+Delete corrigen «cat .profile» sin ruido de bash
 app: Esc sale de la pantalla completa y la página vuelve
 navegador: abre con el catálogo de niveles por sesión/tracks
-navegador: búsqueda por término devuelve niveles relevantes (28 filas, 3 jugables)
+navegador: búsqueda por término devuelve niveles relevantes (52 filas, 4 jugables)
 navegador: la búsqueda muestra también niveles bloqueados (🔒 visible)
 navegador: «jugar» de un nivel salta a su session (procesado-l1)
 terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)

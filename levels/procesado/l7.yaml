@@ -5,9 +5,10 @@ title: Movimientos gordos
 subtitle: awk -F, con filtro numérico
 xp: 40
 difficulty: 3
-brief: movs.txt anota conceptos e importes separados por comas. Los movimientos mayores de 900
-  llevan una nota en la primera columna.
-goal: Imprime el CONCEPTO (columna 1) de las filas cuyo IMPORTE (columna 2) supere 900.
+brief: movs.txt anota conceptos e importes separados por comas. Los movimientos
+  mayores de 900 llevan una nota en la primera columna.
+goal: Imprime el CONCEPTO (columna 1) de las filas cuyo IMPORTE (columna 2)
+  supere 900.
 setup: |-
   #!/bin/bash
   set -e
@@ -26,8 +27,9 @@ hints:
   - awk -F, define la coma como separador de campos.
   - El patrón compara $2 con un número; la acción imprime $1.
   - awk -F, '$2 > 900 {print $1}' movs.txt
-teach: "El bloque patrón→acción de awk (patrón { acción }) filtra y transforma en un solo paso:
-  filas con -F, campos con $n, salida con print. Es el sustituto ligero de mil scripts."
+teach: "El bloque patrón→acción de awk (patrón { acción }) filtra y transforma
+  en un solo paso: filas con -F, campos con $n, salida con print. Es el
+  sustituto ligero de mil scripts."
 cheatsheet:
   - cmd: awk -F, '$2>900 {print $1}'
     desc: concepto de filas caras
@@ -38,3 +40,8 @@ keywords:
   - campo
   - filtro numérico
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      entrada-liquidos
+      nota-especial: FLAG{d3b09a4f7c2e1b8d6041a5f3}

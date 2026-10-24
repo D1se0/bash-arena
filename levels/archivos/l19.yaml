@@ -1,47 +1,64 @@
 id: archivos-l19
 track: archivos
 index: 19
-title: "La caja del tren"
+title: La caja del tren
 subtitle: "tar: crear y listar"
 xp: 55
 difficulty: 4
 brief: >
-  > El equipaje viaja en formato .tar.gz y los bultos se identifican por
-  > su etiqueta (el nombre de cada fichero dentro del paquete). La caja
-  > "maleta.tar.gz" tiene 3 bultos: solo el llamado "j Rusia ligero"
-  > (joya.txt) lleva la contrapartida. Descomprímela en el sitio seguro.
+  > El equipaje viaja en formato .tar.gz y los bultos se identifican por > su
+  etiqueta (el nombre de cada fichero dentro del paquete). La caja >
+  "maleta.tar.gz" tiene 3 bultos: solo el llamado "j Rusia ligero" > (joya.txt)
+  lleva la contrapartida. Descomprímela en el sitio seguro.
 goal: >
-  Lista el contenido de ~/maleta.tar.gz, extrae su contenido en el directorio actual y muestra la flag del fichero joya.txt.
+  Lista el contenido de ~/maleta.tar.gz, extrae su contenido en el directorio
+  actual y muestra la flag del fichero joya.txt.
 hints:
   - "tar -czf destino.tar.gz ficheros — c: crear, z: gzip, f: fichero."
-  - "tar -tzf paquete.tar.gz lista el contenido (t: \"tocar sin extraer\")."
+  - 'tar -tzf paquete.tar.gz lista el contenido (t: "tocar sin extraer").'
   - "tar -xzf paquete.tar.gz extrae (x: extraer)."
 teach: >
   El flujo tar clásico:
-  
+
       tar -tzf ~/maleta.tar.gz      # ver qué lleva dentro (sin extraer)
       tar -xzf ~/maleta.tar.gz -C ~ # extraer en tu home
       cat ~/joya.txt                # la flag está en joya.txt
-  
-  z significa que el paquete va comprimido con gzip (por lo tanto usa z tanto
-  al listar como al extraer, igual que al crear).
-setup: |
+
+  z significa que el paquete va comprimido con gzip (por lo tanto usa z tanto al
+  listar como al extraer, igual que al crear).
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Archivos"
-  rm -f /home/agent/maleta.tar.gz /home/agent/joya.txt /home/agent/ropa1 /home/agent/ropa2
+
+  rm -f /home/agent/maleta.tar.gz /home/agent/joya.txt /home/agent/ropa1
+  /home/agent/ropa2
+
   printf 'camisa doblada 1\n' > /tmp/ropa1
+
   printf 'camisa doblada 2\n' > /tmp/ropa2
+
   printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /tmp/joya.txt
+
   tar -czf /home/agent/maleta.tar.gz -C /tmp ropa1 ropa2 joya.txt
+
   rm /tmp/ropa1 /tmp/ropa2 /tmp/joya.txt
+
   chown agent:agent /home/agent/maleta.tar.gz
 solution: |
   tar -xzf ~/maleta.tar.gz -C ~ && cat ~/joya.txt
 cheatsheet:
-  - {cmd: "tar -czf paquete.tar.gz ficheros", desc: "crear un paquete comprimido"}
-  - {cmd: "tar -tzf paquete.tar.gz", desc: "listar su contenido"}
-  - {cmd: "tar -xzf paquete.tar.gz -C DIR", desc: "extraer el paquete en DIR"}
+  - cmd: tar -czf paquete.tar.gz ficheros
+    desc: crear un paquete comprimido
+  - cmd: tar -tzf paquete.tar.gz
+    desc: listar su contenido
+  - cmd: tar -xzf paquete.tar.gz -C DIR
+    desc: extraer el paquete en DIR
 keywords:
-  - "tar"
+  - tar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

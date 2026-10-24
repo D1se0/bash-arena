@@ -5,9 +5,10 @@ title: Nombre que no existe
 subtitle: /etc/hosts como DNS local
 xp: 45
 difficulty: 3
-brief: "El dominio tesoro.interno no existe en ninguna DNS: el administrador lo ruteó a localhost en
-  /etc/hosts. El servidor ya escucha en el 80."
-goal: Muestra la entrada de /etc/hosts de tesoro.interno y descarga http://tesoro.interno/
+brief: "El dominio tesoro.interno no existe en ninguna DNS: el administrador lo
+  ruteó a localhost en /etc/hosts. El servidor ya escucha en el 80."
+goal: Muestra la entrada de /etc/hosts de tesoro.interno y descarga
+  http://tesoro.interno/
 setup: |-
   #!/bin/bash
   set -e
@@ -21,10 +22,12 @@ setup: |-
 solution: grep tesoro.interno /etc/hosts; curl -s http://tesoro.interno/
 hints:
   - grep tesoro.interno /etc/hosts te enseña a qué IP responde el nombre.
-  - curl acepta el nombre de dominio igual que una IP (usa la resolución del sistema).
+  - curl acepta el nombre de dominio igual que una IP (usa la resolución del
+    sistema).
   - curl -s http://tesoro.interno/
-teach: "/etc/hosts es la resolución local que se consulta ANTES que la DNS: la técnica clásica para
-  entornos de laboratorio (y para secuestrar dominios, ojo)."
+teach: "/etc/hosts es la resolución local que se consulta ANTES que la DNS: la
+  técnica clásica para entornos de laboratorio (y para secuestrar dominios,
+  ojo)."
 cheatsheet:
   - cmd: cat /etc/hosts
     desc: mapeo local de nombres
@@ -35,3 +38,8 @@ keywords:
   - dns
   - curl
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      127.0.0.1 tesoro.interno
+      bandera del dominio interno: FLAG{d3b09a4f7c2e1b8d6041a5f3}

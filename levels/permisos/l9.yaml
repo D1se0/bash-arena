@@ -5,8 +5,8 @@ title: Escalada honrada
 subtitle: "sudo: actuar como root cuando toca"
 xp: 50
 difficulty: 3
-brief: En este dojo el agente tiene sudo. El tesoro está en /root/tesoro.txt, inaccesible para el
-  agente normal.
+brief: En este dojo el agente tiene sudo. El tesoro está en /root/tesoro.txt,
+  inaccesible para el agente normal.
 goal: Lee /root/tesoro.txt usando sudo.
 setup: |-
   #!/bin/bash
@@ -21,8 +21,9 @@ hints:
   - "cat /root/tesoro.txt devuelve Permission denied: es del root."
   - El sudo concede privilegios elevados para UN comando.
   - sudo cat /root/tesoro.txt
-teach: "sudo ejecuta un comando como root validando contra /etc/sudoers. Potencia enorme,
-  responsabilidad idéntica: mínimo privilegio, comando a comando."
+teach: "sudo ejecuta un comando como root validando contra /etc/sudoers.
+  Potencia enorme, responsabilidad idéntica: mínimo privilegio, comando a
+  comando."
 cheatsheet:
   - cmd: sudo cat /root/x
     desc: lee fichero de root
@@ -33,3 +34,6 @@ keywords:
   - root
   - escalada
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: "tesoro real: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

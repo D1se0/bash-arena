@@ -5,10 +5,10 @@ title: Solo los nombres de ficheros con señal
 subtitle: "grep -rl: nombres, no contenido"
 xp: 65
 difficulty: 4
-brief: La auditoría sobre el árbol de negocio no quiere el detalle, solo SABER EN QUÉ
-  ficheros aparece la señal.
-goal: Del árbol negocio/, da la lista de ficheros que contienen «confidencial» (solo
-  nombres) y deja a la vista la línea del testigo que lleva la marca.
+brief: La auditoría sobre el árbol de negocio no quiere el detalle, solo SABER
+  EN QUÉ ficheros aparece la señal.
+goal: Del árbol negocio/, da la lista de ficheros que contienen «confidencial»
+  (solo nombres) y deja a la vista la línea del testigo que lleva la marca.
 setup: >
   #!/bin/bash
 
@@ -32,13 +32,16 @@ setup: >
   echo "sin rastro" > /home/agent/negocio/proveedores/vacio.csv
 
   chown -R agent:agent /home/agent/negocio
-solution: grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio
+solution: grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{'
+  /home/agent/negocio
 hints:
-  - "-l cambia la salida: muestra SOLO nombres de ficheros; con -r lo haces recursivo."
+  - "-l cambia la salida: muestra SOLO nombres de ficheros; con -r lo haces
+    recursivo."
   - La línea del testigo con la marca sale a la vista con un grep aparte.
-  - grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{' /home/agent/negocio
-teach: grep -l es la herramienta del «¿qué ficheros toca?» antes de entrar. Tras ella,
-  alimenta un for/xargs con los nombres.
+  - grep -rl 'confidencial' /home/agent/negocio ; grep -r 'FLAG{'
+    /home/agent/negocio
+teach: grep -l es la herramienta del «¿qué ficheros toca?» antes de entrar. Tras
+  ella, alimenta un for/xargs con los nombres.
 cheatsheet:
   - cmd: grep -rl patrón dir
     desc: "recursivo: solo nombres"
@@ -50,3 +53,14 @@ keywords:
   - -r
   - ficheros
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      /home/agent/negocio/clientes/nota.txt
+
+      /home/agent/negocio/secretos.txt
+
+      /home/agent/negocio/proveedores/suministro.csv
+
+      /home/agent/negocio/secretos.txt:confidencial: el testigo
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

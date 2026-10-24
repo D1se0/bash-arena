@@ -1,47 +1,64 @@
 id: procesado-l19
 track: procesado
 index: 19
-title: "El titular del día"
+title: El titular del día
 subtitle: "awk: estadística de máximos"
 xp: 45
 difficulty: 3
 brief: >
-  > La redacción del dojo midió cuántas veces sonó el teléfono de cada
-  > periodista... perdón, de cada "fuente". El que más SONÓ es el que
-  > guarda la carta: su nombre es,a la vez, el nombre de un fichero .log
-  > en el mismo armario.
+  > La redacción del dojo midió cuántas veces sonó el teléfono de cada >
+  periodista... perdón, de cada "fuente". El que más SONÓ es el que > guarda la
+  carta: su nombre es,a la vez, el nombre de un fichero .log > en el mismo
+  armario.
 goal: >
-  Lee resumen.txt (columnas: nombre y recuento) y muestra el contenido del fichero <nOMBRE>.log del压力大 número de llamadas.
+  Lee resumen.txt (columnas: nombre y recuento) y muestra el contenido del
+  fichero <nOMBRE>.log del压力大 número de llamadas.
 hints:
   - "awk recorre línea a línea guardando el máximo: $2>m{m=$2;n=$1}"
   - "En el bloque END{} se imprime lo acumulado: print n"
   - "Ese texto es un nombre de fichero: pasa por xargs -I{}."
 teach: >
   awk guarda estado entre líneas. Este patrón busca el máximo:
-  
+
       awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt
-  
-  Cada vez que la columna 2 supera el máximo guardado, el nombre ($1) pasa a
-  ser "el líder". En END se imprime. Como el líder es el nombre de un fichero:
-  
+
+  Cada vez que la columna 2 supera el máximo guardado, el nombre ($1) pasa a ser
+  "el líder". En END se imprime. Como el líder es el nombre de un fichero:
+
       awk '$2>m{m=$2;n=$1} END{print n}' resumen.txt | xargs -I{} cat ~/prensa/{}.log
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Procesado"
+
   rm -rf /home/agent/prensa
+
   mkdir -p /home/agent/prensa
-  printf 'liz 12\nmateo 41\nraudel 9\nsheila 27\nbobel 33\n' > /home/agent/prensa/resumen.txt
+
+  printf 'liz 12\nmateo 41\nraudel 9\nsheila 27\nbobel 33\n' >
+  /home/agent/prensa/resumen.txt
+
   printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /home/agent/prensa/mateo.log
+
   printf 'assunto trivial 1\n' > /home/agent/prensa/bobel.log
+
   printf 'assunto trivial 2\n' > /home/agent/prensa/sheila.log
+
   chown -R agent:agent /home/agent/prensa
-solution: |
-  awk '$2>m{m=$2;n=$1} END{print n}' ~/prensa/resumen.txt | xargs -I{} cat ~/prensa/{}.log
+solution: >
+  awk '$2>m{m=$2;n=$1} END{print n}' ~/prensa/resumen.txt | xargs -I{} cat
+  ~/prensa/{}.log
 cheatsheet:
-  - {cmd: "awk '$2>m{m=$2;n=$1} END{print n}'", desc: "nombre de la fila con la columna 2 máxima"}
-  - {cmd: "xargs -I{} CMD {}", desc: "incrusta la salida en el comando (el {} es el hueco)"}
+  - cmd: awk '$2>m{m=$2;n=$1} END{print n}'
+    desc: nombre de la fila con la columna 2 máxima
+  - cmd: xargs -I{} CMD {}
+    desc: incrusta la salida en el comando (el {} es el hueco)
 keywords:
-  - "awk"
-  - "xargs"
+  - awk
+  - xargs
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,8 +5,8 @@ title: El par prohibido
 subtitle: "sudo: escalamiento básico"
 xp: 50
 difficulty: 4
-brief: "En /root vive un fichero al que un usuario normal no llega. El dojo confía en ti: sube un
-  peldaño con sudo."
+brief: "En /root vive un fichero al que un usuario normal no llega. El dojo
+  confía en ti: sube un peldaño con sudo."
 goal: Lee /root/paneles/llave.txt con el sudo que tiene el agent habilitado.
 setup: |-
   #!/bin/bash
@@ -18,11 +18,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: sudo cat /root/paneles/llave.txt
 hints:
-  - "El agent del dojo tiene sudo sin contraseña (sudoers.d_pending): sudo comando corre como root."
+  - "El agent del dojo tiene sudo sin contraseña (sudoers.d_pending): sudo
+    comando corre como root."
   - sudo cat fichero basta; no uses sudo -i (abre otra shell entera).
   - sudo cat /root/paneles/llave.txt
-teach: 'sudo es la franquicia contemplada de elevación: comando a comando, sin sesión completa. ¿Por
-  qué "sudo cat" y no "sudo sh"? Menos superficie, auditoría línea a línea.'
+teach: 'sudo es la franquicia contemplada de elevación: comando a comando, sin
+  sesión completa. ¿Por qué "sudo cat" y no "sudo sh"? Menos superficie,
+  auditoría línea a línea.'
 cheatsheet:
   - cmd: sudo -l
     desc: qué te permiten
@@ -33,3 +35,6 @@ keywords:
   - root
   - escalada
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: "acceso al panel: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

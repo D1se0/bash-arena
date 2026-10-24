@@ -5,10 +5,10 @@ title: El dominio único
 subtitle: cut -d@ + sort -u
 xp: 40
 difficulty: 3
-brief: correo.txt lista direcciones del mismo proveedor… salvo una. Ese dominio único lleva la pieza
-  en la propia dirección.
-goal: Extrae los dominios (lo que va tras @) de /home/agent/correo.txt y muestra el que solo aparece
-  una vez.
+brief: correo.txt lista direcciones del mismo proveedor… salvo una. Ese dominio
+  único lleva la pieza en la propia dirección.
+goal: Extrae los dominios (lo que va tras @) de /home/agent/correo.txt y muestra
+  el que solo aparece una vez.
 setup: |-
   #!/bin/bash
   set -e
@@ -27,8 +27,9 @@ hints:
   - cut -d@ -f2 corta por el separador @ y se queda con el segundo campo.
   - sort -u deja solo los valores únicos; habrá exactamente uno.
   - cut -d@ -f2 /home/agent/correo.txt | sort -u
-teach: cut es el cortador de columnas por delimitador (-d) y por campo (-f); awk $2 hace lo mismo
-  con más músculo. Para listas enormes, cut es más barato que awk.
+teach: cut es el cortador de columnas por delimitador (-d) y por campo (-f); awk
+  $2 hace lo mismo con más músculo. Para listas enormes, cut es más barato que
+  awk.
 cheatsheet:
   - cmd: cut -d@ -f2 f
     desc: campo tras el @
@@ -39,3 +40,6 @@ keywords:
   - dominios
   - sort
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

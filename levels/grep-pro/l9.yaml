@@ -5,10 +5,10 @@ title: Pasado el hallazgo
 subtitle: "grep -A 2: contexto después"
 xp: 65
 difficulty: 4
-brief: El log de despliegue enraiza el trigger GO y, DESPUÉS, la salida. Necesitas ver lo
-  que sigue.
-goal: De deploy.log imprime la línea que contiene GO y las DOS SIGUIENTES (así estado está
-  en esa zona).
+brief: El log de despliegue enraiza el trigger GO y, DESPUÉS, la salida.
+  Necesitas ver lo que sigue.
+goal: De deploy.log imprime la línea que contiene GO y las DOS SIGUIENTES (así
+  estado está en esa zona).
 setup: |
   #!/bin/bash
   set -e
@@ -26,8 +26,8 @@ hints:
   - -A 2 imprime cada match y las DÚO líneas QUE SIGUEN.
   - Cuando dos matches se superponen, el contexto puede incluir separadores --.
   - grep -A 2 'GO' /home/agent/deploy.log
-teach: "A de after: incluye el contexto posterior. En logs de deploy es la vía rápida de
-  leer «qué pasó tras el evento» sin abrir el fichero entero."
+teach: "A de after: incluye el contexto posterior. En logs de deploy es la vía
+  rápida de leer «qué pasó tras el evento» sin abrir el fichero entero."
 cheatsheet:
   - cmd: grep -A 2 pat f
     desc: match + 2 siguientes
@@ -38,3 +38,9 @@ keywords:
   - -A
   - contexto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      GO activación de despliegue
+      config aplicada: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      retora ciclos 2-3

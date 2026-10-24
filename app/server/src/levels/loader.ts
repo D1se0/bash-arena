@@ -6,6 +6,7 @@ import {
   type LevelDefinition,
   type TrackMetadata,
   type CheatsheetEntry,
+  type LevelExample,
   type TrackId,
   type SecurityProfile,
 } from './tracks.js';
@@ -87,6 +88,11 @@ function validateLevel(data: Record<string, unknown>, file: string): LevelDefini
     teach: String(data.teach ?? ''),
     keywords: Array.isArray(data.keywords) ? data.keywords.map(String) : [],
     profile: (data.profile === 'sudo' ? 'sudo' : 'default') as SecurityProfile,
+    examples: Array.isArray(data.examples)
+      ? (data.examples as LevelExample[]).filter(
+          (e) => e && typeof e.title === 'string' && typeof e.content === 'string',
+        )
+      : [],
   };
   if (!level.id) return fail('missing id');
   if (!level.goal) return fail('missing goal');

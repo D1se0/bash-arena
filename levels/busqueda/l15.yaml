@@ -5,10 +5,10 @@ title: Tocado el mismo día
 subtitle: "find -mtime: buscar por fecha"
 xp: 40
 difficulty: 3
-brief: En ~/archivo hay decenas de fichas. Solo UNA se tocó en las últimas 24 horas — y esa, la
-  fresca, es la que importa.
-goal: Localiza con find los ficheros de /home/agent/archivo modificados hoy y muestra el .txt de
-  entre ellos.
+brief: En ~/archivo hay decenas de fichas. Solo UNA se tocó en las últimas 24
+  horas — y esa, la fresca, es la que importa.
+goal: Localiza con find los ficheros de /home/agent/archivo modificados hoy y
+  muestra el .txt de entre ellos.
 setup: >-
   #!/bin/bash
 
@@ -18,8 +18,8 @@ setup: >-
 
   mkdir -p /home/agent/archivo
 
-  for i in 1 2 3 4 5 6 7 8; do echo "ficha $i: archivo tranquilo" > /home/agent/archivo/f$i.txt;
-  done
+  for i in 1 2 3 4 5 6 7 8; do echo "ficha $i: archivo tranquilo" >
+  /home/agent/archivo/f$i.txt; done
 
   touch -d "40 days ago" /home/agent/archivo/f1.txt /home/agent/archivo/f2.txt
   /home/agent/archivo/f3.txt
@@ -35,11 +35,13 @@ setup: >-
   chown -R agent:agent /home/agent
 solution: cat $(find /home/agent/archivo -name '*.txt' -mtime -1)
 hints:
-  - find -mtime -1 = modificado hace MENOS de 1 día; -mtime +1 en cambio es hace más de 1 día.
+  - find -mtime -1 = modificado hace MENOS de 1 día; -mtime +1 en cambio es hace
+    más de 1 día.
   - Solo un .txt pasará el filtro.
   - cat $(find /home/agent/archivo -name "*.txt" -mtime -1)
-teach: 'find opera por fecha real del fingerprint: -mtime (días), -mmin (minutos) y -newer (frente a
-  otro fichero). Útil para "¿qué cambió desde el backup?" de verdad.'
+teach: 'find opera por fecha real del fingerprint: -mtime (días), -mmin
+  (minutos) y -newer (frente a otro fichero). Útil para "¿qué cambió desde el
+  backup?" de verdad.'
 cheatsheet:
   - cmd: find dir -mtime -1
     desc: modificado hoy
@@ -50,3 +52,6 @@ keywords:
   - mtime
   - fecha
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "ficha fresca: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

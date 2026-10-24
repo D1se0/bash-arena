@@ -5,9 +5,10 @@ title: ISO extraction
 subtitle: grep -oE de fechas AAAA-MM-DD
 xp: 75
 difficulty: 5
-brief: El log guarda las fechas en varias formas (ISO y texto) y en distintas posiciones.
-goal: De tiempos.log extrae SOLAMENTE las fechas AAAA-MM-DD (una por línea) y deja a la
-  vista la línea del testigo con la marca.
+brief: El log guarda las fechas en varias formas (ISO y texto) y en distintas
+  posiciones.
+goal: De tiempos.log extrae SOLAMENTE las fechas AAAA-MM-DD (una por línea) y
+  deja a la vista la línea del testigo con la marca.
 setup: |
   #!/bin/bash
   set -e
@@ -20,15 +21,17 @@ setup: |
   con hora también ok: 2024-11-20T13:45:02
   EOF
   chown agent:agent /home/agent/tiempos.log
-solution: grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log ; grep 'FLAG{'
-  /home/agent/tiempos.log
+solution: grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log ; grep
+  'FLAG{' /home/agent/tiempos.log
 hints:
-  - "{n} pide n dígitos consecutivos; con -oE cada fecha sale limpia en su línea."
+  - "{n} pide n dígitos consecutivos; con -oE cada fecha sale limpia en su
+    línea."
   - La línea del testigo con la marca sale aparte con grep.
   - grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' /home/agent/tiempos.log ; grep 'FLAG{'
     /home/agent/tiempos.log
-teach: El patrón [0-9]{4}-[0-9]{2}-[0-9]{2} extrae las fechas ISO. La gracia -o + {n} es
-  reemplazar el «recortar con cut/awk» por directamente un regex experto.
+teach: El patrón [0-9]{4}-[0-9]{2}-[0-9]{2} extrae las fechas ISO. La gracia -o
+  + {n} es reemplazar el «recortar con cut/awk» por directamente un regex
+  experto.
 cheatsheet:
   - cmd: grep -oE '[0-9]{4}-[0-9]{2}' f
     desc: AAAA-MM
@@ -39,3 +42,10 @@ keywords:
   - -oE
   - fechas
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      2022-04-15
+      2019-02-01
+      2024-11-20
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

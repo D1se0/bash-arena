@@ -5,8 +5,8 @@ title: El eco repetido
 subtitle: "uniq -d: solo las repetidas"
 xp: 40
 difficulty: 3
-brief: visitas.log registra líneas sueltas. Una sola línea aparece repetida (dos veces) y esa
-  esconde la pieza; todas las demás son únicas.
+brief: visitas.log registra líneas sueltas. Una sola línea aparece repetida (dos
+  veces) y esa esconde la pieza; todas las demás son únicas.
 goal: Extrae la ÚNICA línea repetida de /home/agent/visitas.log.
 setup: |-
   #!/bin/bash
@@ -29,8 +29,9 @@ hints:
   - "uniq solo compara LÍNEAS ADYACENTES: primero sort, después uniq."
   - uniq -d muestra únicamente las líneas que aparecen más de una vez.
   - sort /home/agent/visitas.log | uniq -d
-teach: "uniq exige adyacencia: sort | uniq es la pareja inseparable. -d (duplicadas), -u (únicas) y
-  -c (contar) cubren el 90 % de los análisis de logs rápidos."
+teach: "uniq exige adyacencia: sort | uniq es la pareja inseparable. -d
+  (duplicadas), -u (únicas) y -c (contar) cubren el 90 % de los análisis de logs
+  rápidos."
 cheatsheet:
   - cmd: sort f | uniq -d
     desc: líneas repetidas
@@ -41,3 +42,6 @@ keywords:
   - sort
   - duplicados
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: marca FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,8 +5,10 @@ title: Pesados con escondite
 subtitle: find -size + la cola del fichero
 xp: 45
 difficulty: 3
-brief: En block/ hay ficheros gordos de relleno; en la cola de uno de ellos se guarda la clave.
-goal: Localiza los ficheros de más de 100 KB y muestra los últimos 90 bytes de cada uno.
+brief: En block/ hay ficheros gordos de relleno; en la cola de uno de ellos se
+  guarda la clave.
+goal: Localiza los ficheros de más de 100 KB y muestra los últimos 90 bytes de
+  cada uno.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +27,9 @@ hints:
   - find -size +100k filtra por tamaño (k=kilobytes) y descarta lotes menores.
   - La cola del fichero se lee con tail -c N (número de bytes).
   - for f in $(find block -size +100k); do tail -c 90 "$f"; echo; done
-teach: "find -size clasifica por tamaño real (c, k, M…); tail -c lee bytes, no líneas. Muchos
-  troyanos anexan su carga al final de ficheros legítimos: mirar la cola es rutina forense."
+teach: "find -size clasifica por tamaño real (c, k, M…); tail -c lee bytes, no
+  líneas. Muchos troyanos anexan su carga al final de ficheros legítimos: mirar
+  la cola es rutina forense."
 cheatsheet:
   - cmd: find d -size +100k
     desc: ficheros de más de 100 KB
@@ -37,3 +40,12 @@ keywords:
   - tail -c
   - bytes
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+      wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+      clave final: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy

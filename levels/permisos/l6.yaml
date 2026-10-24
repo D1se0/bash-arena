@@ -5,7 +5,8 @@ title: El script dormido
 subtitle: "chmod +x: dar permiso de ejecución"
 xp: 35
 difficulty: 2
-brief: llave.sh tiene la ejecución prohibida. Sin el bit de ejecución, ./llave.sh se niega a arrancar.
+brief: llave.sh tiene la ejecución prohibida. Sin el bit de ejecución,
+  ./llave.sh se niega a arrancar.
 goal: Dale permiso de ejecución al propietario y ejecútalo con ./llave.sh.
 setup: |-
   #!/bin/bash
@@ -19,11 +20,13 @@ setup: |-
   chown agent:agent /home/agent/llave.sh
 solution: chmod u+x /home/agent/llave.sh && /home/agent/llave.sh
 hints:
-  - El error esperado es Permission denied y el diagnóstico está en ls -l (falta la x).
+  - El error esperado es Permission denied y el diagnóstico está en ls -l (falta
+    la x).
   - chmod u+x da ejecución solo al dueño.
   - chmod u+x llave.sh && ./llave.sh
-teach: "El bit x convierte un fichero en ejecutable: sin él el núcleo no lo lanza directamente.
-  u/g/o definen a quién se toca el permiso; ls -l es tu espejo."
+teach: "El bit x convierte un fichero en ejecutable: sin él el núcleo no lo
+  lanza directamente. u/g/o definen a quién se toca el permiso; ls -l es tu
+  espejo."
 cheatsheet:
   - cmd: chmod +x script.sh
     desc: ejecutable para todos
@@ -34,3 +37,6 @@ keywords:
   - ejecución
   - +x
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "la llave gira y revela: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

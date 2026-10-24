@@ -5,25 +5,33 @@ title: La bandeja de entrada
 subtitle: "cp: copiar sin perder el original"
 xp: 35
 difficulty: 2
-brief: El aviso urgente está enterrado en bandeja/entrada/2024/urgente/. El protocolo exige copia en
-  tu home antes de leerlo.
+brief: El aviso urgente está enterrado en bandeja/entrada/2024/urgente/. El
+  protocolo exige copia en tu home antes de leerlo.
 goal: Copia aviso.txt a tu home con el nombre aviso-copia.txt y muéstralo.
-setup: |-
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 10" "Fundamentos"
+
   mkdir -p /home/agent/bandeja/entrada/2024/urgente
+
   echo "copia carbon de rutina" > /home/agent/bandeja/entrada/2024/rutina.txt
-  echo "aviso critico: $DOJO_FLAG" > /home/agent/bandeja/entrada/2024/urgente/aviso.txt
+
+  echo "aviso critico: $DOJO_FLAG" >
+  /home/agent/bandeja/entrada/2024/urgente/aviso.txt
+
   chown -R agent:agent /home/agent
-solution: cp /home/agent/bandeja/entrada/2024/urgente/aviso.txt /home/agent/aviso-copia.txt && cat
-  /home/agent/aviso-copia.txt
+solution: cp /home/agent/bandeja/entrada/2024/urgente/aviso.txt
+  /home/agent/aviso-copia.txt && cat /home/agent/aviso-copia.txt
 hints:
   - Navega con cd y comprueba con ls cada tramo de la ruta.
   - cp ORIGEN DESTINO copia sin tocar el original.
-  - cp bandeja/entrada/2024/urgente/aviso.txt ~/aviso-copia.txt && cat ~/aviso-copia.txt
-teach: "cp copia, mv mueve (y renombra); rm borra y no tiene marcha atrás. Las rutas relativas se
-  apoyan en tu cwd: confirma dónde estás con pwd si dudas."
+  - cp bandeja/entrada/2024/urgente/aviso.txt ~/aviso-copia.txt && cat
+    ~/aviso-copia.txt
+teach: "cp copia, mv mueve (y renombra); rm borra y no tiene marcha atrás. Las
+  rutas relativas se apoyan en tu cwd: confirma dónde estás con pwd si dudas."
 cheatsheet:
   - cmd: cp a b
     desc: copia un fichero
@@ -35,3 +43,6 @@ keywords:
   - rutas
   - bandeja
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "aviso critico: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

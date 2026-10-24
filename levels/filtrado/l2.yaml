@@ -5,33 +5,49 @@ subtitle: tail y tail -f
 xp: 30
 difficulty: 1
 brief: >
-  Un demonio de ficción fue escribiendo su diario hasta el instante exacto
-  en que fue asesinado. La flag está en su última confesión.
+  Un demonio de ficción fue escribiendo su diario hasta el instante exacto en
+  que fue asesinado. La flag está en su última confesión.
 goal: >
-  Lee el final de /var/log/daemon.log: la super-flag está entre
-  las últimas 4 líneas.
-setup: |
+  Lee el final de /var/log/daemon.log: la super-flag está entre las últimas 4
+  líneas.
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 02" "Filtrado"
-  { for i in $(seq 1 3000); do printf 'día %d: rutina sin novedades\n' "$i"; done
+
+  { for i in $(seq 1 3000); do printf 'día %d: rutina sin novedades\n' "$i";
+  done
     printf 'confesión final: contraseña %s\n' "$DOJO_FLAG"
   } > /var/log/daemon.log
+
   chown agent:agent /var/log/daemon.log
 hints:
-  - "tail fichero por defecto enseña 10 líneas del final."
-  - "tail -n 4 /var/log/daemon.log"
-  - "tail -f entra en modo streaming (útil con logs que crecen)."
+  - tail fichero por defecto enseña 10 líneas del final.
+  - tail -n 4 /var/log/daemon.log
+  - tail -f entra en modo streaming (útil con logs que crecen).
 teach: >
-  `tail` es el complemento de `head`. Con `tail -f fichero` sigues en
-  vivo un log que crece; termina con Ctrl+C. `tail -n +N fichero`
-  imprime desde la línea N hasta el final.
+  `tail` es el complemento de `head`. Con `tail -f fichero` sigues en vivo un
+  log que crece; termina con Ctrl+C. `tail -n +N fichero` imprime desde la línea
+  N hasta el final.
 cheatsheet:
-  - {cmd: tail fichero, desc: últimas 10 líneas}
-  - {cmd: 'tail -n 4 fichero', desc: últimas N líneas}
-  - {cmd: 'tail -f fichero', desc: sigue el fichero en tiempo real}
+  - cmd: tail fichero
+    desc: últimas 10 líneas
+  - cmd: tail -n 4 fichero
+    desc: últimas N líneas
+  - cmd: tail -f fichero
+    desc: sigue el fichero en tiempo real
 solution: |
   tail -n 4 /var/log/daemon.log
-
-keywords: [tail, tail-f]
+keywords:
+  - tail
+  - tail-f
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      día 2998: rutina sin novedades
+      día 2999: rutina sin novedades
+      día 3000: rutina sin novedades
+      confesión final: contraseña FLAG{d3b09a4f7c2e1b8d6041a5f3}

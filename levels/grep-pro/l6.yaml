@@ -23,7 +23,8 @@ setup: |
 solution: grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{'
   /home/agent/auditoria/testigo.txt
 hints:
-  - -L (MAYÚSCULA) muestra los ficheros SIN ninguna coincidencia; -l minúscula los CON.
+  - -L (MAYÚSCULA) muestra los ficheros SIN ninguna coincidencia; -l minúscula
+    los CON.
   - La línea del testigo con la marca se enseña aparte con grep.
   - grep -L 'comprometido' /home/agent/auditoria/* ; grep 'FLAG{'
     /home/agent/auditoria/testigo.txt
@@ -39,3 +40,11 @@ keywords:
   - -L
   - inverso
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      /home/agent/auditoria/acta.txt
+      /home/agent/auditoria/bitacora.txt
+      /home/agent/auditoria/resumen.txt
+      /home/agent/auditoria/testigo.txt
+      malargue asunto: FLAG{d3b09a4f7c2e1b8d6041a5f3}

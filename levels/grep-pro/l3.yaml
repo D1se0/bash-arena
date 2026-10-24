@@ -5,10 +5,10 @@ title: Mayúsculas rebeldes, cuenta igual
 subtitle: "grep -ic: caso insensible + contador"
 xp: 65
 difficulty: 4
-brief: El registro usa error/Error/ERROR indistintamente. El informe de incidencias exige
-  el total sin carecer del formato.
-goal: De visitas.log imprime el NÚMERO de líneas con error en cualquier formato de letras
-  y, aparte, la línea del testigo con la marca.
+brief: El registro usa error/Error/ERROR indistintamente. El informe de
+  incidencias exige el total sin carecer del formato.
+goal: De visitas.log imprime el NÚMERO de líneas con error en cualquier formato
+  de letras y, aparte, la línea del testigo con la marca.
 setup: |
   #!/bin/bash
   set -e
@@ -26,10 +26,12 @@ solution: grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/vi
 hints:
   - "Las opciones de grep se APILAN: -i (insensible) + -c (contador)."
   - El resultado del contador es un único número.
-  - "El testigo también se cuenta (formato errOr): su línea sale aparte con grep 'FLAG{'."
-  - grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{' /home/agent/visitas.log
-teach: Combinar opciones cortas -ic (o -i -c) suma efectos. La apilación es la razón por
-  la que grep sigue útil en árboles grandes.
+  - "El testigo también se cuenta (formato errOr): su línea sale aparte con grep
+    'FLAG{'."
+  - grep -ic 'error' /home/agent/visitas.log ; grep 'FLAG{'
+    /home/agent/visitas.log
+teach: Combinar opciones cortas -ic (o -i -c) suma efectos. La apilación es la
+  razón por la que grep sigue útil en árboles grandes.
 cheatsheet:
   - cmd: grep -ic pat f
     desc: conteo sin mirar mayúsculas
@@ -41,3 +43,8 @@ keywords:
   - insensible
   - contador
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      6
+      errOr testigo: FLAG{d3b09a4f7c2e1b8d6041a5f3}

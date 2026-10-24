@@ -5,8 +5,8 @@ title: El escritor sin permiso
 subtitle: copiar requiere permisos del directorio
 xp: 50
 difficulty: 3
-brief: "salida/ existe pero es de solo lectura (555): ni cp ni touch pueden escribir en ella. La
-  salvación es devolverle la w al dueño."
+brief: "salida/ existe pero es de solo lectura (555): ni cp ni touch pueden
+  escribir en ella. La salvación es devolverle la w al dueño."
 goal: Recupera permisos de salida/, copia hito.txt dentro y muestra la copia.
 setup: |-
   #!/bin/bash
@@ -17,14 +17,15 @@ setup: |-
   chown agent:agent /home/agent/salida /home/agent/hito.txt
   chmod 555 /home/agent/salida
   chmod 644 /home/agent/hito.txt
-solution: chmod u+w /home/agent/salida && cp /home/agent/hito.txt /home/agent/salida/ && cat
-  /home/agent/salida/hito.txt
+solution: chmod u+w /home/agent/salida && cp /home/agent/hito.txt
+  /home/agent/salida/ && cat /home/agent/salida/hito.txt
 hints:
   - El Permission denied al copiar sale del DIRECTORIO, no del fichero.
   - La creación dentro de un directorio requiere w en el propio directorio.
   - chmod u+w salida && cp hito.txt salida/
-teach: Los permisos que importan al COPIAR son los del DIRECTORIO destino (w) y los del FICHERO
-  origen (r). Si cp falla escribiendo, mira el directorio, no el fichero.
+teach: Los permisos que importan al COPIAR son los del DIRECTORIO destino (w) y
+  los del FICHERO origen (r). Si cp falla escribiendo, mira el directorio, no el
+  fichero.
 cheatsheet:
   - cmd: chmod u+w dir
     desc: permite crear dentro
@@ -35,3 +36,6 @@ keywords:
   - directorio
   - cp
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "hito de auditoria: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

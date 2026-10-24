@@ -5,8 +5,8 @@ title: Una clave en dos mitades
 subtitle: cat multiplica argumentos
 xp: 40
 difficulty: 3
-brief: "Por protocolo administrativo la clave se guardó partida: la primera mitad en parte_a.txt y
-  el resto en parte_b.txt."
+brief: "Por protocolo administrativo la clave se guardó partida: la primera
+  mitad en parte_a.txt y el resto en parte_b.txt."
 goal: Imprime las dos mitades en orden (primero A, luego B) formando una sola línea.
 setup: |-
   #!/bin/bash
@@ -20,10 +20,12 @@ setup: |-
 solution: cat /home/agent/parte_a.txt /home/agent/parte_b.txt
 hints:
   - cat acepta varios ficheros y los imprime en el orden que los des.
-  - "Ojo: la primera mitad NO termina en salto de línea, por eso ambas mitades se pegan."
+  - "Ojo: la primera mitad NO termina en salto de línea, por eso ambas mitades
+    se pegan."
   - cat parte_a.txt parte_b.txt
-teach: "cat concatena todos sus argumentos en el orden dado. Si un fichero no termina en salto de
-  línea, la salida se pega al siguiente: así las mitades forman una sola línea."
+teach: "cat concatena todos sus argumentos en el orden dado. Si un fichero no
+  termina en salto de línea, la salida se pega al siguiente: así las mitades
+  forman una sola línea."
 cheatsheet:
   - cmd: cat a b c
     desc: une ficheros en orden
@@ -34,3 +36,6 @@ keywords:
   - concatenar
   - redirección
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

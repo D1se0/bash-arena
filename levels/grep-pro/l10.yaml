@@ -5,8 +5,10 @@ title: El culpable anterior
 subtitle: "grep -B 2: contexto antes"
 xp: 65
 difficulty: 4
-brief: "El fallo crítico se entiende SOLO con lo anterior: los dos pasos ANTERIORES al abort."
-goal: De pipeline.log imprime la línea ABORT y las DÚO ANTERIORES (ahí está la causa).
+brief: "El fallo crítico se entiende SOLO con lo anterior: los dos pasos
+  ANTERIORES al abort."
+goal: De pipeline.log imprime la línea ABORT y las DÚO ANTERIORES (ahí está la
+  causa).
 setup: |
   #!/bin/bash
   set -e
@@ -24,8 +26,8 @@ hints:
   - -B 2 imprime cada match y las 2 líneas que lo PRECEDEN.
   - "B es de before: la contraparte de -A."
   - grep -B 2 'ABORT' /home/agent/pipeline.log
-teach: "El diagnóstico de logs casi siempre mira atrás: -B N da el «qué produjo esto». Con
-  -A N en el mismo grep (o -C) ves la banda completa."
+teach: "El diagnóstico de logs casi siempre mira atrás: -B N da el «qué produjo
+  esto». Con -A N en el mismo grep (o -C) ves la banda completa."
 cheatsheet:
   - cmd: grep -B 2 pat f
     desc: 2 líneas antes + match
@@ -36,3 +38,9 @@ keywords:
   - -B
   - contexto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      descargar fuentes (ok)
+      compilar módulo B con la marca: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      ABORT pub-sub no responde

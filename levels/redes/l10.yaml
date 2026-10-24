@@ -5,19 +5,27 @@ title: El guardián del POST
 subtitle: "curl -d: enviar datos"
 xp: 50
 difficulty: 3
-brief: Un endpoint del API pide autenticación por POST con el parámetro token=arena (sin
-  documentar). El GET se queda con las ganas.
-goal: Envía un POST con token=arena a http://127.0.0.1:6060/validar y muestra la respuesta con la marca.
-setup: |-
+brief: Un endpoint del API pide autenticación por POST con el parámetro
+  token=arena (sin documentar). El GET se queda con las ganas.
+goal: Envía un POST con token=arena a http://127.0.0.1:6060/validar y muestra la
+  respuesta con la marca.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 10" "Redes"
+
 
   mkdir -p /etc/arena
 
+
   cat > /etc/arena/validador.py <<FIN
+
   from http.server import BaseHTTPRequestHandler, HTTPServer
+
   from urllib.parse import parse_qs
+
   class H(BaseHTTPRequestHandler):
       def do_GET(self):
           self.send_response(403)
@@ -38,18 +46,23 @@ setup: |-
       def log_message(self, *a):
           pass
   HTTPServer(("127.0.0.1", 6060), H).serve_forever()
+
   FIN
+
   sed -i "s/__BANDERA__/$DOJO_FLAG/" /etc/arena/validador.py
+
   nohup python3 /etc/arena/validador.py >/dev/null 2>&1 &
+
   sleep 2
+
   chown -R agent:agent /home/agent
 solution: curl -s -d 'token=arena' http://127.0.0.1:6060/validar
 hints:
   - "El método GET te responde 403: el endpoint quiere POST."
   - curl -d "campo=valor" hace un POST automáticamente.
   - curl -s -d 'token=arena' http://127.0.0.1:6060/validar
-teach: curl -d (o --data) cambia el verbo HTTP a POST y manda el cuerpo form-enconded. Es la moneda
-  para hablar con APIs internas sin cliente gráfico.
+teach: curl -d (o --data) cambia el verbo HTTP a POST y manda el cuerpo
+  form-enconded. Es la moneda para hablar con APIs internas sin cliente gráfico.
 cheatsheet:
   - cmd: curl -d k=v URL
     desc: POST con form-data
@@ -60,3 +73,6 @@ keywords:
   - POST
   - endpoints
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "acceso concedido: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

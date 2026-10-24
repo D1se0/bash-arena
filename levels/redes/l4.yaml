@@ -5,12 +5,12 @@ subtitle: dig simulado (dnsmasq en loopback, puerto 5353)
 xp: 70
 difficulty: 3
 brief: >
-  En el dojo hay un DNS minúsculo en 127.0.0.1:5353 (dnsmasq). El
-  registro TXT de 'flag.dojo' esconde la clave. No hay internet real;
-  tu dig apuntará al DNS interno.
+  En el dojo hay un DNS minúsculo en 127.0.0.1:5353 (dnsmasq). El registro TXT
+  de 'flag.dojo' esconde la clave. No hay internet real; tu dig apuntará al DNS
+  interno.
 goal: >
-  Consulta el registro TXT de flag.dojo contra el DNS interno
-  (127.0.0.1:5353) y extrae el contenido. Usa dig.
+  Consulta el registro TXT de flag.dojo contra el DNS interno (127.0.0.1:5353) y
+  extrae el contenido. Usa dig.
 setup: |
   #!/bin/bash
   set -e
@@ -21,19 +21,27 @@ setup: |
     --log-facility=/var/log/dnsmasq.log >/dev/null 2>&1 &
   sleep 1
 hints:
-  - "dig @127.0.0.1 -p 5353 flag.dojo TXT"
-  - "El +short deja la salida limpia: dig +short @127.0.0.1 -p 5353 flag.dojo TXT"
+  - dig @127.0.0.1 -p 5353 flag.dojo TXT
+  - "El +short deja la salida limpia: dig +short @127.0.0.1 -p 5353 flag.dojo
+    TXT"
 teach: >
-  `dig @server` consulta un servidor DNS concreto; `-p` el puerto.
-  TXT guarda texto libre (popular en mails y cachés). En el dojo,
-  dnsmasq sirve registros con poca RAM: te enseña la mecánica de
-  consultas sin distraerte con BIND real.
+  `dig @server` consulta un servidor DNS concreto; `-p` el puerto. TXT guarda
+  texto libre (popular en mails y cachés). En el dojo, dnsmasq sirve registros
+  con poca RAM: te enseña la mecánica de consultas sin distraerte con BIND real.
 cheatsheet:
-  - {cmd: 'dig @serv dominio A', desc: resuelve IPv4}
-  - {cmd: 'dig @serv dominio TXT', desc: registros TXT}
-  - {cmd: 'dig +short', desc: salida minimal}
+  - cmd: dig @serv dominio A
+    desc: resuelve IPv4
+  - cmd: dig @serv dominio TXT
+    desc: registros TXT
+  - cmd: dig +short
+    desc: salida minimal
 solution: |
   dig +short @127.0.0.1 -p 5353 flag.dojo TXT
-
-keywords: [dig, dns, dnsmasq]
+keywords:
+  - dig
+  - dns
+  - dnsmasq
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: '"FLAG{d3b09a4f7c2e1b8d6041a5f3}"'

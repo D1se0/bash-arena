@@ -5,25 +5,32 @@ title: Detalle sin débiles
 subtitle: "file + zcat: el compresor mudo"
 xp: 45
 difficulty: 3
-brief: algo_sin_nombre es un fichero sin extensión con PAPEL que contiene la pieza comprimida. file
-  lo identifica.
-goal: Identifica el tipo de /home/agent/algo_sin_nombre con file, y si es gzip muéstralo
-  descomprimido (zcat) con su marca.
-setup: |-
+brief: algo_sin_nombre es un fichero sin extensión con PAPEL que contiene la
+  pieza comprimida. file lo identifica.
+goal: Identifica el tipo de /home/agent/algo_sin_nombre con file, y si es gzip
+  muéstralo descomprimido (zcat) con su marca.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 16" "Forense"
-  printf 'la pieza muda: %s\n' "$DOJO_FLAG" | gzip -c > /home/agent/algo_sin_nombre
+
+  printf 'la pieza muda: %s\n' "$DOJO_FLAG" | gzip -c >
+  /home/agent/algo_sin_nombre
+
   chmod 644 /home/agent/algo_sin_nombre
+
   chown agent:agent /home/agent/algo_sin_nombre
+
   chown -R agent:agent /home/agent
 solution: zcat /home/agent/algo_sin_nombre | grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
   - file fichero dice el tipo; "gzip compressed data" a la fuga la campana.
   - zcat fichero imprime el contenido descomprimido al stdout, sin crear fichero.
   - zcat /home/agent/algo_sin_nombre | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: "La extención ES mentira; los PRIMEROS BYTES no: 1f 8b = gzip. file da el tipo real. No
-  confiar en el nombre = primer paso forense."
+teach: "La extención ES mentira; los PRIMEROS BYTES no: 1f 8b = gzip. file da el
+  tipo real. No confiar en el nombre = primer paso forense."
 cheatsheet:
   - cmd: file f
     desc: clase real
@@ -34,3 +41,6 @@ keywords:
   - gzip
   - forense
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

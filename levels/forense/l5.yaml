@@ -5,12 +5,12 @@ subtitle: boss — base64 → gzip → flag
 xp: 85
 difficulty: 4
 brief: >
-  Un paquete de exfiltración pasó por DOS capas: primero gzip, después
-  base64 (así su "ruido" se mete en logs de texto). Dos herramientas
-  encadenadas por pipe dan con la carga útil.
+  Un paquete de exfiltración pasó por DOS capas: primero gzip, después base64
+  (así su "ruido" se mete en logs de texto). Dos herramientas encadenadas por
+  pipe dan con la carga útil.
 goal: >
-  En /var/dojo/exfiltrado.log hay una línea con datos base64. Decodifica
-  y descomprime para recuperar el mensaje original — dentro está la flag.
+  En /var/dojo/exfiltrado.log hay una línea con datos base64. Decodifica y
+  descomprime para recuperar el mensaje original — dentro está la flag.
 setup: |
   #!/bin/bash
   set -e
@@ -22,18 +22,25 @@ setup: |
   } > /var/dojo/exfiltrado.log
   chown agent:agent /var/dojo/exfiltrado.log
 hints:
-  - "El orden de desembalaje es el inverso: primero base64 -d, después gzip -d / zcat."
-  - "tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat"
+  - "El orden de desembalaje es el inverso: primero base64 -d, después gzip -d /
+    zcat."
+  - tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat
 teach: >
-  Las capas se deshacen en orden inverso al de embalaje: `base64 -d`
-  te da el flujo gzip, y `zcat` (uo `gunzip -c`) el contenido. La
-  disciplina UNIX de pipelines hace trivial encadenar 2, 3 o más
-  transformaciones.
+  Las capas se deshacen en orden inverso al de embalaje: `base64 -d` te da el
+  flujo gzip, y `zcat` (uo `gunzip -c`) el contenido. La disciplina UNIX de
+  pipelines hace trivial encadenar 2, 3 o más transformaciones.
 cheatsheet:
-  - {cmd: 'cmd | base64 -d | zcat', desc: desembalaje por capas}
-  - {cmd: 'zcat fichero.gz', desc: descomprime a stdout}
+  - cmd: cmd | base64 -d | zcat
+    desc: desembalaje por capas
+  - cmd: zcat fichero.gz
+    desc: descomprime a stdout
 solution: |
   tail -1 /var/dojo/exfiltrado.log | base64 -d | zcat
-
-keywords: [base64, gzip, boss]
+keywords:
+  - base64
+  - gzip
+  - boss
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "el tesoro: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

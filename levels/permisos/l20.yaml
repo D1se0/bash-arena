@@ -1,24 +1,25 @@
 id: permisos-l20
 track: permisos
 index: 20
-title: "La maleta del inspector"
-subtitle: "chown con sudo"
+title: La maleta del inspector
+subtitle: chown con sudo
 xp: 50
 difficulty: 4
 brief: >
-  > El inspector invitado dejó su maletín en tu cueva… pero lo cerró con
-  > llave: el fichero es DE ÉL (propietario inspector) y tú no puedes
-  > leerlo. Tienes sudo: recupera la propiedad y la lee.
+  > El inspector invitado dejó su maletín en tu cueva… pero lo cerró con >
+  llave: el fichero es DE ÉL (propietario inspector) y tú no puedes > leerlo.
+  Tienes sudo: recupera la propiedad y la lee.
 goal: >
-  Cambia el propietario de ~/cueva/maletin.txt para que seas tú y muestra su contenido.
+  Cambia el propietario de ~/cueva/maletin.txt para que seas tú y muestra su
+  contenido.
 hints:
-  - "ls -l muestra el propietario en la 3.ª columna."
-  - "sudo chown agent FICHERO transfiere la propiedad."
-  - "Después de apropiarte, cat ya funciona."
+  - ls -l muestra el propietario en la 3.ª columna.
+  - sudo chown agent FICHERO transfiere la propiedad.
+  - Después de apropiarte, cat ya funciona.
 teach: >
   chown cambia el dueño; solo root (o sudo) puede dárselo a otro. Después de
   apropiarte del maletín, leer es trivial:
-  
+
       ls -l ~/cueva/maletin.txt          # quien es el dueño
       sudo chown agent ~/cueva/maletin.txt
       cat ~/cueva/maletin.txt
@@ -31,12 +32,22 @@ setup: |
   printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /home/agent/cueva/maletin.txt
   chown inspector:inspector /home/agent/cueva/maletin.txt
   chmod 600 /home/agent/cueva/maletin.txt
-solution: |
-  ls -l ~/cueva/maletin.txt && sudo chown agent ~/cueva/maletin.txt && cat ~/cueva/maletin.txt
+solution: >
+  ls -l ~/cueva/maletin.txt && sudo chown agent ~/cueva/maletin.txt && cat
+  ~/cueva/maletin.txt
 cheatsheet:
-  - {cmd: "sudo chown user F", desc: "transfiere la propiedad a user"}
-  - {cmd: "ls -l", desc: "ve quién es el dueño y los permisos"}
+  - cmd: sudo chown user F
+    desc: transfiere la propiedad a user
+  - cmd: ls -l
+    desc: ve quién es el dueño y los permisos
 keywords:
-  - "sudo"
-  - "ls"
+  - sudo
+  - ls
 profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: >-
+      -rw------- 1 inspector inspector 39 Oct 23 11:34
+      /home/agent/cueva/maletin.txt
+
+      FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

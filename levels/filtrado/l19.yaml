@@ -1,40 +1,53 @@
 id: filtrado-l19
 track: filtrado
 index: 19
-title: "El evento único"
+title: El evento único
 subtitle: "sort + uniq: cazar lo no repetido"
 xp: 35
 difficulty: 2
 brief: >
-  > El radar del dojo registró cientos de eventos... y todos se repiten
-  > salvo uno. Regla del dojo: lo que ocurre una sola vez es lo que
-  > importa. Y esa única aparición es la flag.
+  > El radar del dojo registró cientos de eventos... y todos se repiten > salvo
+  uno. Regla del dojo: lo que ocurre una sola vez es lo que > importa. Y esa
+  única aparición es la flag.
 goal: >
-  Extrae de ~/eventos.txt la única línea que NO está repetida (todas las demás aparecen 2 o más veces).
+  Extrae de ~/eventos.txt la única línea que NO está repetida (todas las demás
+  aparecen 2 o más veces).
 hints:
   - "sort necesita ordenar antes de uniq: uniq solo agrupa líneas adyacentes."
-  - "uniq -d deja las REPETIDAS; uniq -u se queda con las ÚNICAS."
-  - "sort ~/eventos.txt | uniq -u"
+  - uniq -d deja las REPETIDAS; uniq -u se queda con las ÚNICAS.
+  - sort ~/eventos.txt | uniq -u
 teach: >
-  uniq compara solo con la línea anterior, así que antes se ordena con sort.
-  -u (unique) imprime únicamente las líneas que no se repiten (descarta copias).
-  
+  uniq compara solo con la línea anterior, así que antes se ordena con sort. -u
+  (unique) imprime únicamente las líneas que no se repiten (descarta copias).
+
       sort ~/eventos.txt | uniq -u
-  
+
   La línea del evento exclusivo —conteniendo la flag— es la que sobrevive.
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Filtrado"
-  printf 'ping nodo-1\nping nodo-2\nping nodo-3\nping nodo-4\nping nodo-1\nping nodo-2\nping nodo-5\nping nodo-3\nping nodo-6\n%s\nping nodo-1\nping nodo-4\nping nodo-5\nping nodo-6\n' "$DOJO_FLAG" > /home/agent/eventos.txt
+
+  printf 'ping nodo-1\nping nodo-2\nping nodo-3\nping nodo-4\nping nodo-1\nping
+  nodo-2\nping nodo-5\nping nodo-3\nping nodo-6\n%s\nping nodo-1\nping
+  nodo-4\nping nodo-5\nping nodo-6\n' "$DOJO_FLAG" > /home/agent/eventos.txt
+
   chown agent:agent /home/agent/eventos.txt
 solution: |
   sort ~/eventos.txt | uniq -u
 cheatsheet:
-  - {cmd: "sort fich", desc: "ordena líneas"}
-  - {cmd: "uniq -u", desc: "muestra solo líneas sin repetición"}
-  - {cmd: "uniq -c", desc: "cuenta cuántas veces aparece cada línea"}
+  - cmd: sort fich
+    desc: ordena líneas
+  - cmd: uniq -u
+    desc: muestra solo líneas sin repetición
+  - cmd: uniq -c
+    desc: cuenta cuántas veces aparece cada línea
 keywords:
-  - "sort"
-  - "uniq"
+  - sort
+  - uniq
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

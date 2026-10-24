@@ -1,28 +1,29 @@
 id: scripting-l20
 track: scripting
 index: 20
-title: "El bucle de la tropa"
-subtitle: "for + globbing"
+title: El bucle de la tropa
+subtitle: for + globbing
 xp: 60
 difficulty: 4
 brief: >
-  > El sargento repartió la contrapartida entre la tropa: fragmentos
-  > pequeños en ~/tropa/*.txt. Ninguno lleva la flag entera. Para
-  > recomponer el mensaje hay que UNIR todos los fragmentos: el bucle for
-  > con tilde-glob es la herramienta del sargento.
+  > El sargento repartió la contrapartida entre la tropa: fragmentos > pequeños
+  en ~/tropa/*.txt. Ninguno lleva la flag entera. Para > recomponer el mensaje
+  hay que UNIR todos los fragmentos: el bucle for > con tilde-glob es la
+  herramienta del sargento.
 goal: >
-  Concatena en orden TODOS los ficheros ~/tropa/*.txt (usa for f in … con cat "$f") y muestra el mensaje completo con la flag.
+  Concatena en orden TODOS los ficheros ~/tropa/*.txt (usa for f in … con cat
+  "$f") y muestra el mensaje completo con la flag.
 hints:
-  - "for f in ~/tropa/*.txt; do … done itera los ficheros del patrón."
-  - "cat \"$f\" imprime cada fichero: al concatenar todos sale el mensaje."
-  - "El globbing (*.txt) se expande en orden alfabético."
+  - for f in ~/tropa/*.txt; do … done itera los ficheros del patrón.
+  - 'cat "$f" imprime cada fichero: al concatenar todos sale el mensaje.'
+  - El globbing (*.txt) se expande en orden alfabético.
 teach: >
   Un for con glob recorre ficheros:
-  
+
       for f in ~/tropa/*.txt; do
         cat "$f"
       done
-  
+
   Cada iteración imprime un fragmento; en conjunto la flag completa queda
   reconstruida (y ordenada, porque el globbing ordena alfabéticamente).
 setup: |
@@ -40,9 +41,14 @@ setup: |
 solution: |
   for f in ~/tropa/*.txt; do cat "$f"; done; echo
 cheatsheet:
-  - {cmd: "for f in FILES; do …; done", desc: "bucle sobre un patrón de ficheros"}
-  - {cmd: "*.txt", desc: "globbing: se expande a la lista ordenada"}
+  - cmd: for f in FILES; do …; done
+    desc: bucle sobre un patrón de ficheros
+  - cmd: "*.txt"
+    desc: "globbing: se expande a la lista ordenada"
 keywords:
-  - "for"
-  - ".txt"
+  - for
+  - .txt
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}fin de la contrapartida

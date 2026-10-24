@@ -1,27 +1,28 @@
 id: fundamentos-l20
 track: fundamentos
 index: 20
-title: "La guía invertida"
+title: La guía invertida
 subtitle: "tac + rev: leer al revés"
 xp: 30
 difficulty: 2
 brief: >
-  > Un vendedor callejero te entrega su libreta de contactos, pero está
-  > escrita al revés: las líneas van de abajo a arriba y cada línea está
-  > volteada letra a letra. La única línea con :FLAGVEZ: al secundar
-  > (con su contenido también volteado) es la que buscas.
+  > Un vendedor callejero te entrega su libreta de contactos, pero está >
+  escrita al revés: las líneas van de abajo a arriba y cada línea está >
+  volteada letra a letra. La única línea con :FLAGVEZ: al secundar > (con su
+  contenido también volteado) es la que buscas.
 goal: >
-  Muestra la flag del fichero ~/guia.txt tal como se escribió originalmente (deshaz el orden de líneas y el de letras de cada línea).
+  Muestra la flag del fichero ~/guia.txt tal como se escribió originalmente
+  (deshaz el orden de líneas y el de letras de cada línea).
 hints:
-  - "tac imprime las líneas en orden inverso (cat al revés)."
-  - "rev invierte los caracteres de cada línea."
+  - tac imprime las líneas en orden inverso (cat al revés).
+  - rev invierte los caracteres de cada línea.
   - "Encadena ambos: tac fichero | rev — y observa qué línea queda limpia."
 teach: >
   tac es cat con las líneas en orden inverso; rev voltea los caracteres de cada
   línea. Combinados deshacen cualquier "escritura al revés":
-  
+
       tac ~/guia.txt | rev
-  
+
   La línea que contiene el texto de la flag quedará legible en la salida.
 setup: |
   #!/bin/bash
@@ -34,9 +35,17 @@ setup: |
 solution: |
   tac ~/guia.txt | rev
 cheatsheet:
-  - {cmd: "tac", desc: "imprime el fichero con las líneas invertidas"}
-  - {cmd: "rev", desc: "invierte los caracteres de cada línea"}
+  - cmd: tac
+    desc: imprime el fichero con las líneas invertidas
+  - cmd: rev
+    desc: invierte los caracteres de cada línea
 keywords:
-  - "tac"
-  - "rev"
+  - tac
+  - rev
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      señuelo del sótano
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      señuelo del tejado

@@ -5,10 +5,11 @@ title: Caza mayor V — tricaposa
 subtitle: hex → rot13 → base64, EN ESE ORDEN
 xp: 90
 difficulty: 5
-brief: "indomable.dat está cerrado tres veces: primero la codificación a hex, luego rotación +13 de
-  las letras del texto hex… y por encima, base64. Deshacer las capas EN ORDER: base64, rot13, xxd
-  -r."
-goal: Deshaz /home/agent/indomable.dat capas EN ORDEN (base64 -d → tr rot13 → xxd -r) y muéstralo.
+brief: "indomable.dat está cerrado tres veces: primero la codificación a hex,
+  luego rotación +13 de las letras del texto hex… y por encima, base64. Deshacer
+  las capas EN ORDER: base64, rot13, xxd -r."
+goal: Deshaz /home/agent/indomable.dat capas EN ORDEN (base64 -d → tr rot13 →
+  xxd -r) y muéstralo.
 setup: |-
   #!/bin/bash
   set -e
@@ -21,16 +22,17 @@ setup: |-
   echo >> /home/agent/indomable.dat
   chown agent:agent /home/agent/indomable.dat
   chown -R agent:agent /home/agent
-solution: base64 -d /home/agent/indomable.dat | tr 'A-Za-z' 'N-ZA-Mn-za-m' | xxd -r -p | grep -oE
-  'FLAG\{[a-f0-9]+\}'
+solution: base64 -d /home/agent/indomable.dat | tr 'A-Za-z' 'N-ZA-Mn-za-m' | xxd
+  -r -p | grep -oE 'FLAG\{[a-f0-9]+\}'
 hints:
-  - "El orden DE CIERRE es el inverso del de apertura: base64 -d, luego tr rot13, luego xxd -r -p."
-  - "El texto tras las dos primeras capas es UN volcado hex puro (xxd -p): xxd -r -p lo vuelve a
-    bytes."
+  - "El orden DE CIERRE es el inverso del de apertura: base64 -d, luego tr
+    rot13, luego xxd -r -p."
+  - "El texto tras las dos primeras capas es UN volcado hex puro (xxd -p): xxd
+    -r -p lo vuelve a bytes."
   - base64 -d f | tr 'A-Za-z' 'N-ZA-Mn-za-m' | xxd -r -p
-teach: 'Los ofuscadores encadenan transformaciones y el analista las deshace IN VERSO. Aquí el truco
-  es darte cuenta de que el texto "rotado" es hex: 1f 8b…: análisis de primer byte = decidir la
-  próxima capa.'
+teach: 'Los ofuscadores encadenan transformaciones y el analista las deshace IN
+  VERSO. Aquí el truco es darte cuenta de que el texto "rotado" es hex: 1f 8b…:
+  análisis de primer byte = decidir la próxima capa.'
 cheatsheet:
   - cmd: xxd -p f | xxd -r -p
     desc: hex puro ida y vuelta
@@ -42,3 +44,6 @@ keywords:
   - xxd
   - rot13
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

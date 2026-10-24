@@ -5,33 +5,46 @@ subtitle: tr
 xp: 45
 difficulty: 2
 brief: >
-  Un agente paranoico escribió la contraseña separando cada letra con
-  espacios y añadiendo otro tanto de relleno. La buena noticia: el
-  comando tr sabe borrar caracteres como quien barre el suelo.
+  Un agente paranoico escribió la contraseña separando cada letra con espacios y
+  añadiendo otro tanto de relleno. La buena noticia: el comando tr sabe borrar
+  caracteres como quien barre el suelo.
 goal: >
-  En /var/dojo/ofuscado.txt la flag está con espacios entre cada
-  carácter. Convierte a la flag original y muéstrala.
-setup: |
+  En /var/dojo/ofuscado.txt la flag está con espacios entre cada carácter.
+  Convierte a la flag original y muéstrala.
+setup: >
   #!/bin/bash
+
   set -e
+
   mkdir -p /var/dojo
+
   arena-prompt "LVL 05" "Filtrado"
-  echo "$DOJO_FLAG" | tr -dc '[:xdigit:][{}FLAGa-zA-Z]' | fold -w1 | tr '\n' ' ' > /var/dojo/ofuscado.txt
+
+  echo "$DOJO_FLAG" | tr -dc '[:xdigit:][{}FLAGa-zA-Z]' | fold -w1 | tr '\n' ' '
+  > /var/dojo/ofuscado.txt
+
   printf '\n' >> /var/dojo/ofuscado.txt
+
   chown agent:agent /var/dojo/ofuscado.txt
 hints:
   - "tr pasa conjuntos: tr -d elimina un conjunto de caracteres."
-  - "tr -d ' ' borra espacios… casi todo el trabajo."
+  - tr -d ' ' borra espacios… casi todo el trabajo.
 teach: >
-  `tr` traduce/borra conjuntos de un stream: `tr a-z A-Z` capitaliza,
-  `tr -d ' ' ` limpia. Recuerda: tr no acepta ficheros, necesita stdin
-  (pipe o redirección). Ofuscaciones simples como rot13 también son tr.
+  `tr` traduce/borra conjuntos de un stream: `tr a-z A-Z` capitaliza, `tr -d ' '
+  ` limpia. Recuerda: tr no acepta ficheros, necesita stdin (pipe o
+  redirección). Ofuscaciones simples como rot13 también son tr.
 cheatsheet:
-  - {cmd: 'tr conjunto otro', desc: traduce conjuntos de stdin}
-  - {cmd: "tr -d ' '", desc: 'borra espacios'}
-  - {cmd: "cat f | tr 'A-Za-z' 'N-ZA-Mn-za-m'", desc: rot13 móvil}
+  - cmd: tr conjunto otro
+    desc: traduce conjuntos de stdin
+  - cmd: tr -d ' '
+    desc: borra espacios
+  - cmd: cat f | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+    desc: rot13 móvil
 solution: |
   cat /var/dojo/ofuscado.txt | tr -d ' '
-
-keywords: [tr]
+keywords:
+  - tr
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

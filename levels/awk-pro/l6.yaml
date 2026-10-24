@@ -5,7 +5,8 @@ title: Ventana de líneas
 subtitle: awk con doble condición en NR
 xp: 65
 difficulty: 4
-brief: El fichero escenas.log guarda la sección crítica entre las líneas 4 y 6 (inclusiva).
+brief: El fichero escenas.log guarda la sección crítica entre las líneas 4 y 6
+  (inclusiva).
 goal: De escenas.log, imprime SOLAMENTE las líneas 4 a 6 (INCLUIDAS).
 setup: >
   #!/bin/bash
@@ -23,8 +24,8 @@ hints:
   - DOBLE condición con el operador && sobre NR.
   - NR es 1-based.
   - awk 'NR >= 4 && NR <= 6' /home/agent/escenas.log
-teach: Con la doble condición en NR puedes reproducir el «sed -n 4,6p» con awk. Nota que
-  el RANGO INCLUIVE ambos extremos (>= y <=).
+teach: Con la doble condición en NR puedes reproducir el «sed -n 4,6p» con awk.
+  Nota que el RANGO INCLUIVE ambos extremos (>= y <=).
 cheatsheet:
   - cmd: awk 'NR >= 4 && NR <= 6' f
     desc: líneas 4 a 6
@@ -35,3 +36,9 @@ keywords:
   - NR
   - rango
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      línea 4: humo
+      línea-5: el dato FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      línea 6: humo

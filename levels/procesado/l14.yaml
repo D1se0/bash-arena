@@ -5,10 +5,10 @@ title: Informe censurado
 subtitle: sed de sustitución
 xp: 45
 difficulty: 3
-brief: El censor pasó por informe.txt y tachó lo que importa con la palabra REDACTADO justo delante.
-  Quita los tachones.
-goal: Elimina todas las ocurrencias de REDACTADO (con sus espacios) de /home/agent/informe.txt y
-  extrae la marca que reaparece.
+brief: El censor pasó por informe.txt y tachó lo que importa con la palabra
+  REDACTADO justo delante. Quita los tachones.
+goal: Elimina todas las ocurrencias de REDACTADO (con sus espacios) de
+  /home/agent/informe.txt y extrae la marca que reaparece.
 setup: |-
   #!/bin/bash
   set -e
@@ -26,8 +26,9 @@ hints:
   - sed s/viejo/nuevo/ cambia la 1ª ocurrencia por línea; /g lo hace en todas.
   - Cambia REDACTADO+espacio por vacío, luego grep -oE con la forma de la marca.
   - sed 's/REDACTADO //g' f | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: "sed s/viejo/nuevo/g es el reemplazo de texto por excelencia. Para informes censurados,
-  quitar la máscara revela lo que quedó detrás: el censor borra palabras, no datos."
+teach: "sed s/viejo/nuevo/g es el reemplazo de texto por excelencia. Para
+  informes censurados, quitar la máscara revela lo que quedó detrás: el censor
+  borra palabras, no datos."
 cheatsheet:
   - cmd: sed 's/viejo/nuevo/g' f
     desc: reemplaza todas
@@ -38,3 +39,6 @@ keywords:
   - censura
   - sustitucion
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

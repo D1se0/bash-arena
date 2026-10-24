@@ -5,7 +5,8 @@ title: Línea 111
 subtitle: recortar líneas sin editor
 xp: 30
 difficulty: 2
-brief: "La agenda tiene 120 compromisos. La marca quedó caída en la línea 111: ni antes, ni después."
+brief: "La agenda tiene 120 compromisos. La marca quedó caída en la línea 111:
+  ni antes, ni después."
 goal: Imprime exactamente la línea 111 de /home/agent/agenda.txt.
 setup: |-
   #!/bin/bash
@@ -21,10 +22,11 @@ setup: |-
 solution: head -n 111 /home/agent/agenda.txt | tail -n 1
 hints:
   - wc -l /home/agent/agenda.txt confirma el tamaño del fichero.
-  - Puedes cortar por el principio con head y por la cola con tail; encadenados recortan una ventana.
+  - Puedes cortar por el principio con head y por la cola con tail; encadenados
+    recortan una ventana.
   - head -n 111 agenda.txt | tail -n 1
-teach: "head y tail encadenados recortan cualquier ventana de líneas: primeras N y últimas M. wc -l
-  y nl te ayudan a localizar la que buscas."
+teach: "head y tail encadenados recortan cualquier ventana de líneas: primeras N
+  y últimas M. wc -l y nl te ayudan a localizar la que buscas."
 cheatsheet:
   - cmd: head -n N f | tail -n 1
     desc: línea N exacta
@@ -36,3 +38,6 @@ keywords:
   - wc
   - líneas
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "linea 111 hallazgo clave: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

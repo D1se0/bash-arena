@@ -1,29 +1,32 @@
 id: boss-l20
 track: boss
 index: 20
-title: "La rotación doble"
+title: La rotación doble
 subtitle: "rev + tr: rot13 al rescate"
 xp: 90
 difficulty: 5
 brief: >
-  > La chapa del boss está en ~/enigma.txt pero se ROizó con dos capas:
-  > primero rot13 (letras desplazadas 13) y luego invertida letra a letra.
-  > Solo se puede deshacer en orden inverso a como se construyó.
+  > La chapa del boss está en ~/enigma.txt pero se ROizó con dos capas: >
+  primero rot13 (letras desplazadas 13) y luego invertida letra a letra. > Solo
+  se puede deshacer en orden inverso a como se construyó.
 goal: >
-  Deshace la doble transformación de ~/enigma.txt (primero rev, luego un tr de rot13) para imprimir la flag. Recordar: si se aplicó "rev | tr", para deshacer se aplica "tr | rev".
+  Deshace la doble transformación de ~/enigma.txt (primero rev, luego un tr de
+  rot13) para imprimir la flag. Recordar: si se aplicó "rev | tr", para deshacer
+  se aplica "tr | rev".
 hints:
-  - "tr 'A-Za-z' 'N-ZA-Mn-za-m' es el rot13 (desplaza 13 posiciones y da la vuelta al abecedario)."
+  - tr 'A-Za-z' 'N-ZA-Mn-za-m' es el rot13 (desplaza 13 posiciones y da la
+    vuelta al abecedario).
   - "Para deshacer: primero VOLTEA LOS CARACTERES con rev, después el rot13 tr."
-  - "rev fichero | tr A-Za-z N-ZA-Mn-za-m"
+  - rev fichero | tr A-Za-z N-ZA-Mn-za-m
 teach: >
   La transformación original fue: rot13 → luego invertir. Para deshacer se
   desmonta al revés (como los calcetines):
-  
+
       rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-  
+
   rev arregla el orden de letras; tr re-desplaza el alfabeto 13 posiciones.
-  rot13 es auto-inverso (rot13 de rot13 es identidad): el mismo tr sirve
-  para cifrar y descifrar.
+  rot13 es auto-inverso (rot13 de rot13 es identidad): el mismo tr sirve para
+  cifrar y descifrar.
 setup: |
   #!/bin/bash
   set -e
@@ -34,9 +37,14 @@ setup: |
 solution: |
   rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 cheatsheet:
-  - {cmd: "tr 'A-Za-z' 'N-ZA-Mn-za-m'", desc: "rot13: cifra y descifra (es auto-inverso)"}
-  - {cmd: "rev", desc: "invierte los caracteres"}
+  - cmd: tr 'A-Za-z' 'N-ZA-Mn-za-m'
+    desc: "rot13: cifra y descifra (es auto-inverso)"
+  - cmd: rev
+    desc: invierte los caracteres
 keywords:
-  - "tr"
-  - "rev"
+  - tr
+  - rev
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

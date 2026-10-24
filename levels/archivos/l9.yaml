@@ -5,10 +5,10 @@ title: Diferencias validadas
 subtitle: "diff: comparar dos versiones"
 xp: 40
 difficulty: 2
-brief: nuevo.txt es la revisión del viejo.txt; además de corregir la broma que venía arrastrando, la
-  revisión incluye una línea marcada.
-goal: Muestra las DIFERENCIAS entre /home/agent/viejo.txt y /home/agent/nuevo.txt y extrae de allí
-  la clase con la marca (empieza con >).
+brief: nuevo.txt es la revisión del viejo.txt; además de corregir la broma que
+  venía arrastrando, la revisión incluye una línea marcada.
+goal: Muestra las DIFERENCIAS entre /home/agent/viejo.txt y
+  /home/agent/nuevo.txt y extrae de allí la clase con la marca (empieza con >).
 setup: >-
   #!/bin/bash
 
@@ -18,8 +18,8 @@ setup: >-
 
   printf 'linea uno\nlinea dos con typo\nlinea tres\n' > /home/agent/viejo.txt
 
-  printf 'linea uno\nlinea dos corregida\nlinea tres\nlinea nueva tabulada: $DOJO_FLAG\n' >
-  /home/agent/nuevo.txt
+  printf 'linea uno\nlinea dos corregida\nlinea tres\nlinea nueva tabulada:
+  $DOJO_FLAG\n' > /home/agent/nuevo.txt
 
   chown agent:agent /home/agent/viejo.txt /home/agent/nuevo.txt
 solution: diff /home/agent/viejo.txt /home/agent/nuevo.txt | cat
@@ -27,8 +27,9 @@ hints:
   - diff A B lista las diferencias con prefijos < y >.
   - Las líneas que SOLO están en el segundo fichero van con >.
   - diff viejo.txt nuevo.txt
-teach: "diff es la base de wits parecidas a `patch`. Recuerda < = fichero A, > = fichero B. La
-  salida está a la orden de wc, sort y filtered: el beam de comparaciones."
+teach: "diff es la base de wits parecidas a `patch`. Recuerda < = fichero A, > =
+  fichero B. La salida está a la orden de wc, sort y filtered: el beam de
+  comparaciones."
 cheatsheet:
   - cmd: diff a b
     desc: compara línea a línea
@@ -39,3 +40,12 @@ keywords:
   - comparar
   - versiones
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      2c2
+      < linea dos con typo
+      ---
+      > linea dos corregida
+      3a4
+      > linea nueva tabulada: FLAG{d3b09a4f7c2e1b8d6041a5f3}

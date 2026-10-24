@@ -5,8 +5,8 @@ title: El inspector de columnas
 subtitle: "awk: campos $1, $2…"
 xp: 25
 difficulty: 1
-brief: En cargos.txt cada línea es «alias objeto peso». Un envío viene marcado con la
-  marca como objeto y su alias es vista.
+brief: En cargos.txt cada línea es «alias objeto peso». Un envío viene marcado
+  con la marca como objeto y su alias es vista.
 goal: Imprime de cargos.txt el SEGUNDO campo de la línea cuyo primer campo es vista.
 setup: |
   #!/bin/bash
@@ -21,13 +21,13 @@ setup: |
   chown agent:agent /home/agent/cargos.txt
 solution: awk '$1 == "vista" {print $2}' /home/agent/cargos.txt
 hints:
-  - "awk trabaja con la estructura «patrón {acción}»: el patrón selecciona líneas, la
-    acción imprime."
+  - "awk trabaja con la estructura «patrón {acción}»: el patrón selecciona
+    líneas, la acción imprime."
   - "awk parte cada línea en campos: $1, $2, $3… y $2 es el segundo."
   - awk '$1 == "vista" {print $2}' /home/agent/cargos.txt
-teach: "awk parte cada línea en campos separados por espacios: $1 primero, $2 segundo y
-  $NF último. La estructura patrón {acción} es el corazón de awk: filtro y acción en una
-  sola línea."
+teach: "awk parte cada línea en campos separados por espacios: $1 primero, $2
+  segundo y $NF último. La estructura patrón {acción} es el corazón de awk:
+  filtro y acción en una sola línea."
 cheatsheet:
   - cmd: awk '{print $2}' f
     desc: segundo campo de cada línea
@@ -37,3 +37,6 @@ keywords:
   - awk
   - campos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -5,9 +5,10 @@ title: Variable heredada
 subtitle: source y variables de entorno
 xp: 35
 difficulty: 2
-brief: Un fichero de entorno guarda la ruta de la bóveda en la variable DOJO_PATH. Cárgalo en tu
-  shell y usa la variable.
-goal: Carga /home/agent/.login_env y usa $DOJO_PATH para mostrar el contenido de la bóveda.
+brief: Un fichero de entorno guarda la ruta de la bóveda en la variable
+  DOJO_PATH. Cárgalo en tu shell y usa la variable.
+goal: Carga /home/agent/.login_env y usa $DOJO_PATH para mostrar el contenido de
+  la bóveda.
 setup: |-
   #!/bin/bash
   set -e
@@ -19,11 +20,13 @@ setup: |-
   chown -R agent:agent /home/agent
 solution: source /home/agent/.login_env; cat "$DOJO_PATH"
 hints:
-  - "source (o el punto .) ejecuta un fichero en TU shell actual: las variables quedan cargadas."
+  - "source (o el punto .) ejecuta un fichero en TU shell actual: las variables
+    quedan cargadas."
   - 'Después, la ruta vive en $DOJO_PATH: cat "$DOJO_PATH".'
   - source /home/agent/.login_env; cat "$DOJO_PATH"
-teach: 'source NO abre un subshell: las variables quedan en tu sesión. Es la diferencia entre
-  "ejecutar" (fork: variables efímeras) y "cargar" (dot). Clásico de .bashrc y .env.'
+teach: 'source NO abre un subshell: las variables quedan en tu sesión. Es la
+  diferencia entre "ejecutar" (fork: variables efímeras) y "cargar" (dot).
+  Clásico de .bashrc y .env.'
 cheatsheet:
   - cmd: source f
     desc: carga variables en el shell
@@ -34,3 +37,6 @@ keywords:
   - env
   - variables
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "clave de la bóveda: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

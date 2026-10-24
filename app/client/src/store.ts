@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 
 /** Protocolo (mirror del server, src/ws/protocol.ts). */
+export interface LevelExample {
+  title: string;
+  content: string;
+}
+
 export interface PublicLevel {
   id: string;
   track: string;
@@ -15,6 +20,8 @@ export interface PublicLevel {
   hintsCount: number;
   keywords: string[];
   teach: string | null;
+  /** ejemplos visuales de la salida esperada (sin revelar el comando) */
+  examples: LevelExample[];
   solved: boolean;
 }
 

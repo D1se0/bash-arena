@@ -5,8 +5,10 @@ title: Wildcards en la fábrica
 subtitle: "globbing: * y ? sobre rutas"
 xp: 35
 difficulty: 2
-brief: En exports/ hay años y meses mezclados. Solo el CSV de octubre de 2024 lleva la clave dentro.
-goal: Muestra el contenido del fichero llamado data_2024_10.csv dentro de /home/agent/exports.
+brief: En exports/ hay años y meses mezclados. Solo el CSV de octubre de 2024
+  lleva la clave dentro.
+goal: Muestra el contenido del fichero llamado data_2024_10.csv dentro de
+  /home/agent/exports.
 setup: |-
   #!/bin/bash
   set -e
@@ -20,10 +22,12 @@ setup: |-
 solution: cat /home/agent/exports/data_2024_10.csv
 hints:
   - Con ls /home/agent/exports comparas los nombres letra a letra.
-  - "Los comodines ahorran tecleado: * casa cualquier texto, ? casa un solo carácter."
+  - "Los comodines ahorran tecleado: * casa cualquier texto, ? casa un solo
+    carácter."
   - cat /home/agent/exports/data_*_10.csv (y fija la mirada en la fila de 2024)
-teach: El globbing (* y ?) lo expande la shell ANTES de ejecutar el comando; sirve para filtrar por
-  nombre sin abrir ficheros. Verifica siempre con ls qué va a casar.
+teach: El globbing (* y ?) lo expande la shell ANTES de ejecutar el comando;
+  sirve para filtrar por nombre sin abrir ficheros. Verifica siempre con ls qué
+  va a casar.
 cheatsheet:
   - cmd: ls exports/data*
     desc: previsualiza qué expande el *
@@ -35,3 +39,6 @@ keywords:
   - ls
   - cat
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "clave del trimestre: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

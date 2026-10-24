@@ -5,10 +5,10 @@ title: Acta de embudo
 subtitle: filtering combinado grep -vE
 xp: 50
 difficulty: 4
-brief: La marca está en mix.log, en una línea SIN palabras trampa (falso, test, spacer) y con la
-  forma de la marca. Doble trébol.
-goal: De /home/agent/mix.log quita las líneas que contengan "falso|test|spacer" y de resto extrae la
-  marca que encaje la regex.
+brief: La marca está en mix.log, en una línea SIN palabras trampa (falso, test,
+  spacer) y con la forma de la marca. Doble trébol.
+goal: De /home/agent/mix.log quita las líneas que contengan "falso|test|spacer"
+  y de resto extrae la marca que encaje la regex.
 setup: |-
   #!/bin/bash
   set -e
@@ -22,13 +22,16 @@ setup: |-
   } > /home/agent/mix.log
   chown agent:agent /home/agent/mix.log
   chown -R agent:agent /home/agent
-solution: grep -viE 'falso|test|spacer' /home/agent/mix.log | grep -oE 'FLAG\{[a-f0-9]{24}\}'
+solution: grep -viE 'falso|test|spacer' /home/agent/mix.log | grep -oE
+  'FLAG\{[a-f0-9]{24}\}'
 hints:
-  - grep -v es de "todo lo que NO encaje"; añade -i para cualquier casa (falso, FALSO, False).
+  - grep -v es de "todo lo que NO encaje"; añade -i para cualquier casa (falso,
+    FALSO, False).
   - La excluta con 24 hex exactos discrimeña los señuelos.
   - grep -vE 'falso|test|spacer' f | grep -oE 'FLAG\{[a-f0-9]{24}\}'
-teach: "La inversión de log (exclusiones) es el 90% del filtrado auditable: ruido de FALLOS, ARGS DE
-  TEST, líneas de train. -v + -E es el dúo rápido en vez del cut — de esos todos sons"
+teach: "La inversión de log (exclusiones) es el 90% del filtrado auditable:
+  ruido de FALLOS, ARGS DE TEST, líneas de train. -v + -E es el dúo rápido en
+  vez del cut — de esos todos sons"
 cheatsheet:
   - cmd: grep -vE 'ruido|ruido2' f
     desc: exclusión múltiple
@@ -39,3 +42,6 @@ keywords:
   - excluir
   - ruido
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

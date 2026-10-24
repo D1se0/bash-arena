@@ -5,9 +5,10 @@ title: Anclado por el domingo
 subtitle: "grep -E con ^: el principio de línea"
 xp: 65
 difficulty: 4
-brief: "El diario de la semana mezcla arranques de línea con menciones a mitad de texto:
-  solo las que ARRANCAN son válidas."
-goal: De chicas.log muestra las líneas que EMPIEZAN por la palabra domingo (y solo ellas).
+brief: "El diario de la semana mezcla arranques de línea con menciones a mitad
+  de texto: solo las que ARRANCAN son válidas."
+goal: De chicas.log muestra las líneas que EMPIEZAN por la palabra domingo (y
+  solo ellas).
 setup: |
   #!/bin/bash
   set -e
@@ -24,11 +25,12 @@ setup: |
   chown agent:agent /home/agent/chicas.log
 solution: grep -E '^domingo ' /home/agent/chicas.log
 hints:
-  - "^ ancla al INICIO DE LÍNEA: ^domingo casa solo si la línea empieza por esa palabra."
+  - "^ ancla al INICIO DE LÍNEA: ^domingo casa solo si la línea empieza por esa
+    palabra."
   - El espacio tras domingo evita que casa el domingode otro texto siguiente.
   - grep -E '^domingo ' /home/agent/chicas.log
-teach: Las ANCLAS en -E (^ y $) fijan el punto de inicio/fin de línea. En registros con
-  timestamps, ^ es la base del filtrado por hora.
+teach: Las ANCLAS en -E (^ y $) fijan el punto de inicio/fin de línea. En
+  registros con timestamps, ^ es la base del filtrado por hora.
 cheatsheet:
   - cmd: grep -E '^ERROR' f
     desc: líneas que empiezan por ERROR
@@ -40,3 +42,9 @@ keywords:
   - ancla
   - inicio
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      domingo desayuno tardío
+      domingo a mitad de texto no vale
+      domingo correspondo real: FLAG{d3b09a4f7c2e1b8d6041a5f3}

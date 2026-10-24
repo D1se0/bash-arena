@@ -5,8 +5,10 @@ title: El zip del corredor
 subtitle: "unzip -p: mostrar ficheros del zip"
 xp: 35
 difficulty: 2
-brief: paquete.zip firma el paso final del corredor; dentro trae una nota.txt que interesa al equipo.
-goal: Muestra el contenido de nota.txt DENTRO de /home/agent/paquete.zip sin extraerlo al disco.
+brief: paquete.zip firma el paso final del corredor; dentro trae una nota.txt
+  que interesa al equipo.
+goal: Muestra el contenido de nota.txt DENTRO de /home/agent/paquete.zip sin
+  extraerlo al disco.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +27,8 @@ hints:
   - "unzip sin opciones extraería todo en el cwd: no es lo que se pide."
   - unzip -p FICHERO miembro escribe ese miembro en stdout.
   - unzip -p paquete.zip nota.txt
-teach: "unzip -p desplaza contenido al stdout sin escribir ficheros: el zcat del mundo zip. Lista
-  con -l antes para saber qué hay dentro del paquete."
+teach: "unzip -p desplaza contenido al stdout sin escribir ficheros: el zcat del
+  mundo zip. Lista con -l antes para saber qué hay dentro del paquete."
 cheatsheet:
   - cmd: unzip -l f.zip
     desc: lista de contenido
@@ -37,3 +39,6 @@ keywords:
   - unzip
   - compresión
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "nota del corredor: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

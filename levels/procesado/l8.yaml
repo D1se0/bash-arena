@@ -5,9 +5,10 @@ title: Captura de grupo
 subtitle: sed -n s/…/\\1/p
 xp: 45
 difficulty: 3
-brief: datos.txt mezcla frases normales con pares clave=VALOR. El válido es único y está en mitad de
-  una línea cualquiera.
-goal: Imprime únicamente el valor del par que empieza por clave= (sin el prefijo), solo de la marca real.
+brief: datos.txt mezcla frases normales con pares clave=VALOR. El válido es
+  único y está en mitad de una línea cualquiera.
+goal: Imprime únicamente el valor del par que empieza por clave= (sin el
+  prefijo), solo de la marca real.
 setup: |-
   #!/bin/bash
   set -e
@@ -25,8 +26,9 @@ hints:
   - grep -o imprime solo la parte casada, no la línea entera.
   - El patrón clave=FLAG con la clase [^}]* acota la marca de principio a fin.
   - grep -oE 'clave=FLAG\{[^}]*\}' datos.txt | grep -oE 'FLAG\{[^}]*\}'
-teach: "La extracción en dos pasos (casa el CONTEXTO, luego casa solo el TROZO) es la alternativa
-  sin sed a la captura de grupos: primero delimita, luego purifica. práctica forense de cada día."
+teach: "La extracción en dos pasos (casa el CONTEXTO, luego casa solo el TROZO)
+  es la alternativa sin sed a la captura de grupos: primero delimita, luego
+  purifica. práctica forense de cada día."
 cheatsheet:
   - cmd: grep -oE 'k=v' f
     desc: extrae pares campo=valor
@@ -37,3 +39,6 @@ keywords:
   - captura
   - par clave
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

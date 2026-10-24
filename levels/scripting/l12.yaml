@@ -5,10 +5,10 @@ title: La caja según el estado
 subtitle: case + fichero de estado
 xp: 50
 difficulty: 4
-brief: estado.txt indica el MODO activo. caja.sh sabe contestar con la rama adecuada… si le pasas el
-  modo correcto como argumento.
-goal: Lee /home/agent/estado.txt e invoca /home/agent/caja.sh con ese modo. Caja.sh imprimirá la
-  ficha del modo correcto (una de ellas lleva la marca).
+brief: estado.txt indica el MODO activo. caja.sh sabe contestar con la rama
+  adecuada… si le pasas el modo correcto como argumento.
+goal: Lee /home/agent/estado.txt e invoca /home/agent/caja.sh con ese modo.
+  Caja.sh imprimirá la ficha del modo correcto (una de ellas lleva la marca).
 setup: |-
   #!/bin/bash
   set -e
@@ -30,9 +30,9 @@ hints:
   - "Primero lee el estado: cat estado.txt."
   - Luego invoca caja.sh con ese valor como $1.
   - bash caja.sh "$(cat estado.txt)"
-teach: "Combinar $(…) dentro de los argumentos es la forma de pasarle a un script dinámicas reales:
-  la salida de un comando (estado) alimenta el siguiente (caja). así viven los scripts de un
-  administrador."
+teach: "Combinar $(…) dentro de los argumentos es la forma de pasarle a un
+  script dinámicas reales: la salida de un comando (estado) alimenta el
+  siguiente (caja). así viven los scripts de un administrador."
 cheatsheet:
   - cmd: script "$(cat f)"
     desc: argumento leído de fichero
@@ -43,3 +43,6 @@ keywords:
   - estado
   - sustitución
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "ficha fantasma: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

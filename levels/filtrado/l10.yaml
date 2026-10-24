@@ -5,10 +5,10 @@ title: El eco de la palabra
 subtitle: rev + paste para detectar espejos
 xp: 45
 difficulty: 3
-brief: "En frases.txt una línea es un espejo perfecto (palíndromo). La marca no está EN el espejo:
-  está en la línea siguiente."
-goal: Encuentra la línea palíndromo de /home/agent/frases.txt e imprime la línea CONSECUTIVA (la que
-  va después).
+brief: "En frases.txt una línea es un espejo perfecto (palíndromo). La marca no
+  está EN el espejo: está en la línea siguiente."
+goal: Encuentra la línea palíndromo de /home/agent/frases.txt e imprime la línea
+  CONSECUTIVA (la que va después).
 setup: |-
   #!/bin/bash
   set -e
@@ -23,17 +23,19 @@ setup: |-
   echo "marca espejada: $DOJO_FLAG" >> /home/agent/frases.txt
   echo "otro relleno final" >> /home/agent/frases.txt
   chown agent:agent /home/agent/frases.txt
-solution: sed -n "$(rev /home/agent/frases.txt | paste /home/agent/frases.txt - | awk -F'\t'
-  '$1==$2{print NR+1; exit}')p" /home/agent/frases.txt
+solution: sed -n "$(rev /home/agent/frases.txt | paste /home/agent/frases.txt -
+  | awk -F'\t' '$1==$2{print NR+1; exit}')p" /home/agent/frases.txt
 hints:
-  - rev le da la vuelta a cada línea; paste une dos ficheros columna a columna (el guión es stdin).
-  - "Compara la original con su invertida: solo el palíndromo coincide. awk marca el número de esa
-    línea."
-  - n linde=$(rev frases.txt | paste frases.txt - | awk -F"\t" "$1==$2{print NR; exit}"); sed -n
-    "$((n+1))p" frases.txt
-teach: "rev invierte el texto y paste fusiona columnas (el símbolo - representa stdin). La
-  comparación por campos de awk localiza el espejo; una vez localizado, el sigiente renglón esconde
-  el premio: primero ENCOTRRA, luego MUEVE."
+  - rev le da la vuelta a cada línea; paste une dos ficheros columna a columna
+    (el guión es stdin).
+  - "Compara la original con su invertida: solo el palíndromo coincide. awk
+    marca el número de esa línea."
+  - n linde=$(rev frases.txt | paste frases.txt - | awk -F"\t" "$1==$2{print NR;
+    exit}"); sed -n "$((n+1))p" frases.txt
+teach: "rev invierte el texto y paste fusiona columnas (el símbolo - representa
+  stdin). La comparación por campos de awk localiza el espejo; una vez
+  localizado, el sigiente renglón esconde el premio: primero ENCOTRRA, luego
+  MUEVE."
 cheatsheet:
   - cmd: rev f
     desc: invierte cada línea
@@ -45,3 +47,6 @@ keywords:
   - palindromo
   - awk
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "marca espejada: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

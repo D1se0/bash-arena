@@ -5,10 +5,10 @@ title: Conf en el entorno
 subtitle: "source: cargar un fichero de variables"
 xp: 35
 difficulty: 2
-brief: config.env define la ruta del depósito con una variable. Las variables del shell NO están
-  cargadas por defecto.
-goal: Carga /home/agent/config.env en el shell y con la variable que define úsala para mostrar
-  /home/agent/buzon/<DEPOSITO>/clave.txt
+brief: config.env define la ruta del depósito con una variable. Las variables
+  del shell NO están cargadas por defecto.
+goal: Carga /home/agent/config.env en el shell y con la variable que define
+  úsala para mostrar /home/agent/buzon/<DEPOSITO>/clave.txt
 setup: |-
   #!/bin/bash
   set -e
@@ -21,10 +21,12 @@ setup: |-
 solution: . /home/agent/config.env && cat /home/agent/buzon/$DEPOSITO/clave.txt
 hints:
   - El fichero config.env tiene líneas variable=valor.
-  - "source (o .) ejecuta un fichero EN el shell actual: las variables quedan cargadas."
+  - "source (o .) ejecuta un fichero EN el shell actual: las variables quedan
+    cargadas."
   - . config.env && cat buzon/$DEPOSITO/clave.txt
-teach: "source (o el punto) ejecuta un script SIN crear subshell: las variables que define quedan en
-  TU shell. Es el mecanismo con el que TODO el mundo carga configuraciones (.bashrc incluido)."
+teach: "source (o el punto) ejecuta un script SIN crear subshell: las variables
+  que define quedan en TU shell. Es el mecanismo con el que TODO el mundo carga
+  configuraciones (.bashrc incluido)."
 cheatsheet:
   - cmd: . fichero.env
     desc: carga variables en el shell
@@ -35,3 +37,6 @@ keywords:
   - variables
   - env
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "buzón confirmado: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

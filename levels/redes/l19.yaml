@@ -1,43 +1,60 @@
 id: redes-l19
 track: redes
 index: 19
-title: "Estación 512"
+title: Estación 512
 subtitle: "números de puerto: aritmética + ss"
 xp: 60
 difficulty: 4
 brief: >
-  > El dojo despliega mini-servidores locales en puertos altos. La regla
-  > de la casa: solo el canal de DATOS (ESTADO "UNIQUE") merece leerse, y
-  > su puerto es el PRIMERO que ss reporte COMO ESCUCHA por encima de 5000.
+  > El dojo despliega mini-servidores locales en puertos altos. La regla > de la
+  casa: solo el canal de DATOS (ESTADO "UNIQUE") merece leerse, y > su puerto es
+  el PRIMERO que ss reporte COMO ESCUCHA por encima de 5000.
 goal: >
-  Usa ss -tln para listar los puertos locales en escucha, identifica el primero cuya columna "Local Address:Port" tenga un puerto > 5000 y haz una petición con curl a http://127.0.0.1:PUERTO/tarjeta.txt para incautar la flag.
+  Usa ss -tln para listar los puertos locales en escucha, identifica el primero
+  cuya columna "Local Address:Port" tenga un puerto > 5000 y haz una petición
+  con curl a http://127.0.0.1:PUERTO/tarjeta.txt para incautar la flag.
 hints:
-  - "ss -tln lista los sockets TCP en escucha (listening)."
-  - "la columna \"Local Address:Port\" muestra el puerto, ej. 127.0.0.1:5127."
-  - "curl -s http://127.0.0.1:PUERTO/tarjeta.txt"
+  - ss -tln lista los sockets TCP en escucha (listening).
+  - la columna "Local Address:Port" muestra el puerto, ej. 127.0.0.1:5127.
+  - curl -s http://127.0.0.1:PUERTO/tarjeta.txt
 teach: >
   ss -tln lista los puertos en escucha del host. Identifica el puerto "anormal"
   (> 5000) en la columna Local Address:Port y consulta el pequeño servidor:
-  
+
       ss -tln
       curl -s http://127.0.0.1:5127/tarjeta.txt
-  
+
   (sustituye 5127 por el puerto que hayas visto en tu ss).
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 19" "Redes"
+
   mkdir -p /srv/estacion
+
   printf 'FLAGVEZ=%s\n' "$DOJO_FLAG" > /srv/estacion/tarjeta.txt
+
   printf 'canal espejo: nada que ver\n' > /srv/estacion/.info
-  (setsid python3 -m http.server 5127 --directory /srv/estacion --bind 127.0.0.1 &)
-  for i in 1 2 3 4 5 6 7 8 9 10; do ss -tln | grep -q ':5127' && break; sleep 0.3; done
-solution: |
-  ss -tln | grep -oE '127\.0\.0\.1:[0-9]+' | awk -F: '$2>5000{print $2}' | head -n 1 | xargs -I{} curl -s http://127.0.0.1:{}/tarjeta.txt
+
+  (setsid python3 -m http.server 5127 --directory /srv/estacion --bind 127.0.0.1
+  &)
+
+  for i in 1 2 3 4 5 6 7 8 9 10; do ss -tln | grep -q ':5127' && break; sleep
+  0.3; done
+solution: >
+  ss -tln | grep -oE '127\.0\.0\.1:[0-9]+' | awk -F: '$2>5000{print $2}' | head
+  -n 1 | xargs -I{} curl -s http://127.0.0.1:{}/tarjeta.txt
 cheatsheet:
-  - {cmd: "ss -tln", desc: "lista puertos TCP en escucha"}
-  - {cmd: "curl -s URL", desc: "petición HTTP silenciosa a un servidor local"}
+  - cmd: ss -tln
+    desc: lista puertos TCP en escucha
+  - cmd: curl -s URL
+    desc: petición HTTP silenciosa a un servidor local
 keywords:
-  - "ss"
-  - "curl"
+  - ss
+  - curl
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAGVEZ=FLAG{d3b09a4f7c2e1b8d6041a5f3}

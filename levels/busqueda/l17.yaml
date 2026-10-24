@@ -5,10 +5,10 @@ title: Después del aviso
 subtitle: "grep -A: contexto tras la línea"
 xp: 40
 difficulty: 3
-brief: 'enlace.txt tiene una marca escondida justo tras el aviso "-AVERIA: cobre-7-" y dos líneas
-  más abajo. El contexto es el selectret.'
-goal: 'Extrae de /home/agent/enlace.txt la marca que está a 2 líneas de distancia ABAJO del aviso
-  "AVERIA: cobre-7".'
+brief: 'enlace.txt tiene una marca escondida justo tras el aviso "-AVERIA:
+  cobre-7-" y dos líneas más abajo. El contexto es el selectret.'
+goal: 'Extrae de /home/agent/enlace.txt la marca que está a 2 líneas de
+  distancia ABAJO del aviso "AVERIA: cobre-7".'
 setup: |-
   #!/bin/bash
   set -e
@@ -22,14 +22,15 @@ setup: |-
   } > /home/agent/enlace.txt
   chown agent:agent /home/agent/enlace.txt
   chown -R agent:agent /home/agent
-solution: "grep -A2 'AVERIA: cobre-7' /home/agent/enlace.txt | grep -oE 'FLAG\\{[a-f0-9]+\\}'"
+solution: "grep -A2 'AVERIA: cobre-7' /home/agent/enlace.txt | grep -oE
+  'FLAG\\{[a-f0-9]+\\}'"
 hints:
-  - grep -A2 muestra las 2 líneas siguientes (After); -B son las previas y -C el contexto por ambas
-    partes.
+  - grep -A2 muestra las 2 líneas siguientes (After); -B son las previas y -C el
+    contexto por ambas partes.
   - A la salida puedes re-grepear la forma de la marca para limpiar el aviso.
   - grep -A2 'AVERIA' f | grep -oE 'FLAG\{[a-f0-9]+\}'
-teach: 'Contexto (-A/-B/-C) sustituye "leerte el log entero": los sistemas de alerta te llevan a la
-  línea exacta y -A/B te dáan el resto gratis.'
+teach: 'Contexto (-A/-B/-C) sustituye "leerte el log entero": los sistemas de
+  alerta te llevan a la línea exacta y -A/B te dáan el resto gratis.'
 cheatsheet:
   - cmd: grep -A2 p f
     desc: 2 línas después
@@ -40,3 +41,6 @@ keywords:
   - contexto
   - A
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

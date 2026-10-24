@@ -5,9 +5,10 @@ title: La línea número…
 subtitle: "grep -n: numerar resultados"
 xp: 35
 difficulty: 2
-brief: Para reportar el incidente al rango superior necesitas saber en QUÉ línea del
-  registro aterrizó la anomalía.
-goal: "Imprime la línea de la anomalía con su número de línea (formato nº: contenido)."
+brief: Para reportar el incidente al rango superior necesitas saber en QUÉ línea
+  del registro aterrizó la anomalía.
+goal: "Imprime la línea de la anomalía con su número de línea (formato nº:
+  contenido)."
 setup: |
   #!/bin/bash
   set -e
@@ -25,8 +26,8 @@ hints:
   - −n antepone el número de línea a cada coincidencia.
   - La palabra anomalía (con acento) aparece solo en la línea 12.
   - grep -n 'anomalía' /home/agent/turnos.log
-teach: "grep -n numeriza las coincidencias: imprescindible para decir «línea 12» al
-  operador de guardia. Se combina con las demás opciones: -in, -rn, -on…"
+teach: "grep -n numeriza las coincidencias: imprescindible para decir «línea 12»
+  al operador de guardia. Se combina con las demás opciones: -in, -rn, -on…"
 cheatsheet:
   - cmd: grep -n patrón f
     desc: con número de línea
@@ -37,3 +38,6 @@ keywords:
   - -n
   - numerar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 12:2026-10-22 08:12 anomalía FLAG{d3b09a4f7c2e1b8d6041a5f3}

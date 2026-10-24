@@ -5,27 +5,39 @@ title: Sospechosos de root
 subtitle: find -user (y su negación)
 xp: 40
 difficulty: 3
-brief: En vault/ casi todo es del agente, pero alguien dejó objetos propiedad de root. El
-  propietario delata el escondite.
-goal: Hallar los ficheros de /home/agent/vault que NO pertenecen a agent y mostrar su contenido.
-setup: |-
+brief: En vault/ casi todo es del agente, pero alguien dejó objetos propiedad de
+  root. El propietario delata el escondite.
+goal: Hallar los ficheros de /home/agent/vault que NO pertenecen a agent y
+  mostrar su contenido.
+setup: >-
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 07" "Búsqueda"
+
   mkdir -p /home/agent/vault
+
   echo "nota propia del agente" > /home/agent/vault/mi-nota.txt
+
   echo "etiqueta cambiada" > /home/agent/vault/etiqueta.txt
+
   echo "tesoro de root: $DOJO_FLAG" > /home/agent/vault/.raiz-secreto.txt
+
   chown -R agent:agent /home/agent/vault
-  chown root:root /home/agent/vault/.raiz-secreto.txt /home/agent/vault/etiqueta.txt
+
+  chown root:root /home/agent/vault/.raiz-secreto.txt
+  /home/agent/vault/etiqueta.txt
+
   chmod 644 /home/agent/vault/.raiz-secreto.txt /home/agent/vault/etiqueta.txt
 solution: find /home/agent/vault ! -user agent -type f -exec cat {} \;
 hints:
   - find -user agent lista lo suyo; con ! lo inviertes.
   - -type f limita a ficheros; -exec cat {} \\; imprime cada hallazgo.
   - find vault ! -user agent -type f -exec cat {} \\;
-teach: "find filtra por usuario (-user), tipo, tamaño, tiempo… y ejecuta acciones con -exec. La
-  negación ! invierte cualquier criterio: aquí, porque el testigo es lo que NO es tuyo."
+teach: "find filtra por usuario (-user), tipo, tamaño, tiempo… y ejecuta
+  acciones con -exec. La negación ! invierte cualquier criterio: aquí, porque el
+  testigo es lo que NO es tuyo."
 cheatsheet:
   - cmd: find dir ! -user agent
     desc: ficheros de otros dueños
@@ -37,3 +49,8 @@ keywords:
   - -exec
   - propietario
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      etiqueta cambiada
+      tesoro de root: FLAG{d3b09a4f7c2e1b8d6041a5f3}

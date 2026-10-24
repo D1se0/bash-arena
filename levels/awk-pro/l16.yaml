@@ -6,8 +6,8 @@ subtitle: awk BEGIN { FS = ";" }
 xp: 70
 difficulty: 5
 brief: Si no quieres usar -F, define el separador dentro del BEGIN.
-goal: De datos.dat (delimitado por ;) imprime la SEGUNDA columna usando el BEGIN para
-  declarar el separador FS (SIN usar -F).
+goal: De datos.dat (delimitado por ;) imprime la SEGUNDA columna usando el BEGIN
+  para declarar el separador FS (SIN usar -F).
 setup: |
   #!/bin/bash
   set -e
@@ -23,8 +23,9 @@ hints:
   - BEGIN { FS = ";" } establece el separador ANTES de leer la primera línea.
   - Equivale a -F; pero lo declaras en el SCRIPT, no en el thunk
   - awk 'BEGIN { FS = ";" } { print $2 }' /home/agent/datos.dat
-teach: "El bloque BEGIN se ejecuta UNA VEZ antes de processar líneas: ahí se inicializa FS
-  (separador), OFS, variables, etc. Es la manera correcta cuando el separador es fijo."
+teach: "El bloque BEGIN se ejecuta UNA VEZ antes de processar líneas: ahí se
+  inicializa FS (separador), OFS, variables, etc. Es la manera correcta cuando
+  el separador es fijo."
 cheatsheet:
   - cmd: awk 'BEGIN { FS=";" } { print $2 }' f
     desc: el separador creado por BEGIN
@@ -35,3 +36,9 @@ keywords:
   - BEGIN
   - FS
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      1
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      3

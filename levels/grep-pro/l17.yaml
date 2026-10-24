@@ -5,10 +5,11 @@ title: El puerto de la conexión
 subtitle: "grep -oE + cut: dos herramientas al servicio"
 xp: 70
 difficulty: 5
-brief: El fichero describe conexiones ip:port. Necesitas aislar el PUERTO pero SOLO en IPs
-  que empiecen por 10.4.
-goal: De conexiones.log extrae el PUERTO (segundo campo tras :) de las conexiones hacia
-  IPs 10.4.X.X, y deja a la vista la línea del testigo con la marca.
+brief: El fichero describe conexiones ip:port. Necesitas aislar el PUERTO pero
+  SOLO en IPs que empiecen por 10.4.
+goal: De conexiones.log extrae el PUERTO (segundo campo tras :) de las
+  conexiones hacia IPs 10.4.X.X, y deja a la vista la línea del testigo con la
+  marca.
 setup: |
   #!/bin/bash
   set -e
@@ -22,17 +23,18 @@ setup: |
   10.4.22.4:4444 el puerto a coger: $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/conexiones.log
-solution: "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d:
-  -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
+solution: "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log
+  | cut -d: -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
 hints:
-  - grep -oE con 10[.]4[...[0-9]+:[0-9]+ saca líneas «IP:PUERTO» solo de la subred 10.4.
+  - grep -oE con 10[.]4[...[0-9]+:[0-9]+ saca líneas «IP:PUERTO» solo de la
+    subred 10.4.
   - "La tubería alimenta a cut; con -d: y -f2 coges el campo 2 (el puerto)."
   - La línea del testigo sale aparte con grep 'FLAG{'.
-  - "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut -d: -f2 ;
-    grep 'FLAG{' /home/agent/conexiones.log"
-teach: grep + cut es el pipeline típico para piezas de un match más largo. -oE limita la
-  línea de partida; corte acompaña el array; ext menjadi más fácil de aplicar el campo
-  correcto.
+  - "grep -oE '10[.]4[.][0-9]+[.][0-9]+:[0-9]+' /home/agent/conexiones.log | cut
+    -d: -f2 ; grep 'FLAG{' /home/agent/conexiones.log"
+teach: grep + cut es el pipeline típico para piezas de un match más largo. -oE
+  limita la línea de partida; corte acompaña el array; ext menjadi más fácil de
+  aplicar el campo correcto.
 cheatsheet:
   - cmd: grep -oE 'IP_pattern' f
     desc: extrae el match como texto
@@ -44,3 +46,11 @@ keywords:
   - cut
   - puerto
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      9999
+      22
+      8999
+      4444
+      10.4.22.4:4444 el puerto a coger: FLAG{d3b09a4f7c2e1b8d6041a5f3}

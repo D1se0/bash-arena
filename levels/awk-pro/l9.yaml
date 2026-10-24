@@ -5,10 +5,10 @@ title: El recortador de campos
 subtitle: awk substr()
 xp: 65
 difficulty: 4
-brief: El fichero tokens.log trae alias + token. Necesitas los ÚLTIMOS 8 caracteres de
-  cada token y, aparte, la LÍNEA que lleva la marca.
-goal: De tokens.log imprime, por línea, los últimos 8 caracteres del TOKEN (2.ª columna)
-  con substr; después imprime la línea completa que contiene la marca.
+brief: El fichero tokens.log trae alias + token. Necesitas los ÚLTIMOS 8
+  caracteres de cada token y, aparte, la LÍNEA que lleva la marca.
+goal: De tokens.log imprime, por línea, los últimos 8 caracteres del TOKEN (2.ª
+  columna) con substr; después imprime la línea completa que contiene la marca.
 setup: |
   #!/bin/bash
   set -e
@@ -20,16 +20,19 @@ setup: |
   dani $DOJO_FLAG
   EOF
   chown agent:agent /home/agent/tokens.log
-solution: awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ; grep 'FLAG{'
-  /home/agent/tokens.log
+solution: awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ;
+  grep 'FLAG{' /home/agent/tokens.log
 hints:
-  - substr(texto, inicio) devuelve desde esa posición HASTA el final (sin 3er argumento).
+  - substr(texto, inicio) devuelve desde esa posición HASTA el final (sin 3er
+    argumento).
   - "Para obtener los últimos 8: substr(s, length(s) - 7)."
-  - "El token del testigo es la marca entera: su línea se enseña aparte con grep."
-  - awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ; grep 'FLAG{'
-    /home/agent/tokens.log
-teach: substr(texto, inicio, longitud) corta CUALQUIER texto, por posición y tamaño.
-  Combinando con length() puedes extraer «el final» solar de cualquier longitud.
+  - "El token del testigo es la marca entera: su línea se enseña aparte con
+    grep."
+  - awk '{ print substr($2, length($2) - 7) }' /home/agent/tokens.log ; grep
+    'FLAG{' /home/agent/tokens.log
+teach: substr(texto, inicio, longitud) corta CUALQUIER texto, por posición y
+  tamaño. Combinando con length() puedes extraer «el final» solar de cualquier
+  longitud.
 cheatsheet:
   - cmd: awk '{ print substr($1, 1, 3) }' f
     desc: primeras 3 letras del campo 1
@@ -41,3 +44,11 @@ keywords:
   - recortar
   - length
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      5b6a7980
+      kkfeed
+      90abcdef
+      041a5f3}
+      dani FLAG{d3b09a4f7c2e1b8d6041a5f3}

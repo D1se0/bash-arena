@@ -5,9 +5,10 @@ title: Constructor de columnas
 subtitle: awk OFS + reordenación
 xp: 70
 difficulty: 5
-brief: "El fichero amplio.dat usa espacios entre campos. Necesitas REORDENAR: TERCERO,
-  PRIMERO y QUINTO, separados por |."
-goal: "De amplio.dat imprime en cada línea: campo 3, campo 1 y campo 5 (separados por |)."
+brief: "El fichero amplio.dat usa espacios entre campos. Necesitas REORDENAR:
+  TERCERO, PRIMERO y QUINTO, separados por |."
+goal: "De amplio.dat imprime en cada línea: campo 3, campo 1 y campo 5
+  (separados por |)."
 setup: |
   #!/bin/bash
   set -e
@@ -23,9 +24,9 @@ hints:
   - "Puedes printáAR campos en el ORDEN que quieras: $3, $1, $5."
   - 'Puedes usar OFS: BEGIN { OFS = "|" } y luego print $3, $1, $5 (con comas).'
   - awk '{ print $3 "|" $1 "|" $5 }' /home/agent/amplio.dat
-teach: "En awk los campos $N se pueden impresar en CUALQUIER orden: no hay que reordenar
-  el fichero. El separador de cada WORKING fue el que manualmente se case: si print con
-  comas, awk separa con OFS (por defecto, espacio)."
+teach: "En awk los campos $N se pueden impresar en CUALQUIER orden: no hay que
+  reordenar el fichero. El separador de cada WORKING fue el que manualmente se
+  case: si print con comas, awk separa con OFS (por defecto, espacio)."
 cheatsheet:
   - cmd: awk '{ print $3, $1 }' f
     desc: reordena campos (OFS pred.)
@@ -37,3 +38,9 @@ keywords:
   - reordenar
   - campos
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      tres|uno|cinco
+      tres|uno|cinco
+      tres|uno|FLAG{d3b09a4f7c2e1b8d6041a5f3}

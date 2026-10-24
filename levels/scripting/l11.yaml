@@ -5,10 +5,10 @@ title: El script cojo
 subtitle: "sed -i: editar ficheros en sitio"
 xp: 50
 difficulty: 4
-brief: "repara.sh debería ejecutar el echo de la flag, pero SU ecos línea perfilalı quedó comentada.
-  Medicina: quitar el # avant de ejecutar."
-goal: Descomenta la línea ejecutable de /home/agent/repara.sh (sed -i), ejecútalo y muestra lo que
-  imprime.
+brief: "repara.sh debería ejecutar el echo de la flag, pero SU ecos línea
+  perfilalı quedó comentada. Medicina: quitar el # avant de ejecutar."
+goal: Descomenta la línea ejecutable de /home/agent/repara.sh (sed -i),
+  ejecútalo y muestra lo que imprime.
 setup: |-
   #!/bin/bash
   set -e
@@ -24,10 +24,12 @@ setup: |-
 solution: sed -i 's|^# ||' /home/agent/repara.sh && bash /home/agent/repara.sh
 hints:
   - sed -i edita el fichero directamente (sin volcar a otro).
-  - El patrón ^# (comentario al inicio) seguido de espacio es lo que dejó la línea comentada.
+  - El patrón ^# (comentario al inicio) seguido de espacio es lo que dejó la
+    línea comentada.
   - sed -i 's/^# //' repara.sh && bash repara.sh
-teach: "sed -i es la edición en el sitio (in-place) que usan los scripters para toques quirúrgicos.
-  La / la puedes depender: s|a|b| con cualquier carácter evita fugas con la propia ele."
+teach: "sed -i es la edición en el sitio (in-place) que usan los scripters para
+  toques quirúrgicos. La / la puedes depender: s|a|b| con cualquier carácter
+  evita fugas con la propia ele."
 cheatsheet:
   - cmd: sed -i 's/a/b/' f
     desc: sustituye y guarda
@@ -38,3 +40,9 @@ keywords:
   - in-place
   - descomentar
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      primero la calibración
+      la marca del parche: FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      fin del fichero

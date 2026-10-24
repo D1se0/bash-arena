@@ -5,12 +5,12 @@ subtitle: boss — awk, sed, cut combinados
 xp: 70
 difficulty: 4
 brief: >
-  El servicio de logística procesa registros con formato esquizofrénico:
-  parte clave:valor separada por " | " y parte con delimitador "#".
+  El servicio de logística procesa registros con formato esquizofrénico: parte
+  clave:valor separada por " | " y parte con delimitador "#".
 goal: >
-  En /var/dojo/mixto cada línea es "id | clave:VALOR-secreto|respaldo".
-  El único con id=tres contiene la FLAG en el campo clave:VALOR. Extrae
-  SOLO la flag y enséñala.
+  En /var/dojo/mixto cada línea es "id | clave:VALOR-secreto|respaldo". El único
+  con id=tres contiene la FLAG en el campo clave:VALOR. Extrae SOLO la flag y
+  enséñala.
 setup: |
   #!/bin/bash
   set -e
@@ -24,18 +24,27 @@ setup: |
   } > /var/dojo/mixto
   chown agent:agent /var/dojo/mixto
 hints:
-  - "awk -F'\\\\|' divide columnas por |: $3 contiene clave:...|respaldo," 
-  - "con cut -d: -f2- en la 2ª columna accederás a 'valor|respaldo'… recorta con cut -d'\"|' o pipeline."
+  - "awk -F'\\\\|' divide columnas por |: $3 contiene clave:...|respaldo,"
+  - "con cut -d: -f2- en la 2ª columna accederás a 'valor|respaldo'… recorta con
+    cut -d'\"|' o pipeline."
 teach: >
-  Combina awk + cut + tr para casos donde el separador anida. Cuando
-  encaje, `-F'|'` de awk es la opción elegante. La clave es atacar el
-  formato capa a capa sin intentar resolverlo todo de golpe.
+  Combina awk + cut + tr para casos donde el separador anida. Cuando encaje,
+  `-F'|'` de awk es la opción elegante. La clave es atacar el formato capa a
+  capa sin intentar resolverlo todo de golpe.
 cheatsheet:
-  - {cmd: "awk -F'\\\\|' '{print $2}'", desc: campo N con separador especial}
-  - {cmd: "cut -d: -f2- ", desc: desde campo N hasta el final}
-  - {cmd: 'grep -oE "FLAG\\{[^}]+\\}"', desc: extraer la flag directamente}
+  - cmd: awk -F'\\|' '{print $2}'
+    desc: campo N con separador especial
+  - cmd: "cut -d: -f2- "
+    desc: desde campo N hasta el final
+  - cmd: grep -oE "FLAG\\{[^}]+\\}"
+    desc: extraer la flag directamente
 solution: |
   grep tres /var/dojo/mixto | awk -F'|' '{print $2}' | cut -d: -f2
-
-keywords: [awk, cut, boss]
+keywords:
+  - awk
+  - cut
+  - boss
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

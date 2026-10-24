@@ -5,8 +5,8 @@ title: Filas de nueve
 subtitle: awk NF como filtro
 xp: 45
 difficulty: 3
-brief: El cuaderno de travesías guarda filas de distinto ancho. Solo las filas de
-  EXACTAMENTE 9 palabras llevan la firma del capitán.
+brief: El cuaderno de travesías guarda filas de distinto ancho. Solo las filas
+  de EXACTAMENTE 9 palabras llevan la firma del capitán.
 goal: Imprime de travesia.txt únicamente las filas con exactamente 9 campos.
 setup: |
   #!/bin/bash
@@ -31,9 +31,9 @@ hints:
   - "NF (sin $) es el número de campos de la línea: e-aye comparar con ==, >, <."
   - '"Exactamente 9" es NF == 9 — las de 6 o 10 quedan fuera.'
   - awk 'NF == 9' /home/agent/travesia.txt
-teach: "awk permite comparar variables internas (NF, NR, $N) con operadores: filtros «por
-  número de columnas» sin escribir bucles. Comprueba con NR en la línea de arriba cuando
-  te cuesten."
+teach: "awk permite comparar variables internas (NF, NR, $N) con operadores:
+  filtros «por número de columnas» sin escribir bucles. Comprueba con NR en la
+  línea de arriba cuando te cuesten."
 cheatsheet:
   - cmd: awk 'NF == 9' f
     desc: filas de exactamente 9 campos
@@ -44,3 +44,8 @@ keywords:
   - NF
   - filtro
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      uno dos tres cuatro cinco seis siete ocho FLAG{d3b09a4f7c2e1b8d6041a5f3}
+      uno dos tres cuatro cinco seis siete ocho nueve

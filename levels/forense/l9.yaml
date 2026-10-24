@@ -5,10 +5,11 @@ title: Cifrado por desplazamiento
 subtitle: tr con abecedario rotado (césar +7)
 xp: 50
 difficulty: 3
-brief: El mensaje de cifrado.txt está levantado con un desplazamiento CÉSAR de +7 en las letras (los
-  dígitos y la puntuación intactos). Le recuperación es aplicar desplazamiento INVERSERTE.
-goal: Recupera el texto original de /home/agent/cifrado.txt aplicando el desplazamiento inverso (las
-  letras vuelven a su sitio).
+brief: El mensaje de cifrado.txt está levantado con un desplazamiento CÉSAR de
+  +7 en las letras (los dígitos y la puntuación intactos). Le recuperación es
+  aplicar desplazamiento INVERSERTE.
+goal: Recupera el texto original de /home/agent/cifrado.txt aplicando el
+  desplazamiento inverso (las letras vuelven a su sitio).
 setup: >-
   #!/bin/bash
 
@@ -17,16 +18,21 @@ setup: >-
   arena-prompt "LVL 09" "Forense"
 
   printf 'mensagem cifrada con cesar: %s\n' "$DOJO_FLAG" | tr 'A-Za-z'
-  'hijklmnopqrstuvwxyzabcdefgHIJKLMNOPQRSTUVWXYZABCDEFG' > /home/agent/cifrado.txt
+  'hijklmnopqrstuvwxyzabcdefgHIJKLMNOPQRSTUVWXYZABCDEFG' >
+  /home/agent/cifrado.txt
 
   chown agent:agent /home/agent/cifrado.txt
-solution: tr 'A-Za-z' 'tuvwxyzabcdefghijklmnopqrsTUVWXYZABCDEFGHIJKLMNOPQRS' < /home/agent/cifrado.txt
+solution: tr 'A-Za-z' 'tuvwxyzabcdefghijklmnopqrsTUVWXYZABCDEFGHIJKLMNOPQRS' <
+  /home/agent/cifrado.txt
 hints:
-  - "El cifrado avanzó las letras +7 posiciones: recupera restándole 7 (o sumando 19)."
-  - "tr set1 set2 mapea letra a letra: puedes definir TU propio abecedario destino."
+  - "El cifrado avanzó las letras +7 posiciones: recupera restándole 7 (o
+    sumando 19)."
+  - "tr set1 set2 mapea letra a letra: puedes definir TU propio abecedario
+    destino."
   - tr 'A-Za-z' 'tuvwxyz…' < cifrado.txt
-teach: "tr es el cifrado césar sencillo: defines el abecedario destino rotado. Para descifrar,
-  aplica el desplazamiento COMPLEMENTARIO (para +7, es +19 sobre 26 letras)."
+teach: "tr es el cifrado césar sencillo: defines el abecedario destino rotado.
+  Para descifrar, aplica el desplazamiento COMPLEMENTARIO (para +7, es +19 sobre
+  26 letras)."
 cheatsheet:
   - cmd: tr 'a-z' 'n-za-m'
     desc: rot13 (desplaza 13)
@@ -38,3 +44,6 @@ keywords:
   - césar
   - rotación
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "mensagem cifrada con cesar: FLAG{d3b09a4f7c2e1b8d6041a5f3}"

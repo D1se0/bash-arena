@@ -283,6 +283,7 @@ async function main() {
         hints: (def.hints ?? []).map(String),
         cheatsheet: (def.cheatsheet ?? []).map((c) => ({ cmd: String(c.cmd), desc: String(c.desc) })),
         teach: String(def.teach ?? '').trim(),
+        examples: (def.examples ?? []).map((e) => ({ title: String(e.title), content: String(e.content) })),
         steps,
         raw: solution,
       });
@@ -302,6 +303,7 @@ export interface WalkthroughData {
   id: string; track: string; index: number; title: string; subtitle: string | null;
   xp: number; difficulty: number; brief: string; goal: string; keywords: string[];
   hints: string[]; cheatsheet: { cmd: string; desc: string }[]; teach: string;
+  examples: { title: string; content: string }[];
   steps: Step[]; raw: string;
 }
 export const WALKTHROUGHS: WalkthroughData[] = ${JSON.stringify(levels, null, 2)};

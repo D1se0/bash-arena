@@ -1,41 +1,54 @@
 id: procesado-l20
 track: procesado
 index: 20
-title: "La carta desenmascarada"
-subtitle: "sed con varias sustituciones"
+title: La carta desenmascarada
+subtitle: sed con varias sustituciones
 xp: 45
 difficulty: 3
 brief: >
-  > El espía disfrazó la flag en ~/carta.txt: puso ( y ) donde iban las
-  > llaves { } y guiones donde iban los subrayados. Un solo sed con tres
-  > sustituciones la recompone tal como se escribió originalmente.
+  > El espía disfrazó la flag en ~/carta.txt: puso ( y ) donde iban las > llaves
+  { } y guiones donde iban los subrayados. Un solo sed con tres > sustituciones
+  la recompone tal como se escribió originalmente.
 goal: >
-  Transforma ~/carta.txt para que la flag vuelva a su formato (llaves { } y subrayados _ sustituyendo los paréntesis y guiones actuales). La salida debe mostrar FLAG{...} con el interior correcto.
+  Transforma ~/carta.txt para que la flag vuelva a su formato (llaves { } y
+  subrayados _ sustituyendo los paréntesis y guiones actuales). La salida debe
+  mostrar FLAG{...} con el interior correcto.
 hints:
-  - "sed admite varias expresiones separadas por ; dentro de las mismas comillas."
-  - "El patrón s/(/{/g cambia TODOS los paréntesis abiertos por llaves."
-  - "Tres pasos en una invocación: sed \"s/(/{/g;s/)/}/g;s/-/_/g\" ~/carta.txt"
+  - sed admite varias expresiones separadas por ; dentro de las mismas comillas.
+  - El patrón s/(/{/g cambia TODOS los paréntesis abiertos por llaves.
+  - 'Tres pasos en una invocación: sed "s/(/{/g;s/)/}/g;s/-/_/g" ~/carta.txt'
 teach: >
   sed acepta varios comandos en cadena (separados por ;) en una sola pasada:
-  
+
       sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt
-  
-  Cada s/a/b/g sustituye TODAS las apariciones de a por b:
-  - ( → {  ·  ) → }  ·  - → _
-  
+
+  Cada s/a/b/g sustituye TODAS las apariciones de a por b: - ( → {  ·  ) →
+  }  ·  - → _
+
   La salida desvela la flag con su formato correcto.
-setup: |
+setup: >
   #!/bin/bash
+
   set -e
+
   arena-prompt "LVL 20" "Procesado"
+
   flag=$(printf '%s' "$DOJO_FLAG" | tr '{}' '()' | tr '_' '-')
-  printf 'Estimado agente: la clave es %s. Sigue así.\n' "$flag" > /home/agent/carta.txt
+
+  printf 'Estimado agente: la clave es %s. Sigue así.\n' "$flag" >
+  /home/agent/carta.txt
+
   chown agent:agent /home/agent/carta.txt
 solution: |
   sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt
 cheatsheet:
-  - {cmd: "sed 's/a/b/g'", desc: "sustituye todas las apariciones de a por b"}
-  - {cmd: "sed -e '…' -e '…'", desc: "encadena varias expresiones"}
+  - cmd: sed 's/a/b/g'
+    desc: sustituye todas las apariciones de a por b
+  - cmd: sed -e '…' -e '…'
+    desc: encadena varias expresiones
 keywords:
-  - "sed"
+  - sed
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "Estimado agente: la clave es FLAG{d3b09a4f7c2e1b8d6041a5f3}. Sigue así."

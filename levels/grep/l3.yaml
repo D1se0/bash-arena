@@ -5,10 +5,10 @@ title: Quitar el ruido
 subtitle: "grep -v: excluir líneas"
 xp: 35
 difficulty: 2
-brief: El proxy.conf es un ruido de comentarios y líneas de debug. El ajuste auth_secret
-  está ahí, escondido entre tanto adorno.
-goal: "Trae a la vista la línea auth_secret del config: primero descarta los comentarios
-  (#), luego busca el ajuste."
+brief: El proxy.conf es un ruido de comentarios y líneas de debug. El ajuste
+  auth_secret está ahí, escondido entre tanto adorno.
+goal: "Trae a la vista la línea auth_secret del config: primero descarta los
+  comentarios (#), luego busca el ajuste."
 setup: |
   #!/bin/bash
   set -e
@@ -29,9 +29,9 @@ hints:
   - "−v es el filtro inverso: muestra las líneas que NO casan."
   - "Encadena dos greps con una tubería: limpiar primero, apuntar después."
   - grep -v '^#' /home/agent/proxy.conf | grep 'auth_secret'
-teach: "grep -v invierte el criterio: «muéstrame lo que NO casa». Combinar −v con un
-  segundo grep es el patrón clásico de limpieza: quita lo inútil y entonces filtra lo
-  importante."
+teach: "grep -v invierte el criterio: «muéstrame lo que NO casa». Combinar −v
+  con un segundo grep es el patrón clásico de limpieza: quita lo inútil y
+  entonces filtra lo importante."
 cheatsheet:
   - cmd: grep -v patrón f
     desc: excluye las líneas que casan
@@ -42,3 +42,6 @@ keywords:
   - -v
   - excluir
 profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: auth_secret FLAG{d3b09a4f7c2e1b8d6041a5f3}
