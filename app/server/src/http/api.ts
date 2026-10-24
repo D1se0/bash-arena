@@ -100,8 +100,15 @@ export function buildApi(service: LevelsService): express.Express {
       return;
     }
     const state = getFullState(id) as Record<string, unknown>;
+    // envoltura portátil: meta + estado (importState ignora claves extra)
+    const payload = {
+      format: 'bash-arena-progress',
+      version: 1,
+      exported_at: new Date().toISOString(),
+      ...state,
+    };
     res.setHeader('Content-Disposition', `attachment; filename="bash-arena-progress-${id.slice(0, 8)}.json"`);
-    res.status(200).json(state);
+    res.status(200).json(payload);
   });
 
   app.post('/api/progress/:id/import', (req, res) => {

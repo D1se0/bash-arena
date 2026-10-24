@@ -10,6 +10,10 @@ services:
       - PORT=${PORT:-8080}
       - ARENA_FLAG_SECRET=${ARENA_FLAG_SECRET:-dev-secret-change-me}
       - ARENA_DOCKER_SOCKET=/var/run/docker.sock
+      # la SQLite de progreso DEBE vivir en el volumen montado (/data), no en
+      # el fs efímero del contenedor (./data = /app/data): sin esto, un down
+      # (stop.sh) BORRABA el progreso pese a tener volume constipado.
+      - ARENA_DATA_DIR=${ARENA_DATA_DIR:-/data}
     env_file:
       - path: ../.env
         required: false

@@ -9,7 +9,8 @@
 1. El navegador abre un **WebSocket** (`/ws`) contra el backend.
 2. El backend (Node + `dockerode`) crea un contenedor efímero del nivel (Ubuntu + `arena-agent` sin sudo) vía `docker exec` con TTY.
 3. El objetivo de cada nivel es un **flag** `FLAG{...}` oculto en el filesystem; se valida **en el servidor** (HMAC-SHA256) y solo ahí se otorga XP.
-4. El progreso (niveles superados, XP, hints usados) se guarda en **SQLite** montado en un volumen y sobrevive a `stop`/`update`.
+4. El progreso (niveles superados, XP, hints usados) se guarda en **SQLite** montado en un volumen (`/data` del server) y sobrevive a `stop`/`update`.
+5. **Migración entre PCs**: en la sidebar, «🛫 migrar progreso» exporta un `.json` y genera un *código de transferencia* (`BA1-…`) copiable; en otro PC lo importas y sigues donde estabas.
 
 ```
 navegador ──wss──▶ nginx ──▶ server (ws.ts ─ api.ts ─ dockerode) ──▶ contenedor del nivel (TTY)

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useArena } from '../store';
+import { ProgressPortModal } from './ProgressPortModal';
 
 function xpBar(xp: number, nextAt: number | null) {
   if (!nextAt) return 100;
@@ -19,6 +21,7 @@ export default function Sidebar() {
   const send = useArena((s) => s.send);
   const sessionDead = useArena((s) => s.sessionDead);
   const setBrowserOpen = useArena((s) => s.setBrowserOpen);
+  const [portOpen, setPortOpen] = useState(false);
 
   return (
     <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:self-start lg:max-h-full lg:overflow-y-auto lg:pr-1">
@@ -139,8 +142,17 @@ export default function Sidebar() {
           >
             {sessionDead ? 'reanudar' : 'reiniciar sesión'}
           </button>
+          <button
+            onClick={() => setPortOpen(true)}
+            className="rounded-lg bg-panel2 hover:bg-edge px-2 py-1.5 text-left"
+            title="exportar tu progreso a un fichero/código, e importarlo en otro PC"
+          >
+            🛫 migrar progreso
+          </button>
         </div>
       </section>
+
+      {portOpen && <ProgressPortModal onClose={() => setPortOpen(false)} />}
     </aside>
   );
 }
