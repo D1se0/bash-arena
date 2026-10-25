@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useArena } from '../store';
 import { ProgressPortModal } from './ProgressPortModal';
+import { ExportPdfModal } from './ExportPdfModal';
 
 function xpBar(xp: number, nextAt: number | null) {
   if (!nextAt) return 100;
@@ -22,6 +23,7 @@ export default function Sidebar() {
   const sessionDead = useArena((s) => s.sessionDead);
   const setBrowserOpen = useArena((s) => s.setBrowserOpen);
   const [portOpen, setPortOpen] = useState(false);
+  const [pdfOpen, setPdfOpen] = useState(false);
 
   return (
     <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4 lg:self-start lg:max-h-full lg:overflow-y-auto lg:pr-1">
@@ -149,10 +151,18 @@ export default function Sidebar() {
           >
             🛫 migrar progreso
           </button>
+          <button
+            onClick={() => setPdfOpen(true)}
+            className="rounded-lg bg-panel2 hover:bg-edge px-2 py-1.5 text-left col-span-2"
+            title="genera un PDF con tu perfil: portada, estadísticas, niveles resueltos, logros y diploma sellado"
+          >
+            🧾 informe PDF del perfil
+          </button>
         </div>
       </section>
 
       {portOpen && <ProgressPortModal onClose={() => setPortOpen(false)} />}
+      {pdfOpen && <ExportPdfModal onClose={() => setPdfOpen(false)} />}
     </aside>
   );
 }

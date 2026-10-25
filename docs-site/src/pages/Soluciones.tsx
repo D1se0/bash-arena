@@ -18,14 +18,18 @@ const TRACK_LABELS: Record<string, string> = {
   awk: 'Awk (especialización)',
   'grep-pro': 'Grep Maestro',
   'awk-pro': 'Awk Maestro',
+  sysadmin: 'Sysadmin',
+  dns: 'DNS y resolución',
+  sql: 'SQL / SQLite',
 };
 
 const TRACK_ICONS: Record<string, string> = {
   fundamentos: '🧭', filtrado: '🗝️', busqueda: '🔎', procesado: '✂️',
-  permisos: 'chmod', procesos: '⚙️', redes: '🌐', archivos: '📁',
+  permisos: '🔐', procesos: '⚙️', redes: '🌐', archivos: '📁',
   scripting: '📜', forense: '🧪', boss: '👑',
   grep: '🧲', awk: '📐',
   'grep-pro': '🥇', 'awk-pro': '🏅',
+  sysadmin: '🛠️', dns: '📡', sql: '🗃️',
 };
 
 function Stars({ n }: { n: number }) {

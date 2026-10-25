@@ -124,7 +124,7 @@ export default function HowItWorks() {
         <div className="rounded-xl bg-panel/60 border border-edge/50 p-5 text-sm text-frost/80 leading-relaxed space-y-2">
           <p><strong className="text-nord6">Declarativo</strong>: cada nivel es un YAML en <code className="font-mono">{'levels/<track>/lN.yaml'}</code> con briefing, setup (bash), pistas progresivas, cheatsheet, solución de referencia y explicación post-nivel.</p>
           <p><strong className="text-nord6">Flag por sesión</strong>: el setup recibe <code className="font-mono">$DOJO_FLAG</code> (HMAC de sessionId+nivel) y la esconde donde haga falta; dos jugadores JAMÁS tienen la misma flag.</p>
-          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 292/292 verificados (incluye grep-pro y awk-pro).</p>
+          <p><strong className="text-nord6">Verificación automática</strong>: <code className="font-mono">scripts/test-levels.mjs</code> ejecuta cada nivel en un contenedor real: setup → solución → exige exit 0 y la flag en la salida. 406/406 verificados (incluye grep-pro y awk-pro, sysadmin, dns y sql).</p>
         </div>
       </section>
     </div>

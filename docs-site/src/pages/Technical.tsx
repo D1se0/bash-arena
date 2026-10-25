@@ -52,7 +52,7 @@ export default function Technical() {
 {`app/
   server/   backend: ws + dockerode + motor de niveles + SQLite (strict TS)
   client/   frontend: React + Vite + xterm.js (fit, web-links)
-levels/     un YAML por nivel (15 tracks, 292 niveles) — sin código de motor
+levels/     un YAML por nivel (18 tracks, 406 niveles) — sin código de motor
 docker/     ubuntu-dojo.Dockerfile · server/client Dockerfiles · compose · nginx · arena-prompt
 scripts/    deploy · stop · backup · restore · status · logs · update · test-levels · security-tests · e2e
 tests/      unitarios (vitest) · informes generados

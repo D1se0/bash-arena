@@ -9,7 +9,8 @@
  */
 /* global window, document, navigator, getComputedStyle */
 import { chromium } from 'playwright-core';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
 const APP_URL = process.argv[2] || 'http://127.0.0.1:8091/';
@@ -436,6 +437,20 @@ const browser = await chromium.launch({
     } else {
       fail(`docs /soluciones: búsqueda «awk» con ${awkCount} resultados (no filtra)`);
     }
+    // chips de tracks: los NUEVOS deben estar con nombre, no «undefined»
+    await sp.locator('input[aria-label="buscar soluciones"]').fill('');
+    await sp.waitForTimeout(400);
+    const chips = await sp.evaluate(() =>
+      [...document.querySelectorAll('main button')]
+        .map((b) => (b.textContent || '').trim())
+        .filter((t) => t.length > 0 && t.length < 60));
+    const need = ['Sysadmin', 'DNS y resolución', 'SQL / SQLite'];
+    const missing = need.filter((n) => !chips.some((c) => c.includes(n)));
+    if (missing.length === 0 && !chips.some((c) => c.includes('undefined'))) {
+      ok(`docs /soluciones: chips de los 3 tracks nuevos presentes (${need.join(', ')})`);
+    } else {
+      fail(`docs /soluciones: chips mal (missing=${missing.join('+')} undefined=${chips.some((c) => c.includes('undefined'))})`);
+    }
     // sin scroll horizontal a ancho estrecho
     await sp.setViewportSize({ width: 390, height: 812 });
     await sp.waitForTimeout(600);
@@ -444,7 +459,7 @@ const browser = await chromium.launch({
     else fail('docs /soluciones (390px): scroll horizontal (desborde)');
     await sp.screenshot({ path: `${SHOTS}/docs-soluciones-390.png`, fullPage: false });
     await sctx.close();
-  const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras'];
+  const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras', 'cheatsheet'];
   for (const width of [1440, 1024, 390]) {
     const ctx = await browser.newContext({ viewport: { width, height: 900 } });
     const page = await ctx.newPage();
@@ -472,7 +487,7 @@ const browser = await chromium.launch({
           fail(`docs /${p} (${width}px): header envuelto (${r.headH}px)`);
         }
       }
-      await page.screenshot({ path: `${SHOTS}/docs-${p || 'home'}-${width}.png`, fullPage: true });
+      await page.screenshot({ path: `${SHOTS}/docs-${p || 'home'}-${width}.png`, fullPage: p !== 'cheatsheet' });
     }
     await ctx.close();
   }
@@ -484,7 +499,7 @@ const browser = await chromium.launch({
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.addInitScript(() => window.localStorage.setItem('docs-theme', 'light'));
-  const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras'];
+  const PAGES = ['', 'aprende', 'funciona', 'desplegar', 'tecnico', 'extras', 'cheatsheet'];
   for (const p of PAGES) {
     await page.goto(DOCS_URL + p, { waitUntil: 'domcontentloaded' }).catch(() => fail(`docs-light ${p}: no carga`));
     await page.waitForTimeout(900);
@@ -517,9 +532,90 @@ const browser = await chromium.launch({
     } else {
       fail(`docs-light /${p} (1440px): scroll horizontal`);
     }
-    await page.screenshot({ path: `${SHOTS}/docs-light-${p || 'home'}.png`, fullPage: true });
+    // los cheatsheet son páginas de several miles px: fullPage se queda sin memoria en Chromium → captura del viewport superior
+    await page.screenshot({ path: `${SHOTS}/docs-light-${p || 'home'}.png`, fullPage: p !== 'cheatsheet' });
   }
   await ctx.close();
+}
+
+/* ───────────── A2. informe PDF del perfil: generación real ───────────── */
+{
+  const pdfCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await pdfCtx.newPage();
+  page.on('pageerror', (e) => fail(`pageerror app-pdf: ${e.message}`));
+  await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(1500);
+
+  try {
+    await page.getByTitle(/genera un PDF/).click({ timeout: 8000 });
+    ok('app: botón «informe PDF del perfil» abre el modal');
+  } catch {
+    fail('app: no se encontró el botón del informe PDF en la sidebar');
+  }
+
+  try {
+    const input = page.locator('input[placeholder*="ruxdev"]');
+    await input.fill('tester-arena');
+    await page.getByText('⬇ generar y descargar PDF').click();
+    const download = await page.waitForEvent('download', { timeout: 30_000 });
+    const pdfPath = `${SHOTS}/${download.suggestedFilename()}`;
+    await download.saveAs(pdfPath);
+    const head = readFileSync(pdfPath).subarray(0, 5).toString('ascii');
+    if (head === '%PDF-') {
+      ok(`app: PDF real descargado (${path.basename(pdfPath)}, cabecera %PDF-)`);
+      // vista previa de 2 páginas para inspección manual
+      try {
+        execFileSync('pdftoppm', ['-png', '-r', '60', '-f', '1', '-l', '2', pdfPath, `${SHOTS}/pdf-preview`]);
+        ok('app: PDF renderizado a PNG (tests/webshots/pdf-preview-*.png)');
+      } catch {
+        ok('app: PDF descargado (pdftoppm no disponible para preview)');
+      }
+    } else {
+      fail(`app: el descargado no es un PDF (cabecera ${head})`);
+    }
+  } catch (e) {
+    fail(`app: la generación del PDF no terminó en descarga (${String(e).slice(0, 120)})`);
+  }
+  await page.close();
+  await pdfCtx.close();
+}
+
+/* ───────────── A3. docs /cheatsheet: interacción ───────────── */
+{
+  const cctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const cp = await cctx.newPage();
+  cp.on('pageerror', (e) => fail(`pageerror docs-cheatsheet: ${e.message}`));
+  await cp.goto(`${DOCS_URL}cheatsheet`, { waitUntil: 'domcontentloaded' });
+  await cp.waitForTimeout(1200);
+  try {
+    const cards = await cp.locator('article').count();
+    if (cards > 70) ok(`docs /cheatsheet: ${cards} fichas de comandos montadas`);
+    else fail(`docs /cheatsheet: solo ${cards} fichas (esperadas ~83)`);
+  } catch {
+    fail('docs /cheatsheet: no se puede contar las fichas');
+  }
+
+  // filtro en vivo
+  await cp.fill('input[aria-label="filtrar el cheatsheet"]', 'uniq -c');
+  await cp.waitForTimeout(500);
+  const filtered = await cp.locator('article').count();
+  if (filtered > 0 && filtered < 20) ok(`docs /cheatsheet: filtro «uniq -c» ⇒ ${filtered} ficha(s)`);
+  else fail(`docs /cheatsheet: filtro «uniq -c» ⇒ ${filtered} fichas (fuera de rango)`);
+
+  // botón limpiar restaura
+  await cp.getByText(/limpiar \(/).click();
+  await cp.waitForTimeout(400);
+  const restored = await cp.locator('article').count();
+  if (restored > 70) ok('docs /cheatsheet: limpiar restaura todas las fichas');
+  else fail(`docs /cheatsheet: limpiar dejó ${restored} fichas`);
+
+  // navegación por secciones (anclas)
+  const anchors = await cp.locator('nav a[href^="#cs-"]').count();
+  if (anchors >= 15) ok(`docs /cheatsheet: ${anchors} anclas de sección`);
+  else fail(`docs /cheatsheet: solo ${anchors} anclas de sección`);
+
+  await cp.screenshot({ path: `${SHOTS}/docs-cheatsheet-cards.png`, fullPage: false });
+  await cctx.close();
 }
 
 await browser.close();
