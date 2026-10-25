@@ -1,0 +1,49 @@
+id: grep-l29
+track: grep
+index: 29
+title: La lista vetada
+subtitle: "grep -f: patrones leídos de un fichero"
+xp: 60
+difficulty: 3
+brief: El filtro de spam reúne TÉRMINOS VETADOS en vetados.txt (uno por línea). Un correo usa un
+  vetado para colar la marca.
+goal: Busca en los .msg del buzón con TODA la lista de vetados de una vez (grep -f) y encuentra el
+  correo que lleva FLAG{…}.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 29" "Grep"
+  mkdir -p /home/agent/buzon
+  cat > /home/agent/buzon/vetados.txt <<EOF
+  pokerza
+  farmaciu
+  apuestum
+  criptojuego
+  EOF
+  echo 'hola: oferta del día con apuestum dentro pero sin marca' > /home/agent/buzon/un.msg
+  echo 'curso online de apuestum online: tipografías serif: $DOJO_FLAG' > /home/agent/buzon/dos.msg
+  echo 'ronda trimestral de resultados según protocolo' > /home/agent/buzon/tres.msg
+  echo 'criptojuego NFT: ¡hazte rico jugando! sin marca' > /home/agent/buzon/cuatro.msg
+  chown -R agent:agent /home/agent/buzon
+solution: grep -f /home/agent/buzon/vetados.txt -r /home/agent/buzon | grep 'dos.msg' | grep -oE
+  'FLAG\{[^}]*\}'
+hints:
+  - "-f FICHERO lee patrones UNO POR LÍNEA: no hace falta un grep por término."
+  - Los cuatro .msg casan con los vetados; el correo del curso tipográfico trae la marca.
+  - "grep -f vetados.txt -r /home/agent/buzon  # y luego aislar la línea con la marca"
+teach: "grep -f lista.txt busca TODOS los patrones del fichero a la vez (uno por línea). Es el
+  detector reutilizable: la lista puede crecer sin tocar el comando (la blacklist de producción)."
+cheatsheet:
+  - cmd: grep -f lista.txt f
+    desc: múltiples patrones de un fichero
+  - cmd: grep -Ff lista.txt f
+    desc: ídem, patrones literales (sin regex)
+keywords:
+  - grep
+  - -f
+  - lista
+  - spam
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

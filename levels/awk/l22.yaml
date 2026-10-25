@@ -1,0 +1,48 @@
+id: awk-l22
+track: awk
+index: 22
+title: La tabla ancha
+subtitle: "awk printf: columnas alineadas"
+xp: 75
+difficulty: 5
+brief: 'La tabla de comercios mezcla nombres cortos y largos. Para el informe se
+  alinea a un ANCHO fijo: printf "%-12s" a cada nombre, y el valor de la 2.ª
+  columna después.'
+goal: De comercios.dat imprime cada fila CON EL CAMPO 1 ALINEADO A UN ANCHO DE
+  12 CARACTERES (a la izquierda, rellenando con espacios), y después el campo 2.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/comercios.dat <<EOF
+  tienda-1 7
+  tienda-2 $DOJO_FLAG
+  tienda-de-rapida 190284
+  EOF
+  chown agent:agent /home/agent/comercios.dat
+solution: awk '{ printf "%-12s %s\n", $1, $2 }' /home/agent/comercios.dat
+hints:
+  - "printf es de estilo C: %-12s alinea la CADENA a la IZQUIERDA con 12 de
+    ancho (rellena con espacios)."
+  - "printf NO añade salto de línea por sí: se lo das con \\\\n explícito."
+  - awk '{ printf "%-12s %s\n", $1, $2 }' /home/agent/comercios.dat
+teach: "La aritmética del formato de awk vive en printf: %-12s (cadena a la
+  izquierda), %10d (número a la derecha), %.2f (2 decimales). Es la máscara de
+  todos los CSV alineados."
+cheatsheet:
+  - cmd: awk '{printf "%-12s %s\n", $1, $2}' f
+    desc: columna ancha fija
+  - cmd: awk '{printf "%10d\n", $2}' f
+    desc: número a la derecha
+keywords:
+  - awk
+  - printf
+  - alineación
+  - ancho
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      tienda-1     7
+      tienda-2     FLAG{…}
+      …

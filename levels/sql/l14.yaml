@@ -1,0 +1,43 @@
+id: sql-l14
+track: sql
+index: 14
+title: La caja de búsqueda
+subtitle: FULL TEXT y el índice de búsqueda
+xp: 75
+difficulty: 5
+brief: "SQLite trae la BÚSQUEDA de TEXTO REAL: FTS5 crea la tabla de BÚSQUEDA por índice
+  (inverso). Crea tu índice índice virtual y buscas en SEGUNDOS."
+goal: 'Crea VIRTUAL TABLE torre_fts con FTS5 (CREATE VIRTUAL TABLE ... USING fts5(...)),
+  INSERTA la fila con la cuenta de la marca (columna docs = FLAG) y BUSCA MATCH contra
+  "dojo": devuelven la marca.'
+setup: |-
+  #!/bin/bash
+  set -e
+  printf '%s\\n' '$DOJO_FLAG' > /var/.dojo-hit && chmod 0644 /var/.dojo-hit
+  rm -f /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "CREATE VIRTUAL TABLE torre_fts USING
+  fts5(docs);" && sqlite3 /home/agent/dojo.sqlite "INSERT INTO torre_fts VALUES ('dojo
+  $(cat /var/.dojo-hit)');" && sqlite3 /home/agent/dojo.sqlite "SELECT docs FROM torre_fts
+  WHERE torre_fts MATCH 'dojo';"
+hints:
+  - "La tabla virtual: CREATE VIRTUAL TABLE torre_fts USING fts5(docs);"
+  - 'MATCH busca dentro del índice: SELECT docs FROM torre_fts WHERE torre_fts MATCH
+    "dojo";'
+  - sqlite3 db "INSERT INTO torre_fts (docs) VALUES ('$cat /var/.dojo-hit');"
+teach: "FTS5 es un MOTOR DE BÚSQUEDA DENTRO de SQLite: crea UNA tabla virtual con índice
+  INVERSO. La columna MATCH busca por palabras. Es LA herramienta de los logs y datasets
+  de texto sin instalar APIs externas."
+cheatsheet:
+  - cmd: CREATE VIRTUAL TABLE t USING fts5(c);
+    desc: tabla de búsqueda
+  - cmd: WHERE t MATCH 'palabra'
+    desc: búsqueda por índice
+keywords:
+  - sql
+  - fts5
+  - match
+  - fulltext
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: dojo FLAG{…}

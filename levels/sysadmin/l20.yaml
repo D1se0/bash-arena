@@ -1,0 +1,71 @@
+id: sysadmin-l20
+track: sysadmin
+index: 20
+title: La pareja de claves
+subtitle: "sshd: ssh-keygen ed25519 + authorized_keys + permisos"
+xp: 80
+difficulty: 4
+brief: "Para entrar sin contraseña: generas un par ed25519, colocas la CLAVE PÚBLICA en
+  authorized_keys y dejas los permisos celosos. sshd se niega a aceptar configs con permisos
+  flojos."
+goal: Genera un par ed25519 en ~/.ssh/ SIN passphrase, añade la .pub a ~/.ssh/authorized_keys y deja
+  0700/0600. cierra con dojo-verificar sshd-key.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /home/agent/.ssh && chmod 0700 /home/agent/.ssh
+
+  touch /home/agent/.ssh/authorized_keys && chmod 0600 /home/agent/.ssh/authorized_keys
+
+  chown -R agent:agent /home/agent/.ssh
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-key)
+      [ -f /home/agent/.ssh/id_ed25519 ] || { echo "falta el par de claves id_ed25519"; exit 1; }
+      [ -s /home/agent/.ssh/id_ed25519.pub ] || { echo "falta la clave pública .pub"; exit 1; }
+      grep -q "$(cut -d' ' -f2 /home/agent/.ssh/id_ed25519.pub)" /home/agent/.ssh/authorized_keys || { echo "la .pub no está en authorized_keys"; exit 1; }
+      [ "$(stat -c %a /home/agent/.ssh)" = "700" ] || { echo "permisos ~/.ssh deben ser 700"; exit 1; }
+      echo "✓ directo sshd-key: claves SSH del agente e authorized_keys"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 -C dojo-agent && cat
+  /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys && chmod 600
+  /home/agent/.ssh/authorized_keys && dojo-verificar sshd-key
+hints:
+  - ssh-keygen -t ed25519 genera el par. La .pub es la CLAVE PÚBLICA; la otra es privada.
+  - "authorized_keys recibe la .pub: cat id_ed25519.pub >> authorized_keys (una línea por clave)."
+  - "Los PERMISOS deben ser estrictos: ~/.ssh 0700, authorized_keys 0600. Si no, sshd rechaza."
+teach: "La pareja: id_ed25519 (privada, viaja contigo) + id_ed25519.pub (pública, va a
+  authorized_keys de cada máquina a la que entras). Permisos rotos (755 en .ssh) = sshd IGNORA la
+  clave: es una medida de seguridad."
+cheatsheet:
+  - cmd: ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519
+    desc: generar par ed25519 sin passphrase
+  - cmd: cat id.pub >> ~/.ssh/authorized_keys
+    desc: instalar la clave pública
+keywords:
+  - ssh
+  - keygen
+  - authorized_keys
+  - permisos
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

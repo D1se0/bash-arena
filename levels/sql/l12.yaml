@@ -1,0 +1,47 @@
+id: sql-l12
+track: sql
+index: 12
+title: La frase en fragmentos
+subtitle: "GROUP_CONCAT: ensamblar"
+xp: 80
+difficulty: 5
+brief: "La marca llegó PARTIDA: cinco FRAGMENTOS en el orden de su id. GROUP_CONCAT los
+  junta en UNA autrícula."
+goal: 'De tabla fragmento: JUNTA los valores de trozos con ORDER BY id (concatenación con
+  separador → cadena "una-palabra": GROUP_CONCAT). Obtén la firma completa como
+  resultado.'
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE fragmento (id INTEGER PRIMARY KEY, trozos
+  TEXT); WITH RECURSIVE c(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM c WHERE n<4) INSERT
+  INTO fragmento SELECT n, substr('$DOJO_FLAG', 1+(n-1)*8, 8) FROM c;" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT GROUP_CONCAT(trozos, '') FROM (SELECT
+  trozos FROM fragmento ORDER BY id);"
+hints:
+  - Los fragmentos están en el orden de su id; GROUP_CONCAT con separador vacío los pega.
+  - "Con la subconsulta ordenada evitas el ORDER BY interno de GROUP_CONCAT (SQLite
+    3.44+): SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY
+    id);"
+  - sqlite3 db "SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER
+    BY id);"
+teach: GROUP_CONCAT es el ARMA de las «cadenas mil partes» (participants, logs, chunks).
+  Con separador "" pega por orden; con sep explicit,", " les junta con comas. El ORDER BY
+  DENTRO del GROUP_CONCAT es SQLite ≥ 3.44 (si no, subconsulta ordenada).
+cheatsheet:
+  - cmd: GROUP_CONCAT(col, sep)
+    desc: juntar columna en cadena
+  - cmd: GROUP_CONCAT(c, sep ORDER BY id)
+    desc: juntar ORDENADO (3.44+)
+keywords:
+  - sql
+  - group_concat
+  - concatenar
+  - fragmento
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{abc111…}

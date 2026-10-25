@@ -1,0 +1,45 @@
+id: awk-l21
+track: awk
+index: 21
+title: La línea sospechosamente larga
+subtitle: "awk length($0): filtrar por tamaño"
+xp: 70
+difficulty: 4
+brief: En el registro de pulsos, TODAS las líneas normales son pequeñas. La
+  firma del nivel es la ÚNICA sospechosamente larga.
+goal: De pulsos.log imprime SÓLO las líneas que miden MÁS de 50 caracteres
+  (length($0)).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/pulsos.log <<EOF
+  pulso pequeño
+  pulso junto
+  señal critica detectada en la red: $DOJO_FLAG
+  otro pulso
+  EOF
+  chown agent:agent /home/agent/pulsos.log
+solution: awk 'length($0) > 50' /home/agent/pulsos.log
+hints:
+  - length($0) devuelve el número de CARACTERES de la línea actual (length($1)
+    la del campo 1).
+  - "La comparación con 50 filtra las anomalías en longitud: la primera revisión
+    de calidad de los logs."
+  - awk 'length($0) > 50' /home/agent/pulsos.log
+teach: length() existe SIN argumento (equivale a length($0)) y CON argumento.
+  Filtrar por longitud detecta líneas truncas, anomalías de volcado y
+  concatenados por accidente.
+cheatsheet:
+  - cmd: awk 'length($0) > 50' f
+    desc: líneas largas (más de 50)
+  - cmd: awk '{print length($1)}' f
+    desc: medir el primer campo
+keywords:
+  - awk
+  - length
+  - longitud
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: la línea larga con la flag

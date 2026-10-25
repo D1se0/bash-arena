@@ -1,0 +1,44 @@
+id: sql-l1
+track: sql
+index: 1
+title: La primera consulta
+subtitle: SELECT y FROM
+xp: 55
+difficulty: 2
+brief: "La base del dojo es real: una SQLite con la bitácora de los agentes. La primera
+  herramienta siempre es SELECT: «muéstrame estas columnas de esta tabla»."
+goal: "Sobre /home/agent/dojo.sqlite: muestro la tabla sellos (SELECT * FROM sellos). La
+  marca del dojo viaja en la columna sello."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE sellos (id INTEGER PRIMARY KEY, sello
+  TEXT); INSERT INTO sellos VALUES (1,'trozo-1'),(2,'$DOJO_FLAG'),(3,'trozo-3');" && chmod
+  644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT * FROM sellos;"
+hints:
+  - 'sqlite3 FICHERO "QUERY" es la forma CLI: abre la base y ejecuta la consulta.'
+  - SELECT * pide todas las columnas; FROM sellos elige la tabla.
+  - sqlite3 /home/agent/dojo.sqlite "SELECT * FROM sellos;"
+teach: SELECT col FROM tabla es el latín de las bases de datos. El CLI sqlite3 recibe la
+  base como primer parámetro y la consulta entrecomillada. En SQLite (a diferencia del
+  MySQL) casi todo lo demás tiene la MISMA sintaxis.
+cheatsheet:
+  - cmd: sqlite3 db.sqlite "SELECT * FROM t;"
+    desc: leer una tabla entera
+  - cmd: .tables
+    desc: listar las tablas (modo interactivo)
+keywords:
+  - sql
+  - sqlite
+  - select
+  - from
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      1|trozo-1
+      2|FLAG{…}
+      3|trozo-3

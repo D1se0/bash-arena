@@ -1,0 +1,45 @@
+id: awk-l18
+track: awk
+index: 18
+title: El conversor de separadores
+subtitle: "awk FS/OFS: cambiar delimitador"
+xp: 75
+difficulty: 5
+brief: El inventario viene separado por «dos puntos», pero el CSV final debe
+  salir con comas. FS y OFS hacen el trabajo sin regex.
+goal: De inventario.txt imprime cada línea con los ":" sustituidos por ","
+  (re-juntando los mismos campos en el MISMO orden).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/inventario.txt <<EOF
+  correa-percha:azul:3:$DOJO_FLAG
+  cuerda-fina:roja:9
+  sal-piedra:blanca:2
+  EOF
+  chown agent:agent /home/agent/inventario.txt
+solution: "awk -F: -v OFS=',' '{ $1 = $1; print }' /home/agent/inventario.txt"
+hints:
+  - '-F: define el separador de ENTRADA (FS) y -v OFS="," el separador de SALIDA
+    (Output Field Separator).'
+  - El truco $1 = $1 REASIGNA el campo 1; al reasignar, awk RECONSTRUYE $0
+    pegando los campos con el OFS nuevo.
+  - "awk -F: -v OFS=',' '{ $1 = $1; print }' /home/agent/inventario.txt"
+teach: "El conversor FS→OFS con $1=$1 es el re-decoder de formato del shell:
+  separar campos y re-pegarlos con otro delimitador sin regex ni sed. La firma
+  viaja intacta como un campo."
+cheatsheet:
+  - cmd: "awk -F: -v OFS=',' '1' f"
+    desc: variante corta (1 = true)
+  - cmd: awk -F, -v OFS=';' '{$1=$1;print}' f
+    desc: de coma a punto y coma
+keywords:
+  - awk
+  - FS
+  - OFS
+  - delimitador
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: correa-percha,azul,3,FLAG{…}

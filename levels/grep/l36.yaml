@@ -1,0 +1,54 @@
+id: grep-l36
+track: grep
+index: 36
+title: "Boss: el intruso del SSH"
+subtitle: "cadena: contar IPs + localizar su única conexión OK"
+xp: 140
+difficulty: 5
+brief: "En auth.log los AUTH FAIL se concentran en UNA IP. Dicho atacante solo logró un SUCCESS: ahí
+  viaja la marca. Cadena de greps y sort/uniq/awk."
+goal: Imprime de auth.log ÚNICAMENTE la marca FLAG{…} que viaja en la línea de SUCCESS del atacante
+  (IP con MÁS FAIL).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 36" "Grep"
+  cat > /home/agent/auth.log <<EOF
+  06:00 AUTH FAIL ip 203.0.113.77 usuario root
+  06:01 AUTH FAIL ip 203.0.113.77 usuario root
+  06:02 AUTH FALLA ip 198.51.100.4 usuario admin2
+  06:03 AUTH OK ip 198.51.100.4 usuario admin2
+  06:04 AUTH FAIL ip 203.0.113.77 usuario root
+  06:05 AUTH FAIL ip 203.0.113.77 usuario root
+  06:06 AUTH OK ip 203.0.113.77 usuario root flag=$DOJO_FLAG
+  06:07 AUTH FAIL ip 192.168.44.4 usuario backup
+  06:08 AUTH OK ip 192.168.44.4 usuario backup
+  06:09 AUTH FAIL ip 198.51.100.4 usuario admin2
+  EOF
+  chown agent:agent /home/agent/auth.log
+solution: ip=$(grep 'AUTH FAIL' /home/agent/auth.log | grep -oE 'ip [0-9.]+' | sort | uniq -c | sort
+  -nr | head -1 | awk '{print $3}'); grep "ip $ip" /home/agent/auth.log | grep 'AUTH OK' | grep -oE
+  'flag=\S+'
+hints:
+  - 'Paso 1: filtra los FAIL (grep "AUTH FAIL") y encuentra la IP dominante con sort | uniq -c |
+    sort -nr | head -1.'
+  - "Paso 2: con la IP en mano (awk {print $3}), filtra esa IP Y el OK, y extrae flag= con grep -oE."
+  - 'Compón con variables: ip=$(grep "AUTH FAIL" auth.log | …); grep "$ip" auth.log | …'
+teach: "El boss une análisis de conteos con la cadena de greps: primero «¿quién domina el FAIL?»
+  (sort|uniq -c|sort -nr) y luego la extracción de la línea OK del atacante con grep -oE. Es EL paso
+  completo de auditoría de logs real."
+cheatsheet:
+  - cmd: grep x f | sort | uniq -c | sort -nr | head -1
+    desc: el valor que más se repite
+  - cmd: grep "ip $ip" f | grep OK | grep -oE
+    desc: por IP + criterio + extraer
+keywords:
+  - grep
+  - boss
+  - log
+  - cadena
+  - uniq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

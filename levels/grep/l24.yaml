@@ -1,0 +1,51 @@
+id: grep-l24
+track: grep
+index: 24
+title: La ventana exacta
+subtitle: "head + tail + grep: rango de líneas"
+xp: 75
+difficulty: 5
+brief: El fichero marcas.txt tiene la firma en una zona CONCRETA (líneas 6..9).
+  El EXTERIOR es ruido y no vale.
+goal: De marcas.txt imprime las líneas que contienen TERMINAL SOLAMENTE si están
+  entre las líneas 6 y 9 (las exteriores no valen).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/marcas.txt <<EOF
+  uno simple sin señal
+  dos decoración
+  tres TERMINAL fuera de rango
+  cuatro TERMINAL exterior igualmente
+  cinco nada relevante
+  seis decorado ligero
+  siete TERMINAL del rango con la firma: $DOJO_FLAG
+  ocho TERMINAL interior válido
+  nueve TERMINAL el final del rango
+  diez TERMINAL fuera de nuevo
+  EOF
+  chown agent:agent /home/agent/marcas.txt
+solution: head -n 9 /home/agent/marcas.txt | tail -n +6 | grep 'TERMINAL'
+hints:
+  - La ventana 6..9 se obtiene con head -n 9 (corta desde arriba hasta la 9) |
+    tail -n +6 (empieza en la 6).
+  - El último grep filtra dentro de esa ventana SOLO las líneas TERMINAL.
+  - head -n 9 /home/agent/marcas.txt | tail -n +6 | grep 'TERMINAL'
+teach: head y tail son la "tijera de líneas"; acotar un bloque antes del grep
+  evita falsos positivos en todo el fichero. Otra forma es sed -n 6,9p; aquí
+  practicamos la fórmula head/tail, independiente de sed.
+cheatsheet:
+  - cmd: head -n 9 f | tail -n +6
+    desc: líneas 6..9
+  - cmd: sed -n 6,9p f
+    desc: idem con sed
+keywords:
+  - grep
+  - head
+  - tail
+  - ventana
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: las líneas 7..9 (TERMINAL), con la flag del nivel en la 7

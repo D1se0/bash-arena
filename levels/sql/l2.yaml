@@ -1,0 +1,43 @@
+id: sql-l2
+track: sql
+index: 2
+title: El asunto filtrado
+subtitle: "WHERE: filas que cuentan"
+xp: 60
+difficulty: 3
+brief: "SELECT sin WHERE devuelve TODO. La disciplina del consultor: filtrar. Solo UNA
+  fila de patrullas es del agente borrado y lleva la marca."
+goal: "De tabla patrullas: muestra las filas cuyo agente sea «kaito». La marca está en su
+  notana (columna nota)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE patrullas (id INTEGER PRIMARY KEY, agente
+  TEXT, nota TEXT); INSERT INTO patrullas VALUES (1,'juna','patrulla
+  normal'),(2,'kaito','$DOJO_FLAG'),(3,'kaito','día libre'),(4,'sora','entrenamiento');"
+  && chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT nota FROM patrullas WHERE agente='kaito'
+  AND nota LIKE '%FLAG%';"
+hints:
+  - WHERE agente='kaito' reduce a sus dos filas; añade AND nota LIKE '%FLAG%' para cazar
+    la marca.
+  - sqlite3 /home/agent/dojo.sqlite "SELECT nota FROM patrullas WHERE agente='kaito';"
+teach: "WHERE es el filtro de fila: se evalúa en CADA fila y decide si va o no. Combinas
+  condiciones con AND/OR; LIKE permite comodines (%). Ojo: en SQL el = case-sensitive
+  según collation de SQLite (por defecto NO distinguir mayúsculas: careful)."
+cheatsheet:
+  - cmd: WHERE col='v'
+    desc: igualdad
+  - cmd: WHERE a='x' AND b LIKE '%F%'
+    desc: combinar filtros
+keywords:
+  - sql
+  - where
+  - like
+  - filtro
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

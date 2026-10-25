@@ -1,0 +1,80 @@
+id: dns-l20
+track: dns
+index: 20
+title: "Boss: el DNS completo"
+subtitle: hosts + resolver + zona (serial + A)
+xp: 150
+difficulty: 5
+brief: "El boss DNS: prepara la máquina para resolver el dominio del dojo SIN servidor real: hosts +
+  resolv.conf + la zona con serial nuevo y su A."
+goal: Configura /etc/hosts (127.0.0.1 dojo.local), /etc/resolv.conf (nameserver 127.0.0.53, search
+  dojo.local), sube el serial de /home/agent/dojo.completa a ≥ 20260601 y añade el registro web IN A
+  10.0.0.99. cierra con dojo-verificar dns-boss.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 20" "DNS"
+
+  printf '%s\n' 'nameserver 8.8.8.8' > /etc/resolv.conf
+
+  cat > /home/agent/dojo.completa <<'EOF'
+
+  $TTL 3600
+
+  @ IN SOA ns1.dojo.local. admin.dojo.local. (
+        20260531 ; serial
+        3600     ; refresh
+        1200     ; retry
+        1209600  ; expire
+        3600 )   ; minimum
+    IN NS ns1.dojo.local.
+  ns1 IN A 127.0.0.53
+
+  EOF
+
+  chown agent:agent /home/agent/dojo.completa
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-boss)
+      grep -qE '^127\.0\.0\.1[[:space:]]+dojo\.local$' /etc/hosts || { echo "mapping dojo.local no está en /etc/hosts"; exit 1; }
+      grep -Eq '^nameserver[[:space:]]+127\.0\.0\.53$' /etc/resolv.conf || { echo "falta nameserver 127.0.0.53"; exit 1; }
+      grep -Eq '^search[[:space:]]+dojo\.local$' /etc/resolv.conf || { echo "falta search dojo.local"; exit 1; }
+      awk '/2026/{if ($1+0 >= 20260601) ok=1} END {exit ok ? 0 : 1}' /home/agent/dojo.completa || { echo "serial bajo (>= 20260601)"; exit 1; }
+      grep -Eq 'IN[[:space:]]+A[[:space:]]+10\.0\.0\.99$' /home/agent/dojo.completa || { echo "falta el A web en la zona"; exit 1; }
+      echo "✓ directo dns-boss: Boss: el DNS completo"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: printf '%s\n' '127.0.0.1 dojo.local' | sudo tee -a /etc/hosts && printf '%s\n' 'nameserver
+  127.0.0.53' 'search dojo.local' | sudo tee /etc/resolv.conf && sed -i 's/20260531/20260602/'
+  /home/agent/dojo.completa && printf '%s\n' 'web IN A 10.0.0.99' >> /home/agent/dojo.completa &&
+  dojo-verificar dns-boss
+hints:
+  - "Tres parejas: hosts (127.0.0.1 dojo.local), resolv.conf (nameserver + search) y la zona (serial
+    + A web)."
+  - El hosts exige la líneas EXACTA 127.0.0.1 dojo.local (agregar con >>).
+  - "El resolv.conf completo SOBREESCRIBE: nameserver 127.0.0.53 + search dojo.local (2 líneas)."
+teach: "El DNS ES una CADENA: hosts (mapeos locales) → resolv.conf (a quién pregunta) → zona (el
+  fichero autoritativo con SOA/serial) → inversa (PTR). El boss une la cadena completa. Las
+  consultas se resuelven en el orden del nsswitch: local antes que remoto."
+cheatsheet:
+  - cmd: getent hosts dojo.local
+    desc: verificar el lookup final
+  - cmd: grep -n "dojo" /etc/hosts /etc/resolv.conf
+    desc: auditar el estado dns
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

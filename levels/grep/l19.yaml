@@ -1,0 +1,44 @@
+id: grep-l19
+track: grep
+index: 19
+title: El token que viaja
+subtitle: "grep -oE: extracción con clase"
+xp: 75
+difficulty: 5
+brief: Cada línea del registro envía un campo token=… entre más texto. En UNA de
+  ellas viaja la firma; el resto son sesiones de decoración.
+goal: De envios.log extrae SOLO los fragmentos token=VALOR (el valor completo,
+  sin el resto de la línea) con -oE.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/envios.log <<EOF
+  envío normal: sess=abc123 fin del registro
+  paquete del dojo: token=$DOJO_FLAG fin
+  decoración de relleno: auth=deadbeef fin
+  EOF
+  chown agent:agent /home/agent/envios.log
+solution: grep -oE 'token=\S+' /home/agent/envios.log
+hints:
+  - -o imprime SOLO la parte casada (no toda la línea).
+  - "\\S+ casa uno o más caracteres que NO son espacio: agarra el valor completo
+    del token."
+  - grep -oE 'token=\S+' /home/agent/envios.log
+teach: "Combinar -o con -E convierte a grep en un EXTRACTOR: cada coincidencia
+  sale limpia en su propia línea. Es el primer paso del pipeline de cualquier
+  integración de logs."
+cheatsheet:
+  - cmd: grep -oE 'token=\S+' f
+    desc: extrae solo el match
+  - cmd: grep -oE '[0-9]{4}-[0-9]{2}' f
+    desc: extractor de fechas parciales
+keywords:
+  - grep
+  - -oE
+  - extracción
+  - token
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: token=FLAG{…}

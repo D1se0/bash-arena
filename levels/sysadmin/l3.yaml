@@ -1,0 +1,75 @@
+id: sysadmin-l3
+track: sysadmin
+index: 3
+title: Usuarios permitidos
+subtitle: ssh AllowUsers en sshd
+xp: 70
+difficulty: 3
+brief: "El dojo quiere SSH EXCLUSIVAMENTE para los usuarios del grupo agent: ni
+  root, ni invitados."
+goal: "En /etc/ssh/sshd_config.d/dojo.conf: añade AllowUsers agent. Valida con
+  sudo sshd -t y lanza dojo-verificar sshd-users."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /etc/ssh/sshd_config.d
+
+  printf '%s\n' 'PermitRootLogin prohibit-password' >
+  /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-users)
+      grep -Eq '^[[:space:]]*AllowUsers[[:space:]]+agent([[:space:]]|$)' /etc/ssh/sshd_config.d/dojo.conf || { echo "falta AllowUsers agent"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla"; exit 1; }
+      echo "✓ AllowUsers agente configurado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo bash -c 'echo "AllowUsers agent" >>
+  /etc/ssh/sshd_config.d/dojo.conf && sshd -t' && dojo-verificar sshd-users
+hints:
+  - "La sintaxis es una línea: AllowUsers agent (con mayúscula en AllowUsers y
+    el orden exacto)."
+  - También puedes validar con sudo sshd -T (en minúsculas) que imprime el
+    config fvalidado completo.
+  - sudo bash -c 'echo "AllowUsers agent" >> /etc/ssh/sshd_config.d/dojo.conf &&
+    sshd -t' && dojo-verificar sshd-users
+teach: "AllowUsers es el filtro de autenticación de sshd: quién puede entrar a
+  través de sshd(PRODUCTION). Un detalle que se practica poco: hay un espacio
+  entre AllowUsers y usario; la configmetería falla si hay otra palabra extra."
+cheatsheet:
+  - cmd: sudo sshd -T
+    desc: config sshd VALIDADO COMPLETO
+  - cmd: grep AllowUsers sue
+    desc: buscar el usuarios permitidos
+keywords:
+  - sshd
+  - AllowUsers
+  - usuarios
+  - auth
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ AllowUsers configurado
+      FLAG{…}

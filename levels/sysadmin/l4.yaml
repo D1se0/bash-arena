@@ -1,0 +1,82 @@
+id: sysadmin-l4
+track: sysadmin
+index: 4
+title: El banner SSH
+subtitle: establecer banner en sshd
+xp: 65
+difficulty: 3
+brief: "El dojo exige UN AVISO legal visible al conectarse por SSH: la directiva
+  Banner apunta a un fichero del sistema."
+goal: Añade Banner /etc/ssh/dojo-banner a /etc/ssh/sshd_config.d/dojo.conf, crea
+  el banner con TU TOASTEHA (en /etc/ssh/dojo-banner), y valida con sudo sshd
+  -t; luego dojo-verificar sshd-banner.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /etc/ssh
+
+  printf '%s\n' 'UsePAM no' > /etc/ssh/sshd_config.d/dojo.conf 2>/dev/null || {
+  mkdir -p /etc/ssh/sshd_config.d; printf '%s\n' 'UsePAM no' >
+  /etc/ssh/sshd_config.d/dojo.conf; }
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-banner)
+      grep -Eq '^[[:space:]]*Banner[[:space:]]+/etc/ssh/dojo-banner[[:space:]]*$' /etc/ssh/sshd_config.d/dojo.conf || { echo "falta Banner /etc/ssh/dojo-banner"; exit 1; }
+      grep -Eq 'dojo' /etc/ssh/dojo-banner || { echo "el banner debe mencionar dojo"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla"; exit 1; }
+      echo "✓ banner SSH configurado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo bash -c 'echo "Banner /etc/ssh/dojo-banner" >>
+  /etc/ssh/sshd_config.d/dojo.conf && printf "Aviso legal del dojo\nConexión
+  monitorizada.\n" > /etc/ssh/dojo-banner && sshd -t' && dojo-verificar
+  sshd-banner
+hints:
+  - "La directiva es Banner <fichero>: apunta a un fichero plano CON TEXTO
+    libre."
+  - El banner debe existir ANTES de validar; el texto tiene que mencionar la
+    palabra dojo.
+  - sudo bash -c 'echo "Banner /etc/ssh/dojo-banner" >>
+    /etc/ssh/sshd_config.d/dojo.conf && printf "Aviso legal del dojo\nConexión
+    monitorizada.\n" > /etc/ssh/dojo-banner && sshd -t' && dojo-verificar
+    sshd-banner
+teach: "Un SSH banner es el aviso legal del server. Debe EXISTIR el fichero y
+  ser legible por sshd; y si el path no existe, sshd -t NO falla (porque es solo
+  texto): hay que $​verificar por autotestático (y por eso el verificador lo la
+  comprueba)."
+cheatsheet:
+  - cmd: sudo sshd -t
+    desc: verificar la config final sshd
+  - cmd: cat /etc/ssh/dojo-banner
+    desc: verificar el contenido del banner
+keywords:
+  - sshd
+  - banner
+  - seguridad
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ banner SSH configurado
+      FLAG{…}

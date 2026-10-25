@@ -1,0 +1,84 @@
+id: sysadmin-l17
+track: sysadmin
+index: 17
+title: El cerrado correcto
+subtitle: systemctl status / procps
+xp: 75
+difficulty: 4
+brief: "En este dojo NO hay systemd ejecutable, pero PROCPS registra el estado
+  de un proceso en /proc/<pid>: leerlo es ver el servicio de verdad."
+goal: Encuentra el PID de sshd con pgrep -x sshd (LUEGO cat /proc/PID/comm).
+  Después cat /var/dojo/pid.txt para CONFIRMAR EL PID Ydojo-verificar2
+  comm-check.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /var/dojo
+
+  pid=$(pgrep -x sshd | head -n 1)
+
+  [ -n "$pid" ] || { /usr/sbin/sshd 2>/dev/null || true; pid=$(pgrep -x sshd |
+  head -n 1); }
+
+  printf '%s\n' "$pid" > /var/dojo/pid.txt
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  chown agent:agent /var/dojo/pid.txt
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    comm-check)
+      p=$(cat /var/dojo/pid.txt)
+      read -r comm < /proc/$p/comm 2>/dev/null
+      [ "$comm" == "sshd" ] || { echo "el proceso $p NO es sshd"; exit 1; }
+      echo "✓ PID $p es sshd"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: pid=$(pgrep -x sshd | head -n 1); cat /proc/$pid/comm; cat
+  /var/dojo/pid.txt; dojo-verificar2 comm-check
+hints:
+  - pgrep -x sshd entrega el PID (solo uno).
+  - "/proc/PID/comm es el NOMBRE COURSO del proceso (sin path): cat
+    /proc/1234/comm imprime sshd."
+  - pid=$(pgrep -x sshd | head -n 1); cat /proc/$pid/comm; cat
+    /var/dojo/pid.txt; dojo-verificar2 comm-check
+teach: "/proc es el sistema de ficheros VIVO del kernel: /proc/PID/comm, status,
+  cmdline… son el instrumento óseo de cualquier introspección de procesos.
+  systemctl solo es la CARA PRETTY de lo mismo."
+cheatsheet:
+  - cmd: pgrep -x sshd
+    desc: PID del proceso sshd
+  - cmd: cat /proc/PID/comm
+    desc: nombre del proceso en el cnt
+keywords:
+  - proc
+  - pid
+  - sshd
+  - proceso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      sshd
+      1234
+      ✓ PID 1234 es sshd
+      FLAG{…}

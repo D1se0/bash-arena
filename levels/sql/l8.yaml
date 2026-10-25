@@ -1,0 +1,47 @@
+id: sql-l8
+track: sql
+index: 8
+title: La fila borrada
+subtitle: DELETE + validación de resultados
+xp: 70
+difficulty: 4
+brief: "El dojo quiere que PRACTIQUES el borrado: la fila de prueba debe IRSE del altar y
+  únicamente quedan 3 registros (la firma va en la fila restante más rara)."
+goal: "De tabla altaro: borra LA fila cuyo id=99 (DELETE WHERE id=99) y COMPRUEBA con
+  SELECT COUNT(*) que quedan el resto. La marca está en la fila del id 1 (columna obj)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE altaro (id INTEGER PRIMARY KEY, obj TEXT);
+  INSERT INTO altaro VALUES
+  (1,'$DOJO_FLAG'),(2,'cabeza'),(3,'hueso'),(99,'prueba-borrar');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "DELETE FROM altaro WHERE id=99;" && sqlite3
+  /home/agent/dojo.sqlite "SELECT COUNT(*) FROM altaro; SELECT obj FROM altaro WHERE
+  id=1;"
+hints:
+  - DELETE FROM tabla WHERE cond borra SOLO las filas concordas; sin WHERE borra TODAS.
+  - Verifica con COUNT(*) tras borrar (should = 3).
+  - sqlite3 /home/agent/dojo.sqlite "DELETE FROM altaro WHERE id=99;" && sqlite3 db
+    "SELECT COUNT(*) FROM altaro;"
+teach: "DELETE WHERE remueve filas; sin WHERE remueve LA TABLA entera. La práctica de
+  doble confirm (contar luego) es de los senior: transactions lo hacen reversible (BEGIN;
+  DELETE; ROLLBACK;)."
+cheatsheet:
+  - cmd: DELETE FROM t WHERE cond
+    desc: borrar filas concordas
+  - cmd: DELETE FROM t
+    desc: " ¡borra TODO! (peligro)"
+keywords:
+  - sql
+  - delete
+  - where
+  - count
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      3
+      FLAG{…}

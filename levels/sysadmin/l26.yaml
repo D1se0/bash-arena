@@ -1,0 +1,76 @@
+id: sysadmin-l26
+track: sysadmin
+index: 26
+title: El backup programado
+subtitle: "cron: m h dom mon dow + fichero /etc/cron.d"
+xp: 75
+difficulty: 4
+brief: "El dojo debe lanzar su backup cada día a las 04:05 como agent. Un fichero en /etc/cron.d con
+  la línea correcta Y los permisos correctos: si el script destino no es ejecutable, cron lo
+  ignora."
+goal: Escribe en /etc/cron.d/dojo-backup la línea 5 4 * * * agent /home/agent/backup.sh, dale chmod
+  644 y deja el script backup.sh existente y ejecutable. cierra con dojo-verificar cron-dojo.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /etc/cron.d
+
+  echo '# fichero vacío del dojo cron' > /etc/cron.d/dojo-backup
+
+  touch /home/agent/backup.sh
+
+  chmod 0644 /home/agent/backup.sh
+
+  chown agent:agent /home/agent/backup.sh
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    cron-dojo)
+      grep -q '^5 4 \* \* \* agent /home/agent/backup.sh$' /etc/cron.d/dojo-backup || { echo "la línea cron incorrecta"; exit 1; }
+      [ "$(stat -c %a /etc/cron.d/dojo-backup)" = "644" ] || { echo "el fichero debe chmod 644"; exit 1; }
+      [ -x /home/agent/backup.sh ] || { echo "el script backup.sh no existe o no es ejecutable"; exit 1; }
+      echo "✓ directo cron-dojo: cronjob: línea de /etc/cron.d correcta"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: printf '%s\n' '5 4 * * * agent /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup
+  >/dev/null && sudo chmod 644 /etc/cron.d/dojo-backup && chmod 755 /home/agent/backup.sh &&
+  dojo-verificar cron-dojo
+hints:
+  - "El formato de cron: m h dom mon dow comando (en /etc/cron.d ADEMÁS va el usuario tras los 5
+    campos)."
+  - "Para este nivel: 04:05, usuario agent, comando /home/agent/backup.sh."
+  - El fichero /etc/cron.d/dojo-backup debe quedar chmod 644 y el script destination ejecutable
+    (0755).
+teach: La línea cron es m h dom mon dow user comando (5 campos de tiempo + usuario en /etc/cron.d).
+  Los ficheros de /etc/cron.d exigen chmod 644 (si hay permisos raros, cron lo ignora). El comando
+  destino DEBE existir y ser ejecutable — si no, cron falla silenciosamente (el error acaba en
+  syslog/mail).
+cheatsheet:
+  - cmd: m h dom mon dow user cmd
+    desc: formato de /etc/cron.d
+  - cmd: chmod 644 /etc/cron.d/job
+    desc: permisos obligatorios
+keywords:
+  - cron
+  - crontab
+  - backup
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,0 +1,68 @@
+id: dns-l15
+track: dns
+index: 15
+title: La zona con alias
+subtitle: "fichero de zona: A + CNAME (punto final FQDN)"
+xp: 65
+difficulty: 3
+brief: "La zona de dojo.local tiene el CNAME roto: apunta a un nombre que NO existe. Debe apuntar a
+  web (que sí tiene A) con punto final."
+goal: Repara el CNAME de /home/agent/dojo.local.zone para que apunte a web.dojo.local. (con punto
+  final) y cierra con dojo-verificar dns-zone.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 15" "DNS"
+
+  cat > /home/agent/dojo.local.zone <<'EOF'
+
+  web   IN A   10.0.0.11
+
+  web2  IN A   10.0.0.12
+
+  mail  IN A   10.0.0.13
+
+  www   IN CNAME wymarcus2.dojo.local.
+
+  EOF
+
+  chown agent:agent /home/agent/dojo.local.zone
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-zone)
+      grep -Eq 'IN[[:space:]]+CNAME[[:space:]]+web\.dojo\.local\.$' /home/agent/dojo.local.zone || { echo "el CNAME no apunta a web.dojo.local. (FQDN con punto final)"; exit 1; }
+      grep -Eq 'IN[[:space:]]+A[[:space:]]+10\.0\.0\.11$' /home/agent/dojo.local.zone || { echo "falta el A web"; exit 1; }
+      echo "✓ directo dns-zone: La zona con alias"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sed -i 's/wymarcus2\.dojo\.local\./web.dojo.local./' /home/agent/dojo.local.zone &&
+  dojo-verificar dns-zone
+hints:
+  - "Un CNAME debe apuntar a un NOMBRE declarado en la zona: web.dojo.local. ya tiene su A."
+  - "El punto FINAL (dojo.local.) marca FQDN: sin punto, la zona expandiría el origen al final."
+  - sed -i de wymarcus2 → web con el punto final INCLUÍDO.
+teach: "Un A mapea NOMBRE→IP; un CNAME alias→otro nombre. El punto terminal (dojo.local.) marca
+  FQDN: SIN punto, el nombre es RELATIVO y la zona expande el origen al final. Un CNAME SIEMPRE
+  apunta a un nombre existente (y no coexiste otros registros en el mismo nombre)."
+cheatsheet:
+  - cmd: dig +noall +answer dominio
+    desc: leer los A/AAAA del dominio
+  - cmd: grep CNAME zone.txt
+    desc: verificar el alias en la zona
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

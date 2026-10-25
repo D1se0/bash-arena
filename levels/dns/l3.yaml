@@ -1,0 +1,61 @@
+id: dns-l3
+track: dns
+index: 3
+title: El reverso del espejo
+subtitle: "dig -x: consulta inversa (PTR)"
+xp: 65
+difficulty: 4
+brief: "La consulta INVERSA hace el revés: le das UNA IP y el DNS te devuelve el
+  NOMBRE. Después, si el NOMBRE tiene un TXT… la firma reaparece."
+goal: Con dig -x, resuelve la IP 10.20.30.40 contra el servidor local
+  (reverse=PTR). Ya que tienes el NOMBRE que devuelve, consulta el TXT DE ESE
+  NOMBRE (la firma va en ese TXT del nombre).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --host-record=secreto-dojo,10.20.30.40 \
+    --txt-record=secreto-dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$'
+  | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535
+hints:
+  - dig +short -x IP consulta el PTR (la respuesta es el NOMBRE propietario de
+    esa IP).
+  - "El nombre devuelto es el que lleva el TXT: guárdalo con $(dig +short -x …)
+    y lanza el TXT."
+  - nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head
+    -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535
+teach: "dig -x HOSTREV: consulta INVERSA de DNS; sirve para identificar a los
+  hostnames de las máquinas que apuntan a la IP (son los famosos rDNS de
+  producción). El patrón comandante: primer PTR, luego TXT/A del nombre que
+  sale."
+cheatsheet:
+  - cmd: dig +short -x IP
+    desc: el nombre de una IP (PTR)
+  - cmd: dig TXT nombre
+    desc: el TXT de ese nombre
+keywords:
+  - dns
+  - dig
+  - -x
+  - PTR
+  - reverso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      40.30.20.10.in-addr.arpa domain name pointer secreto-dojo.
+      FLAG{…}

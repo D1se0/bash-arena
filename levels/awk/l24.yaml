@@ -1,0 +1,46 @@
+id: awk-l24
+track: awk
+index: 24
+title: La hora externa
+subtitle: "awk getline: ejecutar y capturar"
+xp: 75
+difficulty: 5
+brief: El informe exige ESTAMPAR cada línea con la HORA en que se leyó. awk
+  puede pedir la hora al sistema con getline y ponerla delante.
+goal: De reportes.log imprime la HORA actual (date +%H, ejecutado y capturado
+  con getline) DELANTE de cada línea.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/reportes.log <<EOF
+  reporte del dojo con la firma: $DOJO_FLAG
+  otro reporte sin nada
+  EOF
+  chown agent:agent /home/agent/reportes.log
+solution: awk 'BEGIN { "date +%H" | getline hora } { print hora, $0 }'
+  /home/agent/reportes.log
+hints:
+  - '"comando" | getline var EJECUTA el comando una vez y copia SU salida en la
+    variable.'
+  - 'En BEGIN basta: la variable "hora" queda llena antes de leer la primera
+    línea.'
+  - awk 'BEGIN { "date +%H" | getline hora } { print hora, $0 }'
+    /home/agent/reportes.log
+teach: "El getline de awk con una PIPE es el CALL OUT al SHELL: captura la
+  salida de un comando (date, hostname, whoami…) y la usa EN el programa awk. El
+  clásico estampado con marca de tiempo auténtico."
+cheatsheet:
+  - cmd: awk 'BEGIN{"date" | getline d}{print d, $0}' f
+    desc: captura date con getline
+  - cmd: awk 'BEGIN{"hostname" | getline h}{print h}' f
+    desc: otro comando local
+keywords:
+  - awk
+  - getline
+  - pipe
+  - shell
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "14 reporte del dojo con la firma: FLAG{…} (hora: depende del momento)"

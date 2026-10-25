@@ -1,0 +1,46 @@
+id: sql-l10
+track: sql
+index: 10
+title: La forja del esqueleto
+subtitle: CREATE TABLE con restricciones
+xp: 75
+difficulty: 5
+brief: "El dojo auténtico SE CONSTRUYE: crea TU propia tabla (con PRIMARY KEY y NOT NULL)
+  y llena UNA fila con la marca."
+goal: "Crea una tabla torre (id INTEGER PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL)
+  y guarda en una fila la marca (valor en planta). Validación: id=1 nombre de columna
+  planta debe ser el sello."
+setup: |-
+  #!/bin/bash
+  set -e
+  printf '%s\\n' '$DOJO_FLAG' > /var/.dojo-hit && chmod 0644 /var/.dojo-hit
+  rm -f /home/agent/dojo.sqlite
+  true
+solution: sqlite3 /home/agent/dojo.sqlite "CREATE TABLE IF NOT EXISTS torre (id INTEGER
+  PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL);" && sqlite3 /home/agent/dojo.sqlite
+  "INSERT INTO torre VALUES (1, '$(cat /var/.dojo-hit)');" && sqlite3
+  /home/agent/dojo.sqlite "SELECT planta FROM torre WHERE id=1;"
+hints:
+  - CREATE TABLE torre (id INTEGER PRIMARY KEY, planta TEXT NOT NULL);
+  - "INSERT con sustitución de shell: sqlite db \"INSERT INTO torre VALUES (1, '$(cat
+    /var/.dojo-hit)');\" o desde la caja con la marca en una variable."
+  - sqlite3 db "CREATE TABLE IF NOT EXISTS torre (id INTEGER PRIMARY KEY, planta TEXT NOT
+    NULL);" && sqlite3 db "INSERT INTO torre (id, planta) VALUES (1, '$(cat
+    /var/.dojo-hit)');"
+teach: "CREATE TABLE define el esqueleto: tipos afines (INTEGER, TEXT, REAL...), PRIMARY
+  KEY, NOT NULL, UNIQUE, DEFAULT. INTEGER PRIMARY KEY es ROWID implícito (rápido y
+  compacto). Los de REAL/BLOB NO NULL impone integridad."
+cheatsheet:
+  - cmd: CREATE TABLE t (id INTEGER PRIMARY KEY, c TEXT NOT NULL);
+    desc: esqueleto de tabla
+  - cmd: .schema torre
+    desc: ver el CREATE exacto de una tabla
+keywords:
+  - sql
+  - create table
+  - primary key
+  - not null
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

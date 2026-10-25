@@ -1,0 +1,44 @@
+id: awk-l28
+track: awk
+index: 28
+title: El conversor de tabla
+subtitle: "awk FS/OFS: reformat con BEGIN {OFS}"
+xp: 55
+difficulty: 3
+brief: "El inventario llega en columnas separadas por «:» (como passwd). Se convierte a tabulación
+  (TSV) para el grid del dojo: OFS lo reescribe."
+goal: De inventario.dat (separado por :) imprime campo1 y campo3 SEPARADOS POR TABULADOR (solo esas
+  dos columnas).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 28" "Awk"
+  cat > /home/agent/inventario.dat <<EOF
+  herraje:stato:$DOJO_FLAG:12
+  candado:activo:latón:30
+  pallet:inactivo:nota:8
+  tornillería:activo:acero:55
+  EOF
+  chown agent:agent /home/agent/inventario.dat
+solution: "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1, $3}' /home/agent/inventario.dat"
+hints:
+  - 'OFS es el Output Field Separator: con BEGIN {OFS="\t"} los campos impresos con coma quedan
+    TAB-separados.'
+  - print $1, $3 (con COMA) usa el OFS; print $1 $3 (sin coma) concatenaría SIN separador.
+  - "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1, $3}' inventario.dat"
+teach: "FS es el separador de ENTRADA (algo como -F:) y OFS el de SALIDA: la pareja convierte
+  formatos limpios en una línea. $1, $3 con coma aplica el OFS asignado."
+cheatsheet:
+  - cmd: "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1,$3}' f"
+    desc: de «:» a tab
+  - cmd: awk 'BEGIN {FS=","; OFS="|"}' f
+    desc: de CSV a PIPE
+keywords:
+  - awk
+  - OFS
+  - FS
+  - formato
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

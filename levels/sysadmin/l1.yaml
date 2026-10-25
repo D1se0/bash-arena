@@ -1,0 +1,79 @@
+id: sysadmin-l1
+track: sysadmin
+index: 1
+title: El breve accidente de /tmp
+subtitle: limpieza y validación de sshd_conf con sshd -t
+xp: 60
+difficulty: 3
+brief: Al sshd del dojo le metieron la directiva bandera con un typo y ya no
+  arranca. Los configtests de sshd son TU herramienta.
+goal: "Repara /etc/ssh/sshd_config.d/dojo.conf (la directiva Port viene mal
+  escrita: pasa a Port 2200). Valida con sudo sshd -t y luego ejecuta
+  dojo-verificar sshd-port."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  sudo -n true 2>/dev/null || true
+
+  mkdir -p /etc/ssh/sshd_config.d
+
+  printf '%s\n' 'Portt 2200' > /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-port)
+      grep -Eq '^[[:space:]]*Port[[:space:]]+2200[[:space:]]*$' /etc/ssh/sshd_config.d/dojo.conf || { echo "falta Port 2200"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla"; exit 1; }
+      echo "✓ sshd-config válida"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo bash -c "sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf
+  && sshd -t" && dojo-verificar sshd-port
+hints:
+  - 'El fichero del nivel es /etc/ssh/sshd_config.d/dojo.conf: el typo va en el
+    nombre de la directiva "Portt".'
+  - sudo sed -i "s/Portt/Port/" /etc/ssh/sshd_config.d/dojo.conf corrige la
+    directiva.
+  - "La referencia: sudo sshd -t verifica la sintaxis SIN arrancar el servicio."
+  - sudo bash -c "sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf &&
+    sshd -t" && dojo-verificar sshd-port
+teach: modificar configuración SIN VALIDARla es escribir a ciegas. La práctica
+  sshd -t (y nginx -t, apache2ctl configtest) es el "prueba de sintaxis antes de
+  recargar". Convalida cualquier fichero desde el shell.
+cheatsheet:
+  - cmd: sudo sshd -t
+    desc: valida la configuración de sshd
+  - cmd: sed -i s/a/b/ f
+    desc: sustitución en línea y edición inplace
+keywords:
+  - ssh
+  - sshd
+  - -t
+  - configura
+  - validación
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ sshd-config válida
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

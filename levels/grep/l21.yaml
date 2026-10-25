@@ -1,0 +1,51 @@
+id: grep-l21
+track: grep
+index: 21
+title: Sin respaldos antiguos
+subtitle: "grep -r --exclude: descartar por nombre"
+xp: 75
+difficulty: 4
+brief: El árbol de configuraciones guarda la invitación ACTUAL y una copia de
+  seguridad antigua (.bak) que YA NO vale.
+goal: Del árbol invitaciones/, imprime las líneas que contienen cláve IGNORANDO
+  todos los ficheros que terminan en .bak.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+
+  mkdir -p /home/agent/invitaciones
+
+  printf '%s\n' 'cláve = $DOJO_FLAG (la actual)' >
+  /home/agent/invitaciones/abril.conf
+
+  printf '%s\n' 'cláve = copia-vieja-no-vale' >
+  /home/agent/invitaciones/abril.conf.bak
+
+  printf '%s\n' 'cláve = sin-version' > /home/agent/invitaciones/otro.conf
+
+  chown -R agent:agent /home/agent/invitaciones
+solution: grep -r --exclude='*.bak' 'cláve' /home/agent/invitaciones
+hints:
+  - --exclude='*.patrón' descarta los ficheros cuyo NOMBRE case con el patrón.
+  - El *.bak es la extensión clásica de backups; filtrarla de la búsqueda por
+    contenido es rutina en producción.
+  - grep -r --exclude='*.bak' 'cláve' /home/agent/invitaciones
+teach: En árboles con copias de seguridad, --exclude evita false positives de
+  toda la era .bak. El análogo de INCLUIR solo ciertos tipos es
+  --include="*.log".
+cheatsheet:
+  - cmd: grep -r --exclude='*.bak' p dir
+    desc: sin los .bak
+  - cmd: grep -r --include='*.conf' p dir
+    desc: solo los .conf
+keywords:
+  - grep
+  - -r
+  - --exclude
+  - backups
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "…abril.conf: cláve = FLAG{…} (la actual)…"

@@ -1,0 +1,39 @@
+id: grep-l31
+track: grep
+index: 31
+title: El detector silencioso
+subtitle: grep -q + $? en un if
+xp: 65
+difficulty: 4
+brief: "En scripting NO quieres la salida: quieres SABER si está. El guardián del dojo usa -q y $?."
+goal: Si marca.trace contiene marcada, imprime «Vamos con la señal» y su contenido (una línea con
+  FLAG{…}).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 31" "Grep"
+  echo 'firma del zinco en tránsito' > /home/agent/step-inside.txt
+  echo 'marcada: $DOJO_FLAG' > /home/agent/marca.trace
+  chmod 0644 /home/agent/marca.trace
+solution: "if grep -q 'marcada' /home/agent/marca.trace; then echo \"Vamos con la señal\"; cat
+  /home/agent/marca.trace; else echo 'sin señal: abortando'; fi"
+hints:
+  - "grep -q es silencioso: su ÚNICO mensaje es el exit code (0 si casó, 1 si no)."
+  - "Un if COMANDO then … evalúa el exit code: -q + cat del trace."
+  - if grep -q 'marcada' marca.trace; then cat marca.trace; fi
+teach: "grep -q (quiet) solo dice SÍ/NO con el código de salida: 0 si encontró, 1 si no. Es el grep
+  que alimenta if/&&/|| en scripts — inmediato y sin salida contaminante."
+cheatsheet:
+  - cmd: grep -q patrón f
+    desc: solo exit code (0=sí, 1=no)
+  - cmd: if cmd; then …; fi
+    desc: evaluar exit code de un comando
+keywords:
+  - grep
+  - -q
+  - exit
+  - scripting
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

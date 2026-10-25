@@ -1,0 +1,51 @@
+id: awk-l19
+track: awk
+index: 19
+title: El bloque entero
+subtitle: awk rango /inicio/,/fin/
+xp: 75
+difficulty: 5
+brief: El log del día divide la escena en BLOQUES con banderas INICIO y FIN.
+  Solo el bloque nocturno (entre banderas) tiene la firma.
+goal: De menu.log imprime TODO el contenido ENTRE la línea que empieza por
+  INICIO y la que empieza por FIN (inclusas).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/menu.log <<EOF
+  INICIO
+  cena a las 21:00
+  vino del sommelier con la firma: $DOJO_FLAG
+  FIN
+  postre para el desayuno
+  EOF
+  chown agent:agent /home/agent/menu.log
+solution: awk '/^INICIO/,/^FIN/' /home/agent/menu.log
+hints:
+  - El rango /a/,/b/ imprime desde la línea que casa con /a/ hasta la línea que
+    casa con /b/ (inclusas).
+  - Con ^ anclas al inicio de línea, evitas un FIN a mitad de frase u otros
+    candidatos.
+  - awk '/^INICIO/,/^FIN/' /home/agent/menu.log
+teach: 'El selector de bloques /a/,/b/ es la herramienta de awk para "trozos
+  marcados" (el análogo de sed -n /a/,/b/p). La ventaja: después puedes meter
+  acciones encima del rango, filtrar y acumular.'
+cheatsheet:
+  - cmd: awk '/^a/,/^b/' f
+    desc: bloque entre anclas
+  - cmd: awk '/BEGIN/,/END/ {print}' f
+    desc: bloque entre literales
+keywords:
+  - awk
+  - rango
+  - bloque
+  - ancla
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      INICIO
+      …cena…
+      …firma…
+      FIN

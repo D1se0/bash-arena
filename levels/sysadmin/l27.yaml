@@ -1,0 +1,92 @@
+id: sysadmin-l27
+track: sysadmin
+index: 27
+title: El hijo prodigo de PATH
+subtitle: "PATH: orden, command -v, hash -r y shadowing"
+xp: 85
+difficulty: 5
+brief: "Un nc sombra en /home/agent/bin puede secuestrar la PATH si va ANTES: la PRIMERA entrada
+  gana. hash -r refresca la caché de bash; command -v es el método fiable de verificar."
+goal: Monta PATH con ${HOME}/bin delante (export PATH="${HOME}/bin:$PATH"), limpia la caché (hash
+  -r), verifica que nc resuelto por command -v ES el sombra (/home/agent/bin/nc), instala legit como
+  /usr/local/bin/nc-safe (sudo install -m 0755) y comprueba que ejecuta. cierra con dojo-verificar
+  path-hijack.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /home/agent/bin
+
+  cat > /home/agent/bin/nc <<'EOF'
+
+  #!/bin/bash
+
+  echo nc-sombra
+
+  EOF
+
+  chmod 0755 /home/agent/bin/nc
+
+  cat > /home/agent/legit <<'EOF'
+
+  #!/bin/bash
+
+  echo nc-legitimato
+
+  EOF
+
+  chmod 0755 /home/agent/legit
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    path-hijack)
+      [ -x /home/agent/bin/nc ] || { echo "no existe la sombra nc en /home/agent/bin"; exit 1; }
+      [ -x /home/agent/legit ] || { echo "legit no es ejecutable"; exit 1; }
+      [ -x /usr/local/bin/nc-safe ] || { echo "legit no se instaló como /usr/local/bin/nc-safe"; exit 1; }
+      /usr/local/bin/nc-safe | grep -q 'nc-legitimato' || { echo "nc-safe no corre bien"; exit 1; }
+      echo "✓ directo path-hijack: PATH: binario sombra, command -v y hash -r"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: export PATH="/home/agent/bin:$PATH" && hash -r && command -v nc | grep -q
+  '/home/agent/bin/nc' && sudo install -m 0755 /home/agent/legit /usr/local/bin/nc-safe && command
+  -v nc-safe | grep -q '/usr/local/bin/nc-safe' && /home/agent/legit | grep -q 'nc-legitimato' &&
+  /home/agent/bin/nc | grep -q 'nc-sombra' && dojo-verificar path-hijack
+hints:
+  - El nc sombra en /home/agent/bin GANA si esa carpeta va ANTES en PATH (la primera entrada manda).
+  - "command -v BINARIO muestra la RUTA REAL que bash ejecutaría: verifica con grep para la ruta
+    sospechosa."
+  - hash -r limpia la caché de binarios del shell (tras mover/instalar binarios, la caché queda
+    rancia).
+teach: "PATH gana el PRIMERO: si /home/agent/bin precede, tu nc sombra dobla a la shell. bash cachea
+  las rutas de binarios en su tabla hash — hash -r es obligatorio tras mover/instalar comandos, o
+  seguirías ejecutando el VIEJO. command -v es la forma fiable de saber la ruta real."
+cheatsheet:
+  - cmd: command -v cmd
+    desc: ruta REAL que bash ejecutaría
+  - cmd: hash -r
+    desc: limpiar la caché de binarios
+keywords:
+  - path
+  - which
+  - command
+  - hash
+  - shadow
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

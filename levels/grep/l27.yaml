@@ -1,0 +1,48 @@
+id: grep-l27
+track: grep
+index: 27
+title: Contar las caídas
+subtitle: "grep -c: nº de líneas que casan"
+xp: 45
+difficulty: 2
+brief: El monitor de ping anota cada corte por hora. Para el informe necesitas el TOTAL de cortes
+  registrados, no las líneas en sí.
+goal: "Primero CUENTA (grep -c) las líneas de corte de cortes.log y después muestra ESAS líneas:
+  contienen la marca del dojo."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 27" "Grep"
+
+  {
+    i=0
+    for hora in 08 09 10 11 12 13 14 15 16 17; do
+      i=$((i+1))
+      if [ $((i % 3)) -eq 0 ]; then echo "corte ${hora}:00 enlace colapsado $DOJO_FLAG"; else echo "ok ${hora}:00 servicio normal"; fi
+    done
+  } > /home/agent/cortes.log
+
+  chown agent:agent /home/agent/cortes.log
+solution: grep -c 'corte' /home/agent/cortes.log && grep 'corte' /home/agent/cortes.log
+hints:
+  - "grep -c no imprime las líneas: imprime CUÁNTAS casaron (solo el número)."
+  - "El segundo grep SIN -c re-muestra ya las líneas completas: llevan la marca."
+  - grep -c 'corte' /home/agent/cortes.log && grep 'corte' /home/agent/cortes.log
+teach: "grep -c devuelve el CONTEO de líneas que casan (0 si ninguna, exit 1). Trampa clásica:
+  cuenta LÍNEAS, no apariciones (dos matches en la misma línea valen 1); con -o + wc -l contarías
+  apariciones en vez de líneas."
+cheatsheet:
+  - cmd: grep -c p f
+    desc: cuántas líneas casan
+  - cmd: grep -o p f | wc -l
+    desc: cuántas apariciones (otra vía)
+keywords:
+  - grep
+  - -c
+  - contar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

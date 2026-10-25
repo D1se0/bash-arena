@@ -1,0 +1,72 @@
+id: dns-l19
+track: dns
+index: 19
+title: La zona del revés
+subtitle: "PTR: IP → nombre con $ORIGIN in-addr.arpa"
+xp: 75
+difficulty: 4
+brief: "El auditor pide la ZONA INVERSA: un PTR que diga IP→nombre. Añade el PTR de la IP 10.0.0.11
+  apuntando a web.dojo.local. dentro del $ORIGIN inverso."
+goal: "Añade a /home/agent/dojo.inversa.zone el PTR: 11 IN PTR web.dojo.local. (en la $ORIGIN
+  11.0.10.in-addr.arpa. correcta). Cierra con dojo-verificar dns-ptr."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 19" "DNS"
+
+  cat > /home/agent/dojo.inversa.zone <<'EOF'
+
+  $ORIGIN 11.0.10.in-addr.arpa.
+
+  $TTL 300
+
+  @ IN SOA ns1.dojo.local. admin.dojo.local. (
+          20260601 ; serial
+          300      ; refresh
+          120      ; retry
+          86400    ; expire
+          300 )    ; minimum
+    IN NS ns1.dojo.local.
+  2 IN PTR ns1.dojo.local.
+
+  EOF
+
+  chown agent:agent /home/agent/dojo.inversa.zone
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-ptr)
+      grep -Eq '^11[[:space:]]+IN[[:space:]]+PTR[[:space:]]+web\.dojo\.local\.$' /home/agent/dojo.inversa.zone || { echo "falta el PTR 11 → web.dojo.local."; exit 1; }
+      echo "✓ directo dns-ptr: La zona del revés"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: printf '%s\n' '11 IN PTR web.dojo.local.' >> /home/agent/dojo.inversa.zone &&
+  dojo-verificar dns-ptr
+hints:
+  - "La zona inversa usa in-addr.arpa: la IP se escribe AL REVÉS (10.0.0.11 → 11.0.10.in-addr.arpa)."
+  - "El PTR declara el ÚLTIMO octeto: «11 IN PTR nombre_fqdn.»."
+  - "Append con printf: la línea al final del fichero, respetando el punto final."
+teach: "La zona INVERSA en in-addr.arpa resuelve IP→nombre con PTR. El ORIGIN inverso:
+  11.0.10.in-addr.arpa. es para la IP 10.0.0.11 (¡la IP se escribe AL REVÉS!). El PTR lo miran el
+  correo (anti-spam) y las validaciones de llegada."
+cheatsheet:
+  - cmd: dig -x 10.0.0.11
+    desc: consulta inversa (PTR)
+  - cmd: grep PTR zone.rev
+    desc: leer los PTR del fichero inverso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

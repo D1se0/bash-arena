@@ -1,0 +1,52 @@
+id: sql-l22
+track: sql
+index: 22
+title: Boss LEFT JOIN y NULLs
+subtitle: "LEFT JOIN + IS NULL: anti-join defensivo"
+xp: 170
+difficulty: 5
+brief: "El cheque final: si un agente está CREADO pero NO tiene misiones, es un sospechoso vacío.
+  LEFT JOIN + IS NULL los revela (y sus nombres esconden la marca)."
+goal: "De agentess: imprime nombre y sello (la marca viaja en el sello) de los agentes que NO tienen
+  ninguna misión (LEFT JOIN misiones + IS NULL)."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "
+
+  CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT);
+
+  CREATE TABLE misiones (id INTEGER PRIMARY KEY, agente_id INT);
+
+  INSERT INTO agentess VALUES (1,'con','ORO'),(2,'dd','$DOJO_FLAG'),(3,'jj','ORO');
+
+  INSERT INTO misiones VALUES (1,1);" && chmod 644 /home/agent/dojo.sqlite && chown agent:agent
+  /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT a.nombre, a.sello FROM agentess a LEFT JOIN
+  misiones m ON m.agente_id = a.id WHERE m.agente_id IS NULL;"
+hints:
+  - "LEFT JOIN conserva TODAS las del lado izquierdo: sin par, las columnas del lado derecho van
+    NULL."
+  - "ON m.agente_id = a.id es la clave del join: WHERE m.agente_id IS NULL atrapa las NO-matched."
+  - SELECT a.nombre, a.sello — el anti-join devuelve las filas huérfanas y SU sello.
+  - SELECT a.nombre, a.sello FROM agentess a LEFT JOIN misiones m ON m.agente_id=a.id WHERE
+    m.agente_id IS NULL;
+teach: "LEFT JOIN produce filas sin par con columnas del lado derecho en NULL: la WHERE m.col IS
+  NULL atrapa las SIN par (el «LEFT ANTI JOIN»). Es LA técnica de «¿quién no fue?, ¿qué no está
+  asignado?»: la pregunta del debugging SQL real."
+cheatsheet:
+  - cmd: LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL
+    desc: LEFT anti join
+  - cmd: COUNT(t2.id)
+    desc: cuenta las filas del join (0 si vacío)
+keywords:
+  - sql
+  - boss
+  - left join
+  - "null"
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

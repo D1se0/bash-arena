@@ -1,0 +1,43 @@
+id: awk-l30
+track: awk
+index: 30
+title: Códigos de longitud exacta
+subtitle: awk length + substr
+xp: 60
+difficulty: 3
+brief: En codigos.txt los códigos válidos ocupan EXACTAMENTE 8 caracteres en el PRIMER campo. La
+  marca viaja en la nota de uno de esos códigos.
+goal: "Imprime de codigos.txt SOLO las líneas cuyo PRIMER campo mide EXACTAMENTE 8 caracteres
+  (length($1)==8): una trae la nota con la marca."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 30" "Awk"
+  cat > /home/agent/codigos.txt <<EOF
+  AB123 corto
+  NOTA7YZ1 marcada: $DOJO_FLAG
+  ABCDEF cortito2
+  GHIJKLMN7 decalcado con rewrite
+  ZOPERTUIS demasiado larga: 9 letras
+  EOF
+  chown agent:agent /home/agent/codigos.txt
+solution: awk 'length($1) == 8 {print}' /home/agent/codigos.txt
+hints:
+  - "length($1) mide el PRIMER CAMPO (no la línea): así notas y ruido de la fila no cuentan."
+  - "Con $0 medirías TODO (incluida la nota): el código quedo fuera de la medida."
+  - awk 'length($1) == 8 {print}' /home/agent/codigos.txt
+teach: "length() mide (de $1 un campo o $0 la línea) y substr() corta partes FÍSICAS. length($1)==8
+  filtra por el código; length($0)==8 mediría la fila entera (con nota): elige QUÉ mides."
+cheatsheet:
+  - cmd: awk 'length($1) == 8' f
+    desc: filtra por longitud del 1.er campo
+  - cmd: awk '{print substr($0,1,4)}' f
+    desc: recorta los 4 primeros símbolos
+keywords:
+  - awk
+  - length
+  - substr
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

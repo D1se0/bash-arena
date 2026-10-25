@@ -1,0 +1,50 @@
+id: awk-l36
+track: awk
+index: 36
+title: "Boss: la hora pico"
+subtitle: awkk acumula por franja y END top
+xp: 140
+difficulty: 5
+brief: El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la pico.
+  Extrae el VALOR total acumulado de esa hora.
+goal: Imprime de trafico.txt las LÍNEAS de la hora (1.º campo) con MÁS tráfico total (suma del 3.º
+  campo) — la marca viaja en la fila pico.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 36" "Awk"
+  cat > /home/agent/trafico.txt <<EOF
+  08:00 api 120
+  08:00 web 30
+  09:00 api 40
+  10:00 web 300
+  10:00 api 120 $DOJO_FLAG
+  09:00 web 50
+  EOF
+  chown agent:agent /home/agent/trafico.txt
+solution: h=$(awk '{t[$1] += $3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}'
+  /home/agent/trafico.txt); grep "^$h " /home/agent/trafico.txt
+hints:
+  - "Suma por HORA: t[$1] += $3; en END guarda el GANADOR (hora) junto al max: horax = x."
+  - El awk imprime la HORA pico (no el número); captúrala en h=$(awk …).
+  - 'Último paso: grep "^$h " trafico.txt muestra TODAS las líneas de esa hora (la marca incluida).'
+  - h=$(awk '{t[$1]+=$3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}'
+    trafico.txt); grep "^$h " trafico.txt
+teach: "El boss une arrays asociativos, agregación por grupos, el max en END y el «vuelta al log»
+  con grep: suma por grupos (t[$1] += $3), guarda la HORA ganadora (no el número) y después vuelve
+  sobre el fichero con grep ^hora para enseñar las filas completas."
+cheatsheet:
+  - cmd: END {for (k in t) if (t[k] > m) {m = t[k]; ganador = k} print ganador}
+    desc: máximo por clave (guarda la clave, no el valor)
+  - cmd: grep "^$h " f
+    desc: "ancla la hora + espacio: solo las filas de esa franja"
+keywords:
+  - awk
+  - boss
+  - array
+  - end
+  - log
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

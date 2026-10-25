@@ -1,0 +1,55 @@
+id: dns-l13
+track: dns
+index: 13
+title: El anfitrión jurado
+subtitle: "/etc/hosts: mapear hostname → IP"
+xp: 55
+difficulty: 2
+brief: "El servicio del dojo espera su hostname. Si /etc/hosts no lo resuelve, el daemon confunde su
+  propio nombre: asegúralo en la tabla local."
+goal: Añade a /etc/hosts la línea que mapea dojo.local → 10.0.0.5 y cierra con dojo-verificar dns-hosts.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 13" "DNS"
+
+  grep -q '^127.0.0.1 localhost' /etc/hosts || echo '127.0.0.1 localhost' >> /etc/hosts
+
+  printf '%s\n' 'hosts: files dns' > /etc/nsswitch.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-hosts)
+      grep -qE '^10\.0\.0\.5[[:space:]]+dojo\.local$' /etc/hosts || { echo "la mapping no está en /etc/hosts"; exit 1; }
+      echo "✓ directo dns-hosts: El anfitrión jurado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: echo "10.0.0.5 dojo.local" | sudo tee -a /etc/hosts && dojo-verificar dns-hosts
+hints:
+  - "El formato de línea de /etc/hosts es: IP[TAB o espacios]hostname [alias…]."
+  - "La fila correcta aquí: 10.0.0.5 dojo.local (una sola línea, sin alias)."
+  - 'Con el shell: echo "10.0.0.5 dojo.local" >> /etc/hosts'
+teach: "/etc/hosts es el mapeo manual ANTES del resolver (precedencia files > dns en
+  /etc/nsswitch.conf): una línea por entrada IP hostname. Es la tabla que la libc consulta primero
+  en cada getaddrinfo."
+cheatsheet:
+  - cmd: grep dojo.local /etc/hosts
+    desc: verificar la entrada del hosts
+  - cmd: getent hosts dominio
+    desc: resolver según nsswitch
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

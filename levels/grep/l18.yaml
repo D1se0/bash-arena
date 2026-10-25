@@ -1,0 +1,43 @@
+id: grep-l18
+track: grep
+index: 18
+title: Solo la primera onda
+subtitle: "grep -m: corte tras el primer match"
+xp: 70
+difficulty: 4
+brief: El log de beacons repite la señal cada segundo. Para el diagnóstico vale
+  SOLO LA PRIMERA, y ahí va la firma del nivel.
+goal: De beacon.log imprime únicamente la PRIMERA línea que contenga BEACON.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/beacon.log <<EOF
+  t=001 BEACON: pulso firme y la firma: $DOJO_FLAG
+  t=002 BEACON repetición obligatoria
+  t=003 BEACON repetición obligatoria
+  t=004 BEACON silencio confirmado
+  EOF
+  chown agent:agent /home/agent/beacon.log
+solution: grep -m 1 'BEACON' /home/agent/beacon.log
+hints:
+  - -m N detiene la lectura del fichero cuando ya acumuló N matches.
+  - "Con -m 1 el resto del fichero NO se escanea: es una ganancia real de
+    rendimiento."
+  - grep -m 1 'BEACON' /home/agent/beacon.log
+teach: grep -m N es el límite de coincidencias por fichero. En logs enormes y
+  repetitivos, -m 1 imprime el primer hallazgo y para de leer.
+cheatsheet:
+  - cmd: grep -m 1 pat f
+    desc: solo el primer match
+  - cmd: grep -m 5 pat f
+    desc: los primeros 5
+keywords:
+  - grep
+  - -m
+  - límite
+  - rendimiento
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: "t=001 BEACON: pulso firme y la firma: FLAG{…}"

@@ -1,0 +1,41 @@
+id: awk-l31
+track: awk
+index: 31
+title: El registro híbrido
+subtitle: awk split() con varios separadores
+xp: 65
+difficulty: 4
+brief: "El registro de alias mezcla separadores: «ALIAS;objeto:peso», con punto y coma + dos puntos
+  en la misma línea. split() lo resuelve."
+goal: De rangos.txt imprime el PESO (3.ª pieza) del alias cuyo valor exacto (1.ª pieza) es rival.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 31" "Awk"
+  cat > /home/agent/rangos.txt <<EOF
+  mago;baston:50
+  rival;espada:$DOJO_FLAG
+  druida;trasto:25
+  rival;sombra:9
+  EOF
+  chown agent:agent /home/agent/rangos.txt
+solution: awk '{split($0, a, /[;:]/); if (a[1] == "rival") print a[3]}' /home/agent/rangos.txt
+hints:
+  - "split($0, a, SEP) parte en piezas arbitrarias: SEP puede ser regex [;:] que engulle «;» y «:»."
+  - "Piezas tras el split: a[1] alias, a[2] objeto, a[3] peso."
+  - awk '{split($0, a, /[;:]/); if (a[1] == "rival") print a[3]}' /home/agent/rangos.txt
+teach: "split() con regex [;:] gestiona separadores MÚLTIPLES en la misma línea. Es la herramienta
+  para ficheros mixtos que ni FS ni -F cubren: parte, separa y accede por índice."
+cheatsheet:
+  - cmd: split($0, a, /[;:]/)
+    desc: separador multi-carácter regex
+  - cmd: split($1, b, ":")
+    desc: parte un CAMPO ya separado
+keywords:
+  - awk
+  - split
+  - regex
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

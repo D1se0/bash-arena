@@ -1,0 +1,71 @@
+id: dns-l16
+track: dns
+index: 16
+title: El serial del SOA
+subtitle: "SOA: serial +1 y $TTL 300"
+xp: 70
+difficulty: 3
+brief: "El SOA tiene un serial VIEJO: los servidores secundarios no replican el update. Actualiza a
+  20260601 y baja el $TTL por defecto a 300 (5 min)."
+goal: Actualiza el serial del SOA de /home/agent/dojo.zone a 20260601 y el $TTL inicial a 300.
+  cierra con dojo-verificar dns-soa.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 16" "DNS"
+
+  cat > /home/agent/dojo.zone <<'EOF'
+
+  $TTL 3600
+
+  @ IN SOA ns1.dojo.local. admin.dojo.local. (
+        20260531 ; serial
+        3600     ; refresh
+        1200     ; retry
+        1209600  ; expire
+        3600 )   ; minimum
+    IN NS ns1.dojo.local.
+  ns1 IN A 10.0.0.2
+
+  EOF
+
+  chown agent:agent /home/agent/dojo.zone
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-soa)
+      ! grep -q '\$TTL 3600' /home/agent/dojo.zone && grep -q '\$TTL 300' /home/agent/dojo.zone || { echo "el TTL no es 300"; exit 1; }
+      grep -q '20260601' /home/agent/dojo.zone || { echo "falta el serial 20260601"; exit 1; }
+      echo "✓ directo dns-soa: El serial del SOA"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sed -i 's/20260531/20260601/' /home/agent/dojo.zone && sed -i 's/\$TTL 3600/\$TTL 300/'
+  /home/agent/dojo.zone && dojo-verificar dns-soa
+hints:
+  - "El serial SOA es el RELOJ de la REPLICACIÓN: se INCREMENTA en cada update (nunca atrás)."
+  - "Los tiempos son SEGUNDOS: $TTL 3600 = 1h; $TTL 300 = 5 min."
+  - "sed -i en dos pasadas: una para el serial, otra para el $TTL."
+teach: "El SOA (Start Of Authority) gobierna la zona: el serial es la versión (se incrementa o los
+  secundarios ignoran el update), refresh/retry/expire controlan la recarga por el esclavo y $TTL es
+  el default de cacheo de la zona."
+cheatsheet:
+  - cmd: grep serial zone.txt
+    desc: leer el serial actual
+  - cmd: grep "\$TTL" zone.txt
+    desc: leer el TTL default
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

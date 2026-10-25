@@ -1,0 +1,45 @@
+id: sql-l18
+track: sql
+index: 18
+title: CASE el sello cambia
+subtitle: CASE WHEN THEN ELSE END en SELECT
+xp: 95
+difficulty: 4
+brief: "La DB tiene rangos: CASE transforma datos por reglas (ORO → elite, plata → soldado, resto →
+  aprendiz) al vuelo. La marca viaja en el SELLO de sara: sácalo con un segundo SELECT."
+goal: "Del agente sara: SELECT con CASE que lo clasifique (elite/soldado/aprendiz) y después SU
+  SELLO crudo con otro SELECT (la marca viaja ahí)."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "
+
+  CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT);
+
+  INSERT INTO agentess VALUES (1,'raul','plata'),(2,'sara','$DOJO_FLAG'),(3,'lilo','bronce');" &&
+  chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT CASE WHEN sello='ORO' THEN 'elite' WHEN
+  sello='plata' THEN 'soldado' ELSE 'aprendiz' END FROM agentess WHERE nombre='sara';" && sqlite3
+  /home/agent/dojo.sqlite "SELECT sello FROM agentess WHERE nombre='sara';"
+hints:
+  - CASE WHEN cond THEN val [WHEN …] ELSE val END — la evaluación es secuencial.
+  - El WHERE filtra a sara antes de evaluar el CASE.
+  - "El segundo SELECT (mismo WHERE) imprime su sello crudo: la marca del dojo."
+teach: "CASE WHEN … THEN … [ELSE] END evalúa secuencialmente (la PRIMERA condición que dispara
+  gana). CASE es el IF de SQL: en SELECT, ORDER BY o GROUP BY encienden reportes con categorías. El
+  dato crudo sale con un segundo SELECT."
+cheatsheet:
+  - cmd: CASE WHEN x THEN a ELSE b END
+    desc: transforma según condición
+  - cmd: SELECT CASE WHEN cnt>5 THEN 'alto'
+    desc: agrega por valor
+keywords:
+  - sql
+  - case
+  - when
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

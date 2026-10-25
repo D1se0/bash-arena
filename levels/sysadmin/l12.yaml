@@ -1,0 +1,73 @@
+id: sysadmin-l12
+track: sysadmin
+index: 12
+title: El espejo de los procesos
+subtitle: ps aux y filtrado de PID
+xp: 70
+difficulty: 4
+brief: "El dojo quiere VER SUS PROCESOS in caestel: que realmenTE WATCHES sudo
+  sshd estén en ejecución y descubrir el PID."
+goal: "Busca los procesos sshd con ps aux; el PID debería ser el DE SPOTTER del
+  pid de sshd: ejecuta DOJO pid file: cat /var/dojo/sshd.pid. EL PID SIEMPRE SE
+  Muestra en la salida (con ps aux)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    ps-aux) echo "✓ proceso sshd listado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+
+  /usr/sbin/sshd -o "Port 2207" 2>/dev/null || true
+
+  echo $(pgrep -x sshd | head -n 1) > /var/dojo/sshd.pid
+
+  chown agent:agent /var/dojo/sshd.pid
+solution: ps aux | grep -w sshd; cat /var/dojo/sshd.pid; dojo-verificar2 ps-aux
+hints:
+  - ps aux lista TODOS los procesos con el USER, el PID y el COMANDO completos.
+  - Con pgrep -x sshd verificas el PID real; no es necesario para el nivel, pero
+    valida el PID por cat.
+  - ps aux | grep -w sshd; cat /var/dojo/sshd.pid; dojo-verificar2 ps-aux
+teach: "ps aux es la VENTANA donde ipramos qué procesos están vivos: getpid:
+  UID, PID, %CPU, memoria, CMD. Combinado con grep, es la base de todo el
+  diagnóstico del cansancio de los sistemas."
+cheatsheet:
+  - cmd: ps aux | grep proceso
+    desc: procesos con nombre concisos
+  - cmd: pgrep -x sshd
+    desc: PID por nombre exacto
+keywords:
+  - ps
+  - sshd
+  - procesos
+  - PID
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      …root … sshd ...
+      1234
+      ✓ proceso sshd listado
+      FLAG{…}

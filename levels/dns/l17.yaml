@@ -1,0 +1,67 @@
+id: dns-l17
+track: dns
+index: 17
+title: El correo prioritario
+subtitle: "zona MX + SRV: prioridad y peso"
+xp: 70
+difficulty: 4
+brief: "La zona necesita los MX con su sintaxis correcta y el SRV del protocolo VoIP del dojo:
+  prioridad, peso, puerto y destino."
+goal: Añade a la zona dos MX (10 mail1.dojo.local., 20 mail2.dojo.local.) y un SRV _sip._tcp hacia
+  sip.dojo.local. en puerto 5060. cierra con dojo-verificar dns-mx.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 17" "DNS"
+
+  cat > /home/agent/dojo.zone <<'EOF'
+
+  @ IN NS ns1.dojo.local.
+
+  ns1 IN A 10.0.0.2
+
+  web IN A 10.0.0.11
+
+  EOF
+
+  chown agent:agent /home/agent/dojo.zone
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-mx)
+      grep -Eq 'IN[[:space:]]+MX[[:space:]]+10[[:space:]]+mail1\.dojo\.local' /home/agent/dojo.zone || { echo "falta MX mail1 prioridad 10"; exit 1; }
+      grep -Eq 'IN[[:space:]]+MX[[:space:]]+20[[:space:]]+mail2\.dojo\.local' /home/agent/dojo.zone || { echo "falta MX mail2 prioridad 20"; exit 1; }
+      grep -Eq '_sip\._tcp[[:space:]].*5060[[:space:]]+sip\.dojo' /home/agent/dojo.zone || { echo "falta el SRV _sip._tcp puerto 5060"; exit 1; }
+      echo "✓ directo dns-mx: El correo prioritario"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: printf '%s\n' '@ IN MX 10 mail1.dojo.local.' '@ IN MX 20 mail2.dojo.local.' '_sip._tcp IN
+  SRV 0 5 5060 sip.dojo.local.' >> /home/agent/dojo.zone && dojo-verificar dns-mx
+hints:
+  - "MX se declara: nombre IN MX PRIORIDAD host. (prioridad MENOR gana)."
+  - "SRV: _servicio._proto IN SRV prioridad peso puerto destino. (5 campos)."
+  - "ORDEN estricto: mail1 (10) y mail2 (20); SRV 5060 → sip.dojo.local."
+teach: "El MX (Mail Exchange) enruta el correo: prioridad MENOR = más preferente (mail1 10, mail2
+  20). SRV descubre SERVICIOS: _servicio._proto IN SRV pri peso port target — el estándar de
+  localización para SIP, XMPP y otros."
+cheatsheet:
+  - cmd: dig MX dominio
+    desc: consultar MX de un dominio
+  - cmd: dig SRV _sip._tcp.dom
+    desc: consultar SRV records
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,0 +1,86 @@
+id: sysadmin-l6
+track: sysadmin
+index: 6
+title: La conexión por clave
+subtitle: sshd activo + ssh local por clave
+xp: 85
+difficulty: 4
+brief: El setup arranca un sshd local en el puerto 2200 aceptando SOLO tu clave
+  pública… y coloca la firma en un fichero SOLO legible al loguearte.
+goal: Conéctate por ssh a tu PROPIO equipo (puerto 2200, usuario agent) usando
+  tu clave de ~/.ssh/id_ed25519 (o la que te di), y lee el fichero
+  /var/dojo/secreto.txt de la sesión remota.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /run/sshd /var/dojo /home/agent/.ssh
+
+  ssh-keygen -t ed25519 -N "" -f /home/agent/.ssh/id_dojo -C agent-dojo
+  >/dev/null
+
+  cp /home/agent/.ssh/id_dojo.pub /home/agent/.ssh/authorized_keys
+
+  printf '%s\n' 'Port 2200' 'PasswordAuthentication no' 'PubkeyAuthentication
+  yes' 'PermitRootLogin no' > /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/dojo/secreto.txt
+
+  chown -R agent:agent /var/dojo /home/agent/.ssh
+
+  chmod 700 /home/agent/.ssh && chmod 600 /home/agent/.ssh/*
+  /var/dojo/secreto.txt
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    ssh-login) pgrep -x sshd >/dev/null || { echo "sshd no está en ejecución"; exit 1; } ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+
+  /usr/sbin/sshd 2>/dev/null || true
+
+  sleep 0.5
+solution: ssh -i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o
+  UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt
+hints:
+  - "El sshd ya está ARRANCADO en el puerto 2200: conéctate con ssh -p 2200
+    agent@127.0.0.1."
+  - La clave privada que acepta es ~/.ssh/id_dojo (sig infinita pub en
+    authorized_keys).
+  - "Deshable StrictHostKeyChecking al ser un servidor local: -o
+    StrictHostKeyChecking=no."
+  - ssh -i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o
+    UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt
+teach: "El flujo COMPLETO de SSH: generar la clave, copiar la pública a
+  authorized_keys (con los permisos 700/600 correctos), y CONECTAR. Es el paso a
+  paso real de cualquier acceso a servidor por clave."
+cheatsheet:
+  - cmd: ssh -i clave -p puerto usuario@host cmd
+    desc: conexión ssh con clave y comando
+  - cmd: -o StrictHostKeyChecking=no
+    desc: acepta el host sin confirmar (labs)
+keywords:
+  - ssh
+  - sshd
+  - claves
+  - "2200"
+  - conexión
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,0 +1,46 @@
+id: awk-l26
+track: awk
+index: 26
+title: "Boss: la nómina filtrada"
+subtitle: "2 condiciones: numérica y exacta"
+xp: 170
+difficulty: 5
+brief: 'En nomina.dat cada fila es: nombre importe estado. La firma del nivel
+  pide las filas con importe ≥ 4000 Y estado "critica" A LA VEZ.'
+goal: De nomina.dat imprime las filas cuyo importe (2.ª columna) sea MAYOR O
+  IGUAL a 4000 Y cuyo estado (3.ª columna) sea EXACTAMENTE critica.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/nomina.dat <<EOF
+  marcus 1200 normal
+  nista 4800 critica $DOJO_FLAG
+  leila 3999 critica
+  juan 5000 normal
+  hussain 9500 critica
+  EOF
+  chown agent:agent /home/agent/nomina.dat
+solution: awk '$2 >= 4000 && $3 == "critica"' /home/agent/nomina.dat
+hints:
+  - La condición NUMÉRICA ($2 >= 4000) y la de CADENA ($3 == "critica") se unen
+    con &&.
+  - "Compara la cadena de forma EXACTA: critica sin tilde, como está en el log."
+  - awk '$2 >= 4000 && $3 == "critica"' /home/agent/nomina.dat
+teach: "El CIERRE de este bloque: dos condiciones de TIPOS DIFERENTES (numérica
+  y cadena) sobre columnas distintas, unidas con &&. Es el patrón de auditoría
+  de pagos, facturación y QoS: filas que cumplen VARIAS dimensiones a la vez."
+cheatsheet:
+  - cmd: awk '$2 >= 4000 && $3 == "critica"' f
+    desc: número Y cadena a la vez
+  - cmd: awk '$2 >= 4000 || $3 == "critica"' f
+    desc: el OR análogo
+keywords:
+  - awk
+  - boss
+  - "&&"
+  - filtro
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: nista 4800 critica FLAG{…}

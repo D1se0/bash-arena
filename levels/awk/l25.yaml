@@ -1,0 +1,45 @@
+id: awk-l25
+track: awk
+index: 25
+title: El caso sin drama
+subtitle: "awk tolower: comparación insensible"
+xp: 75
+difficulty: 5
+brief: El log de usuarios escribe inicio, Inicio e INICIO sin criterio. Tres
+  filas son válidas; la firma viaja con la de MAYÚSCULAS.
+goal: De sesiones2.log imprime las filas cuyo 1.er campo vale inicio en
+  CUALQUIER combinación de mayúsculas/minúsculas.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/sesiones2.log <<EOF
+  inicio minúsculas sin nada
+  Inicio capitalizado tampoco
+  INICIO la fila con la firma: $DOJO_FLAG
+  inmidio no es inicio
+  EOF
+  chown agent:agent /home/agent/sesiones2.log
+solution: awk 'tolower($1) == "inicio"' /home/agent/sesiones2.log
+hints:
+  - tolower(cadena) pasa la cadena a minúsculas; toupper() hace lo contrario.
+  - "Con este selector las filas 1, 2 y 3 casan (inicio, Inicio, INICIO): entre
+    ellas está la del nivel."
+  - awk 'tolower($1) == "inicio"' /home/agent/sesiones2.log
+teach: "tolower/toupper normalizan a un caso ÚNICO antes de comparar: ni
+  ||-cadenas ni listas de variantes.Normaliza AMBOS lados (patrón y campo) para
+  no colar inmidio ni emparejar sin sentido."
+cheatsheet:
+  - cmd: awk 'tolower($1) == "inicio"' f
+    desc: compara insensible
+  - cmd: awk '{print toupper($1), $2}' f
+    desc: imprime el campo en mayúsculas
+keywords:
+  - awk
+  - tolower
+  - toupper
+  - caso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: las tres filas de inicio; la de la firma va en mayúsculas

@@ -1,0 +1,81 @@
+id: sysadmin-l2
+track: sysadmin
+index: 2
+title: La autenticación permitida
+subtitle: "ssh: PasswordAuthentication y PubkeyAuthentication"
+xp: 65
+difficulty: 3
+brief: "El dojo exige SSH SOCIÓ CON CLAVE, no con contraseña: son las dos
+  directivas clásicas del atomic hardening SSH."
+goal: "En /etc/ssh/sshd_config.d/dojo.conf (fichero que YA existe, con otras
+  directivas): añade PasswordAuthentication no y PubkeyAuthentication yes, cada
+  una en su línea (append, no en columnas). Luego sudo sshd -t y dojo-verificar
+  sshd-auth."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /etc/ssh/sshd_config.d
+
+  printf '%s\n' '## nivel sshd-auth' > /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' '## directivas del nivel' >> /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' 'UsePAM no' >> /etc/ssh/sshd_config.d/dojo.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-auth)
+      grep -Eq '^[[:space:]]*PasswordAuthentication[[:space:]]+no[[:space:]]*$' /etc/ssh/sshd_config.d/dojo.conf || { echo "falta PasswordAuthentication no"; exit 1; }
+      grep -Eq '^[[:space:]]*PubkeyAuthentication[[:space:]]+yes[[:space:]]*$' /etc/ssh/sshd_config.d/dojo.conf || { echo "falta PubkeyAuthentication yes"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla"; exit 1; }
+      echo "✓ directo sshd-auth; autenticación por clave configurada"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo bash -c 'printf "%s\n" "PasswordAuthentication no"
+  "PubkeyAuthentication yes" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t' &&
+  dojo-verificar sshd-auth
+hints:
+  - "Añade las dos líneas CON >> (append) o con grep -v para quitarlas si ya
+    están: sigue siendo el mismo fichero como siempre."
+  - "Las directivas class: PasswordAuthentication no / PubkeyAuthentication yes."
+  - sudo bash -c 'printf "%s\n" "PasswordAuthentication no"
+    "PubkeyAuthentication yes" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t'
+    && dojo-verificar sshd-auth
+teach: ssh OTP/permite SOCIÓ de login de clave con las clas certainties (no la
+  cfg cada vez). Son las DOS directivas de acceso que TODOS admin de seguridad
+  debe grabar en la memoria muscular.
+cheatsheet:
+  - cmd: grep -E "SSH"...
+    desc: ver dirigas sshd_on_option
+  - cmd: sudo sshd -t
+    desc: vincular las directivas de configtest
+keywords:
+  - ssh
+  - sshd
+  - password
+  - pubkey
+  - auth
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: "✓ directas aptas: FLAG{…}"

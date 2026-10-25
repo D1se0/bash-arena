@@ -1,0 +1,45 @@
+id: sql-l9
+track: sql
+index: 9
+title: El registro nuevo
+subtitle: INSERT INTO ... VALUES
+xp: 65
+difficulty: 3
+brief: "El dojo recibe UN NUEVO ALTARISTA (instructor) y quiere SU REGISTRO insertado con
+  la estación temporal: INSERT de una fila completa."
+goal: "De tabla cadetes: INSERTA una fila (id 5, nombre instructor, rango 3) y con la
+  columna nota de la fila ID 2 (la referencia de estaculo), la marca aparece."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE cadetes (id INTEGER PRIMARY KEY, nombre
+  TEXT, rango INT, nota TEXT); INSERT INTO cadetes VALUES
+  (1,'juna',1,''),(2,'kaito',2,'$DOJO_FLAG');" && chmod 644 /home/agent/dojo.sqlite &&
+  chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "INSERT INTO cadetes VALUES
+  (5,'instructor',3,'');" && sqlite3 /home/agent/dojo.sqlite "SELECT nota FROM cadetes
+  WHERE id=2;"
+hints:
+  - "INSERT INTO tabla VALUES (…): una fila por llamada; los tipos pueden diferir pero NOS
+    conviene exactos."
+  - Tras la inserción, la tabla listará la fila 5 al hacer SELECT *.
+  - sqlite3 db "INSERT INTO cadetes (id, nombre, rango) VALUES (5,'instructor',3);"
+teach: "INSERT INTO tabla (cols) VALUES (vals): la forma completa (listar columnas
+  explícitas previene descolocar las columnas). SQLite el ROWID auto con INTEGER PRIMARY
+  KEY."
+cheatsheet:
+  - cmd: INSERT INTO t (cols) VALUES (vals)
+    desc: insertar fila
+  - cmd: INSERT OR IGNORE
+    desc: evita duplicar la PRIMARY KEY
+keywords:
+  - sql
+  - insert
+  - values
+  - primary key
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

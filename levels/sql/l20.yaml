@@ -1,0 +1,45 @@
+id: sql-l20
+track: sql
+index: 20
+title: El sello se re-escribe
+subtitle: "UPDATE … WHERE: corregir fila exacta"
+xp: 100
+difficulty: 4
+brief: "El agente 3 se grada: UPDATE su sello a ORO — CON WHERE (sin WHERE actualiza TODA la tabla,
+  trágico)."
+goal: "UPDATE agentess: el agente con id=3 pasa a sello ORO (imprescindible WHERE). Después imprime
+  nombre y sello de TODAS las filas para confirmar (la marca viaja en una de ellas)."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "
+
+  CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT);
+
+  INSERT INTO agentess VALUES (1,'xate','plata'),(2,'xai','$DOJO_FLAG'),(3,'xii','bronce');" &&
+  chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "UPDATE agentess SET sello='ORO' WHERE id=3;" && sqlite3
+  /home/agent/dojo.sqlite "SELECT nombre, sello FROM agentess;"
+hints:
+  - UPDATE tabla SET col=valor WHERE id=3 — SIN WHERE CAMBIA TODA LA TABLA.
+  - SET es la asignación; WHERE es el filtro de la fila (solo id=3).
+  - "El SELECT final (nombre, sello de TODAS las filas) confirma el resultado: ahí viaja la marca."
+teach: "UPDATE es DML: sin WHERE REESCRIBE TODA LA TABLA (error clásico de bases de datos reales).
+  La prática: UPDATE … WHERE + SELECT de confirmación. En producción se envuelven en transacciones
+  (BEGIN … COMMIT)."
+cheatsheet:
+  - cmd: UPDATE t SET v=1 WHERE id=3
+    desc: UPDATE de una fila exacta
+  - cmd: BEGIN; UPDATE; COMMIT;
+    desc: transacción + confirmar
+keywords:
+  - sql
+  - update
+  - where
+  - dml
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

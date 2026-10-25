@@ -1,0 +1,43 @@
+id: awk-l17
+track: awk
+index: 17
+title: La cirugía de un campo
+subtitle: awk sub() SOLO en un campo
+xp: 75
+difficulty: 5
+brief: Los nombres de servicio llevan la vieja etiqueta beta. Hay que renombrar
+  SOLO el primer campo (el resto de la fila, con la firma, queda intacto).
+goal: "De servicios.dat imprime cada fila con el campo 1 modificado: sustituye
+  beta por v2 SOLO dentro del primer campo."
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/servicios.dat <<EOF
+  api-beta Gateway Latino $DOJO_FLAG
+  worker-beta cola de tareas
+  web-beta frontend de la demo
+  EOF
+  chown agent:agent /home/agent/servicios.dat
+solution: awk '{ sub(/beta/, "v2", $1); print }' /home/agent/servicios.dat
+hints:
+  - sub(/patrón/, "reemplazo", $1) sustituye el PRIMER match DENTRO del campo 1.
+  - Al reasignar un campo, awk RECONSTRUYE la línea dejando el resto intacto.
+  - awk '{ sub(/beta/, "v2", $1); print }' /home/agent/servicios.dat
+teach: "sub/gsub aceptan un TERCER argumento: el campo donde operar. Sustituir
+  en $1 NO toca $2 ni $3: la cirugía de awk evita regex desenfrenadas sobre toda
+  la línea."
+cheatsheet:
+  - cmd: awk '{sub(/a/, "b", $1); print}' f
+    desc: sustitución solo en campo 1
+  - cmd: awk '{sub(/a/, "b"); print}' f
+    desc: idem sobre TODA la línea
+keywords:
+  - awk
+  - sub
+  - campo
+  - sustitución
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: api-v2 Gateway Latino FLAG{…}

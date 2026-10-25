@@ -1,0 +1,40 @@
+id: sql-l16
+track: sql
+index: 16
+title: Boss SQL
+subtitle: JOIN + GROUP BY + HAVING + ORDER BY
+xp: 170
+difficulty: 5
+brief: "El examen final de SQL: une AGENTES con MISIONES, AGRUPA por agente, MUESTRA el
+  que más misiones cumplió y con estracto SELLO... la máxima graduación."
+goal: "Con JOIN entre agentes y misiones por id: GROUP BY agente → contando misiones, el
+  agente con MÁS (COUNT DESC LIMIT 1)... su columna sello DE agentes ES la marca final."
+setup: |-
+  #!/bin/bash
+  set -e
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT); CREATE TABLE misiones (id INTEGER PRIMARY KEY, agente_id INT, tarea TEXT); INSERT INTO agentess VALUES (1,'juna','bronce'),(2,'sora','plata'),(3,'kaito','$DOJO_FLAG'); INSERT INTO misiones VALUES (1,1,'reparto'),(2,1,'limpieza'),(3,2,'conducción'),(4,3,'seguridad'),(5,3,'ronda'),(6,3,'opcional');" && chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT a.sello FROM agentess a JOIN misiones m
+  ON m.agente_id=a.id GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1;"
+hints:
+  - JOIN agentess a ON m.agente_id=a.id y GROUP BY a.id (o a.nombre).
+  - "ORDER BY COUNT(*) DESC LIMIT 1: solo el que más misiones (kaito, con 3)."
+  - sqlite3 db "SELECT a.sello FROM agentess a JOIN misiones m ON m.agente_id=a.id GROUP
+    BY a.id ORDER BY COUNT(*) DESC LIMIT 1;"
+teach: "El boss mezcla TODO: un JOIN (una fila por combinación), GROUP BY (colapso por
+  agente), los AGREGADOS (COUNT), el orden por agregado y LIMIT para el TOP-1. Con ese
+  patrón escribes reportes y dashboards a la primera."
+cheatsheet:
+  - cmd: GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1
+    desc: TOP-1 por grupo
+  - cmd: JOIN + GROUP BY
+    desc: tríada del reporting
+keywords:
+  - boss
+  - sql
+  - join
+  - group by
+  - ord
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

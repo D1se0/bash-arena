@@ -17,7 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       tar gzip bzip2 xz-utils zip unzip p7zip-full \
       curl wget netcat-openbsd iproute2 telnet bind9-host dnsutils \
       procps psmisc lsof sysstat binutils \
-      dnsmasq-base libxml2-utils \
+      dnsmasq libxml2-utils \
+      openssh-server openssh-client nginx-light apache2 sqlite3 \
+      cron acl \
       jq gawk bc time colordiff \
       sudo locales iputils-ping \
       python3 xxd ca-certificates \

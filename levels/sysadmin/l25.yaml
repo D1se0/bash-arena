@@ -1,0 +1,81 @@
+id: sysadmin-l25
+track: sysadmin
+index: 25
+title: La unidad bien enrutada
+subtitle: "systemd: Restart, WantedBy, enable y symlink"
+xp: 85
+difficulty: 4
+brief: "La unidad dojo.service está a media configuración: falta Restart on-failure, reinicio a 5s y
+  el [Install] con WantedBy. Y hay que enablearla (symlink en wants)."
+goal: "Añade a /etc/systemd/system/dojo.service Restart=on-failure y RestartSec=5 en [Service], el
+  bloque [Install] con WantedBy=multi-user.target, y deja el enable: symlink en
+  /etc/systemd/system/multi-user.target.wants/dojo.service. cierra con dojo-verificar systemd-unit."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /etc/systemd/system /etc/systemd/system/multi-user.target.wants
+
+  cat > /etc/systemd/system/dojo.service <<EOF
+
+  [Unit]
+
+  Description=dojo worker
+
+  [Service]
+
+  ExecStart=/bin/false
+
+  EOF
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    systemd-unit)
+      grep -Eq 'Restart=on-failure' /etc/systemd/system/dojo.service || { echo "falta Restart=on-failure"; exit 1; }
+      grep -Eq 'RestartSec=5' /etc/systemd/system/dojo.service || { echo "falta RestartSec=5"; exit 1; }
+      grep -Eq 'WantedBy=multi-user.target' /etc/systemd/system/dojo.service || { echo "falta WantedBy=multi-user.target"; exit 1; }
+      [ -e /etc/systemd/system/multi-user.target.wants/dojo.service ] || { echo "dojo.service no está enable: falta el symlink"; exit 1; }
+      echo "✓ directo systemd-unit: unidad systemd: Restart + WantedBy + enable"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: (printf '\nRestart=on-failure\nRestartSec=5\n\n[Install]\nWantedBy=multi-user.target\n' |
+  sudo tee -a /etc/systemd/system/dojo.service >/dev/null) && sudo ln -sf
+  /etc/systemd/system/dojo.service /etc/systemd/system/multi-user.target.wants/dojo.service &&
+  dojo-verificar systemd-unit
+hints:
+  - La unidad [Service] ajusta Restart y RestartSec; el bloque [Install] ajusta WantedBy.
+  - "systemctl enable CREA el symlink en multi-user.target.wants: aquí lo probamos con ln -sf
+    (equivalente)."
+  - Si el config es erróneo, systemd-analyze verify marcaría las líneas con error.
+teach: Un service con Restart=on-failure + RestartSec=N resucita si cae (política de reintentos).
+  WantedBy en [Install] decide QUÉ targets lo quieren; systemctl enable crea el symlink inverso en
+  multi-user.target.wants — sin eso el servicio NO arranca al boot.
+cheatsheet:
+  - cmd: systemctl enable my.service
+    desc: crea el symlink en wants/*
+  - cmd: Restart=on-failure
+    desc: rearranque del servicio caído
+keywords:
+  - systemd
+  - unit
+  - restart
+  - enable
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

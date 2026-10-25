@@ -1,0 +1,97 @@
+id: sysadmin-l22
+track: sysadmin
+index: 22
+title: El typo de nginx
+subtitle: "nginx -t: validar TU config"
+xp: 80
+difficulty: 4
+brief: "El config trae un typo: servr_name. nginx ni arranca con eso. Encuéntralo, repáralo y valida
+  el fichero PROPIO con nginx -t (sin tocar el del sistema)."
+goal: Repara el typo del /home/agent/nginx/nginx.conf (server_name) y valida TU config con nginx -t
+  -c. cierra con dojo-verificar nginx-conf.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /home/agent/nginx/logs /home/agent/nginx/html /home/agent/nginx/tmp
+
+  mkdir -p /home/agent/nginx/tmp/body /home/agent/nginx/tmp/proxy /home/agent/nginx/tmp/fastcgi
+  /home/agent/nginx/tmp/uwsgi /home/agent/nginx/tmp/scgi
+
+  printf '%s\n' '<h1>dojo</h1>' > /home/agent/nginx/html/index.html
+
+  cat > /home/agent/nginx/nginx.conf <<'EOF'
+
+  pid /home/agent/nginx/logs/nginx.pid;
+
+  worker_processes 1;
+
+  error_log /home/agent/nginx/logs/error.log;
+
+  events { worker_connections 64; }
+
+  http {
+    access_log /home/agent/nginx/logs/access.log;
+    client_body_temp_path /home/agent/nginx/tmp/body;
+    proxy_temp_path /home/agent/nginx/tmp/proxy;
+    fastcgi_temp_path /home/agent/nginx/tmp/fastcgi;
+    uwsgi_temp_path /home/agent/nginx/tmp/uwsgi;
+    scgi_temp_path /home/agent/nginx/tmp/scgi;
+    server {
+      listen 8080;
+      servr_name dojo.local;
+      location / { root html; index index.html; }
+    }
+  }
+
+  EOF
+
+  chown -R agent:agent /home/agent/nginx
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    nginx-conf)
+      grep -q 'server_name' /home/agent/nginx/nginx.conf || { echo "falta server_name"; exit 1; }
+      ! grep -q 'servr_name' /home/agent/nginx/nginx.conf || { echo "aún queda el typo servr_name"; exit 1; }
+      nginx -t -c /home/agent/nginx/nginx.conf 2>&1 | grep -Eq 'syntax is ok|test is successful' || { echo "nginx -t falla"; exit 1; }
+      echo "✓ directo nginx-conf: nginx: server_name reparado y nginx -t OK"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c
+  /home/agent/nginx/nginx.conf && dojo-verificar nginx-conf
+hints:
+  - "El typo está en servr_name: nginx exige server_name dentro de cada server { }."
+  - nginx -t -c FICHERO valida un config PROPIO sin tocar /etc/nginx ni arrancar nada.
+  - Si -t falla, te dice el fichero y la LÍNEA exacta del problema.
+teach: "nginx -t -c FICHERO prueba la sintaxis de CUALQUIER config (sistema o propio): imprime
+  «syntax is ok / test is successful» o la LÍNEA exacta del fallo. La práctica correcta antes de la
+  recarga real."
+cheatsheet:
+  - cmd: nginx -t -c /ruta/nginx.conf
+    desc: validar config portable
+  - cmd: server_name dominio;
+    desc: nombre del server virtual
+keywords:
+  - nginx
+  - server_name
+  - validar
+  - configtest
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

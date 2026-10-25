@@ -1,0 +1,111 @@
+id: sysadmin-l7
+track: sysadmin
+index: 7
+title: La copia tranquilizada
+subtitle: "nginx -t: validar la configuración de nginx"
+xp: 70
+difficulty: 3
+brief: "El nginx del dojo está en La Co pileja de configuración
+  /home/agent/nginx: la directiva server_name tiene un typo que rompe nginx -t."
+goal: "Repara /home/agent/nginx/nginx.conf (el typo está en el nombre de la
+  directiva server_name): valida con nginx -t -c /home/agent/nginx/nginx.conf -p
+  /home/agent/nginx/ y luego dojo-verificar nginx-syntax."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /home/agent/nginx/logs /home/agent/nginx/html
+  /home/agent/nginx/tmp/body /home/agent/nginx/tmp/proxy
+  /home/agent/nginx/tmp/fastcgi /home/agent/nginx/tmp/uwsgi
+  /home/agent/nginx/tmp/scgi
+
+  printf '%s\n' '<h1>dojo</h1>' > /home/agent/nginx/html/index.html
+
+  cat > /home/agent/nginx/nginx.conf <<EOF
+
+  # nginx.conf del dojo - nivel nginx-syntax
+
+  pid  logs/nginx.pid;
+
+  worker_processes  1;
+
+  error_log  logs/error.log;
+
+  events { worker_connections 16; }
+
+  http {
+    access_log  logs/access.log;
+    client_body_temp_path  /home/agent/nginx/tmp/body;
+    proxy_temp_path        /home/agent/nginx/tmp/proxy;
+    fastcgi_temp_path      /home/agent/nginx/tmp/fastcgi;
+    uwsgi_temp_path        /home/agent/nginx/tmp/uwsgi;
+    scgi_temp_path         /home/agent/nginx/tmp/scgi;
+    server {
+      servr_name  dojo.local;      # <- typo aquí
+      listen 127.0.0.1:8081;
+      root html;
+      index index.html;
+    }
+  }
+
+  EOF
+
+  chown -R agent:agent /home/agent/nginx
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    nginx-syntax)
+      nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ 2>&1 | grep -q 'syntax is ok' || { echo "nginx -t falla"; exit 1; }
+      grep -Eq '^\s*server_name\s+dojo.local;' /home/agent/nginx/nginx.conf || { echo "server_name mal formado"; exit 1; }
+      echo "✓ nginx -t OK"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf &&
+  nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ &&
+  dojo-verificar2 nginx-syntax
+hints:
+  - El typo es "servr_name" donde debería ser "server_name".
+  - nginx -t -c fichero -p prefix valida el fichero SIN arrancar; el out dice
+    "syntax is ok" / "test is successful".
+  - sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t
+    -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2
+    nginx-syntax
+teach: "nginx -t valida la config SIN arrancar (y NUNCA baila si el puerto está
+  ocupado). Es la primera ética de sysadmin: configtest antes de recarga."
+cheatsheet:
+  - cmd: nginx -t -c fichero -p prefix
+    desc: valida la configuración con prefijo
+  - cmd: sed -i s/a/b/ f
+    desc: corrige el typo en línea
+keywords:
+  - nginx
+  - -t
+  - configura
+  - validación
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      nginx: syntax is ok
+      nginx: test is successful
+      ✓ nginx -t OK
+      FLAG{…}

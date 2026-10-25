@@ -1,0 +1,47 @@
+id: sql-l21
+track: sql
+index: 21
+title: INSERT SELECT del sello
+subtitle: "INSERT INTO tbl SELECT: copiar filas"
+xp: 105
+difficulty: 4
+brief: "La migración de los ORO: para CADA agente con sello ORO, inserta su fila en la tabla promot.
+  INSERT … SELECT es el SELECT de DML."
+goal: INSERT INTO promot (id, nombre) SELECT id, nombre FROM agentess WHERE sello = ORO; y luego
+  imprime TODAS las filas de promot (la marca viaja en un nombre).
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "
+
+  CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT);
+
+  CREATE TABLE promot (id INTEGER PRIMARY KEY, nombre TEXT);
+
+  INSERT INTO agentess VALUES (1,'ll','plata'),(2,'$DOJO_FLAG','ORO'),(3,'uu','ORO');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "INSERT INTO promot (id, nombre) SELECT id, nombre FROM
+  agentess WHERE sello='ORO';" && sqlite3 /home/agent/dojo.sqlite "SELECT * FROM promot;"
+hints:
+  - INSERT INTO target … SELECT … FROM source, sin VALUES (directo a la SELECT).
+  - La tabla target debe tener las columnas IGUALES que la SELECT (id, nombre).
+  - "El SELECT final sobre promot muestra las filas migradas: ahí viaja la marca."
+teach: "INSERT … SELECT es la transferencia de FILAS: filtra la origen (WHERE), da forma a las
+  columnas (SELECT col1, col2) e inserta en bloque. Para migraciones/copys es LA manera limpia (sin
+  bucles, sin el API)."
+cheatsheet:
+  - cmd: INSERT INTO t1 SELECT … FROM t2
+    desc: INSERT desde SELECT (sin VALUES)
+  - cmd: SELECT COUNT(*) FROM t1
+    desc: verificar filas añadidas
+keywords:
+  - sql
+  - insert
+  - select
+  - migración
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

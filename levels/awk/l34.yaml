@@ -1,0 +1,46 @@
+id: awk-l34
+track: awk
+index: 34
+title: Los extremos del pulso
+subtitle: awk min + max en la misma pasada
+xp: 75
+difficulty: 4
+brief: El despertador cardíaco trae valores distintos por línea. AWK necesita MIN y MAX de la MISMA
+  columna con acumuladores.
+goal: "Imprime de estiramiento.txt el MÍNIMO y el MÁXIMO de la 2.ª columna, y la NOTA (3.er campo)
+  del turno donde está el max (una línea: min, max, nota)."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 34" "Awk"
+  cat > /home/agent/estiramiento.txt <<EOF
+  turno1 45 nota:risa tranquila
+  turno2 12 nota:brisa gélida
+  turno3 96 nota:$DOJO_FLAG
+  turno4 70 nota:vapor caliente
+  EOF
+  chown agent:agent /home/agent/estiramiento.txt
+solution: awk 'NR==1 {mn=$2; mx=$2} NR>1 {if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3}} END {print
+  mn, mx, nota}' /home/agent/estiramiento.txt
+hints:
+  - "Inicializa en la PRIMERA línea (NR==1): mínimo y máximo ya son el valor."
+  - "En el resto: if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3} — guarda TAMBIÉN el dato asociado al
+    max."
+  - awk 'NR==1{mn=$2;mx=$2} NR>1{if($2<mn)mn=$2; if($2>mx){mx=$2; nota=$3}} END{print mn, mx, nota}'
+    estiramiento.txt
+teach: "La manera clásica de min/max: inicializa en la 1.ª línea, actualiza con ifs en el resto e
+  imprime en END. DOS valores en la misma pasada (una sola lectura del fichero)."
+cheatsheet:
+  - cmd: END {print mn, mx}
+    desc: imprimir los DOS acumuladores
+  - cmd: awk -v OFS=", " … print mn, mx
+    desc: salida con separador custom
+keywords:
+  - awk
+  - min
+  - max
+  - END
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

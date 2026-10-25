@@ -1,0 +1,52 @@
+id: dns-l11
+track: dns
+index: 11
+title: El puerto libre
+subtitle: dig a un SERVIDOR de otra puerta
+xp: 70
+difficulty: 4
+brief: En el dojo hay UN server DNS en 127.0.0.1:53537 EN otro puerto no
+  estándar (la firma viaja en un TXT pero SOLO en el server de ESE puerto).
+goal: Consulta el TXT de secreto.dojo EIXTENTEN el servidor 127.0.0.1 -p 53537
+  (dig a otro puerto).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*5353' 2>/dev/null; set -e
+
+  dnsmasq --port=53537 --no-resolv --bind-interface \
+    --txt-record=secreto.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53537 TXT secreto.dojo +short
+hints:
+  - Es el patrón EXACTO del nivel 1 de este canal, pero con un puerto DIFERENTE
+    (53537 en vez de 53535).
+  - "recuerda: dig @HOST -p PUERTO TXT nombre +short."
+  - dig @127.0.0.1 -p 53537 TXT secreto.dojo +short
+teach: "El páuis de dig es @HOST -p PUERTO nombre TIPO: cambia el servidor,
+  cambia el puerto, cambia el tipo. La repetición de las CUATRO puestas es lo
+  que hace el flujo meticulos."
+cheatsheet:
+  - cmd: dig @host -p puerto TXT name
+    desc: consulta a un puerto no estándar
+  - cmd: dig +short …
+    desc: el out ni canal de sort
+keywords:
+  - dns
+  - dig
+  - puerto
+  - TXT
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: '"FLAG{…}"'

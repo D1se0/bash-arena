@@ -1,0 +1,81 @@
+id: sysadmin-l16
+track: sysadmin
+index: 16
+title: El vigía del puerto
+subtitle: "ss: puertos en escucha de sshd"
+xp: 75
+difficulty: 4
+brief: El sshd del dojo escucha en un PUERTO NO ESTÁNDAR. Quien quiere accoger,
+  PRIMERO lo dice ss -tln (y ss -tln para la details).
+goal: Con ss -tln, localiza el puerto donde sshd escucha de la guardia (el setup
+  lo pone). Después cat /var/dojo/puerto.txt para confirmar el puerto Y ejecutar
+  dojo-verificar2 port-watch.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pgrep -x sshd | xargs -r kill 2>/dev/null; set -e
+
+  p=2207
+
+  /usr/sbin/sshd -o "Port $p" 2>/dev/null || true
+
+  printf '%s' "$p" > /etc/dojo-port
+
+  printf '%s\n' 'nivel: el puerto de sshd' > /var/dojo/README 2>/dev/null || {
+  mkdir -p /var/dojo; printf '%s\n' 'nivel sshd-port' > /var/dojo/README; }
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    port-watch)
+      pgrep -x sshd || { echo "sshd no está"; exit 1; }
+      ss -tln | grep -q "$(cat /etc/dojo-port)" || { echo "sshd NO escucha en el puerto que el setup definió"; exit 1; }
+      echo "✓ puerto sshd a la espera"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+
+  printf '%s\n' "$(cat /etc/dojo-port)" > /var/dojo/puerto.txt
+
+  chmod 0644 /var/dojo/puerto.txt
+solution: ss -tln; cat /var/dojo/puerto.txt; dojo-verificar2 port-watch
+hints:
+  - "ss -tln muestra los puertos TCP TCP a la escucha: LOCAL ADDRESS:PORT y
+    proceso (con p) y pid."
+  - "El puerto es un 2XXX non estándar: cat /var/dojo/puerto.txt lo confirma."
+  - ss -tln; cat /var/dojo/puerto.txt; dojo-verificar2 port-watch
+teach: "La cadena ss -tln | grep puerto es el JUNTADOR de los nuevos
+  administradores: revisar QUÉ ESCUCHA, EN QUÉ PUERTO, ANTES DE ABRIR CUALQUIER
+  COSA. El puerto exacto se suele documentar a la par."
+cheatsheet:
+  - cmd: ss -tln
+    desc: puntos de escucha TCP
+  - cmd: ss -tlnp
+    desc: idem MÁS el proceso (root)
+keywords:
+  - ss
+  - puerto
+  - escucha
+  - sshd
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: …LISTEN 0 … xxx:2207 …

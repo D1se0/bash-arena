@@ -1,0 +1,46 @@
+id: awk-l16
+track: awk
+index: 16
+title: El último campo
+subtitle: "awk $NF: el campo final"
+xp: 70
+difficulty: 4
+brief: El registro de entregas guarda un concepto VARIABLE al final de cada
+  fila; la fila del dojo es la única cuyo último campo es la firma.
+goal: De entregas.dat imprime ÚNICAMENTE el último campo de cada línea ($NF).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/entregas.dat <<EOF
+  paquete-01 entregado racionalmente
+  paquete-02 estado final: $DOJO_FLAG
+  paquete-03 devuelto al almacén
+  EOF
+  chown agent:agent /home/agent/entregas.dat
+solution: awk '{ print $NF }' /home/agent/entregas.dat
+hints:
+  - "$NF SIEMPRE apunta al último campo, sin importar cuántos haya: NF es el
+    número, $NF es el VALOR."
+  - "No necesitas contar los campos: awk ya lo sabe."
+  - awk '{ print $NF }' /home/agent/entregas.dat
+teach: El idiom $NF es ÚTIL cuando el último dato importa y el nº de campos
+  varía (logs con apéndices opcionales). $0 es la línea entera; $(NF-1) es el
+  penúltimo.
+cheatsheet:
+  - cmd: awk '{print $NF}' f
+    desc: último campo de cada fila
+  - cmd: awk '{print $(NF-1)}' f
+    desc: penúltimo campo
+keywords:
+  - awk
+  - $NF
+  - último
+  - campo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      racionalmente
+      FLAG{…}
+      al almacén… (los últimos de cada fila)

@@ -1,0 +1,49 @@
+id: grep-l26
+track: grep
+index: 26
+title: "Boss: la cadena de tres"
+subtitle: incluir → anclar → excluir
+xp: 170
+difficulty: 5
+brief: El log de auditoría mezcla eventos CRITICA de años pasados, simulacros y
+  el evento REAL. El informe exige tres pasos encadenados, y la firma viaja con
+  el evento real.
+goal: "De auditoria.log imprime SOLO las líneas que: contengan CRITICA, EMPIECEN
+  por 2026 (año del dojo) y NO contengan simulacro."
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/auditoria.log <<EOF
+  2025-11-02 CRITICA año viejo (no vale)
+  2026-10-25 CRITICA simulacro de octubre
+  2026-10-25 CRITICA del evento real urge: $DOJO_FLAG
+  2026-10-25 CRITICA otro simulacro que no vale
+  EOF
+  chown agent:agent /home/agent/auditoria.log
+solution: grep 'CRITICA' /home/agent/auditoria.log | grep -E '^2026' | grep -v
+  'simulacro'
+hints:
+  - "Paso 1: grep CRITICA deja las líneas del evento."
+  - 'Paso 2: grep -E "^2026" (ancla de inicio de línea) exige el año de este
+    dojo.'
+  - "Paso 3: grep -v simulacro elimina los falsos positivos."
+  - grep 'CRITICA' /home/agent/auditoria.log | grep -E '^2026' | grep -v
+    'simulacro'
+teach: "El boss final de este bloque encadena include → ancla → exclude. Tres
+  etapas: primero SUELTA la señal, luego AFILA su forma, y por último QUITA LOS
+  FALSOS. Cada etapa es un grep y juntos se leen como una frase."
+cheatsheet:
+  - cmd: grep a f | grep -E "^x" | grep -v y
+    desc: include + ancla + exclude
+  - cmd: grep -E '^2026' f
+    desc: anclar por año
+keywords:
+  - grep
+  - boss
+  - pipeline
+  - cadena
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 2026-10-25 CRITICA … FLAG{…}

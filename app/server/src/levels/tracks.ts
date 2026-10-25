@@ -16,6 +16,9 @@ export const TRACKS = [
   { id: 'awk', name: 'Awk (especialización)', icon: '📐', color: '#88C0D0', order: 13, description: 'solo awk a fondo: campos, NF/NR, -F:, comparaciones, regex por campo, máximo+END, concatenación, asociativos, join FNR==NR y match()' },
   { id: 'grep-pro', name: 'Grep Maestro', icon: '🥇', color: '#5EBA97', order: 14, description: '24 niveles de experto SOLO grep: extracción -oE, -c/-l/-L, límite -m, patrones -f, contexto -A/-B/-C asimétrico, alternancia anclada, --include/--exclude, IPs y fechas y boss triple-filtro' },
   { id: 'awk-pro', name: 'Awk Maestro', icon: '🏅', color: '#EBCB8B', order: 15, description: '24 niveles de experto SOLO awk: -F, umbrales numéricos, suma/máximo, NR y rangos, regex por campo, length/substr/index/split, sub/gsub, printf/sprintf, BEGIN/FS, OFS, arrays dedup e histograma, join FNR==NR y match()' },
+  { id: 'sysadmin', name: 'Sysadmin', icon: '🛠️', color: '#D08770', order: 16, description: 'configura y valida servicios reales: sshd (sshd -t, AllowUsers, banner), nginx -t, apache2ctl configtest, usuarios, binarios y procesos' },
+  { id: 'dns', name: 'DNS y resolución', icon: '🌐', color: '#BF616A', order: 17, description: 'dig contra un dnsmasq local: A/TXT/MX/ANY/PTR, +short, +noall +answer, NXDOMAIN, +tcp, resolv.conf/getent, logs de consultas y /etc/hosts' },
+  { id: 'sql', name: 'SQL / SQLite', icon: '🗃️', color: '#5E81AC', order: 18, description: 'sqlite3: SELECT/WHERE/ORDER BY, COUNT/GROUP BY, LIKE, JOIN, MAX, borrados y UPDATE, CASE, funciones datetime, transacciones y boss de agregados' },
 ] as const;
 
 export interface CheatsheetEntry {

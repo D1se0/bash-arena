@@ -1,0 +1,45 @@
+id: grep-l30
+track: grep
+index: 30
+title: La primera señal
+subtitle: "grep -m N: máximo de coincidencias"
+xp: 55
+difficulty: 3
+brief: "El radar avisa CADA segundo que ve señal, pero para el ticket solo necesitas LA PRIMERA: -m
+  corta en cuanto la tiene."
+goal: Imprime SOLO una línea de radar.log (la primera que contenga señal) usando el límite de
+  coincidencias.
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 30" "Grep"
+
+  {
+    for i in $(seq 1 12); do
+      if [ "$i" -eq 1 ]; then echo "señal $DOJO_FLAG ttl $i"; else echo "señal eco sin jugador ttl $i"; fi
+    done
+  } > /home/agent/radar.log
+
+  chown agent:agent /home/agent/radar.log
+solution: grep -m 1 'señal' /home/agent/radar.log
+hints:
+  - "-m N deja de buscar tras N coincidencias: -m 1 imprime SOLO la primera."
+  - "Ojo: todas las líneas contienen «señal»; -m 1 corta tras la 1.ª y no escanea más."
+  - grep -m 1 'señal' /home/agent/radar.log
+teach: grep -m 1 imprime la primera coincidencia y PARA (abandona el escaneo). En ficheros gigantes
+  es la diferencia entre 2ms y 2 minutos.
+cheatsheet:
+  - cmd: grep -m 1 p f
+    desc: primera coincidencia y cortar
+  - cmd: grep -m 5 p f
+    desc: hasta 5 coincidencias
+keywords:
+  - grep
+  - -m
+  - límite
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

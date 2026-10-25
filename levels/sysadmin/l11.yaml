@@ -1,0 +1,71 @@
+id: sysadmin-l11
+track: sysadmin
+index: 11
+title: El binario en tus manos
+subtitle: file, ldd y sha256sum
+xp: 70
+difficulty: 3
+brief: "El MAESTRO quiere que reconozcas un binario SIN abrirlo: que tipo es,
+  qué librerías usa y qué SHA256 tiene. La tríada real."
+goal: "Ejecuta: file /bin/cat; ldd /bin/cat; sha256sum /bin/cat (en SERIIE, sin
+  filtros) y luego dojo-verificar2 binary."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    binary)
+      echo "✓ inspected los datos del binario /bin/cat"
+      cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: file /bin/cat; ldd /bin/cat; sha256sum /bin/cat; dojo-verificar2 binary
+hints:
+  - file imprime el TIPO de fichero (ELF 64-bit LSB executable, dynamically
+    linked…).
+  - ldd imprime las LIBRERÍAS compartidadas que el binario va a necesitar.
+  - 'sha256sum imprime un HASH ÚNICO: la "firma digital" del binario.'
+  - file /bin/cat; ldd /bin/cat; sha256sum /bin/cat; dojo-verificar2 binary
+teach: "La tríada file + ldd + sha256sum responde: QUÉ ES, QUÉ NECESITA y SI ES
+  EL MISMO (hash). Es el pre-check del DOJO ante un binario desconocido y la
+  validación primero de los paquetes sin cambiar nada."
+cheatsheet:
+  - cmd: file binario
+    desc: qué tipo de binario es
+  - cmd: ldd binario
+    desc: librerías compartidas que usa
+  - cmd: sha256sum binario
+    desc: hash SHA del binario
+keywords:
+  - binario
+  - file
+  - ldd
+  - sha256sum
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      /bin/cat: ELF 64-bit…
+          libc.so.6 => /lib…
+      abc…  /bin/cat
+      FLAG{…}

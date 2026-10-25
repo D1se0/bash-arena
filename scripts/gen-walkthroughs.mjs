@@ -16,7 +16,7 @@ const require = createRequire(import.meta.url);
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const YAML = require(path.join(repoRoot, 'node_modules/yaml')).default ?? require(path.join(repoRoot, 'node_modules/yaml'));
 
-const TRACK_ORDER = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss', 'grep', 'awk', 'grep-pro', 'awk-pro'];
+const TRACK_ORDER = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss', 'grep', 'awk', 'grep-pro', 'awk-pro', 'sysadmin', 'dns', 'sql'];
 const LEVELS_DIR = path.join(repoRoot, 'levels');
 const OUT = path.join(repoRoot, 'docs-site/src/walkthroughs.generated.ts');
 
@@ -94,6 +94,17 @@ const DICT = {
   exit: { desc: 'termina el shell/swrss con el código dado' },
   sh: { desc: 'shell POSIX (aquí bash): sh -c \'CHAIN\' ejecuta una cadena de comandos como proceso nuevo' },
   bash: { desc: 'ejecuta un script/cadena con bash' },
+  /* ── sysadmin / dns / dba (ronda avanzada) ── */
+  'dojo-verificar': { desc: "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag" },
+  sshd: { desc: 'servidor OpenSSH; sshd -t valida la sintaxis de sshd_config sin reiniciar el servicio (modo test)', flags: { t: 'solo test: valida la configuración y sale' } },
+  'ssh-keygen': { desc: 'genera pares de claves SSH (-t tipo, add ed25519 moderno)', flags: { t: 'tipo de clave (ed25519, rsa…)', f: 'ruta del fichero de clave' } },
+  ssh: { desc: 'cliente SSH: sesión remota cifrada', flags: { i: 'usa la clave privada dada' } },
+  getent: { desc: 'consulta las bases de datos del sistema (passwd, hosts, dns…) como lo harían las librerías C' },
+  nginx: { desc: 'servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar', flags: { t: 'solo test de configuración' } },
+  dpkg: { desc: 'gestor de paquetes .deb de bajo nivel', flags: { l: 'lista los paquetes instalados', L: 'lista los ficheros de UN paquete' } },
+  ldd: { desc: 'imprime las librerías compartidas que necesita un binario (dependencias dinámicas)' },
+  dig: { desc: 'consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar', flags: { '+short': 'solo la respuesta, sin cabeceras', '+noall': 'suprime casi todo el escaparate', '+answer': 'junto a +noall, deja solo la sección ANSWER' } },
+  sqlite3: { desc: 'motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL', flags: { '-cmd': 'ejecuta SQL dado antes de abrir la consola interactive' } },
 };
 
 /* significado de flags LONG (-- palabra) que se usan a menudo */

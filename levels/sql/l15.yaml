@@ -1,0 +1,45 @@
+id: sql-l15
+track: sql
+index: 15
+title: La transacción a prueba
+subtitle: BEGIN/COMMIT/ROLLBACK
+xp: 80
+difficulty: 5
+brief: "El dótre del UPDATE peligroso: hágelo DENTRO de una transacción para poder
+  ROLLBACK si te equivocas (atomía)."
+goal: BEGIN TRANSACTION; DELETE plano; verificación de resultados (¿quedaron 3 filas?);
+  COMMIT; y luego SELECT … la marca tras el commit en la fila restante.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE mudarm (id INTEGER PRIMARY KEY, obj TEXT);
+  INSERT INTO mudarm VALUES
+  (1,'$DOJO_FLAG'),(2,'piedra'),(3,'piedra'),(4,'piedra'),(99,'prueba-rollback');" &&
+  chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT;
+  SELECT obj FROM mudarm WHERE id=1;"
+hints:
+  - "BEGIN; …COMMIT; haz TODAS las sentencias atómicas: si algo falla en el medio,
+    ROLLBACK devuelto el estado inicial."
+  - "El DELETE dentro de BEGIN: DELETE FROM mudarm WHERE id=99; más luego el COMMIT."
+  - sqlite3 db "BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT; SELECT * FROM mudarm;"
+teach: BEGIN marca el inicio de la transacción; COMMIT la sella; ROLLBACK cipher DESHACE
+  TODO desde el BEGIN. En SQLite cada escritura ES una transacción implícita y begin...
+  toca UNA pattern de producción para «grabes todo O nada».
+cheatsheet:
+  - cmd: BEGIN; … COMMIT;
+    desc: grupo atómico de escrituras
+  - cmd: ROLLBACK;
+    desc: deshacer desde el BEGIN
+keywords:
+  - sql
+  - transaction
+  - begin
+  - commit
+  - rollback
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

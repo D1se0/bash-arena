@@ -1,0 +1,57 @@
+id: dns-l5
+track: dns
+index: 5
+title: El TXT con TCP
+subtitle: "dig +tcp: forzar el transporte TCP"
+xp: 70
+difficulty: 4
+brief: El DNS por defecto usa UDP; el +tcp lo fuerza a TCP (utilísimo para las
+  respuestas grandes y para testear firewalls).
+goal: Consulta el TXT de secreto.dojo contra el servidor local, FORZANDO el uso
+  de TCP (+tcp en dig). Después, repite la consulta SIN +tcp (transporte UDP)
+  para VER que el resultado ES EL MISMO (la misma firma).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --txt-record=secreto.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig +tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short; dig @127.0.0.1
+  -p 53535 TXT secreto.dojo +short
+hints:
+  - dig +tcp hace la query por TCP (aunque acepta todas las respuestas de UDP,
+    el unico trasporte conjugado es TCP).
+  - Ambas consultas ([TCP] y la [UDP] normal) deben devolver la MISMA firma.
+  - dig +tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short; dig @127.0.0.1 -p
+    53535 TXT secreto.dojo +short
+teach: "El DNS nativo es UDP con TCP para las respuestas/port >512 BYTES. dig
+  +tcp simula la cap de los FIML'S firewalls que cortan UDP→53: la consulta debe
+  responder IGUAL."
+cheatsheet:
+  - cmd: dig +tcp name tipo
+    desc: consulta sobre TCP
+  - cmd: dig +udp name tipo
+    desc: consulta UDP (el default)
+keywords:
+  - dns
+  - dig
+  - +tcp
+  - udp
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      FLAG{…}
+      FLAG{…} (mismo resultado que por TCP)

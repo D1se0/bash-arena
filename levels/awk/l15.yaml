@@ -1,0 +1,46 @@
+id: awk-l15
+track: awk
+index: 15
+title: Los campos contados
+subtitle: "awk NF: filtrar por nº de campos"
+xp: 70
+difficulty: 4
+brief: "El registro de sesiones guarda filas de DISTINTA anchura: incompletas,
+  normales y una fila extra-larga. A la vez, la firma viaja en una fila de 4
+  campos."
+goal: De sesiones.dat imprime SOLAMENTE las filas que tienen EXACTAMENTE 4
+  campos (NF).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/sesiones.dat <<EOF
+  sesion-01 usuario
+  sesion-02 $DOJO_FLAG completa estado
+  sesion-03 empleado activo hoy tarde
+  sesion-04 usuario activo 23:10 tienda
+  EOF
+  chown agent:agent /home/agent/sesiones.dat
+solution: awk 'NF == 4' /home/agent/sesiones.dat
+hints:
+  - "NF es el NÚMERO de campos de la línea actual: la primera variable de
+    diagnóstico de awk."
+  - "La fila 2 tiene 4 campos y la 3 tiene 5: la comparación NF == 4 la única
+    que imprime es la de la flag."
+  - awk 'NF == 4' /home/agent/sesiones.dat
+teach: "NF cuenta los campos de la línea actual. Con NF, desechas filas truncas
+  o incompletas ANTES de procesar: es la primera validación de calidad de
+  cualquier log."
+cheatsheet:
+  - cmd: awk 'NF == 4' f
+    desc: filas con 4 campos
+  - cmd: awk 'NF > 3 {print NF, $0}' f
+    desc: ver NF junto a la fila
+keywords:
+  - awk
+  - NF
+  - campos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: la fila de 4 campos (aquí viaja la flag)

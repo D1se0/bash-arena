@@ -1,0 +1,58 @@
+id: dns-l2
+track: dns
+index: 2
+title: El registro del correo
+subtitle: "dig MX: los intercambiadores"
+xp: 60
+difficulty: 3
+brief: Un dominio de correo realmente responde con los MX (los servidores de
+  correo) y la prioridad (el número más pequeño es el PRIMERO).
+goal: Consulta el registro MX del dominio correo.dojo (servidor 127.0.0.1 -p
+  53535) Y luego consulta el TXT del dominio secreto.dojo (la firma del nivel).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --mx-host=correo.dojo,mail.correo.dojo,10 \
+    --txt-record=mail.correo.dojo,MX-bueno-y-activo \
+    --txt-record=secreto.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53535 correo.dojo MX; dig @127.0.0.1 -p 53535 TXT
+  secreto.dojo +short
+hints:
+  - dig @… -p 53535 correo.dojo MX la respuesta dice mail.correo.dojo (priority
+    10).
+  - Después el TXT de secreto.dojo (mismo servidor) para la firma.
+  - dig @127.0.0.1 -p 53535 correo.dojo MX; dig @127.0.0.1 -p 53535 TXT
+    secreto.dojo +short
+teach: "el registro MX apunta a los MAIL EXCHANGERS: el nombre del host y la
+  PRIORIDAD (la menor gana). Son la mitad del correo: el envío es un look-up MX
+  antes de la conexión SMTP."
+cheatsheet:
+  - cmd: dig dominio.com MX
+    desc: registro MX de un dominio
+  - cmd: dig +short MX dominio
+    desc: respuesta MX en corto
+keywords:
+  - dns
+  - dig
+  - MX
+  - correo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      correo.dojo. 0 IN MX 10 mail.correo.dojo.
+      FLAG{…}

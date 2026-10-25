@@ -1,0 +1,70 @@
+id: sysadmin-l24
+track: sysadmin
+index: 24
+title: La colada del logger
+subtitle: tail/grep sobre el log real del servicio
+xp: 70
+difficulty: 3
+brief: "Los sistemas no sueltan la flag directa: el log del servicio la esconde entre warnings y
+  ERRORs. tail corta el final; grep filtra la línea del ERROR y -oE extrae."
+goal: Extrae de /var/log/dojo/service.log ÚNICAMENTE la FLAG{…} que viaja en la línea ERROR
+  connection failed (está al final del log).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /var/log/dojo
+
+  for i in $(seq 1 25); do
+    echo "23:$((60-i)) nivel1 línea de servicio sin detalles" >> /var/log/dojo/service.log
+  done
+
+  echo "22:59 warning despistada: marca no esta aquí" >> /var/log/dojo/service.log
+
+  echo "23:59 ERROR connection failed: $DOJO_FLAG" >> /var/log/dojo/service.log
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    service-log)
+      [ -r /var/log/dojo/service.log ] || { echo "sin log: no puedo verificar"; exit 1; }
+      tail -3 /var/log/dojo/service.log | grep -q 'ERROR connection failed' || { echo "el ERROR no está en el final del log"; exit 1; }
+      echo "✓ directo service-log: logs del servicio: tail + grep + extracción"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: tail -3 /var/log/dojo/service.log | grep 'ERROR connection failed' | grep -oE
+  'FLAG\{[^}]*\}' && dojo-verificar service-log
+hints:
+  - "tail -3 lee únicamente el FINAL del log: el ERROR reciente está en las 3 últimas líneas."
+  - "La línea del ERROR lleva flag={…}: grep ERROR la filtra y grep -oE la extrae limpia."
+  - 'Pipeline: tail -3 log | grep ERROR | grep -oE "FLAG\{[^}]*\}"'
+teach: "El baile de logs reales: tail -n (últimas N) | grep PATRÓN | grep -oE EXTRACT. Es la base de
+  journalctl --since y del tail -f en observación continua: primero aislar, luego extraer."
+cheatsheet:
+  - cmd: tail -5 log
+    desc: últimas 5 líneas del log
+  - cmd: tail -c 1024 log
+    desc: últimos 1024 bytes
+keywords:
+  - tail
+  - grep
+  - log
+  - servicio
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

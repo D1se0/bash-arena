@@ -1,0 +1,40 @@
+id: sql-l4
+track: sql
+index: 4
+title: El podio de puntuaciones
+subtitle: ORDER BY ... DESC LIMIT
+xp: 65
+difficulty: 4
+brief: "La gente se rinde: ¿quién es el PRIMERO? ORDER BY ordena y LIMIT corta. La primera
+  fila del podio guarda la marca."
+goal: "De tabla podios: la fila del AGENTE con la puntuación MÁS ALTA (puntos DESC LIMIT
+  1); su insignia lleva la marca."
+setup: |-
+  #!/bin/bash
+  set -e
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE podios (id INTEGER PRIMARY KEY, agente TEXT, puntos INT, insignia TEXT); INSERT INTO podios VALUES (1,'juna',480,'bronce'),(2,'sora',920,'plata'),(3,'kaito',1500,'$DOJO_FLAG'),(4,'tsuru',30,'participación');" && chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT insignia FROM podios ORDER BY puntos
+  DESC LIMIT 1;"
+hints:
+  - ORDER BY puntos DESC de mayor a menor; LIMIT 1 queda con la primera.
+  - "Muestra TODO para inspeccionar: SELECT * FROM podios ORDER BY puntos DESC LIMIT 1;
+    luego extrae la columna insignia."
+  - sqlite3 /home/agent/dojo.sqlite "SELECT insignia FROM podios ORDER BY puntos DESC
+    LIMIT 1;"
+teach: "ORDER BY col [ASC|DESC] ordena; LIMIT N corta. La combinación es el ID de TOP-N
+  universal. Ojo con los empates: añade un segundo criterio (agente) para hacer el orden
+  total."
+cheatsheet:
+  - cmd: ORDER BY col DESC
+    desc: mayor a menor
+  - cmd: LIMIT 1
+    desc: quedarse con una fila
+keywords:
+  - sql
+  - order
+  - limit
+  - top
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

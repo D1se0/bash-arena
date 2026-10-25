@@ -1,0 +1,43 @@
+id: awk-l23
+track: awk
+index: 23
+title: La partición manual
+subtitle: "awk split(): trocear a medida"
+xp: 75
+difficulty: 5
+brief: El fichero rutas.dat usa ":" como separador y CADA fila tiene tres
+  partes. Necesitas la TERCERA zona (el valor) y split() te la da.
+goal: De rutas.dat imprime, con split() en un arreglo, el TERCER elemento de
+  cada línea (troceando por ":").
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/rutas.dat <<EOF
+  catalogo:seccion-1:$DOJO_FLAG
+  catalogo:seccion-2:item-dos
+  catalogo:seccion-3:item-tres
+  EOF
+  chown agent:agent /home/agent/rutas.dat
+solution: awk '{ split($0, a, ":"); print a[3] }' /home/agent/rutas.dat
+hints:
+  - split(cadena, arreglo, separador) trocea y LLENA a[1], a[2], a[3]… devuelve
+    el Nº de piezas.
+  - "a[3] es la TERCERA parte: el índice es 1-based, como todo en awk."
+  - awk '{ split($0, a, ":"); print a[3] }' /home/agent/rutas.dat
+teach: "split() da control manual: monta arreglos a medida para filtrar y
+  contar, sin depender del FS. Muy útil cuando hay DOS tipos de separadores en
+  la misma línea."
+cheatsheet:
+  - cmd: awk '{split($0,a,":"); print a[2]}' f
+    desc: segunda pieza
+  - cmd: awk '{n=split($0,a,":"); print n}' f
+    desc: número de piezas
+keywords:
+  - awk
+  - split
+  - arreglo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…} (la tercera pieza de la primera fila)

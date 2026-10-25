@@ -1,0 +1,49 @@
+id: sql-l7
+track: sql
+index: 7
+title: La corrección del registro
+subtitle: UPDATE ... SET ... WHERE
+xp: 70
+difficulty: 4
+brief: "Una fila de inventario quedó MAL: estado «konfuso» pero stock -5. Sentencia UPDATE
+  para corregir el estado (a ok) y luego consultas para ver el arreglo."
+goal: "De inventario: cambie el estado de la fila con SKU 42 a «ok» (UPDATE ... SET
+  estado=ok) y también AÚNELA la marca: la columna nota de esa fila debe pasar a contener
+  la FIRMA en vez de vacío (nota = FLAG)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit && chmod 0644 /var/.dojo-hit
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE inventario (id INTEGER PRIMARY KEY, sku
+  INT, estado TEXT, nota TEXT); INSERT INTO inventario VALUES
+  (1,42,'konfuso','algo'),(2,7,'ok','sin incidencias');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "UPDATE inventario SET estado='ok' WHERE sku=42
+  AND estado='konfuso';" && sqlite3 /home/agent/dojo.sqlite "SELECT estado, nota FROM
+  inventario WHERE sku=42;" && cat /var/.dojo-hit
+hints:
+  - "UPDATE tabla SET col=val WHERE cond: SIEMPRE con WHERE (o cambias TODAS las filas)."
+  - Tras el UPDATE muestra con SELECT ... WHERE sku=42 para VER el resultado.
+  - sqlite3 /home/agent/dojo.sqlite "UPDATE inventario SET estado='ok' WHERE sku=42;" &&
+    sqlite3 ... "SELECT * FROM inventario WHERE sku=42;"
+teach: "UPDATE modifica filas CASADAS por WHERE. Regla de oficio: primero el SELECT
+  equivalente, luego el UPDATE (ver CASAQUE va a tocar). En SQLite, sin BEGIN los cambios
+  van a disco al cerrar; no hay un buffer de imagen."
+cheatsheet:
+  - cmd: UPDATE t SET c=v WHERE cond
+    desc: actualizar filas
+  - cmd: SELECT changes();
+    desc: filas afectadas por el último write
+keywords:
+  - sql
+  - update
+  - set
+  - where
+  - changes
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: ok|FLAG{…}

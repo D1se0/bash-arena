@@ -1,0 +1,49 @@
+id: sql-l3
+track: sql
+index: 3
+title: El patrón del escondite
+subtitle: "LIKE y comodines: % y _"
+xp: 60
+difficulty: 3
+brief: "El escondite no es exacto: es un patrón. LIKE con % (cualquier cadena) y _ (UN
+  carácter exacto) es la lupa SQL."
+goal: "De tabla escondites: encuentra las filas cuyo objeto sea «lanterna%» (empieza con
+  lanterna); la marca está en el notably (columna pista)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE escondites (id INTEGER PRIMARY KEY, objeto
+  TEXT, pista TEXT); INSERT INTO escondites VALUES (1,'lanterna-escudo','escudo
+  normal'),(2,'farol-rojo','no es
+  esto'),(3,'lanterna-secreta','$DOJO_FLAG'),(4,'lanterna3','un número y nada más');" &&
+  chmod 644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT pista FROM escondites WHERE objeto LIKE
+  'lanterna%' AND pista LIKE '%FLAG%';"
+hints:
+  - LIKE 'lanterna%' menciona TODO lo que empiece con lanterna (lanterna-escudo,
+    lanterna-secreta y lanterna3).
+  - 'Entre las coincidencias, la pista que lleva la marca es de lanterna-secreta: puedes
+    encadenar AND pista LIKE "%FLAG%".'
+  - sqlite3 /home/agent/dojo.sqlite "SELECT pista FROM escondites WHERE objeto LIKE
+    'lanterna%' AND pista LIKE '%FLAG%';"
+teach: "LIKE % = cero o más caracteres; _ = UNO exacto. Encadenadas: filtro de patrón +
+  filtro de contenido (`pista LIKE %FLAG%`) es la doble lupa típica. NOT LIKE invierte.
+  Para case-sensitividad HOWA: GLOB distingue mayúsculas."
+cheatsheet:
+  - cmd: LIKE 'pre%'
+    desc: empieza con pre
+  - cmd: LIKE '_x%'
+    desc: segundo carácter x
+  - cmd: LIKE '%mid%'
+    desc: contiene mid
+keywords:
+  - sql
+  - like
+  - glob
+  - comodines
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

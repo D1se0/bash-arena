@@ -1,0 +1,70 @@
+id: dns-l8
+track: dns
+index: 8
+title: El archivo de host
+subtitle: dig sobre el /etc/hosts (nsswitch files)
+xp: 70
+difficulty: 4
+brief: "ANTES de DNS, la libc consulta /etc/hosts (nsswitch: files). El dojo
+  HACE una entrada específica (la firma de la línea 2)."
+goal: De /home/agent/hosts-extra (la COPIA del /etc/hosts, ya preparada por el
+  setup), saca la dirección IP del dominio secreto-dojo (un A record) Y luego
+  ejecuta getent hosts secreto-dojo para VER que la libc la resuelve por HOSTS.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  cat > /home/agent/hosts-extra <<EOF
+
+  127.0.0.1 localhost
+
+  10.30.40.50 secreto-dojo
+
+  10.30.40.51 decoy-host
+
+  EOF
+
+  chmod 0644 /home/agent/hosts-extra
+
+  cat /home/agent/hosts-extra > /etc/hosts
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+solution: grep 'secreto-dojo' /home/agent/hosts-extra; getent hosts
+  secreto-dojo; cat /var/.dojo-hit
+hints:
+  - grep secreto-dojo $HOME/hosts-extra muestra la entrada y la marca que dejó
+    el dojo.
+  - "getent hosts secreto-dojo mira /etc/hosts (nsswitch: files) ANTES de
+    cualquier DNS."
+  - grep 'secreto-dojo' /home/agent/hosts-extra; getent hosts secreto-dojo; cat
+    /var/.dojo-hit
+teach: "La RESOLUCIÓN de nombres sigue un ORDEN (nsswitch): primero files
+  (/etc/hosts), luego dns. /etc/hosts es el DNS BAJAR del proceso local, y por
+  eso debe procesarse antes que cualquier consulta por red."
+cheatsheet:
+  - cmd: getent hosts dominio
+    desc: resuelve por hosts → dns
+  - cmd: grep dominio /etc/hosts
+    desc: el contenido del archivo hosts
+keywords:
+  - hosts
+  - getent
+  - resolución
+  - nsswitch
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      10.30.40.50    secreto-dojo
+      FLAG{…} (si el usuario es root)

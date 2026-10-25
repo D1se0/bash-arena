@@ -1,0 +1,44 @@
+id: grep-l17
+track: grep
+index: 17
+title: La escena completa
+subtitle: "grep -C: contexto simétrico"
+xp: 70
+difficulty: 4
+brief: "El evento CRITICA solo se entiende con DOS líneas de contexto a cada
+  lado: la cinta entera."
+goal: De critica.log imprime la línea del evento CRITICA con DOS líneas de
+  contexto POR ENCIMA y POR DEBAJO.
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/critica.log <<EOF
+  guardia abierta a las 22:00
+  escaneo programado de la subred
+  CRITICA: saturación de conexiones simuladas
+  la señal de interés: $DOJO_FLAG
+  cierre de guardia a las 04:00
+  EOF
+  chown agent:agent /home/agent/critica.log
+solution: grep -C 2 'CRITICA' /home/agent/critica.log
+hints:
+  - -C N equivale a -A N -B N en una sola opción (C de context).
+  - "El match está en medio: la ventana ±2 cubre la línea de la flag."
+  - grep -C 2 'CRITICA' /home/agent/critica.log
+teach: -C N envuelve el match con N líneas a cada lado. Es el "muéstrame la
+  escena" de producción; combina con -n para llevar los números de línea al
+  informe.
+cheatsheet:
+  - cmd: grep -C 2 pat f
+    desc: 2 antes + match + 2 después
+  - cmd: grep -C 2n pat f
+    desc: idem con números de línea
+keywords:
+  - grep
+  - -C
+  - contexto
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: 2 antes + CRITICA + 2 después (aquí viaja la flag)

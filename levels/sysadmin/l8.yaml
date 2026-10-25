@@ -1,0 +1,111 @@
+id: sysadmin-l8
+track: sysadmin
+index: 8
+title: El servicio en el puerto
+subtitle: "nginx: cambia el listen del server"
+xp: 75
+difficulty: 4
+brief: El nginx del dojo escucha en el 8081; el DEPLOY dicta el 8099. Cambia el
+  listen del bloque server.
+goal: "En /home/agent/nginx/nginx.conf (nivel nginx-port): cambia la línea
+  listen 127.0.0.1:8081; por listen 127.0.0.1:8099; y valida con nginx -t. Luego
+  dojo-verificar2 nginx-port."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /home/agent/nginx/logs /home/agent/nginx/html
+  /home/agent/nginx/tmp/body /home/agent/nginx/tmp/proxy
+  /home/agent/nginx/tmp/fastcgi /home/agent/nginx/tmp/uwsgi
+  /home/agent/nginx/tmp/scgi
+
+  printf '%s\n' '<h1>dojo</h1>' > /home/agent/nginx/html/index.html
+
+  cat > /home/agent/nginx/nginx.conf <<EOF
+
+  pid  logs/nginx.pid;
+
+  worker_processes  1;
+
+  error_log  logs/error.log;
+
+  events { worker_connections 16; }
+
+  http {
+    access_log  logs/access.log;
+    client_body_temp_path  /home/agent/nginx/tmp/body;
+    proxy_temp_path        /home/agent/nginx/tmp/proxy;
+    fastcgi_temp_path      /home/agent/nginx/tmp/fastcgi;
+    uwsgi_temp_path        /home/agent/nginx/tmp/uwsgi;
+    scgi_temp_path         /home/agent/nginx/tmp/scgi;
+    server {
+      server_name dojo.local;
+      listen 127.0.0.1:8081;
+      root html;
+      index index.html;
+    }
+  }
+
+  EOF
+
+  chown -R agent:agent /home/agent/nginx
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  CHECK=$(cat <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    nginx-port)
+      grep -Eq '^\s*listen\s+127\.0\.0\.1:8099;' /home/agent/nginx/nginx.conf || { echo "falta listen 127.0.0.1:8099"; exit 1; }
+      nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ 2>&1 | grep -q 'syntax is ok' || { echo "nginx -t falla"; exit 1; }
+      echo "✓ puerto 8099 configurado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  )
+
+  echo "$CHECK" > /usr/local/bin/dojo-verificar2 && chmod 0755
+  /usr/local/bin/dojo-verificar2
+solution: sed -i "s/127.0.0.1:8081/127.0.0.1:8099/" /home/agent/nginx/nginx.conf
+  && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ &&
+  dojo-verificar2 nginx-port
+hints:
+  - "La directiva está en el bloque server: listen 127.0.0.1:8081; → listen
+    127.0.0.1:8099;"
+  - Con sed -i + regex con la sustitución y nginx -t + salida verífica.
+  - sed -i "s/127.0.0.1:8081/127.0.0.1:8099/" /home/agent/nginx/nginx.conf &&
+    nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ &&
+    dojo-verificar2 nginx-port
+teach: listen define la tupla IP:PUERTO en la que el server PCIecepta
+  conexiones. Practicar el CAMBIO de puerto + validación es la coreografía real
+  de los deployments.
+cheatsheet:
+  - cmd: nginx -t -c fichero -p prefix
+    desc: validar después del cambio
+  - cmd: sed -i s/vieja/nueva/ f
+    desc: sustitución en línea
+keywords:
+  - nginx
+  - listen
+  - puerto
+  - validación
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ puerto 8099 configurado
+      FLAG{…}

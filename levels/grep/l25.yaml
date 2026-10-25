@@ -1,0 +1,52 @@
+id: grep-l25
+track: grep
+index: 25
+title: El recuento de las vigas
+subtitle: "grep | sort | uniq -c: frecuencias"
+xp: 80
+difficulty: 5
+brief: "El log de vigas repite señales: el informe pide CUÁNTAS VECES aparece
+  cada tramo, ordenado."
+goal: De vigas.log imprime cada línea que contenga VIGA, ordenadas
+  alfabéticamente y, delante de cada una, el NÚMERO de veces que se repite (uniq
+  -c).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/vigas.log <<EOF
+  VIGA tramo alfa
+  VIGA tramo gamma
+  VIGA tramo alfa
+  VIGA limpieza sin señal
+  VIGA tramo función: $DOJO_FLAG
+  VIGA tramo gamma
+  EOF
+  chown agent:agent /home/agent/vigas.log
+solution: grep 'VIGA' /home/agent/vigas.log | sort | uniq -c
+hints:
+  - uniq -c añade un CONTADOR a la izquierda de cada línea única; exige que las
+    líneas DUPLICADAS estén adyacentes.
+  - sort ordena las líneas y prepara la adyacencia para uniq.
+  - grep 'VIGA' /home/agent/vigas.log | sort | uniq -c
+teach: "El trío grep | sort | uniq -c es EL medidor de frecuencias del shell.
+  Cuidado: uniq -c cuenta LÍNEAS ÚNICAS (no ficheros), y sin sort los duplicados
+  no quedan contiguos y el conteo se parte."
+cheatsheet:
+  - cmd: grep pat f | sort | uniq -c
+    desc: frecuencia de cada línea
+  - cmd: sort f | uniq -c | sort -rn
+    desc: ranking por frecuencia
+keywords:
+  - grep
+  - uniq
+  - -c
+  - sort
+  - frecuencia
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |2-
+         2 VIGA tramo alfa
+         1 VIGA tramo función: FLAG{…}
+      …

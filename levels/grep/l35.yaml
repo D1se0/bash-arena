@@ -1,0 +1,45 @@
+id: grep-l35
+track: grep
+index: 35
+title: Palabras fuera del caserío
+subtitle: "grep -v con anclas: excluir palabra EXACTA"
+xp: 75
+difficulty: 4
+brief: "El glosario mezcla señales con rellenos que EMPIEZAN por test (aislado): hay que EXCLUIR
+  esas filas con anclaje ^test+espacio y dejar pasar testear/testing."
+goal: De glosario.txt imprime las líneas numeradas (-n) que NO empiecen por test como palabra test
+  (test solo con espacio al final del vocablo), dejando pasar testear y testing.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 35" "Grep"
+  cat > /home/agent/glosario.txt <<EOF
+  test de señal no: marca falsa filtrada
+  testear a las 12 es aceptable
+  antibiotest curación por doble dosis
+  test sola (esto SI se debe excluir)
+  testing en el sprint reboot: $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/glosario.txt
+solution: grep -vnE '^test([[:space:]]|$)' /home/agent/glosario.txt
+hints:
+  - "El GREP invierte: -v descarta las que CASAN; el patrón describe las QUE QUIERES QUITAR."
+  - "Con -w + -v las dando ambiguas: mejor el ancla ^test + espacio o fin de línea."
+  - grep -vnE '^test( |$)' /home/agent/glosario.txt
+teach: "-v con anclas quita las que casan: en vez de -w (ambiguo con -v), se ancla ^test +
+  espacio|fin de línea: la palabra test desaparece y testear/testing permanecen. La combinación -v
+  -n -E demuestra que las opciones se acumulan."
+cheatsheet:
+  - cmd: grep -vn patrón f
+    desc: numeradas, excluyendo las que casan
+  - cmd: grep -vE '^test( |$)' f
+    desc: excluir test como palabra inicial
+keywords:
+  - grep
+  - -v
+  - ancla
+  - excluir
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

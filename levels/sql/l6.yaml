@@ -1,0 +1,45 @@
+id: sql-l6
+track: sql
+index: 6
+title: El lienzo combinado
+subtitle: JOIN entre dos tablas
+xp: 75
+difficulty: 4
+brief: "La información está dividida: una tabla de ENCARGOS y otra de AGENTES. La marca
+  solo aparece al UNIR ambas por la clave."
+goal: "UNE encargos con agentes por id de agente (JOIN); muestra los encargos de kaito: en
+  la tabla encarg unsuspending campo detalle lleva la marca."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE agentes (id INTEGER PRIMARY KEY, nombre
+  TEXT); CREATE TABLE encargos (id INTEGER PRIMARY KEY, agente_id INT, detalle TEXT);
+  INSERT INTO agentes VALUES (1,'juna'),(2,'kaito'),(3,'sora'); INSERT INTO encargos
+  VALUES (10,1,'lavándula'),(11,2,'$DOJO_FLAG'),(12,1,'poda'),(13,3,'riego');" && chmod
+  644 /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT e.detalle FROM encargos e JOIN agentes a
+  ON e.agente_id=a.id WHERE a.nombre='kaito';"
+hints:
+  - JOIN agentes a ON encargos.agente_id=a.id une por la clave.
+  - Filtrar por a.nombre = kaito y pedir e.detalle.
+  - sqlite3 /home/agent/dojo.sqlite "SELECT e.detalle FROM encargos e JOIN agentes a ON
+    e.agente_id=a.id WHERE a.nombre='kaito';"
+teach: JOIN ... ON une filas de dos tablas por una columna compartida (clave). Los ALIAS
+  (a, e) abrevian. INNER JOIN = solo coincidencias; LEFT JOIN conserva las filas sin
+  pareja (con NULL). El 90% del SQL de reporting es esto.
+cheatsheet:
+  - cmd: FROM t1 JOIN t2 ON t1.k=t2.k
+    desc: unión por clave
+  - cmd: LEFT JOIN t2
+    desc: incluye t1 sin pareja
+keywords:
+  - sql
+  - join
+  - on
+  - clave
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

@@ -1,0 +1,43 @@
+id: grep-l34
+track: grep
+index: 34
+title: El respaldo engañoso
+subtitle: grep -r --exclude-dir y --exclude
+xp: 75
+difficulty: 4
+brief: "El proyecto archiva versiones viejas en respaldo/ y ficheros .bak: contienen marcas ANTIGUAS
+  (falsas). La marca VIVA está solo en el código actual."
+goal: Busca en proyecto/ la marca viva excluyendo el directorio respaldo/ y los ficheros terminados
+  en .bak (con --exclude-dir y --exclude).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 34" "Grep"
+  mkdir -p /home/agent/proyecto/respaldo /home/agent/proyecto/src
+  echo 'marca vieja falsa del enero: FLAG{viejafalsa}' > /home/agent/proyecto/respaldo/version1.py
+  echo 'copia respaldada con FLAG{viejafalsa} perdida' > /home/agent/proyecto/gagd.bak
+  echo 'saludo: poca cosa y sin marca real' > /home/agent/proyecto/src/leer.py
+  echo 'puerta: el sello vivo se encontro en el main: $DOJO_FLAG' > /home/agent/proyecto/src/main.py
+  chown -R agent:agent /home/agent/proyecto
+solution: grep -r --exclude-dir=respaldo --exclude='*.bak' 'FLAG{' /home/agent/proyecto
+hints:
+  - "--exclude-dir=NOMBRE excluye CARPETAS (sin globs: el nombre)."
+  - '--exclude="*.bak" sí acepta GLOBS de FICHERO: excluye los backups.'
+  - grep -r --exclude-dir=respaldo --exclude='*.bak' 'FLAG{' /home/agent/proyecto
+teach: --exclude-dir filtra CARPETAS completas (respaldo/, node_modules/) y --exclude filtra NOMBRES
+  de fichero con glob (*.bak, *.min.js). Ambas junto a -r son obligatorias cuando hay respaldos que
+  ENGAÑAN la señal.
+cheatsheet:
+  - cmd: grep -r --exclude-dir=respaldo p dir
+    desc: excluye una carpeta completa
+  - cmd: grep -r --exclude='*.bak' p dir
+    desc: excluye ficheros por glob
+keywords:
+  - grep
+  - exclude-dir
+  - exclude
+  - recursivo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

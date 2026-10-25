@@ -1,0 +1,69 @@
+id: sysadmin-l19
+track: sysadmin
+index: 19
+title: El puerto secreto
+subtitle: "sshd: Port, AllowUsers y MaxAuthTries"
+xp: 75
+difficulty: 4
+brief: "La política del dojo: SSH en el PUERTO 2222, SOLO el agente conecta y máximo 3 intentos por
+  sesión. Son las directivas de hardening sshd del primer día."
+goal: Añade en /etc/ssh/sshd_config.d/dojo19.conf las directivas Port 2222, AllowUsers agent y
+  MaxAuthTries 3, valida con sudo sshd -t y cierra con dojo-verificar sshd-port.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /etc/ssh/sshd_config.d
+
+  printf '%s\n' '## nivel sshd-port' > /etc/ssh/sshd_config.d/dojo19.conf
+
+  printf '%s\n' 'UsePAM no' >> /etc/ssh/sshd_config.d/dojo19.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sshd-port)
+      grep -Eq '^[[:space:]]*Port[[:space:]]+2222[[:space:]]*$' /etc/ssh/sshd_config.d/dojo19.conf || { echo "falta Port 2222"; exit 1; }
+      grep -Eq '^[[:space:]]*AllowUsers[[:space:]]+agent[[:space:]]*$' /etc/ssh/sshd_config.d/dojo19.conf || { echo "falta AllowUsers agent"; exit 1; }
+      grep -Eq '^[[:space:]]*MaxAuthTries[[:space:]]+3[[:space:]]*$' /etc/ssh/sshd_config.d/dojo19.conf || { echo "falta MaxAuthTries 3"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla"; exit 1; }
+      echo "✓ directo sshd-port: puerto y usuarios de SSH controlados"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo bash -c 'printf "%s\n" "Port 2222" "AllowUsers agent" "MaxAuthTries 3" >>
+  /etc/ssh/sshd_config.d/dojo19.conf && sshd -t' && dojo-verificar sshd-port
+hints:
+  - "Las directivas van EN SU LÍNEA dentro del drop-in: una por línea."
+  - sshd -t valida la sintaxis COMO root (los drop-in se leen en orden).
+  - 'Patrón: sudo bash -c "printf … >> fichero && sshd -t" y luego dojo-verificar sshd-port.'
+teach: Port cambia la escucha (2222 deja de recibir el ruido del escaneo automático del 22),
+  AllowUsers es la lista blanca de QUIÉN puede entrar y MaxAuthTries límita los reintentos por
+  conexión. El trío clásico de hardening sshd.
+cheatsheet:
+  - cmd: sshd -t
+    desc: validar la sintaxis del sshd_config
+  - cmd: Port / AllowUsers / MaxAuthTries
+    desc: "durísimo de SSH: puerto, lista blanca, reintentos"
+keywords:
+  - sshd
+  - port
+  - allowusers
+  - hardening
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,0 +1,49 @@
+id: grep-l32
+track: grep
+index: 32
+title: Tokens al oculto
+subtitle: "grep -oE con alternancia: extraer VARIOS tipos de pieza"
+xp: 70
+difficulty: 4
+brief: En eventos.log hay piezas event=HEX y request=HEX mezcladas. La alternancia captura AMBOS
+  tipos; la marca viaja en uno de los tokens válidos.
+goal: "Extrae de eventos.log los tokens event=HEX y request=HEX donde HEX sea EXACTAMENTE 4
+  hexadecimales en MAYÚSCULAS (con -oE) y después muestra la línea de la sorpresa: lleva la marca."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 32" "Grep"
+  cat > /home/agent/eventos.log <<EOF
+  event=1A2B procesado sin incidencias
+  req event=OKIA mal formato: solo 3 mayúsculas
+  request=1A2C quedó pendiente otro ciclo
+  sumerio request=xyz9 lowercase fuera de sílaba
+  sorpresa: $DOJO_FLAG escondida entre tokens válidos
+  request=0001 en la cola del balance
+  EOF
+  chown agent:agent /home/agent/eventos.log
+solution: grep -oE '(event|request)=[0-9A-F]{4}' /home/agent/eventos.log && grep '^sorpresa:'
+  /home/agent/eventos.log
+hints:
+  - La alternancia (event|request) captura CUALQUIERA de las dos cabeceras.
+  - "[0-9A-F]{4} exige EXACTAMENTE 4 hexadecimales en MAYÚSCULAS (ni lowercase ni más largos)."
+  - Tras los tokens, la línea de la sorpresa es un uso de grep plano (ancla ^sorpresa:).
+  - grep -oE '(event|request)=[0-9A-F]{4}' /home/agent/eventos.log && grep '^sorpresa:'
+    /home/agent/eventos.log
+teach: "Con alternancia (a|b) + clases exactas ([0-9A-F]{4}) iscribes un recogedor de tokens: coge
+  cualquier pieza con cualquiera de las cabeceras y formato exacto. Toda la validación vive en la
+  regex."
+cheatsheet:
+  - cmd: grep -oE '(a|b)=[0-9A-F]{4}'
+    desc: extraer dos tipos de tokens
+  - cmd: grep -oE … | wc -l
+    desc: ídem contando extracciones
+keywords:
+  - grep
+  - -oE
+  - alternancia
+  - tokens
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

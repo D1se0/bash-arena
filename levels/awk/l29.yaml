@@ -1,0 +1,42 @@
+id: awk-l29
+track: awk
+index: 29
+title: La factura en columnas
+subtitle: "awk printf: alinear columnas (%s %d %.1f)"
+xp: 60
+difficulty: 3
+brief: "El reporte del taller quiere columnas ALINEADAS: printf formatea anchos (y decimales) sin
+  jugar con columnas a ojo."
+goal: "De medidas.txt: printf %-12s %7.1f (codename a la izquierda en 12, valor 1 decimal) para
+  TODAS las filas. La marca viaja en el codename de una de las medidas."
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 29" "Awk"
+  cat > /home/agent/medidas.txt <<EOF
+  vapor 12.5
+  fuego 98.75
+  axena 3.2
+  $DOJO_FLAG 45.0
+  EOF
+  chown agent:agent /home/agent/medidas.txt
+solution: awk '{printf "%-12s %7.1f\n", $1, $2}' /home/agent/medidas.txt
+hints:
+  - "printf NO agrega salto de línea: acompañalo siempre con \\n."
+  - '"%-12s" deja el nombre IZQUIERDO en 12; "%7.1f" numérico de 7 con 1 decimal.'
+  - awk '{printf "%-12s %7.1f\n", $1, $2}' /home/agent/medidas.txt
+teach: "printf de awk es el printf de C: %s cadena, %d entero, %.1f decimal, %-10s izquierdo en 10,
+  %6.1f derecho de 6 con 1 decimal. Alinea informes sin tocarse a mano."
+cheatsheet:
+  - cmd: printf "%-10s %6.1f\n", a, b
+    desc: columnas con anchos
+  - cmd: printf "%05d\n", n
+    desc: entero rellenado a 5 dígitos
+keywords:
+  - awk
+  - printf
+  - formato
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

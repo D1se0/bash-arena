@@ -1,0 +1,47 @@
+id: grep-l16
+track: grep
+index: 16
+title: Lo que precedió
+subtitle: "grep -B: contexto anterior"
+xp: 70
+difficulty: 4
+brief: "El log incide: el FALLO es el evento; lo que lo PRODUJO está dos líneas
+  por encima."
+goal: De falla.log imprime la línea FALLO y las DOS líneas ANTERIORES (2 líneas
+  de contexto previo con -B).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/falla.log <<EOF
+  14:01 tráfico anómalo: $DOJO_FLAG
+  14:02 los umbrales se reevaluaron
+  14:03 FALLO: bloqueo de la sesión aplicado
+  14:04 todo vuelve a la normalidad
+  EOF
+  chown agent:agent /home/agent/falla.log
+solution: grep -B 2 'FALLO' /home/agent/falla.log
+hints:
+  - -B N imprime cada match y las N líneas que lo PRECEDEN (B de before).
+  - "La flag está dos líneas POR ENCIMA del match: necesitas mirar hacia atrás."
+  - grep -B 2 'FALLO' /home/agent/falla.log
+teach: 'El diagnóstico de logs casi siempre mira atrás: -B N muestra "qué
+  produjo esto". Con -A y -B en el mismo grep ves la banda completa a tu
+  medida.'
+cheatsheet:
+  - cmd: grep -B 2 pat f
+    desc: 2 líneas antes + match
+  - cmd: grep -A 2 -B 1 pat f
+    desc: banda asimétrica
+keywords:
+  - grep
+  - -B
+  - contexto
+  - before
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      14:01 tráfico anómalo: FLAG{…}
+      14:02 los umbrales…
+      14:03 FALLO: bloqueo…

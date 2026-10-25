@@ -1,0 +1,56 @@
+id: dns-l10
+track: dns
+index: 10
+title: El peso del nombre
+subtitle: "dig ANY: los registros JUNTOS"
+xp: 70
+difficulty: 4
+brief: La consulta ANY intenta AGARRAR todos los tipo de registro de un nombre.
+  En dnsmasq-es, la respuesta devuelve TODOS los tipos que conozca.
+goal: Consulta el registro ANY de secreto.dojo (o del nombre del servidor
+  local). ALL las respuestas incluyen la TXT con la FIRMA y el resto de los
+  registros (A/AAAA) de decoración.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --host-record=secreto.dojo,10.20.30.42 \
+    --txt-record=secreto.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53535 ANY secreto.dojo
+hints:
+  - dig ANY secreto.dojo (o ALL en elock) pide TODOS los registro de la zona
+    para el nmombre.
+  - dnsmasq devolverá A + TXT juntitos; la firma va en el TXT.
+  - dig @127.0.0.1 -p 53535 ANY secreto.dojo
+teach: ANY es una instrucción que quiere TODOS los registros de un dominio en
+  una sóla respuesta. útil para el registro completo (con EXCEPción de datos
+  sensibles).
+cheatsheet:
+  - cmd: dig ANY name
+    desc: todos los tipos conocidos
+  - cmd: dig ANY +short name
+    desc: respuesta de ANY en una pasada
+keywords:
+  - dns
+  - dig
+  - ANY
+  - registro
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      secreto.dojo. 0 IN A 10.20.30.42
+      secreto.dojo. 0 IN TXT "FLAG{…}"

@@ -1,0 +1,51 @@
+id: sql-l19
+track: sql
+index: 19
+title: Grupos puntillosos
+subtitle: agrupar con GROUP BY + HAVING
+xp: 100
+difficulty: 4
+brief: "El reporte misiones por agente: los que TENGAN 2 o más son los importantes. HAVING filtra
+  por agregado; el SELLO de esos agentes se baja con una subconsulta IN."
+goal: "Devuelve el SELLO (con la marca) de los agentes que tienen ≥ 2 misiones: GROUP BY + HAVING
+  COUNT(*) >= 2 dentro de un IN, apoyado por la tabla agentess."
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "
+
+  CREATE TABLE agentess (id INTEGER PRIMARY KEY, nombre TEXT, sello TEXT);
+
+  CREATE TABLE misiones (id INTEGER PRIMARY KEY, agente_id INT, tarea TEXT);
+
+  INSERT INTO agentess VALUES (1,'xate','$DOJO_FLAG'),(2,'xai','bronce'),(3,'xii','plata');
+
+  INSERT INTO misiones VALUES
+  (1,1,'espia'),(2,1,'robo'),(3,2,'vigilancia'),(4,3,'caza'),(5,1,'espia');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT sello FROM agentess WHERE id IN (SELECT agente_id
+  FROM misiones GROUP BY agente_id HAVING COUNT(*) >= 2);"
+hints:
+  - GROUP BY agrupa y HAVING es el WHERE del GRUPO (filtra por COUNT, SUM…).
+  - El GROUP BY vive DENTRO de la subconsulta IN; el SELECT exterior baja el sello de agentess.
+  - sqlite3 dojo.sqlite "SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones
+    GROUP BY agente_id HAVING COUNT(*) >= 2);"
+teach: "WHERE filtra filas ANTES de agrupar; HAVING es el WHERE del GROUP BY (filtra por agregados).
+  El patrón: GROUP BY + COUNT + HAVING dentro de una subconsulta IN para bajar datos de otra tabla.
+  La herramienta de los reportes reales."
+cheatsheet:
+  - cmd: GROUP BY x HAVING COUNT > 1
+    desc: filtrar por grupos
+  - cmd: ORDER BY cnt DESC LIMIT 3
+    desc: top-3 por grupo
+keywords:
+  - sql
+  - group by
+  - having
+  - count
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

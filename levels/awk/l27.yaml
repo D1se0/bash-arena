@@ -1,0 +1,46 @@
+id: awk-l27
+track: awk
+index: 27
+title: El umbral importado
+subtitle: "awk -v y BEGIN: variables desde fuera"
+xp: 50
+difficulty: 3
+brief: "El despacho del dojo usa el umbral 140 pero configurable: awk -v inyecta variables limpias
+  al motor (sin tocar el código del programa)."
+goal: Con awk y la variable externa UMBRAL=140, imprime NOMBRE y NOTA (print $1, $3) de los envíos
+  cuyo peso SUPERA ese umbral.
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 27" "Awk"
+  cat > /home/agent/envios.txt <<EOF
+  sacos 30 nota:muy ligero
+  ladrillo 150 nota:$DOJO_FLAG
+  mago 21 nota:paquete raro
+  vigas 142 nota:casi arriba
+  cemento 160 nota:peso máximo
+  EOF
+  chown agent:agent /home/agent/envios.txt
+solution: awk -v UMBRAL=140 '$2 > UMBRAL {print $1, $3}' /home/agent/envios.txt
+hints:
+  - "awk -v VAR=valor habilita VAR antes de leer: dentro del programa es una variable como cualquier
+    otra."
+  - "La comparación $2 > UMBRAL usa la variable: el 140 no aparece en el código."
+  - awk -v UMBRAL=140 '$2 > UMBRAL {print $1, $3}' /home/agent/envios.txt
+teach: "-v conecta el shell con el awk: envía parámetros (umbral, fecha, hostname…) sin enchufarlos
+  en el texto del programa. BEGIN se ejecuta ANTES de leer el fichero: el sitio lógico de los
+  valores por defecto."
+cheatsheet:
+  - cmd: awk -v UMBRAL=140 '$2 > UMBRAL'
+    desc: variable inyectada desde el shell
+  - cmd: awk 'BEGIN {print "inicio"}'
+    desc: bloque previo a los datos
+keywords:
+  - awk
+  - -v
+  - BEGIN
+  - variable
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

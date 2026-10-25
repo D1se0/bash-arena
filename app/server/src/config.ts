@@ -36,6 +36,6 @@ export const config = {
   hardening: {
     readOnlyRootfs: false, // se limita por permisos Unix (user agent 1000) — ver docs/threat-model.md
     capDrop: ['ALL'] as const,
-    capAdd: ['CHOWN', 'DAC_OVERRIDE', 'FOWNER', 'SETUID', 'SETGID'] as string[],
+    capAdd: ['CHOWN', 'DAC_OVERRIDE', 'FOWNER', 'SETUID', 'SETGID', 'SYS_CHROOT'] as string[],
   },
 } as const;

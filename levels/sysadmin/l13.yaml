@@ -1,0 +1,82 @@
+id: sysadmin-l13
+track: sysadmin
+index: 13
+title: El depurador del log
+subtitle: archivo de LOG de sshd (journalctl simulado)
+xp: 70
+difficulty: 4
+brief: El dojo guarda UN COPY del log del sshd en /var/log/dojo-ssh.log. Hay UNA
+  línea con UNA dirección IP del atacante… y también la firma.
+goal: Del fichero /var/log/dojo-ssh.log, escribe la LÍNEA que contiene la
+  palabra ALERTA (una sola; usas grep). Después dojo-verificar2 log-ssh.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /var/log
+
+  cat > /var/log/dojo-ssh.log <<EOF
+
+  2026-10-24 09:00 sshd: server started on port 2200
+
+  2026-10-24 09:05 sshd: auth OK agent
+
+  2026-10-24 09:10 ALERTA sshd: intento de login desde la IP extraña, la firma:
+  $DOJO_FLAG
+
+  2026-10-24 09:15 sshd: nic sp ese
+
+  EOF
+
+  chmod 0644 /var/log/dojo-ssh.log
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    log-ssh) echo "✓ log leído"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: grep 'ALERTA' /var/log/dojo-ssh.log; dojo-verificar2 log-ssh
+hints:
+  - grep ALERTA /var/log/dojo-ssh.log es el SEGURO.
+  - Para leer el log (y no SÓLO la última línea) el comando cat, se usa tail
+    -f... pero el nivel solo pide UNA línea exacta.
+  - grep 'ALERTA' /var/log/dojo-ssh.log; dojo-verificar2 log-ssh
+teach: "Los logs de servicio son LA fuente de la verdad cuando algo falla
+  (journald log en Ubuntu / más primitivo: ficheros /var/log/*). Buscar un
+  patrón exacto es la primera pasada: grep y leer de la salida."
+cheatsheet:
+  - cmd: grep ERROR /var/log/...log
+    desc: las líneas del ERROR
+  - cmd: tail -f /var/log/...log
+    desc: el fichero en vivo
+keywords:
+  - log
+  - ssh
+  - grep
+  - diagnóstico
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      2026-10-24 09:10 ALERTA … FLAG{…}
+      ✓ log leído
+      FLAG{…}

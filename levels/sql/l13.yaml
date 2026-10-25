@@ -1,0 +1,43 @@
+id: sql-l13
+track: sql
+index: 13
+title: La consulta dentro
+subtitle: subconsultas (SELECT dentro de SELECT)
+xp: 80
+difficulty: 5
+brief: "Las subconsultas filtrar CON EL RESULTADO de otra: el agente cuyo rango es el
+  máximo. Profundidad de lectura: primero interior, después exterior."
+goal: "De tabla rangos: selecciona el agente cuyo rango IGUALA el máximo (SELECT
+  MAX(rango)): esa ES la fila del sello."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE rangos (id INTEGER PRIMARY KEY, agente
+  TEXT, rango INT, sello TEXT); INSERT INTO rangos VALUES
+  (1,'juna',300,''),(2,'sora',920,''),(3,'kaito',1500,'$DOJO_FLAG');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT sello FROM rangos WHERE rango=(SELECT
+  MAX(rango) FROM rangos);"
+hints:
+  - "Subconsulta: (SELECT MAX(rango) FROM rangos) devuelve EL máximo → 1500."
+  - "En WHERE: WHERE rango = (…): de la subconsulta sai x cola UNA sola fila (un número)."
+  - sqlite3 db "SELECT sello FROM rangos WHERE rango=(SELECT MAX(rango) FROM rangos);"
+teach: "Una subconsulta es un SELECT DENTRO de otro: se evalúa primero (como variable) y
+  el exterior la consume. IN: cuando devuelve VARIAS filas; = cuando UNA. Correlacionadas
+  (que heredan la fila actual) las encadenas con EXISTS."
+cheatsheet:
+  - cmd: WHERE c=(SELECT MAX(c) FROM t)
+    desc: igualar al agregado
+  - cmd: WHERE id IN (SELECT …)
+    desc: lista de la subconsulta
+keywords:
+  - sql
+  - subconsulta
+  - max
+  - nested
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{…}

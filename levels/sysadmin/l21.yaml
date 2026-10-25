@@ -1,0 +1,84 @@
+id: sysadmin-l21
+track: sysadmin
+index: 21
+title: El sitio del dojo
+subtitle: "apache2: VirtualHost, DocumentRoot y configtest"
+xp: 85
+difficulty: 4
+brief: El vhost viene con el DocumentRoot malo (pension/…) y ni está instalado. Configura, valida
+  con apache2ctl configtest y déjalo en sites-available.
+goal: Repara el DocumentRoot de /home/agent/dojo-vhost.conf (debe ser /home/agent/www/dojo), instala
+  el fichero en /etc/apache2/sites-available/000-dojo.conf, valida con sudo apache2ctl configtest y
+  cierra con dojo-verificar apache-vhost.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /home/agent/www/dojo
+
+  echo '<h1>dojo web</h1>' > /home/agent/www/dojo/index.html
+
+  cat > /home/agent/dojo-vhost.conf <<'EOF'
+
+  # vhost del dojo: el DocumentRoot está mal (pension/…)
+
+  <VirtualHost *:80>
+    ServerName dojo.local
+    DocumentRoot pension/www/dojo
+    <Directory pension/www/dojo>
+      AllowOverride None
+      Require all granted
+    </Directory>
+  </VirtualHost>
+
+  EOF
+
+  chown agent:agent /home/agent/dojo-vhost.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    apache-vhost)
+      grep -Eq 'DocumentRoot[[:space:]]+/home/agent/www/dojo' /etc/apache2/sites-available/000-dojo.conf || { echo "DocumentRoot malo"; exit 1; }
+      sudo apache2ctl configtest 2>&1 | grep -q 'Syntax OK' || { echo "apache2ctl configtest falla"; exit 1; }
+      echo "✓ directo apache-vhost: vhost apache con DocumentRoot correcto"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sed -i 's#pension/www/dojo#/home/agent/www/dojo#g' /home/agent/dojo-vhost.conf && sudo cp
+  /home/agent/dojo-vhost.conf /etc/apache2/sites-available/000-dojo.conf && sudo apache2ctl
+  configtest && dojo-verificar apache-vhost
+hints:
+  - "El root apunta a pension/… que NO existe: el DocumentRoot debe ser /home/agent/www/dojo."
+  - sudo apache2ctl configtest = Syntax OK (parsea el config SIN arrancar puertos).
+  - "Sitio instalado: sudo cp a sites-available/000-dojo.conf."
+teach: "Apache sirve ficheros desde DocumentRoot: si apunta a un camino inexistente, el sitio no
+  responde aunque la sintaxis valga. configtest parsea el config y exige «Syntax OK»: la validación
+  correcta antes de enlazar el sitio."
+cheatsheet:
+  - cmd: sudo apache2ctl configtest
+    desc: valida la sintaxis (Syntax OK)
+  - cmd: DocumentRoot /ruta/sitio
+    desc: raíz de ficheros del vhost
+keywords:
+  - apache
+  - vhost
+  - documentroot
+  - configtest
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

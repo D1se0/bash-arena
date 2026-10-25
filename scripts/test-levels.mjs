@@ -27,7 +27,7 @@ const tar = require(path.join(repoRoot, 'node_modules/tar-stream'));
 const docker = new Docker({ socketPath: process.env.ARENA_DOCKER_SOCKET || '/var/run/docker.sock' });
 const IMAGE = process.env.ARENA_DOJO_IMAGE || 'bash-arena/dojo-base:latest';
 
-const TRACKS = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss', 'grep', 'awk', 'grep-pro', 'awk-pro'];
+const TRACKS = ['fundamentos', 'filtrado', 'busqueda', 'procesado', 'permisos', 'procesos', 'redes', 'archivos', 'scripting', 'forense', 'boss', 'grep', 'awk', 'grep-pro', 'awk-pro', 'sysadmin', 'dns', 'sql'];
 
 function listLevelFiles(filter) {
   const out = [];
@@ -106,7 +106,7 @@ async function runLevel({ track, file, name }) {
         MemorySwap: 256 * 1024 * 1024,
         NanoCpus: 5e8,
         CapDrop: ['ALL'],
-        CapAdd: ['CHOWN', 'DAC_OVERRIDE', 'FOWNER', 'SETUID', 'SETGID'],
+        CapAdd: ['CHOWN', 'DAC_OVERRIDE', 'FOWNER', 'SETUID', 'SETGID', 'SYS_CHROOT'],
         SecurityOpt: def.profile === 'sudo' ? [] : ['no-new-privileges'],
       },
       NetworkingConfig: { EndpointsConfig: { none: {} } },

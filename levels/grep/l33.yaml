@@ -1,0 +1,45 @@
+id: grep-l33
+track: grep
+index: 33
+title: Un antes, dos después
+subtitle: "grep -B1 -A2: contexto asimétrico"
+xp: 70
+difficulty: 4
+brief: "El protocolo dice: al ERROR acompañan SU línea ANTERIOR (causa) y DOS POSTERIORES (impacto).
+  Contexto asimétrico."
+goal: Muestra de protocolo.log las líneas del ERROR con SU línea previa y DOS posterior (uso de -B1
+  y -A2).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 33" "Grep"
+  cat > /home/agent/protocolo.log <<EOF
+  inicio del dia 17
+  cache recalibrada en la mesa
+  ERROR aplicando en casilla 17: $DOJO_FLAG
+  sanidad revisada
+  impactos: 2 camas
+  impacto total no visible
+  EOF
+  chown agent:agent /home/agent/protocolo.log
+solution: grep -B1 -A2 'ERROR' /home/agent/protocolo.log
+hints:
+  - "-B1 pide UNA línea ANTES (Before) y -A2 DOS después (After): se combinan en el mismo comando."
+  - grep -B1 -A2 patrón fichero aplica las DOS ventanas al patrón en una única pasada.
+  - grep -B1 -A2 'ERROR' /home/agent/protocolo.log
+teach: "-B y -A se usan juntos para contexto asimétrico: -B1 -A2 = 1 antes + propio + 2 después (4
+  líneas por match). -C4 sería el modo simétrico cómodo."
+cheatsheet:
+  - cmd: grep -B1 -A2 p f
+    desc: "contexto asimétrico: 1 antes, 2 después"
+  - cmd: grep -C5 p f
+    desc: 5 líneas a ambos lados
+keywords:
+  - grep
+  - -B
+  - -A
+  - contexto
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

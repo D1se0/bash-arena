@@ -1,0 +1,88 @@
+id: sysadmin-l9
+track: sysadmin
+index: 9
+title: La validación de Apache2
+subtitle: apache2ctl configtest
+xp: 70
+difficulty: 3
+brief: "El Apache del dojo retiró una directiva de un vhost en
+  /etc/apache2/sites-available/dojo.conf: la sintaxis rota. configtest cuenta la
+  verdad."
+goal: Repara /etc/apache2/sites-available/dojo.conf (la directiva DocumentRoot
+  empieza con "DocumentRtl") y valida con sudo apache2ctl configtest; luego
+  ejecuta dojo-verificar2 apache-docroot.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /etc/apache2/sites-available
+
+  cat > /etc/apache2/sites-available/dojo.conf <<EOF
+
+  <VirtualHost *:8080>
+    DocumentRtl /home/agent/site
+  </VirtualHost>
+
+  EOF
+
+  sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf 2>/dev/null || true
+
+  mkdir -p /home/agent/site && printf '%s\n' '<h1>dojo</h1>' >
+  /home/agent/site/index.html
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    apache-docroot)
+      grep -Eq '^\s*DocumentRoot\s+/home/agent/site' /etc/apache2/sites-available/dojo.conf || { echo "falta DocumentRoot"; exit 1; }
+      sudo apache2ctl configtest 2>&1 | grep -qi 'Syntax OK' || { echo "configtest falla"; exit 1; }
+      echo "✓ apache2 config OK"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: sudo sed -i 's/DocumentRtl/DocumentRoot/'
+  /etc/apache2/sites-available/dojo.conf && sudo apache2ctl configtest &&
+  dojo-verificar2 apache-docroot
+hints:
+  - 'El typo: "DocumentRtl" debería ser "DocumentRoot".'
+  - 'La validación: sudo apache2ctl configtest y debería imprimir "Syntax OK".'
+  - sudo sed -i 's/DocumentRtl/DocumentRoot/'
+    /etc/apache2/sites-available/dojo.conf && sudo apache2ctl configtest &&
+    dojo-verificar2 apache-docroot
+teach: "apache2ctl configtest (o apachectl -t) valida TODA la config del apache:
+  los vhosts, los módulos y los DocumentRoot. Si falla, el out muestra LÍNEA Y
+  FICHERO exactos."
+cheatsheet:
+  - cmd: sudo apache2ctl configtest
+    desc: valida toda la config del apache
+  - cmd: ls /etc/apache2/sites-available/
+    desc: lista de vhosts disponibles
+keywords:
+  - apache2
+  - configtest
+  - DocumentRoot
+  - vhost
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      Syntax OK
+      ✓ apache2 config OK
+      FLAG{…}

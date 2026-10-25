@@ -1,0 +1,54 @@
+id: grep-l20
+track: grep
+index: 20
+title: El árbol sin rutas
+subtitle: "grep -rh: recursivo sin nombres"
+xp: 75
+difficulty: 4
+brief: "En el árbol sondas/ hay ficheros con líneas PING. Para el informe TARDA
+  menos ignorar el nombre del fichero: solo importan los datos."
+goal: "Del árbol sondas/ imprime SOLO el CONTENIDO de las líneas que contengan
+  PING (sin el prefijo nombre-fichero: que añade -r)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+
+  mkdir -p /home/agent/sondas/octubre
+
+  echo 'PING: señal del nivel: $DOJO_FLAG' > /home/agent/sondas/nodo-a.log
+
+  echo 'PING: latencia 2ms' > /home/agent/sondas/nodo-b.log
+
+  echo 'PING sin señal: línea de mantenimiento' >
+  /home/agent/sondas/octubre/nodo-c.log
+
+  chown -R agent:agent /home/agent/sondas
+solution: grep -rh 'PING' /home/agent/sondas
+hints:
+  - -r busca recursivamente en el árbol; -h OCULTA el nombre del fichero en el
+    resultado.
+  - La combinación -rh es la gran limpiadora para volcar contenido de logs
+    dispersos.
+  - grep -rh 'PING' /home/agent/sondas
+teach: 'Cuando comparas o concatenas bytes de varios ficheros, -h evita el ruido
+  de rutas: "dime el dato, no de dónde salió". Luego, si necesitas las rutas,
+  grep -r a secas las lista.'
+cheatsheet:
+  - cmd: grep -rh pat dir
+    desc: solo el contenido, sin rutas
+  - cmd: grep -rl pat dir
+    desc: solo LOS FICHEROS
+keywords:
+  - grep
+  - -r
+  - -h
+  - recursivo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      PING: señal del nivel: FLAG{…}
+      PING: latencia 2ms
+      …

@@ -1,0 +1,114 @@
+id: sysadmin-l18
+track: sysadmin
+index: 18
+title: Boss final sysadmin
+subtitle: ssh key + copy nginx -t + apache2ctl + log
+xp: 170
+difficulty: 5
+brief: "El acumulado: generar CLAVE, validar SSHD, configurar NGINX, revisar
+  APACHE y BUscar en el log del servicio. La graduación sysadmin."
+goal: Crea un par SSH ED25519 en ~/.ssh/id_ed25519, REPARA el typo de nginx.conf
+  (servr_name) en /home/agent/nginx/nginx.conf, VALIDA nginx con nginx -t y
+  ejecuta (en orden) dojo-verificar2 sysadmin-boss.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /home/agent/nginx/logs /home/agent/nginx/html
+  /home/agent/nginx/tmp/body /home/agent/nginx/tmp/proxy
+  /home/agent/nginx/tmp/fastcgi /home/agent/nginx/tmp/uwsgi
+  /home/agent/nginx/tmp/scgi /home/agent/.ssh
+
+  printf '%s\n' '<h1>dojo</h1>' > /home/agent/nginx/html/index.html
+
+  cat > /home/agent/nginx/nginx.conf <<EOF
+
+  pid  logs/nginx.pid;
+
+  worker_processes  1;
+
+  error_log  logs/error.log;
+
+  events { worker_connections 16; }
+
+  http {
+    access_log  logs/access.log;
+    client_body_temp_path  /home/agent/nginx/tmp/body;
+    proxy_temp_path        /home/agent/nginx/tmp/proxy;
+    fastcgi_temp_path      /home/agent/nginx/tmp/fastcgi;
+    uwsgi_temp_path        /home/agent/nginx/tmp/uwsgi;
+    scgi_temp_path         /home/agent/nginx/tmp/scgi;
+    server {
+      servr_name  dojo.local;
+      listen 127.0.0.1:8081;
+      root html;
+      index index.html;
+    }
+  }
+
+  EOF
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    sysadmin-boss)
+      [ -f $HOME/.ssh/id_ed25519 ] || { echo "falta la clave privada"; exit 1; }
+      ssh-keygen -y -f $HOME/.ssh/id_ed25519 >/dev/null 2>&1 || { echo "la clave no es válida"; exit 1; }
+      grep -Eq '^\s*server_name\s+' /home/agent/nginx/nginx.conf || { echo "nginx.conf sin server_name"; exit 1; }
+      nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ 2>&1 | grep -q 'syntax is ok' || { echo "nginx -t falla"; exit 1; }
+      echo "✓ ssh-key y nginx OK (boss superado)"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+
+  chmod 700 /home/agent/.ssh && chown -R agent:agent /home/agent/nginx
+  /home/agent/.ssh
+solution: ssh-keygen -t ed25519 -N "" -f $HOME/.ssh/id_ed25519 >/dev/null &&
+  chmod 600 $HOME/.ssh/id_ed25519 && sed -i 's/servr_name/server_name/'
+  /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p
+  /home/agent/nginx/ && dojo-verificar2 sysadmin-boss
+hints:
+  - 'Clave: ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 ; permisos 600.'
+  - 'nginx: sed -i s/typo y luego nginx -t -c … -p … con na predicción "syntax
+    is ok".'
+  - ssh-keygen -t ed25519 -N "" -f $HOME/.ssh/id_ed25519 >/dev/null && chmod 600
+    $HOME/.ssh/id_ed25519 && sed -i 's/servr_name/server_name/'
+    /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p
+    /home/agent/nginx/ && dojo-verificar2 sysadmin-boss
+teach: "El cierre de sysadmin asienta EL FLUJO DE TRABAJO REAL: generar
+  credenciales → tocar la config → valid测评 (configtest) → servir. Nada de
+  arrancar a ciegas: prima el VALIDAR > probar."
+cheatsheet:
+  - cmd: ssh-keygen -t ed25519 ... && chmod 600
+    desc: claves SSH del cero
+  - cmd: nginx -t -c fich -p dir
+    desc: validación nginx en dir
+keywords:
+  - boss
+  - ssh
+  - nginx
+  - configtest
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      nginx: syntax is ok
+      ✓ ssh-key y nginx OK (boss superado)
+      FLAG{…}

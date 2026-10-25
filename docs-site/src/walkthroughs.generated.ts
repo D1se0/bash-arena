@@ -8861,7 +8861,7 @@ export const WALKTHROUGHS: WalkthroughData[] = [
           {
             "cmd": "dig",
             "args": "+short @127.0.0.1 -p 5353 flag.dojo TXT",
-            "why": "comando dig — revisa «man dig»",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
             "flags": [
               {
                 "flag": "-p",
@@ -9800,7 +9800,7 @@ export const WALKTHROUGHS: WalkthroughData[] = [
           {
             "cmd": "dig",
             "args": "@127.0.0.1 -p 5354 +short TXT marca.dojo",
-            "why": "comando dig — revisa «man dig»",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
             "flags": [
               {
                 "flag": "-p",
@@ -16585,6 +16585,1551 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "grep -rh 'EXFIL' /home/agent/intrusion | grep -oE 'FLAG\\{[^}]*\\}'"
   },
   {
+    "id": "grep-l15",
+    "track": "grep",
+    "index": 15,
+    "title": "Lo que viene después",
+    "subtitle": "grep -A: contexto posterior",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El log del análisis guarda la ALERTA y, en la línea SIGUIENTE, la causa raíz. El diagnóstico vive en la línea de abajo.",
+    "goal": "De alerta.log imprime la línea que contiene ALERTA y, además, la línea INMEDIATAMENTE POSTERIOR (1 línea de contexto posterior con -A).",
+    "keywords": [
+      "grep",
+      "-A",
+      "contexto",
+      "after"
+    ],
+    "hints": [
+      "-A N imprime cada match y las N líneas que le SIGUEN (A de after).",
+      "Aquí la flag no está en la línea del match, sino en la de abajo: por eso piden contexto posterior.",
+      "grep -A 1 'ALERTA' /home/agent/alerta.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -A 1 pat f",
+        "desc": "match + 1 línea siguiente"
+      },
+      {
+        "cmd": "grep -B 2 pat f",
+        "desc": "match + 2 líneas previas"
+      }
+    ],
+    "teach": "grep -A N añade N líneas posteriores al match: el patrón clásico para logs tipo detalle/causa, donde lo importante VA DESPUÉS del identificador del evento.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ALERTA: checksum inválido…\ncausa raíz detectada: FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -A 1 'ALERTA' /home/agent/alerta.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-A 1 ALERTA /home/agent/alerta.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -A 1 'ALERTA' /home/agent/alerta.log"
+  },
+  {
+    "id": "grep-l16",
+    "track": "grep",
+    "index": 16,
+    "title": "Lo que precedió",
+    "subtitle": "grep -B: contexto anterior",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El log incide: el FALLO es el evento; lo que lo PRODUJO está dos líneas por encima.",
+    "goal": "De falla.log imprime la línea FALLO y las DOS líneas ANTERIORES (2 líneas de contexto previo con -B).",
+    "keywords": [
+      "grep",
+      "-B",
+      "contexto",
+      "before"
+    ],
+    "hints": [
+      "-B N imprime cada match y las N líneas que lo PRECEDEN (B de before).",
+      "La flag está dos líneas POR ENCIMA del match: necesitas mirar hacia atrás.",
+      "grep -B 2 'FALLO' /home/agent/falla.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B 2 pat f",
+        "desc": "2 líneas antes + match"
+      },
+      {
+        "cmd": "grep -A 2 -B 1 pat f",
+        "desc": "banda asimétrica"
+      }
+    ],
+    "teach": "El diagnóstico de logs casi siempre mira atrás: -B N muestra \"qué produjo esto\". Con -A y -B en el mismo grep ves la banda completa a tu medida.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "14:01 tráfico anómalo: FLAG{…}\n14:02 los umbrales…\n14:03 FALLO: bloqueo…"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -B 2 'FALLO' /home/agent/falla.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B 2 FALLO /home/agent/falla.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B 2 'FALLO' /home/agent/falla.log"
+  },
+  {
+    "id": "grep-l17",
+    "track": "grep",
+    "index": 17,
+    "title": "La escena completa",
+    "subtitle": "grep -C: contexto simétrico",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El evento CRITICA solo se entiende con DOS líneas de contexto a cada lado: la cinta entera.",
+    "goal": "De critica.log imprime la línea del evento CRITICA con DOS líneas de contexto POR ENCIMA y POR DEBAJO.",
+    "keywords": [
+      "grep",
+      "-C",
+      "contexto"
+    ],
+    "hints": [
+      "-C N equivale a -A N -B N en una sola opción (C de context).",
+      "El match está en medio: la ventana ±2 cubre la línea de la flag.",
+      "grep -C 2 'CRITICA' /home/agent/critica.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -C 2 pat f",
+        "desc": "2 antes + match + 2 después"
+      },
+      {
+        "cmd": "grep -C 2n pat f",
+        "desc": "idem con números de línea"
+      }
+    ],
+    "teach": "-C N envuelve el match con N líneas a cada lado. Es el \"muéstrame la escena\" de producción; combina con -n para llevar los números de línea al informe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2 antes + CRITICA + 2 después (aquí viaja la flag)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -C 2 'CRITICA' /home/agent/critica.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-C 2 CRITICA /home/agent/critica.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -C 2 'CRITICA' /home/agent/critica.log"
+  },
+  {
+    "id": "grep-l18",
+    "track": "grep",
+    "index": 18,
+    "title": "Solo la primera onda",
+    "subtitle": "grep -m: corte tras el primer match",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El log de beacons repite la señal cada segundo. Para el diagnóstico vale SOLO LA PRIMERA, y ahí va la firma del nivel.",
+    "goal": "De beacon.log imprime únicamente la PRIMERA línea que contenga BEACON.",
+    "keywords": [
+      "grep",
+      "-m",
+      "límite",
+      "rendimiento"
+    ],
+    "hints": [
+      "-m N detiene la lectura del fichero cuando ya acumuló N matches.",
+      "Con -m 1 el resto del fichero NO se escanea: es una ganancia real de rendimiento.",
+      "grep -m 1 'BEACON' /home/agent/beacon.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -m 1 pat f",
+        "desc": "solo el primer match"
+      },
+      {
+        "cmd": "grep -m 5 pat f",
+        "desc": "los primeros 5"
+      }
+    ],
+    "teach": "grep -m N es el límite de coincidencias por fichero. En logs enormes y repetitivos, -m 1 imprime el primer hallazgo y para de leer.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "t=001 BEACON: pulso firme y la firma: FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -m 1 'BEACON' /home/agent/beacon.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-m 1 BEACON /home/agent/beacon.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -m 1 'BEACON' /home/agent/beacon.log"
+  },
+  {
+    "id": "grep-l19",
+    "track": "grep",
+    "index": 19,
+    "title": "El token que viaja",
+    "subtitle": "grep -oE: extracción con clase",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "Cada línea del registro envía un campo token=… entre más texto. En UNA de ellas viaja la firma; el resto son sesiones de decoración.",
+    "goal": "De envios.log extrae SOLO los fragmentos token=VALOR (el valor completo, sin el resto de la línea) con -oE.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "extracción",
+      "token"
+    ],
+    "hints": [
+      "-o imprime SOLO la parte casada (no toda la línea).",
+      "\\S+ casa uno o más caracteres que NO son espacio: agarra el valor completo del token.",
+      "grep -oE 'token=\\S+' /home/agent/envios.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE 'token=\\S+' f",
+        "desc": "extrae solo el match"
+      },
+      {
+        "cmd": "grep -oE '[0-9]{4}-[0-9]{2}' f",
+        "desc": "extractor de fechas parciales"
+      }
+    ],
+    "teach": "Combinar -o con -E convierte a grep en un EXTRACTOR: cada coincidencia sale limpia en su propia línea. Es el primer paso del pipeline de cualquier integración de logs.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "token=FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -oE 'token=\\S+' /home/agent/envios.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE token=\\S+ /home/agent/envios.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE 'token=\\S+' /home/agent/envios.log"
+  },
+  {
+    "id": "grep-l20",
+    "track": "grep",
+    "index": 20,
+    "title": "El árbol sin rutas",
+    "subtitle": "grep -rh: recursivo sin nombres",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "En el árbol sondas/ hay ficheros con líneas PING. Para el informe TARDA menos ignorar el nombre del fichero: solo importan los datos.",
+    "goal": "Del árbol sondas/ imprime SOLO el CONTENIDO de las líneas que contengan PING (sin el prefijo nombre-fichero: que añade -r).",
+    "keywords": [
+      "grep",
+      "-r",
+      "-h",
+      "recursivo"
+    ],
+    "hints": [
+      "-r busca recursivamente en el árbol; -h OCULTA el nombre del fichero en el resultado.",
+      "La combinación -rh es la gran limpiadora para volcar contenido de logs dispersos.",
+      "grep -rh 'PING' /home/agent/sondas"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -rh pat dir",
+        "desc": "solo el contenido, sin rutas"
+      },
+      {
+        "cmd": "grep -rl pat dir",
+        "desc": "solo LOS FICHEROS"
+      }
+    ],
+    "teach": "Cuando comparas o concatenas bytes de varios ficheros, -h evita el ruido de rutas: \"dime el dato, no de dónde salió\". Luego, si necesitas las rutas, grep -r a secas las lista.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "PING: señal del nivel: FLAG{…}\nPING: latencia 2ms\n…"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -rh 'PING' /home/agent/sondas",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-rh PING /home/agent/sondas",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "-h",
+                "meaning": "flag h del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -rh 'PING' /home/agent/sondas"
+  },
+  {
+    "id": "grep-l21",
+    "track": "grep",
+    "index": 21,
+    "title": "Sin respaldos antiguos",
+    "subtitle": "grep -r --exclude: descartar por nombre",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El árbol de configuraciones guarda la invitación ACTUAL y una copia de seguridad antigua (.bak) que YA NO vale.",
+    "goal": "Del árbol invitaciones/, imprime las líneas que contienen cláve IGNORANDO todos los ficheros que terminan en .bak.",
+    "keywords": [
+      "grep",
+      "-r",
+      "--exclude",
+      "backups"
+    ],
+    "hints": [
+      "--exclude='*.patrón' descarta los ficheros cuyo NOMBRE case con el patrón.",
+      "El *.bak es la extensión clásica de backups; filtrarla de la búsqueda por contenido es rutina en producción.",
+      "grep -r --exclude='*.bak' 'cláve' /home/agent/invitaciones"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --exclude='*.bak' p dir",
+        "desc": "sin los .bak"
+      },
+      {
+        "cmd": "grep -r --include='*.conf' p dir",
+        "desc": "solo los .conf"
+      }
+    ],
+    "teach": "En árboles con copias de seguridad, --exclude evita false positives de toda la era .bak. El análogo de INCLUIR solo ciertos tipos es --include=\"*.log\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "…abril.conf: cláve = FLAG{…} (la actual)…"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -r --exclude='*.bak' 'cláve' /home/agent/invitaciones",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --exclude=*.bak cláve /home/agent/invitaciones",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--exclude=*.bak",
+                "meaning": "flag larga del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --exclude='*.bak' 'cláve' /home/agent/invitaciones"
+  },
+  {
+    "id": "grep-l22",
+    "track": "grep",
+    "index": 22,
+    "title": "La palabra entera",
+    "subtitle": "grep -w: bordes de palabra",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El log de módulos tiene trampas de nombre: user2, myuser, usuarios… Solo la PALABRA exacta \"user\" es la señal (y la firma del nivel va a su lado).",
+    "goal": "De modululos.log imprime SOLAMENTE las líneas que contienen la PALABRA COMPLETA user (no user2, no myuser).",
+    "keywords": [
+      "grep",
+      "-w",
+      "palabra",
+      "bordes"
+    ],
+    "hints": [
+      "-w casa solo si el patrón es una PALABRA ENTERA, rodeada de bordes (espacios, puntuación, inicio/fin).",
+      "user2 y myuser NO casan con -w porque la letra pegada rompe la frontera de palabra.",
+      "grep -w 'user' /home/agent/modululos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -w palabra f",
+        "desc": "palabra completa"
+      },
+      {
+        "cmd": "grep -E '\\\\buser\\\\b' f",
+        "desc": "idem con fronteras a mano"
+      }
+    ],
+    "teach": "grep -w es el filtro del \"solo palabra completa\": user ≠ user2. Alternativa en regex extendida: \\buser\\b. Los falsos positivos por subcadenas desaparecen con esta opción.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "user solvente, carga controlada con FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -w 'user' /home/agent/modululos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-w user /home/agent/modululos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -w 'user' /home/agent/modululos.log"
+  },
+  {
+    "id": "grep-l23",
+    "track": "grep",
+    "index": 23,
+    "title": "El doble patrón -e",
+    "subtitle": "grep -e A -e B: varios patrones en una pasada",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El registro recibe informes de los TURNOS diurnos (DIA) y nocturnos (NOCHE). Ambos importan y la firma viaja con los nocturnos.",
+    "goal": "De turnos.log imprime las líneas que contengan NOCHE o DIA (dos patrones en el MISMO grep con -e).",
+    "keywords": [
+      "grep",
+      "-e",
+      "patrones"
+    ],
+    "hints": [
+      "-e patrón añade UN patrón más a la búsqueda; puedes poner varios en el mismo comando.",
+      "La alternativa a -e -e es la alternancia -E: NOCHE|DIA. Ambas son válidas.",
+      "grep -e 'NOCHE' -e 'DIA' /home/agent/turnos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -e a -e b f",
+        "desc": "dos patrones, una pasada"
+      },
+      {
+        "cmd": "grep -E 'a|b' f",
+        "desc": "idem con alternancia"
+      }
+    ],
+    "teach": "grep -e A -e B acepta varios patrones en una pasada, sin la -E. La ventaja: cada patrón es un argumento limpio, sin regex anidadas que te confundan.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "12:00 DIA…\n23:30 NOCHE: FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -e 'NOCHE' -e 'DIA' /home/agent/turnos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-e NOCHE -e DIA /home/agent/turnos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man grep»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -e 'NOCHE' -e 'DIA' /home/agent/turnos.log"
+  },
+  {
+    "id": "grep-l24",
+    "track": "grep",
+    "index": 24,
+    "title": "La ventana exacta",
+    "subtitle": "head + tail + grep: rango de líneas",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero marcas.txt tiene la firma en una zona CONCRETA (líneas 6..9). El EXTERIOR es ruido y no vale.",
+    "goal": "De marcas.txt imprime las líneas que contienen TERMINAL SOLAMENTE si están entre las líneas 6 y 9 (las exteriores no valen).",
+    "keywords": [
+      "grep",
+      "head",
+      "tail",
+      "ventana"
+    ],
+    "hints": [
+      "La ventana 6..9 se obtiene con head -n 9 (corta desde arriba hasta la 9) | tail -n +6 (empieza en la 6).",
+      "El último grep filtra dentro de esa ventana SOLO las líneas TERMINAL.",
+      "head -n 9 /home/agent/marcas.txt | tail -n +6 | grep 'TERMINAL'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "head -n 9 f | tail -n +6",
+        "desc": "líneas 6..9"
+      },
+      {
+        "cmd": "sed -n 6,9p f",
+        "desc": "idem con sed"
+      }
+    ],
+    "teach": "head y tail son la \"tijera de líneas\"; acotar un bloque antes del grep evita falsos positivos en todo el fichero. Otra forma es sed -n 6,9p; aquí practicamos la fórmula head/tail, independiente de sed.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "las líneas 7..9 (TERMINAL), con la flag del nivel en la 7"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "head -n 9 /home/agent/marcas.txt | tail -n +6 | grep 'TERMINAL'",
+        "cmds": [
+          {
+            "cmd": "head",
+            "args": "-n 9 /home/agent/marcas.txt",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 9",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 9)"
+              }
+            ]
+          },
+          {
+            "cmd": "tail",
+            "args": "-n +6",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 3 = las últimas 3)"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "TERMINAL",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "head -n 9 /home/agent/marcas.txt | tail -n +6 | grep 'TERMINAL'"
+  },
+  {
+    "id": "grep-l25",
+    "track": "grep",
+    "index": 25,
+    "title": "El recuento de las vigas",
+    "subtitle": "grep | sort | uniq -c: frecuencias",
+    "xp": 80,
+    "difficulty": 5,
+    "brief": "El log de vigas repite señales: el informe pide CUÁNTAS VECES aparece cada tramo, ordenado.",
+    "goal": "De vigas.log imprime cada línea que contenga VIGA, ordenadas alfabéticamente y, delante de cada una, el NÚMERO de veces que se repite (uniq -c).",
+    "keywords": [
+      "grep",
+      "uniq",
+      "-c",
+      "sort",
+      "frecuencia"
+    ],
+    "hints": [
+      "uniq -c añade un CONTADOR a la izquierda de cada línea única; exige que las líneas DUPLICADAS estén adyacentes.",
+      "sort ordena las líneas y prepara la adyacencia para uniq.",
+      "grep 'VIGA' /home/agent/vigas.log | sort | uniq -c"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep pat f | sort | uniq -c",
+        "desc": "frecuencia de cada línea"
+      },
+      {
+        "cmd": "sort f | uniq -c | sort -rn",
+        "desc": "ranking por frecuencia"
+      }
+    ],
+    "teach": "El trío grep | sort | uniq -c es EL medidor de frecuencias del shell. Cuidado: uniq -c cuenta LÍNEAS ÚNICAS (no ficheros), y sin sort los duplicados no quedan contiguos y el conteo se parte.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "   2 VIGA tramo alfa\n   1 VIGA tramo función: FLAG{…}\n…"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'VIGA' /home/agent/vigas.log | sort | uniq -c",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "VIGA /home/agent/vigas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'VIGA' /home/agent/vigas.log | sort | uniq -c"
+  },
+  {
+    "id": "grep-l26",
+    "track": "grep",
+    "index": 26,
+    "title": "Boss: la cadena de tres",
+    "subtitle": "incluir → anclar → excluir",
+    "xp": 170,
+    "difficulty": 5,
+    "brief": "El log de auditoría mezcla eventos CRITICA de años pasados, simulacros y el evento REAL. El informe exige tres pasos encadenados, y la firma viaja con el evento real.",
+    "goal": "De auditoria.log imprime SOLO las líneas que: contengan CRITICA, EMPIECEN por 2026 (año del dojo) y NO contengan simulacro.",
+    "keywords": [
+      "grep",
+      "boss",
+      "pipeline",
+      "cadena"
+    ],
+    "hints": [
+      "Paso 1: grep CRITICA deja las líneas del evento.",
+      "Paso 2: grep -E \"^2026\" (ancla de inicio de línea) exige el año de este dojo.",
+      "Paso 3: grep -v simulacro elimina los falsos positivos.",
+      "grep 'CRITICA' /home/agent/auditoria.log | grep -E '^2026' | grep -v 'simulacro'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep a f | grep -E \"^x\" | grep -v y",
+        "desc": "include + ancla + exclude"
+      },
+      {
+        "cmd": "grep -E '^2026' f",
+        "desc": "anclar por año"
+      }
+    ],
+    "teach": "El boss final de este bloque encadena include → ancla → exclude. Tres etapas: primero SUELTA la señal, luego AFILA su forma, y por último QUITA LOS FALSOS. Cada etapa es un grep y juntos se leen como una frase.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2026-10-25 CRITICA … FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'CRITICA' /home/agent/auditoria.log | grep -E '^2026' | grep -v 'simulacro'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "CRITICA /home/agent/auditoria.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-E ^2026",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v simulacro",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'CRITICA' /home/agent/auditoria.log | grep -E '^2026' | grep -v 'simulacro'"
+  },
+  {
+    "id": "grep-l27",
+    "track": "grep",
+    "index": 27,
+    "title": "Contar las caídas",
+    "subtitle": "grep -c: nº de líneas que casan",
+    "xp": 45,
+    "difficulty": 2,
+    "brief": "El monitor de ping anota cada corte por hora. Para el informe necesitas el TOTAL de cortes registrados, no las líneas en sí.",
+    "goal": "Primero CUENTA (grep -c) las líneas de corte de cortes.log y después muestra ESAS líneas: contienen la marca del dojo.",
+    "keywords": [
+      "grep",
+      "-c",
+      "contar"
+    ],
+    "hints": [
+      "grep -c no imprime las líneas: imprime CUÁNTAS casaron (solo el número).",
+      "El segundo grep SIN -c re-muestra ya las líneas completas: llevan la marca.",
+      "grep -c 'corte' /home/agent/cortes.log && grep 'corte' /home/agent/cortes.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -c p f",
+        "desc": "cuántas líneas casan"
+      },
+      {
+        "cmd": "grep -o p f | wc -l",
+        "desc": "cuántas apariciones (otra vía)"
+      }
+    ],
+    "teach": "grep -c devuelve el CONTEO de líneas que casan (0 si ninguna, exit 1). Trampa clásica: cuenta LÍNEAS, no apariciones (dos matches en la misma línea valen 1); con -o + wc -l contarías apariciones en vez de líneas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -c 'corte' /home/agent/cortes.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-c corte /home/agent/cortes.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "cuenta coincidencias en vez de imprimirlas"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'corte' /home/agent/cortes.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "corte /home/agent/cortes.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -c 'corte' /home/agent/cortes.log && grep 'corte' /home/agent/cortes.log"
+  },
+  {
+    "id": "grep-l28",
+    "track": "grep",
+    "index": 28,
+    "title": "Sospechosos habituales",
+    "subtitle": "grep -l y -L: nombres de ficheros",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "En carpeta/ hay varios informes. Solo uno recibió la marca leaked: localízalo con -l y muestra SU línea (que lleva la marca).",
+    "goal": "Imprime el NOMBRE del fichero de carpeta/ que contiene leaked (con grep -l) y a continuación SU LÍNEA (grep). La línea lleva la marca del dojo.",
+    "keywords": [
+      "grep",
+      "-l",
+      "-L",
+      "lista"
+    ],
+    "hints": [
+      "-l imprime el NOMBRE DE FICHERO (una vez por fichero), no las líneas: guardalo en una variable.",
+      "\"f=$(grep -rl …)\" captura la ruta; luego grep patrón \"$f\" muestra la línea culpable (marca incluida).",
+      "f=$(grep -rl 'leaked' carpeta); echo \"$f\"; grep 'leaked' \"$f\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -rl p dir",
+        "desc": "solo nombres de ficheros que casan"
+      },
+      {
+        "cmd": "grep -rL p dir",
+        "desc": "ficheros SIN el patrón"
+      }
+    ],
+    "teach": "grep -l lista los ficheros que contienen el patrón (ideal para pipelines con xargs) y -L los que NO lo contienen. La pareja l/L es el filtro de «en qué archivo está» para árboles grandes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "f=$(grep -rl 'leaked' /home/agent/carpeta)",
+        "cmds": [
+          {
+            "cmd": "f=$(grep",
+            "args": "-rl leaked /home/agent/carpeta)",
+            "why": "comando f=$(grep — revisa «man f=$(grep»",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "flag r del comando — revisa «man f=$(grep»"
+              },
+              {
+                "flag": "-l",
+                "meaning": "flag l del comando — revisa «man f=$(grep»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "echo \"$f\"",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "$f",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep 'leaked' \"$f\"",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "leaked $f",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "f=$(grep -rl 'leaked' /home/agent/carpeta); echo \"$f\"; grep 'leaked' \"$f\""
+  },
+  {
+    "id": "grep-l29",
+    "track": "grep",
+    "index": 29,
+    "title": "La lista vetada",
+    "subtitle": "grep -f: patrones leídos de un fichero",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El filtro de spam reúne TÉRMINOS VETADOS en vetados.txt (uno por línea). Un correo usa un vetado para colar la marca.",
+    "goal": "Busca en los .msg del buzón con TODA la lista de vetados de una vez (grep -f) y encuentra el correo que lleva FLAG{…}.",
+    "keywords": [
+      "grep",
+      "-f",
+      "lista",
+      "spam"
+    ],
+    "hints": [
+      "-f FICHERO lee patrones UNO POR LÍNEA: no hace falta un grep por término.",
+      "Los cuatro .msg casan con los vetados; el correo del curso tipográfico trae la marca.",
+      "grep -f vetados.txt -r /home/agent/buzon  # y luego aislar la línea con la marca"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -f lista.txt f",
+        "desc": "múltiples patrones de un fichero"
+      },
+      {
+        "cmd": "grep -Ff lista.txt f",
+        "desc": "ídem, patrones literales (sin regex)"
+      }
+    ],
+    "teach": "grep -f lista.txt busca TODOS los patrones del fichero a la vez (uno por línea). Es el detector reutilizable: la lista puede crecer sin tocar el comando (la blacklist de producción).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -f /home/agent/buzon/vetados.txt -r /home/agent/buzon | grep 'dos.msg' | grep -oE 'FLAG\\{[^}]*\\}'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-f /home/agent/buzon/vetados.txt -r /home/agent/buzon",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man grep»"
+              },
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "dos.msg",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE FLAG\\{[^}]*\\}",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -f /home/agent/buzon/vetados.txt -r /home/agent/buzon | grep 'dos.msg' | grep -oE 'FLAG\\{[^}]*\\}'"
+  },
+  {
+    "id": "grep-l30",
+    "track": "grep",
+    "index": 30,
+    "title": "La primera señal",
+    "subtitle": "grep -m N: máximo de coincidencias",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El radar avisa CADA segundo que ve señal, pero para el ticket solo necesitas LA PRIMERA: -m corta en cuanto la tiene.",
+    "goal": "Imprime SOLO una línea de radar.log (la primera que contenga señal) usando el límite de coincidencias.",
+    "keywords": [
+      "grep",
+      "-m",
+      "límite"
+    ],
+    "hints": [
+      "-m N deja de buscar tras N coincidencias: -m 1 imprime SOLO la primera.",
+      "Ojo: todas las líneas contienen «señal»; -m 1 corta tras la 1.ª y no escanea más.",
+      "grep -m 1 'señal' /home/agent/radar.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -m 1 p f",
+        "desc": "primera coincidencia y cortar"
+      },
+      {
+        "cmd": "grep -m 5 p f",
+        "desc": "hasta 5 coincidencias"
+      }
+    ],
+    "teach": "grep -m 1 imprime la primera coincidencia y PARA (abandona el escaneo). En ficheros gigantes es la diferencia entre 2ms y 2 minutos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -m 1 'señal' /home/agent/radar.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-m 1 señal /home/agent/radar.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -m 1 'señal' /home/agent/radar.log"
+  },
+  {
+    "id": "grep-l31",
+    "track": "grep",
+    "index": 31,
+    "title": "El detector silencioso",
+    "subtitle": "grep -q + $? en un if",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "En scripting NO quieres la salida: quieres SABER si está. El guardián del dojo usa -q y $?.",
+    "goal": "Si marca.trace contiene marcada, imprime «Vamos con la señal» y su contenido (una línea con FLAG{…}).",
+    "keywords": [
+      "grep",
+      "-q",
+      "exit",
+      "scripting"
+    ],
+    "hints": [
+      "grep -q es silencioso: su ÚNICO mensaje es el exit code (0 si casó, 1 si no).",
+      "Un if COMANDO then … evalúa el exit code: -q + cat del trace.",
+      "if grep -q 'marcada' marca.trace; then cat marca.trace; fi"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -q patrón f",
+        "desc": "solo exit code (0=sí, 1=no)"
+      },
+      {
+        "cmd": "if cmd; then …; fi",
+        "desc": "evaluar exit code de un comando"
+      }
+    ],
+    "teach": "grep -q (quiet) solo dice SÍ/NO con el código de salida: 0 si encontró, 1 si no. Es el grep que alimenta if/&&/|| en scripts — inmediato y sin salida contaminante.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "if grep -q 'marcada' /home/agent/marca.trace",
+        "cmds": [
+          {
+            "cmd": "if",
+            "args": "grep -q marcada /home/agent/marca.trace",
+            "why": "comando if — revisa «man if»",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "flag q del comando — revisa «man if»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "then echo \"Vamos con la señal\"",
+        "cmds": [
+          {
+            "cmd": "then",
+            "args": "echo Vamos con la señal",
+            "why": "comando then — revisa «man then»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/marca.trace",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/marca.trace",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "else echo 'sin señal: abortando'",
+        "cmds": [
+          {
+            "cmd": "else",
+            "args": "echo sin señal: abortando",
+            "why": "comando else — revisa «man else»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "fi",
+        "cmds": [
+          {
+            "cmd": "fi",
+            "args": "",
+            "why": "comando fi — revisa «man fi»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "if grep -q 'marcada' /home/agent/marca.trace; then echo \"Vamos con la señal\"; cat /home/agent/marca.trace; else echo 'sin señal: abortando'; fi"
+  },
+  {
+    "id": "grep-l32",
+    "track": "grep",
+    "index": 32,
+    "title": "Tokens al oculto",
+    "subtitle": "grep -oE con alternancia: extraer VARIOS tipos de pieza",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "En eventos.log hay piezas event=HEX y request=HEX mezcladas. La alternancia captura AMBOS tipos; la marca viaja en uno de los tokens válidos.",
+    "goal": "Extrae de eventos.log los tokens event=HEX y request=HEX donde HEX sea EXACTAMENTE 4 hexadecimales en MAYÚSCULAS (con -oE) y después muestra la línea de la sorpresa: lleva la marca.",
+    "keywords": [
+      "grep",
+      "-oE",
+      "alternancia",
+      "tokens"
+    ],
+    "hints": [
+      "La alternancia (event|request) captura CUALQUIERA de las dos cabeceras.",
+      "[0-9A-F]{4} exige EXACTAMENTE 4 hexadecimales en MAYÚSCULAS (ni lowercase ni más largos).",
+      "Tras los tokens, la línea de la sorpresa es un uso de grep plano (ancla ^sorpresa:).",
+      "grep -oE '(event|request)=[0-9A-F]{4}' /home/agent/eventos.log && grep '^sorpresa:' /home/agent/eventos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE '(a|b)=[0-9A-F]{4}'",
+        "desc": "extraer dos tipos de tokens"
+      },
+      {
+        "cmd": "grep -oE … | wc -l",
+        "desc": "ídem contando extracciones"
+      }
+    ],
+    "teach": "Con alternancia (a|b) + clases exactas ([0-9A-F]{4}) iscribes un recogedor de tokens: coge cualquier pieza con cualquiera de las cabeceras y formato exacto. Toda la validación vive en la regex.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -oE '(event|request)=[0-9A-F]{4}' /home/agent/eventos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE (event|request)=[0-9A-F]{4} /home/agent/eventos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep '^sorpresa:' /home/agent/eventos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "^sorpresa: /home/agent/eventos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '(event|request)=[0-9A-F]{4}' /home/agent/eventos.log && grep '^sorpresa:' /home/agent/eventos.log"
+  },
+  {
+    "id": "grep-l33",
+    "track": "grep",
+    "index": 33,
+    "title": "Un antes, dos después",
+    "subtitle": "grep -B1 -A2: contexto asimétrico",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El protocolo dice: al ERROR acompañan SU línea ANTERIOR (causa) y DOS POSTERIORES (impacto). Contexto asimétrico.",
+    "goal": "Muestra de protocolo.log las líneas del ERROR con SU línea previa y DOS posterior (uso de -B1 y -A2).",
+    "keywords": [
+      "grep",
+      "-B",
+      "-A",
+      "contexto"
+    ],
+    "hints": [
+      "-B1 pide UNA línea ANTES (Before) y -A2 DOS después (After): se combinan en el mismo comando.",
+      "grep -B1 -A2 patrón fichero aplica las DOS ventanas al patrón en una única pasada.",
+      "grep -B1 -A2 'ERROR' /home/agent/protocolo.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B1 -A2 p f",
+        "desc": "contexto asimétrico: 1 antes, 2 después"
+      },
+      {
+        "cmd": "grep -C5 p f",
+        "desc": "5 líneas a ambos lados"
+      }
+    ],
+    "teach": "-B y -A se usan juntos para contexto asimétrico: -B1 -A2 = 1 antes + propio + 2 después (4 líneas por match). -C4 sería el modo simétrico cómodo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -B1 -A2 'ERROR' /home/agent/protocolo.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B1 -A2 ERROR /home/agent/protocolo.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B1 -A2 'ERROR' /home/agent/protocolo.log"
+  },
+  {
+    "id": "grep-l34",
+    "track": "grep",
+    "index": 34,
+    "title": "El respaldo engañoso",
+    "subtitle": "grep -r --exclude-dir y --exclude",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El proyecto archiva versiones viejas en respaldo/ y ficheros .bak: contienen marcas ANTIGUAS (falsas). La marca VIVA está solo en el código actual.",
+    "goal": "Busca en proyecto/ la marca viva excluyendo el directorio respaldo/ y los ficheros terminados en .bak (con --exclude-dir y --exclude).",
+    "keywords": [
+      "grep",
+      "exclude-dir",
+      "exclude",
+      "recursivo"
+    ],
+    "hints": [
+      "--exclude-dir=NOMBRE excluye CARPETAS (sin globs: el nombre).",
+      "--exclude=\"*.bak\" sí acepta GLOBS de FICHERO: excluye los backups.",
+      "grep -r --exclude-dir=respaldo --exclude='*.bak' 'FLAG{' /home/agent/proyecto"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --exclude-dir=respaldo p dir",
+        "desc": "excluye una carpeta completa"
+      },
+      {
+        "cmd": "grep -r --exclude='*.bak' p dir",
+        "desc": "excluye ficheros por glob"
+      }
+    ],
+    "teach": "--exclude-dir filtra CARPETAS completas (respaldo/, node_modules/) y --exclude filtra NOMBRES de fichero con glob (*.bak, *.min.js). Ambas junto a -r son obligatorias cuando hay respaldos que ENGAÑAN la señal.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -r --exclude-dir=respaldo --exclude='*.bak' 'FLAG{' /home/agent/proyecto",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --exclude-dir=respaldo --exclude=*.bak FLAG{ /home/agent/proyecto",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--exclude-dir=respaldo",
+                "meaning": "flag larga del comando — revisa «man grep»"
+              },
+              {
+                "flag": "--exclude=*.bak",
+                "meaning": "flag larga del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --exclude-dir=respaldo --exclude='*.bak' 'FLAG{' /home/agent/proyecto"
+  },
+  {
+    "id": "grep-l35",
+    "track": "grep",
+    "index": 35,
+    "title": "Palabras fuera del caserío",
+    "subtitle": "grep -v con anclas: excluir palabra EXACTA",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El glosario mezcla señales con rellenos que EMPIEZAN por test (aislado): hay que EXCLUIR esas filas con anclaje ^test+espacio y dejar pasar testear/testing.",
+    "goal": "De glosario.txt imprime las líneas numeradas (-n) que NO empiecen por test como palabra test (test solo con espacio al final del vocablo), dejando pasar testear y testing.",
+    "keywords": [
+      "grep",
+      "-v",
+      "ancla",
+      "excluir"
+    ],
+    "hints": [
+      "El GREP invierte: -v descarta las que CASAN; el patrón describe las QUE QUIERES QUITAR.",
+      "Con -w + -v las dando ambiguas: mejor el ancla ^test + espacio o fin de línea.",
+      "grep -vnE '^test( |$)' /home/agent/glosario.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -vn patrón f",
+        "desc": "numeradas, excluyendo las que casan"
+      },
+      {
+        "cmd": "grep -vE '^test( |$)' f",
+        "desc": "excluir test como palabra inicial"
+      }
+    ],
+    "teach": "-v con anclas quita las que casan: en vez de -w (ambiguo con -v), se ancla ^test + espacio|fin de línea: la palabra test desaparece y testear/testing permanecen. La combinación -v -n -E demuestra que las opciones se acumulan.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -vnE '^test([[:space:]]|$)' /home/agent/glosario.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-vnE ^test([[:space:]]|$) /home/agent/glosario.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              },
+              {
+                "flag": "-n",
+                "meaning": "numera las líneas coincidentes"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -vnE '^test([[:space:]]|$)' /home/agent/glosario.txt"
+  },
+  {
+    "id": "grep-l36",
+    "track": "grep",
+    "index": 36,
+    "title": "Boss: el intruso del SSH",
+    "subtitle": "cadena: contar IPs + localizar su única conexión OK",
+    "xp": 140,
+    "difficulty": 5,
+    "brief": "En auth.log los AUTH FAIL se concentran en UNA IP. Dicho atacante solo logró un SUCCESS: ahí viaja la marca. Cadena de greps y sort/uniq/awk.",
+    "goal": "Imprime de auth.log ÚNICAMENTE la marca FLAG{…} que viaja en la línea de SUCCESS del atacante (IP con MÁS FAIL).",
+    "keywords": [
+      "grep",
+      "boss",
+      "log",
+      "cadena",
+      "uniq"
+    ],
+    "hints": [
+      "Paso 1: filtra los FAIL (grep \"AUTH FAIL\") y encuentra la IP dominante con sort | uniq -c | sort -nr | head -1.",
+      "Paso 2: con la IP en mano (awk {print $3}), filtra esa IP Y el OK, y extrae flag= con grep -oE.",
+      "Compón con variables: ip=$(grep \"AUTH FAIL\" auth.log | …); grep \"$ip\" auth.log | …"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep x f | sort | uniq -c | sort -nr | head -1",
+        "desc": "el valor que más se repite"
+      },
+      {
+        "cmd": "grep \"ip $ip\" f | grep OK | grep -oE",
+        "desc": "por IP + criterio + extraer"
+      }
+    ],
+    "teach": "El boss une análisis de conteos con la cadena de greps: primero «¿quién domina el FAIL?» (sort|uniq -c|sort -nr) y luego la extracción de la línea OK del atacante con grep -oE. Es EL paso completo de auditoría de logs real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ip=$(grep 'AUTH FAIL' /home/agent/auth.log | grep -oE 'ip [0-9.]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $3}')",
+        "cmds": [
+          {
+            "cmd": "ip=$(grep",
+            "args": "AUTH FAIL /home/agent/auth.log",
+            "why": "comando ip=$(grep — revisa «man ip=$(grep»",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE ip [0-9.]+",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $3})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \"ip $ip\" /home/agent/auth.log | grep 'AUTH OK' | grep -oE 'flag=\\S+'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "ip $ip /home/agent/auth.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "AUTH OK",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE flag=\\S+",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "ip=$(grep 'AUTH FAIL' /home/agent/auth.log | grep -oE 'ip [0-9.]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $3}'); grep \"ip $ip\" /home/agent/auth.log | grep 'AUTH OK' | grep -oE 'flag=\\S+'"
+  },
+  {
     "id": "awk-l1",
     "track": "awk",
     "index": 1,
@@ -17318,6 +18863,1197 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "awk '$2 == \"OK\" && $3 == \"sig\" {t = t $4} END {print t}' /home/agent/canal.txt"
+  },
+  {
+    "id": "awk-l15",
+    "track": "awk",
+    "index": 15,
+    "title": "Los campos contados",
+    "subtitle": "awk NF: filtrar por nº de campos",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El registro de sesiones guarda filas de DISTINTA anchura: incompletas, normales y una fila extra-larga. A la vez, la firma viaja en una fila de 4 campos.",
+    "goal": "De sesiones.dat imprime SOLAMENTE las filas que tienen EXACTAMENTE 4 campos (NF).",
+    "keywords": [
+      "awk",
+      "NF",
+      "campos"
+    ],
+    "hints": [
+      "NF es el NÚMERO de campos de la línea actual: la primera variable de diagnóstico de awk.",
+      "La fila 2 tiene 4 campos y la 3 tiene 5: la comparación NF == 4 la única que imprime es la de la flag.",
+      "awk 'NF == 4' /home/agent/sesiones.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NF == 4' f",
+        "desc": "filas con 4 campos"
+      },
+      {
+        "cmd": "awk 'NF > 3 {print NF, $0}' f",
+        "desc": "ver NF junto a la fila"
+      }
+    ],
+    "teach": "NF cuenta los campos de la línea actual. Con NF, desechas filas truncas o incompletas ANTES de procesar: es la primera validación de calidad de cualquier log.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la fila de 4 campos (aquí viaja la flag)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NF == 4' /home/agent/sesiones.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NF == 4 /home/agent/sesiones.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NF == 4' /home/agent/sesiones.dat"
+  },
+  {
+    "id": "awk-l16",
+    "track": "awk",
+    "index": 16,
+    "title": "El último campo",
+    "subtitle": "awk $NF: el campo final",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El registro de entregas guarda un concepto VARIABLE al final de cada fila; la fila del dojo es la única cuyo último campo es la firma.",
+    "goal": "De entregas.dat imprime ÚNICAMENTE el último campo de cada línea ($NF).",
+    "keywords": [
+      "awk",
+      "$NF",
+      "último",
+      "campo"
+    ],
+    "hints": [
+      "$NF SIEMPRE apunta al último campo, sin importar cuántos haya: NF es el número, $NF es el VALOR.",
+      "No necesitas contar los campos: awk ya lo sabe.",
+      "awk '{ print $NF }' /home/agent/entregas.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print $NF}' f",
+        "desc": "último campo de cada fila"
+      },
+      {
+        "cmd": "awk '{print $(NF-1)}' f",
+        "desc": "penúltimo campo"
+      }
+    ],
+    "teach": "El idiom $NF es ÚTIL cuando el último dato importa y el nº de campos varía (logs con apéndices opcionales). $0 es la línea entera; $(NF-1) es el penúltimo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "racionalmente\nFLAG{…}\nal almacén… (los últimos de cada fila)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ print $NF }' /home/agent/entregas.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ print $NF } /home/agent/entregas.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ print $NF }' /home/agent/entregas.dat"
+  },
+  {
+    "id": "awk-l17",
+    "track": "awk",
+    "index": 17,
+    "title": "La cirugía de un campo",
+    "subtitle": "awk sub() SOLO en un campo",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "Los nombres de servicio llevan la vieja etiqueta beta. Hay que renombrar SOLO el primer campo (el resto de la fila, con la firma, queda intacto).",
+    "goal": "De servicios.dat imprime cada fila con el campo 1 modificado: sustituye beta por v2 SOLO dentro del primer campo.",
+    "keywords": [
+      "awk",
+      "sub",
+      "campo",
+      "sustitución"
+    ],
+    "hints": [
+      "sub(/patrón/, \"reemplazo\", $1) sustituye el PRIMER match DENTRO del campo 1.",
+      "Al reasignar un campo, awk RECONSTRUYE la línea dejando el resto intacto.",
+      "awk '{ sub(/beta/, \"v2\", $1); print }' /home/agent/servicios.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{sub(/a/, \"b\", $1); print}' f",
+        "desc": "sustitución solo en campo 1"
+      },
+      {
+        "cmd": "awk '{sub(/a/, \"b\"); print}' f",
+        "desc": "idem sobre TODA la línea"
+      }
+    ],
+    "teach": "sub/gsub aceptan un TERCER argumento: el campo donde operar. Sustituir en $1 NO toca $2 ni $3: la cirugía de awk evita regex desenfrenadas sobre toda la línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "api-v2 Gateway Latino FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ sub(/beta/, \"v2\", $1); print }' /home/agent/servicios.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ sub(/beta/, \"v2\", $1); print } /home/agent/servicios.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ sub(/beta/, \"v2\", $1); print }' /home/agent/servicios.dat"
+  },
+  {
+    "id": "awk-l18",
+    "track": "awk",
+    "index": 18,
+    "title": "El conversor de separadores",
+    "subtitle": "awk FS/OFS: cambiar delimitador",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El inventario viene separado por «dos puntos», pero el CSV final debe salir con comas. FS y OFS hacen el trabajo sin regex.",
+    "goal": "De inventario.txt imprime cada línea con los \":\" sustituidos por \",\" (re-juntando los mismos campos en el MISMO orden).",
+    "keywords": [
+      "awk",
+      "FS",
+      "OFS",
+      "delimitador"
+    ],
+    "hints": [
+      "-F: define el separador de ENTRADA (FS) y -v OFS=\",\" el separador de SALIDA (Output Field Separator).",
+      "El truco $1 = $1 REASIGNA el campo 1; al reasignar, awk RECONSTRUYE $0 pegando los campos con el OFS nuevo.",
+      "awk -F: -v OFS=',' '{ $1 = $1; print }' /home/agent/inventario.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F: -v OFS=',' '1' f",
+        "desc": "variante corta (1 = true)"
+      },
+      {
+        "cmd": "awk -F, -v OFS=';' '{$1=$1;print}' f",
+        "desc": "de coma a punto y coma"
+      }
+    ],
+    "teach": "El conversor FS→OFS con $1=$1 es el re-decoder de formato del shell: separar campos y re-pegarlos con otro delimitador sin regex ni sed. La firma viaja intacta como un campo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "correa-percha,azul,3,FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F: -v OFS=',' '{ $1 = $1; print }' /home/agent/inventario.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F: -v OFS=, { $1 = $1; print } /home/agent/inventario.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              },
+              {
+                "flag": "-v",
+                "meaning": "flag v del comando — revisa «man awk»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F: -v OFS=',' '{ $1 = $1; print }' /home/agent/inventario.txt"
+  },
+  {
+    "id": "awk-l19",
+    "track": "awk",
+    "index": 19,
+    "title": "El bloque entero",
+    "subtitle": "awk rango /inicio/,/fin/",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El log del día divide la escena en BLOQUES con banderas INICIO y FIN. Solo el bloque nocturno (entre banderas) tiene la firma.",
+    "goal": "De menu.log imprime TODO el contenido ENTRE la línea que empieza por INICIO y la que empieza por FIN (inclusas).",
+    "keywords": [
+      "awk",
+      "rango",
+      "bloque",
+      "ancla"
+    ],
+    "hints": [
+      "El rango /a/,/b/ imprime desde la línea que casa con /a/ hasta la línea que casa con /b/ (inclusas).",
+      "Con ^ anclas al inicio de línea, evitas un FIN a mitad de frase u otros candidatos.",
+      "awk '/^INICIO/,/^FIN/' /home/agent/menu.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '/^a/,/^b/' f",
+        "desc": "bloque entre anclas"
+      },
+      {
+        "cmd": "awk '/BEGIN/,/END/ {print}' f",
+        "desc": "bloque entre literales"
+      }
+    ],
+    "teach": "El selector de bloques /a/,/b/ es la herramienta de awk para \"trozos marcados\" (el análogo de sed -n /a/,/b/p). La ventaja: después puedes meter acciones encima del rango, filtrar y acumular.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "INICIO\n…cena…\n…firma…\nFIN"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '/^INICIO/,/^FIN/' /home/agent/menu.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "/^INICIO/,/^FIN/ /home/agent/menu.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '/^INICIO/,/^FIN/' /home/agent/menu.log"
+  },
+  {
+    "id": "awk-l20",
+    "track": "awk",
+    "index": 20,
+    "title": "La lista blanca",
+    "subtitle": "awk join NR==FNR: dos ficheros",
+    "xp": 80,
+    "difficulty": 5,
+    "brief": "El sistema de vigilancia tiene una lista blanca de IPs y un log de tráfico. La firma viaja con el tráfico DE la lista blanca.",
+    "goal": "De trafico.log imprime las líneas cuya primera columna aparece en permitidas.dat (el patrón del join con NR==FNR).",
+    "keywords": [
+      "awk",
+      "NR",
+      "FNR",
+      "join",
+      "lista"
+    ],
+    "hints": [
+      "Al recibir DOS ficheros, NR cuenta global y FNR por fichero: NR==FNR es TRUE solo en el PRIMERO.",
+      "lista[$1] registra la línea como clave del arreglo; luego $1 in lista consulta el arreglo",
+      "awk 'NR==FNR { lista[$1]; next } $1 in lista' /home/agent/permitidas.dat /home/agent/trafico.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR==FNR{a[$1];next} $1 in a' patrón datos",
+        "desc": "join clásico"
+      },
+      {
+        "cmd": "awk 'NR==FNR{a[$1];next} !($1 in a)' patrón datos",
+        "desc": "el inverso: lo NO presente"
+      }
+    ],
+    "teach": "NR==FNR {cargar; next} es EL join de awk: el primer fichero alimenta un arreglo, el segundo se consulta contra él. Mantiene listas blancas/negras del shell sin sort ni comm.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "…las filas de trafico.log con IP blanca, con la flag"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR==FNR { lista[$1]; next } $1 in lista' /home/agent/permitidas.dat /home/agent/trafico.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR==FNR { lista[$1]; next } $1 in lista /home/agent/permitidas.dat /home/agent/trafico.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR==FNR { lista[$1]; next } $1 in lista' /home/agent/permitidas.dat /home/agent/trafico.log"
+  },
+  {
+    "id": "awk-l21",
+    "track": "awk",
+    "index": 21,
+    "title": "La línea sospechosamente larga",
+    "subtitle": "awk length($0): filtrar por tamaño",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "En el registro de pulsos, TODAS las líneas normales son pequeñas. La firma del nivel es la ÚNICA sospechosamente larga.",
+    "goal": "De pulsos.log imprime SÓLO las líneas que miden MÁS de 50 caracteres (length($0)).",
+    "keywords": [
+      "awk",
+      "length",
+      "longitud"
+    ],
+    "hints": [
+      "length($0) devuelve el número de CARACTERES de la línea actual (length($1) la del campo 1).",
+      "La comparación con 50 filtra las anomalías en longitud: la primera revisión de calidad de los logs.",
+      "awk 'length($0) > 50' /home/agent/pulsos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'length($0) > 50' f",
+        "desc": "líneas largas (más de 50)"
+      },
+      {
+        "cmd": "awk '{print length($1)}' f",
+        "desc": "medir el primer campo"
+      }
+    ],
+    "teach": "length() existe SIN argumento (equivale a length($0)) y CON argumento. Filtrar por longitud detecta líneas truncas, anomalías de volcado y concatenados por accidente.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "la línea larga con la flag"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'length($0) > 50' /home/agent/pulsos.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "length($0) > 50 /home/agent/pulsos.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'length($0) > 50' /home/agent/pulsos.log"
+  },
+  {
+    "id": "awk-l22",
+    "track": "awk",
+    "index": 22,
+    "title": "La tabla ancha",
+    "subtitle": "awk printf: columnas alineadas",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "La tabla de comercios mezcla nombres cortos y largos. Para el informe se alinea a un ANCHO fijo: printf \"%-12s\" a cada nombre, y el valor de la 2.ª columna después.",
+    "goal": "De comercios.dat imprime cada fila CON EL CAMPO 1 ALINEADO A UN ANCHO DE 12 CARACTERES (a la izquierda, rellenando con espacios), y después el campo 2.",
+    "keywords": [
+      "awk",
+      "printf",
+      "alineación",
+      "ancho"
+    ],
+    "hints": [
+      "printf es de estilo C: %-12s alinea la CADENA a la IZQUIERDA con 12 de ancho (rellena con espacios).",
+      "printf NO añade salto de línea por sí: se lo das con \\\\n explícito.",
+      "awk '{ printf \"%-12s %s\\n\", $1, $2 }' /home/agent/comercios.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{printf \"%-12s %s\\n\", $1, $2}' f",
+        "desc": "columna ancha fija"
+      },
+      {
+        "cmd": "awk '{printf \"%10d\\n\", $2}' f",
+        "desc": "número a la derecha"
+      }
+    ],
+    "teach": "La aritmética del formato de awk vive en printf: %-12s (cadena a la izquierda), %10d (número a la derecha), %.2f (2 decimales). Es la máscara de todos los CSV alineados.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "tienda-1     7\ntienda-2     FLAG{…}\n…"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ printf \"%-12s %s\\n\", $1, $2 }' /home/agent/comercios.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ printf \"%-12s %s\\n\", $1, $2 } /home/agent/comercios.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ printf \"%-12s %s\\n\", $1, $2 }' /home/agent/comercios.dat"
+  },
+  {
+    "id": "awk-l23",
+    "track": "awk",
+    "index": 23,
+    "title": "La partición manual",
+    "subtitle": "awk split(): trocear a medida",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El fichero rutas.dat usa \":\" como separador y CADA fila tiene tres partes. Necesitas la TERCERA zona (el valor) y split() te la da.",
+    "goal": "De rutas.dat imprime, con split() en un arreglo, el TERCER elemento de cada línea (troceando por \":\").",
+    "keywords": [
+      "awk",
+      "split",
+      "arreglo"
+    ],
+    "hints": [
+      "split(cadena, arreglo, separador) trocea y LLENA a[1], a[2], a[3]… devuelve el Nº de piezas.",
+      "a[3] es la TERCERA parte: el índice es 1-based, como todo en awk.",
+      "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{split($0,a,\":\"); print a[2]}' f",
+        "desc": "segunda pieza"
+      },
+      {
+        "cmd": "awk '{n=split($0,a,\":\"); print n}' f",
+        "desc": "número de piezas"
+      }
+    ],
+    "teach": "split() da control manual: monta arreglos a medida para filtrar y contar, sin depender del FS. Muy útil cuando hay DOS tipos de separadores en la misma línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…} (la tercera pieza de la primera fila)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ split($0, a, \":\"); print a[3] } /home/agent/rutas.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ split($0, a, \":\"); print a[3] }' /home/agent/rutas.dat"
+  },
+  {
+    "id": "awk-l24",
+    "track": "awk",
+    "index": 24,
+    "title": "La hora externa",
+    "subtitle": "awk getline: ejecutar y capturar",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El informe exige ESTAMPAR cada línea con la HORA en que se leyó. awk puede pedir la hora al sistema con getline y ponerla delante.",
+    "goal": "De reportes.log imprime la HORA actual (date +%H, ejecutado y capturado con getline) DELANTE de cada línea.",
+    "keywords": [
+      "awk",
+      "getline",
+      "pipe",
+      "shell"
+    ],
+    "hints": [
+      "\"comando\" | getline var EJECUTA el comando una vez y copia SU salida en la variable.",
+      "En BEGIN basta: la variable \"hora\" queda llena antes de leer la primera línea.",
+      "awk 'BEGIN { \"date +%H\" | getline hora } { print hora, $0 }' /home/agent/reportes.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN{\"date\" | getline d}{print d, $0}' f",
+        "desc": "captura date con getline"
+      },
+      {
+        "cmd": "awk 'BEGIN{\"hostname\" | getline h}{print h}' f",
+        "desc": "otro comando local"
+      }
+    ],
+    "teach": "El getline de awk con una PIPE es el CALL OUT al SHELL: captura la salida de un comando (date, hostname, whoami…) y la usa EN el programa awk. El clásico estampado con marca de tiempo auténtico.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "14 reporte del dojo con la firma: FLAG{…} (hora: depende del momento)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { \"date +%H\" | getline hora } { print hora, $0 }' /home/agent/reportes.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { \"date +%H\" | getline hora } { print hora, $0 } /home/agent/reportes.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { \"date +%H\" | getline hora } { print hora, $0 }' /home/agent/reportes.log"
+  },
+  {
+    "id": "awk-l25",
+    "track": "awk",
+    "index": 25,
+    "title": "El caso sin drama",
+    "subtitle": "awk tolower: comparación insensible",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El log de usuarios escribe inicio, Inicio e INICIO sin criterio. Tres filas son válidas; la firma viaja con la de MAYÚSCULAS.",
+    "goal": "De sesiones2.log imprime las filas cuyo 1.er campo vale inicio en CUALQUIER combinación de mayúsculas/minúsculas.",
+    "keywords": [
+      "awk",
+      "tolower",
+      "toupper",
+      "caso"
+    ],
+    "hints": [
+      "tolower(cadena) pasa la cadena a minúsculas; toupper() hace lo contrario.",
+      "Con este selector las filas 1, 2 y 3 casan (inicio, Inicio, INICIO): entre ellas está la del nivel.",
+      "awk 'tolower($1) == \"inicio\"' /home/agent/sesiones2.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'tolower($1) == \"inicio\"' f",
+        "desc": "compara insensible"
+      },
+      {
+        "cmd": "awk '{print toupper($1), $2}' f",
+        "desc": "imprime el campo en mayúsculas"
+      }
+    ],
+    "teach": "tolower/toupper normalizan a un caso ÚNICO antes de comparar: ni ||-cadenas ni listas de variantes.Normaliza AMBOS lados (patrón y campo) para no colar inmidio ni emparejar sin sentido.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "las tres filas de inicio; la de la firma va en mayúsculas"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'tolower($1) == \"inicio\"' /home/agent/sesiones2.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "tolower($1) == \"inicio\" /home/agent/sesiones2.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'tolower($1) == \"inicio\"' /home/agent/sesiones2.log"
+  },
+  {
+    "id": "awk-l26",
+    "track": "awk",
+    "index": 26,
+    "title": "Boss: la nómina filtrada",
+    "subtitle": "2 condiciones: numérica y exacta",
+    "xp": 170,
+    "difficulty": 5,
+    "brief": "En nomina.dat cada fila es: nombre importe estado. La firma del nivel pide las filas con importe ≥ 4000 Y estado \"critica\" A LA VEZ.",
+    "goal": "De nomina.dat imprime las filas cuyo importe (2.ª columna) sea MAYOR O IGUAL a 4000 Y cuyo estado (3.ª columna) sea EXACTAMENTE critica.",
+    "keywords": [
+      "awk",
+      "boss",
+      "&&",
+      "filtro"
+    ],
+    "hints": [
+      "La condición NUMÉRICA ($2 >= 4000) y la de CADENA ($3 == \"critica\") se unen con &&.",
+      "Compara la cadena de forma EXACTA: critica sin tilde, como está en el log.",
+      "awk '$2 >= 4000 && $3 == \"critica\"' /home/agent/nomina.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2 >= 4000 && $3 == \"critica\"' f",
+        "desc": "número Y cadena a la vez"
+      },
+      {
+        "cmd": "awk '$2 >= 4000 || $3 == \"critica\"' f",
+        "desc": "el OR análogo"
+      }
+    ],
+    "teach": "El CIERRE de este bloque: dos condiciones de TIPOS DIFERENTES (numérica y cadena) sobre columnas distintas, unidas con &&. Es el patrón de auditoría de pagos, facturación y QoS: filas que cumplen VARIAS dimensiones a la vez.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nista 4800 critica FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '$2 >= 4000 && $3 == \"critica\"' /home/agent/nomina.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2 >= 4000 && $3 == \"critica\" /home/agent/nomina.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2 >= 4000 && $3 == \"critica\"' /home/agent/nomina.dat"
+  },
+  {
+    "id": "awk-l27",
+    "track": "awk",
+    "index": 27,
+    "title": "El umbral importado",
+    "subtitle": "awk -v y BEGIN: variables desde fuera",
+    "xp": 50,
+    "difficulty": 3,
+    "brief": "El despacho del dojo usa el umbral 140 pero configurable: awk -v inyecta variables limpias al motor (sin tocar el código del programa).",
+    "goal": "Con awk y la variable externa UMBRAL=140, imprime NOMBRE y NOTA (print $1, $3) de los envíos cuyo peso SUPERA ese umbral.",
+    "keywords": [
+      "awk",
+      "-v",
+      "BEGIN",
+      "variable"
+    ],
+    "hints": [
+      "awk -v VAR=valor habilita VAR antes de leer: dentro del programa es una variable como cualquier otra.",
+      "La comparación $2 > UMBRAL usa la variable: el 140 no aparece en el código.",
+      "awk -v UMBRAL=140 '$2 > UMBRAL {print $1, $3}' /home/agent/envios.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -v UMBRAL=140 '$2 > UMBRAL'",
+        "desc": "variable inyectada desde el shell"
+      },
+      {
+        "cmd": "awk 'BEGIN {print \"inicio\"}'",
+        "desc": "bloque previo a los datos"
+      }
+    ],
+    "teach": "-v conecta el shell con el awk: envía parámetros (umbral, fecha, hostname…) sin enchufarlos en el texto del programa. BEGIN se ejecuta ANTES de leer el fichero: el sitio lógico de los valores por defecto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -v UMBRAL=140 '$2 > UMBRAL {print $1, $3}' /home/agent/envios.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-v UMBRAL=140 $2 > UMBRAL {print $1, $3} /home/agent/envios.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "flag v del comando — revisa «man awk»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -v UMBRAL=140 '$2 > UMBRAL {print $1, $3}' /home/agent/envios.txt"
+  },
+  {
+    "id": "awk-l28",
+    "track": "awk",
+    "index": 28,
+    "title": "El conversor de tabla",
+    "subtitle": "awk FS/OFS: reformat con BEGIN {OFS}",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El inventario llega en columnas separadas por «:» (como passwd). Se convierte a tabulación (TSV) para el grid del dojo: OFS lo reescribe.",
+    "goal": "De inventario.dat (separado por :) imprime campo1 y campo3 SEPARADOS POR TABULADOR (solo esas dos columnas).",
+    "keywords": [
+      "awk",
+      "OFS",
+      "FS",
+      "formato"
+    ],
+    "hints": [
+      "OFS es el Output Field Separator: con BEGIN {OFS=\"\\t\"} los campos impresos con coma quedan TAB-separados.",
+      "print $1, $3 (con COMA) usa el OFS; print $1 $3 (sin coma) concatenaría SIN separador.",
+      "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1, $3}' inventario.dat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1,$3}' f",
+        "desc": "de «:» a tab"
+      },
+      {
+        "cmd": "awk 'BEGIN {FS=\",\"; OFS=\"|\"}' f",
+        "desc": "de CSV a PIPE"
+      }
+    ],
+    "teach": "FS es el separador de ENTRADA (algo como -F:) y OFS el de SALIDA: la pareja convierte formatos limpios en una línea. $1, $3 con coma aplica el OFS asignado.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1, $3}' /home/agent/inventario.dat",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F: BEGIN {OFS=\"\\t\"} {print $1, $3} /home/agent/inventario.dat",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F: 'BEGIN {OFS=\"\\t\"} {print $1, $3}' /home/agent/inventario.dat"
+  },
+  {
+    "id": "awk-l29",
+    "track": "awk",
+    "index": 29,
+    "title": "La factura en columnas",
+    "subtitle": "awk printf: alinear columnas (%s %d %.1f)",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El reporte del taller quiere columnas ALINEADAS: printf formatea anchos (y decimales) sin jugar con columnas a ojo.",
+    "goal": "De medidas.txt: printf %-12s %7.1f (codename a la izquierda en 12, valor 1 decimal) para TODAS las filas. La marca viaja en el codename de una de las medidas.",
+    "keywords": [
+      "awk",
+      "printf",
+      "formato"
+    ],
+    "hints": [
+      "printf NO agrega salto de línea: acompañalo siempre con \\n.",
+      "\"%-12s\" deja el nombre IZQUIERDO en 12; \"%7.1f\" numérico de 7 con 1 decimal.",
+      "awk '{printf \"%-12s %7.1f\\n\", $1, $2}' /home/agent/medidas.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "printf \"%-10s %6.1f\\n\", a, b",
+        "desc": "columnas con anchos"
+      },
+      {
+        "cmd": "printf \"%05d\\n\", n",
+        "desc": "entero rellenado a 5 dígitos"
+      }
+    ],
+    "teach": "printf de awk es el printf de C: %s cadena, %d entero, %.1f decimal, %-10s izquierdo en 10, %6.1f derecho de 6 con 1 decimal. Alinea informes sin tocarse a mano.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{printf \"%-12s %7.1f\\n\", $1, $2}' /home/agent/medidas.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{printf \"%-12s %7.1f\\n\", $1, $2} /home/agent/medidas.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{printf \"%-12s %7.1f\\n\", $1, $2}' /home/agent/medidas.txt"
+  },
+  {
+    "id": "awk-l30",
+    "track": "awk",
+    "index": 30,
+    "title": "Códigos de longitud exacta",
+    "subtitle": "awk length + substr",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "En codigos.txt los códigos válidos ocupan EXACTAMENTE 8 caracteres en el PRIMER campo. La marca viaja en la nota de uno de esos códigos.",
+    "goal": "Imprime de codigos.txt SOLO las líneas cuyo PRIMER campo mide EXACTAMENTE 8 caracteres (length($1)==8): una trae la nota con la marca.",
+    "keywords": [
+      "awk",
+      "length",
+      "substr"
+    ],
+    "hints": [
+      "length($1) mide el PRIMER CAMPO (no la línea): así notas y ruido de la fila no cuentan.",
+      "Con $0 medirías TODO (incluida la nota): el código quedo fuera de la medida.",
+      "awk 'length($1) == 8 {print}' /home/agent/codigos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'length($1) == 8' f",
+        "desc": "filtra por longitud del 1.er campo"
+      },
+      {
+        "cmd": "awk '{print substr($0,1,4)}' f",
+        "desc": "recorta los 4 primeros símbolos"
+      }
+    ],
+    "teach": "length() mide (de $1 un campo o $0 la línea) y substr() corta partes FÍSICAS. length($1)==8 filtra por el código; length($0)==8 mediría la fila entera (con nota): elige QUÉ mides.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'length($1) == 8 {print}' /home/agent/codigos.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "length($1) == 8 {print} /home/agent/codigos.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'length($1) == 8 {print}' /home/agent/codigos.txt"
+  },
+  {
+    "id": "awk-l31",
+    "track": "awk",
+    "index": 31,
+    "title": "El registro híbrido",
+    "subtitle": "awk split() con varios separadores",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El registro de alias mezcla separadores: «ALIAS;objeto:peso», con punto y coma + dos puntos en la misma línea. split() lo resuelve.",
+    "goal": "De rangos.txt imprime el PESO (3.ª pieza) del alias cuyo valor exacto (1.ª pieza) es rival.",
+    "keywords": [
+      "awk",
+      "split",
+      "regex"
+    ],
+    "hints": [
+      "split($0, a, SEP) parte en piezas arbitrarias: SEP puede ser regex [;:] que engulle «;» y «:».",
+      "Piezas tras el split: a[1] alias, a[2] objeto, a[3] peso.",
+      "awk '{split($0, a, /[;:]/); if (a[1] == \"rival\") print a[3]}' /home/agent/rangos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "split($0, a, /[;:]/)",
+        "desc": "separador multi-carácter regex"
+      },
+      {
+        "cmd": "split($1, b, \":\")",
+        "desc": "parte un CAMPO ya separado"
+      }
+    ],
+    "teach": "split() con regex [;:] gestiona separadores MÚLTIPLES en la misma línea. Es la herramienta para ficheros mixtos que ni FS ni -F cubren: parte, separa y accede por índice.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{split($0, a, /[;:]/); if (a[1] == \"rival\") print a[3]}' /home/agent/rangos.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{split($0, a, /[;:]/); if (a[1] == \"rival\") print a[3]} /home/agent/rangos.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{split($0, a, /[;:]/); if (a[1] == \"rival\") print a[3]}' /home/agent/rangos.txt"
+  },
+  {
+    "id": "awk-l32",
+    "track": "awk",
+    "index": 32,
+    "title": "El ruido limpiado",
+    "subtitle": "awk gsub(): sustitución global",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El clima escupe ruidos «eco-N» por la línea: gsub() los barre TODOS y la marca queda limpia.",
+    "goal": "De ruido.txt limpia las líneas retirando CADA eco- (patrón eco-[0-9]) y después imprime el resto (la marca visible al final).",
+    "keywords": [
+      "awk",
+      "gsub",
+      "limpiar"
+    ],
+    "hints": [
+      "gsub(/regex/, \"reemplazo\") sustituye TODAS las apariciones de la línea ($0).",
+      "El gsub modifica $0 en el sitio y el {print} implícito re-escribe limpio.",
+      "awk '{gsub(/eco-[0-9]/, \"\"); print}' /home/agent/ruido.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "gsub(/ruido/, \"\")",
+        "desc": "elimina el patrón de la línea"
+      },
+      {
+        "cmd": "sub(/una/, \"O\", $1)",
+        "desc": "sub() = una sola sustitución"
+      }
+    ],
+    "teach": "gsub(/regex/, texto) limpia en toda la línea (reemplazo global) y sub() cambia SOLO el primero. La pareja es la base de la limpieza de logs al vuelo (quitar anexos, blancos, ts…).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{gsub(/eco-[0-9]/, \"\"); print}' /home/agent/ruido.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{gsub(/eco-[0-9]/, \"\"); print} /home/agent/ruido.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{gsub(/eco-[0-9]/, \"\"); print}' /home/agent/ruido.txt"
+  },
+  {
+    "id": "awk-l33",
+    "track": "awk",
+    "index": 33,
+    "title": "Menú del suma la pizarra",
+    "subtitle": "awk arrays con clave: total por grupo y acceso directo",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "tickets.txt registra «usuario tickets nota». Suma tickets por usuario (array t) y acumula SUS notas (array n): en END imprime el total y la nota de elka.",
+    "goal": "Suma los tickets por usuario (t[$1] += $2), acumula las notas en otro array (n[$1]) y en END imprime el TOTAL de elka y SUS notas (dos líneas).",
+    "keywords": [
+      "awk",
+      "array",
+      "grupo",
+      "total"
+    ],
+    "hints": [
+      "Dos arrays en paralelo: t suma el valor ($2) y n CONCATENA la nota ($3) con n[$1] = n[$1] \" \" $3.",
+      "En END imprime el total (t[\"elka\"]) y SU nota acumulada (n[\"elka\"]) — dos print.",
+      "awk '{t[$1]+=$2; n[$1]=n[$1] \" \" $3} END {print t[\"elka\"]; print n[\"elka\"]}' /home/agent/tickets.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{t[$1] += $2} END {print t[\"x\"]}'",
+        "desc": "acumula por clave y lee un valor"
+      },
+      {
+        "cmd": "awk '{c[$1]++} END {print c[\"x\"]}'",
+        "desc": "contar apariciones de la clave"
+      }
+    ],
+    "teach": "t[$1] += valor construye la tabla por clave; varios arrays (t, n) guardan distintas piezas por USUARIO, con concatenación para notas. En END accedes a cualquier clave directo (t[\"elka\"]).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{t[$1] += $2; n[$1] = n[$1] \" \" $3} END {print t[\"elka\"]; print n[\"elka\"]}' /home/agent/tickets.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{t[$1] += $2; n[$1] = n[$1] \" \" $3} END {print t[\"elka\"]; print n[\"elka\"]} /home/agent/tickets.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{t[$1] += $2; n[$1] = n[$1] \" \" $3} END {print t[\"elka\"]; print n[\"elka\"]}' /home/agent/tickets.txt"
+  },
+  {
+    "id": "awk-l34",
+    "track": "awk",
+    "index": 34,
+    "title": "Los extremos del pulso",
+    "subtitle": "awk min + max en la misma pasada",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El despertador cardíaco trae valores distintos por línea. AWK necesita MIN y MAX de la MISMA columna con acumuladores.",
+    "goal": "Imprime de estiramiento.txt el MÍNIMO y el MÁXIMO de la 2.ª columna, y la NOTA (3.er campo) del turno donde está el max (una línea: min, max, nota).",
+    "keywords": [
+      "awk",
+      "min",
+      "max",
+      "END"
+    ],
+    "hints": [
+      "Inicializa en la PRIMERA línea (NR==1): mínimo y máximo ya son el valor.",
+      "En el resto: if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3} — guarda TAMBIÉN el dato asociado al max.",
+      "awk 'NR==1{mn=$2;mx=$2} NR>1{if($2<mn)mn=$2; if($2>mx){mx=$2; nota=$3}} END{print mn, mx, nota}' estiramiento.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "END {print mn, mx}",
+        "desc": "imprimir los DOS acumuladores"
+      },
+      {
+        "cmd": "awk -v OFS=\", \" … print mn, mx",
+        "desc": "salida con separador custom"
+      }
+    ],
+    "teach": "La manera clásica de min/max: inicializa en la 1.ª línea, actualiza con ifs en el resto e imprime en END. DOS valores en la misma pasada (una sola lectura del fichero).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR==1 {mn=$2; mx=$2} NR>1 {if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3}} END {print mn, mx, nota}' /home/agent/estiramiento.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR==1 {mn=$2; mx=$2} NR>1 {if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3}} END {print mn, mx, nota} /home/agent/estiramiento.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR==1 {mn=$2; mx=$2} NR>1 {if ($2<mn) mn=$2; if ($2>mx) {mx=$2; nota=$3}} END {print mn, mx, nota}' /home/agent/estiramiento.txt"
+  },
+  {
+    "id": "awk-l35",
+    "track": "awk",
+    "index": 35,
+    "title": "Índice y lookup",
+    "subtitle": "awk FILENAME: join inflexible de tablas",
+    "xp": 80,
+    "difficulty": 4,
+    "brief": "El registro de precios: precios en precios.txt, pedidos en pedidos.txt. AWK une por el valor del índice con el FILENAME que dice DÓNDE estás.",
+    "goal": "De pedidos.txt + precios.txt imprime para CADA pedido su ARTÍCULO y su PRECIO (2 campos separados por espacio).",
+    "keywords": [
+      "awk",
+      "FILENAME",
+      "join"
+    ],
+    "hints": [
+      "FILENAME es el fichero PROCESADO: la condición FILENAME ~ /precios/ filtra las líneas de precios.",
+      "En precios llenas p[$1]=$2; con next saltas; en pedidos imprimes pedido + precio con p[$1] (+ extra).",
+      "awk 'FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3}' pedidos.txt precios.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'FILENAME ~ /a/ {…next} FILENAME ~ /b/ {…}' a b",
+        "desc": "select por fichero"
+      },
+      {
+        "cmd": "awk 'FNR==NR {…}' a a2",
+        "desc": "otro modo de join"
+      }
+    ],
+    "teach": "FILENAME selecciona líneas por fichero: el equivalente del join SQL: p[artículo]=precio + print pedido, precio. Ventaja: FILENAME no depende del ORDEN de los ficheros (a diferencia de FNR==NR).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3}' /home/agent/pedidos.txt /home/agent/precios.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3} /home/agent/pedidos.txt /home/agent/precios.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3}' /home/agent/pedidos.txt /home/agent/precios.txt"
+  },
+  {
+    "id": "awk-l36",
+    "track": "awk",
+    "index": 36,
+    "title": "Boss: la hora pico",
+    "subtitle": "awkk acumula por franja y END top",
+    "xp": 140,
+    "difficulty": 5,
+    "brief": "El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la pico. Extrae el VALOR total acumulado de esa hora.",
+    "goal": "Imprime de trafico.txt las LÍNEAS de la hora (1.º campo) con MÁS tráfico total (suma del 3.º campo) — la marca viaja en la fila pico.",
+    "keywords": [
+      "awk",
+      "boss",
+      "array",
+      "end",
+      "log"
+    ],
+    "hints": [
+      "Suma por HORA: t[$1] += $3; en END guarda el GANADOR (hora) junto al max: horax = x.",
+      "El awk imprime la HORA pico (no el número); captúrala en h=$(awk …).",
+      "Último paso: grep \"^$h \" trafico.txt muestra TODAS las líneas de esa hora (la marca incluida).",
+      "h=$(awk '{t[$1]+=$3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}' trafico.txt); grep \"^$h \" trafico.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "END {for (k in t) if (t[k] > m) {m = t[k]; ganador = k} print ganador}",
+        "desc": "máximo por clave (guarda la clave, no el valor)"
+      },
+      {
+        "cmd": "grep \"^$h \" f",
+        "desc": "ancla la hora + espacio: solo las filas de esa franja"
+      }
+    ],
+    "teach": "El boss une arrays asociativos, agregación por grupos, el max en END y el «vuelta al log» con grep: suma por grupos (t[$1] += $3), guarda la HORA ganadora (no el número) y después vuelve sobre el fichero con grep ^hora para enseñar las filas completas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "h=$(awk '{t[$1] += $3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}' /home/agent/trafico.txt)",
+        "cmds": [
+          {
+            "cmd": "h=$(awk",
+            "args": "{t[$1] += $3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax} /home/agent/trafico.txt)",
+            "why": "comando h=$(awk — revisa «man h=$(awk»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \"^$h \" /home/agent/trafico.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "^$h  /home/agent/trafico.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "h=$(awk '{t[$1] += $3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}' /home/agent/trafico.txt); grep \"^$h \" /home/agent/trafico.txt"
   },
   {
     "id": "grep-pro-l1",
@@ -20224,6 +22960,5576 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "awk 'FNR == NR { a[$1]; next } !($1 in a) { print $0; total += $2 } END { print \"total:\", total }' /home/agent/blacklist.txt /home/agent/pagos.dat"
+  },
+  {
+    "id": "sysadmin-l1",
+    "track": "sysadmin",
+    "index": 1,
+    "title": "El breve accidente de /tmp",
+    "subtitle": "limpieza y validación de sshd_conf con sshd -t",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Al sshd del dojo le metieron la directiva bandera con un typo y ya no arranca. Los configtests de sshd son TU herramienta.",
+    "goal": "Repara /etc/ssh/sshd_config.d/dojo.conf (la directiva Port viene mal escrita: pasa a Port 2200). Valida con sudo sshd -t y luego ejecuta dojo-verificar sshd-port.",
+    "keywords": [
+      "ssh",
+      "sshd",
+      "-t",
+      "configura",
+      "validación"
+    ],
+    "hints": [
+      "El fichero del nivel es /etc/ssh/sshd_config.d/dojo.conf: el typo va en el nombre de la directiva \"Portt\".",
+      "sudo sed -i \"s/Portt/Port/\" /etc/ssh/sshd_config.d/dojo.conf corrige la directiva.",
+      "La referencia: sudo sshd -t verifica la sintaxis SIN arrancar el servicio.",
+      "sudo bash -c \"sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf && sshd -t\" && dojo-verificar sshd-port"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo sshd -t",
+        "desc": "valida la configuración de sshd"
+      },
+      {
+        "cmd": "sed -i s/a/b/ f",
+        "desc": "sustitución en línea y edición inplace"
+      }
+    ],
+    "teach": "modificar configuración SIN VALIDARla es escribir a ciegas. La práctica sshd -t (y nginx -t, apache2ctl configtest) es el \"prueba de sintaxis antes de recargar\". Convalida cualquier fichero desde el shell.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ sshd-config válida\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo bash -c \"sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf && sshd -t\"",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-port",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-port",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo bash -c \"sed -i 's/Portt/Port/' /etc/ssh/sshd_config.d/dojo.conf && sshd -t\" && dojo-verificar sshd-port"
+  },
+  {
+    "id": "sysadmin-l2",
+    "track": "sysadmin",
+    "index": 2,
+    "title": "La autenticación permitida",
+    "subtitle": "ssh: PasswordAuthentication y PubkeyAuthentication",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El dojo exige SSH SOCIÓ CON CLAVE, no con contraseña: son las dos directivas clásicas del atomic hardening SSH.",
+    "goal": "En /etc/ssh/sshd_config.d/dojo.conf (fichero que YA existe, con otras directivas): añade PasswordAuthentication no y PubkeyAuthentication yes, cada una en su línea (append, no en columnas). Luego sudo sshd -t y dojo-verificar sshd-auth.",
+    "keywords": [
+      "ssh",
+      "sshd",
+      "password",
+      "pubkey",
+      "auth"
+    ],
+    "hints": [
+      "Añade las dos líneas CON >> (append) o con grep -v para quitarlas si ya están: sigue siendo el mismo fichero como siempre.",
+      "Las directivas class: PasswordAuthentication no / PubkeyAuthentication yes.",
+      "sudo bash -c 'printf \"%s\\n\" \"PasswordAuthentication no\" \"PubkeyAuthentication yes\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t' && dojo-verificar sshd-auth"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E \"SSH\"...",
+        "desc": "ver dirigas sshd_on_option"
+      },
+      {
+        "cmd": "sudo sshd -t",
+        "desc": "vincular las directivas de configtest"
+      }
+    ],
+    "teach": "ssh OTP/permite SOCIÓ de login de clave con las clas certainties (no la cfg cada vez). Son las DOS directivas de acceso que TODOS admin de seguridad debe grabar en la memoria muscular.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ directas aptas: FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo bash -c 'printf \"%s\\n\" \"PasswordAuthentication no\" \"PubkeyAuthentication yes\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t'",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c printf \"%s\\n\" \"PasswordAuthentication no\" \"PubkeyAuthentication yes\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-auth",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-auth",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo bash -c 'printf \"%s\\n\" \"PasswordAuthentication no\" \"PubkeyAuthentication yes\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t' && dojo-verificar sshd-auth"
+  },
+  {
+    "id": "sysadmin-l3",
+    "track": "sysadmin",
+    "index": 3,
+    "title": "Usuarios permitidos",
+    "subtitle": "ssh AllowUsers en sshd",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El dojo quiere SSH EXCLUSIVAMENTE para los usuarios del grupo agent: ni root, ni invitados.",
+    "goal": "En /etc/ssh/sshd_config.d/dojo.conf: añade AllowUsers agent. Valida con sudo sshd -t y lanza dojo-verificar sshd-users.",
+    "keywords": [
+      "sshd",
+      "AllowUsers",
+      "usuarios",
+      "auth"
+    ],
+    "hints": [
+      "La sintaxis es una línea: AllowUsers agent (con mayúscula en AllowUsers y el orden exacto).",
+      "También puedes validar con sudo sshd -T (en minúsculas) que imprime el config fvalidado completo.",
+      "sudo bash -c 'echo \"AllowUsers agent\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t' && dojo-verificar sshd-users"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo sshd -T",
+        "desc": "config sshd VALIDADO COMPLETO"
+      },
+      {
+        "cmd": "grep AllowUsers sue",
+        "desc": "buscar el usuarios permitidos"
+      }
+    ],
+    "teach": "AllowUsers es el filtro de autenticación de sshd: quién puede entrar a través de sshd(PRODUCTION). Un detalle que se practica poco: hay un espacio entre AllowUsers y usario; la configmetería falla si hay otra palabra extra.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ AllowUsers configurado\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo bash -c 'echo \"AllowUsers agent\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t'",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c echo \"AllowUsers agent\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-users",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-users",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo bash -c 'echo \"AllowUsers agent\" >> /etc/ssh/sshd_config.d/dojo.conf && sshd -t' && dojo-verificar sshd-users"
+  },
+  {
+    "id": "sysadmin-l4",
+    "track": "sysadmin",
+    "index": 4,
+    "title": "El banner SSH",
+    "subtitle": "establecer banner en sshd",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El dojo exige UN AVISO legal visible al conectarse por SSH: la directiva Banner apunta a un fichero del sistema.",
+    "goal": "Añade Banner /etc/ssh/dojo-banner a /etc/ssh/sshd_config.d/dojo.conf, crea el banner con TU TOASTEHA (en /etc/ssh/dojo-banner), y valida con sudo sshd -t; luego dojo-verificar sshd-banner.",
+    "keywords": [
+      "sshd",
+      "banner",
+      "seguridad"
+    ],
+    "hints": [
+      "La directiva es Banner <fichero>: apunta a un fichero plano CON TEXTO libre.",
+      "El banner debe existir ANTES de validar; el texto tiene que mencionar la palabra dojo.",
+      "sudo bash -c 'echo \"Banner /etc/ssh/dojo-banner\" >> /etc/ssh/sshd_config.d/dojo.conf && printf \"Aviso legal del dojo\\nConexión monitorizada.\\n\" > /etc/ssh/dojo-banner && sshd -t' && dojo-verificar sshd-banner"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo sshd -t",
+        "desc": "verificar la config final sshd"
+      },
+      {
+        "cmd": "cat /etc/ssh/dojo-banner",
+        "desc": "verificar el contenido del banner"
+      }
+    ],
+    "teach": "Un SSH banner es el aviso legal del server. Debe EXISTIR el fichero y ser legible por sshd; y si el path no existe, sshd -t NO falla (porque es solo texto): hay que $​verificar por autotestático (y por eso el verificador lo la comprueba).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ banner SSH configurado\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo bash -c 'echo \"Banner /etc/ssh/dojo-banner\" >> /etc/ssh/sshd_config.d/dojo.conf && printf \"Aviso legal del dojo\\nConexión monitorizada.\\n\" > /etc/ssh/dojo-banner && sshd -t'",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c echo \"Banner /etc/ssh/dojo-banner\" >> /etc/ssh/sshd_config.d/dojo.conf && printf \"Aviso legal del dojo\\nConexión monitorizada.\\n\" > /etc/ssh/dojo-banner && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-banner",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-banner",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo bash -c 'echo \"Banner /etc/ssh/dojo-banner\" >> /etc/ssh/sshd_config.d/dojo.conf && printf \"Aviso legal del dojo\\nConexión monitorizada.\\n\" > /etc/ssh/dojo-banner && sshd -t' && dojo-verificar sshd-banner"
+  },
+  {
+    "id": "sysadmin-l5",
+    "track": "sysadmin",
+    "index": 5,
+    "title": "La llave del dojo",
+    "subtitle": "ssh-keygen: par de claves",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El agente NO tiene par de claves SSH. Se pide UNA ED25519 de tipo estándar (sin passphrase) en ~/.ssh/id_ed25519.",
+    "goal": "Crea un par de claves SSH ED25519 SIN passphrase en /home/agent/.ssh/id_ed25519 (con ssh-keygen -t ed25519 -N \"\"), y establece el fichero al perms correctos. Luego dojo-verificar ssh-key.",
+    "keywords": [
+      "ssh",
+      "ssh-keygen",
+      "ed25519",
+      "claves"
+    ],
+    "hints": [
+      "ssh-keygen -t ed25519 -N \"\" -f ~/.ssh/id_ed25519 crea el par SIN passphrase.",
+      "El fichero ~/.ssh/id_ed25519 (private) debe tener permisos 600; el .pub 644.",
+      "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 -C \"agent-dojo\" && chmod 600 $HOME/.ssh/id_ed25519 && dojo-verificar ssh-key"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ssh-keygen -t ed25519 -N \"\" -f ~/.ssh/id_ed25519",
+        "desc": "par de claves sin passphrase"
+      },
+      {
+        "cmd": "chmod 600 ~/.ssh/id_ed25519",
+        "desc": "permisos correctos de la clave privada"
+      }
+    ],
+    "teach": "ssh-keygen es el OFICIO digital: -f path, -t algoritmo, -N passphrase (-N \"\" para sin passphrase). Los permisos 600 de la clave privada son OBLIGATORIOS: con 644 ssh la rechaza.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ par de claves ED25519 listo\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 -C \"agent-dojo\"",
+        "cmds": [
+          {
+            "cmd": "ssh-keygen",
+            "args": "-t ed25519 -N -f $HOME/.ssh/id_ed25519 -C agent-dojo",
+            "why": "genera pares de claves SSH (-t tipo, add ed25519 moderno)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "tipo de clave (ed25519, rsa…)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "ruta del fichero de clave"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "chmod 600 $HOME/.ssh/id_ed25519",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "600 $HOME/.ssh/id_ed25519",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar ssh-key",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "ssh-key",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 -C \"agent-dojo\" && chmod 600 $HOME/.ssh/id_ed25519 && dojo-verificar ssh-key"
+  },
+  {
+    "id": "sysadmin-l6",
+    "track": "sysadmin",
+    "index": 6,
+    "title": "La conexión por clave",
+    "subtitle": "sshd activo + ssh local por clave",
+    "xp": 85,
+    "difficulty": 4,
+    "brief": "El setup arranca un sshd local en el puerto 2200 aceptando SOLO tu clave pública… y coloca la firma en un fichero SOLO legible al loguearte.",
+    "goal": "Conéctate por ssh a tu PROPIO equipo (puerto 2200, usuario agent) usando tu clave de ~/.ssh/id_ed25519 (o la que te di), y lee el fichero /var/dojo/secreto.txt de la sesión remota.",
+    "keywords": [
+      "ssh",
+      "sshd",
+      "claves",
+      "2200",
+      "conexión"
+    ],
+    "hints": [
+      "El sshd ya está ARRANCADO en el puerto 2200: conéctate con ssh -p 2200 agent@127.0.0.1.",
+      "La clave privada que acepta es ~/.ssh/id_dojo (sig infinita pub en authorized_keys).",
+      "Deshable StrictHostKeyChecking al ser un servidor local: -o StrictHostKeyChecking=no.",
+      "ssh -i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ssh -i clave -p puerto usuario@host cmd",
+        "desc": "conexión ssh con clave y comando"
+      },
+      {
+        "cmd": "-o StrictHostKeyChecking=no",
+        "desc": "acepta el host sin confirmar (labs)"
+      }
+    ],
+    "teach": "El flujo COMPLETO de SSH: generar la clave, copiar la pública a authorized_keys (con los permisos 700/600 correctos), y CONECTAR. Es el paso a paso real de cualquier acceso a servidor por clave.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ssh -i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt",
+        "cmds": [
+          {
+            "cmd": "ssh",
+            "args": "-i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt",
+            "why": "cliente SSH: sesión remota cifrada",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "usa la clave privada dada"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man ssh»"
+              },
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man ssh»"
+              },
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man ssh»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "ssh -i $HOME/.ssh/id_dojo -p 2200 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null agent@127.0.0.1 cat /var/dojo/secreto.txt"
+  },
+  {
+    "id": "sysadmin-l7",
+    "track": "sysadmin",
+    "index": 7,
+    "title": "La copia tranquilizada",
+    "subtitle": "nginx -t: validar la configuración de nginx",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El nginx del dojo está en La Co pileja de configuración /home/agent/nginx: la directiva server_name tiene un typo que rompe nginx -t.",
+    "goal": "Repara /home/agent/nginx/nginx.conf (el typo está en el nombre de la directiva server_name): valida con nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ y luego dojo-verificar nginx-syntax.",
+    "keywords": [
+      "nginx",
+      "-t",
+      "configura",
+      "validación"
+    ],
+    "hints": [
+      "El typo es \"servr_name\" donde debería ser \"server_name\".",
+      "nginx -t -c fichero -p prefix valida el fichero SIN arrancar; el out dice \"syntax is ok\" / \"test is successful\".",
+      "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 nginx-syntax"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "nginx -t -c fichero -p prefix",
+        "desc": "valida la configuración con prefijo"
+      },
+      {
+        "cmd": "sed -i s/a/b/ f",
+        "desc": "corrige el typo en línea"
+      }
+    ],
+    "teach": "nginx -t valida la config SIN arrancar (y NUNCA baila si el puerto está ocupado). Es la primera ética de sysadmin: configtest antes de recarga.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nginx: syntax is ok\nnginx: test is successful\n✓ nginx -t OK\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/servr_name/server_name/ /home/agent/nginx/nginx.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+        "cmds": [
+          {
+            "cmd": "nginx",
+            "args": "-t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+            "why": "servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "solo test de configuración"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man nginx»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man nginx»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 nginx-syntax",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "nginx-syntax",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 nginx-syntax"
+  },
+  {
+    "id": "sysadmin-l8",
+    "track": "sysadmin",
+    "index": 8,
+    "title": "El servicio en el puerto",
+    "subtitle": "nginx: cambia el listen del server",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El nginx del dojo escucha en el 8081; el DEPLOY dicta el 8099. Cambia el listen del bloque server.",
+    "goal": "En /home/agent/nginx/nginx.conf (nivel nginx-port): cambia la línea listen 127.0.0.1:8081; por listen 127.0.0.1:8099; y valida con nginx -t. Luego dojo-verificar2 nginx-port.",
+    "keywords": [
+      "nginx",
+      "listen",
+      "puerto",
+      "validación"
+    ],
+    "hints": [
+      "La directiva está en el bloque server: listen 127.0.0.1:8081; → listen 127.0.0.1:8099;",
+      "Con sed -i + regex con la sustitución y nginx -t + salida verífica.",
+      "sed -i \"s/127.0.0.1:8081/127.0.0.1:8099/\" /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 nginx-port"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "nginx -t -c fichero -p prefix",
+        "desc": "validar después del cambio"
+      },
+      {
+        "cmd": "sed -i s/vieja/nueva/ f",
+        "desc": "sustitución en línea"
+      }
+    ],
+    "teach": "listen define la tupla IP:PUERTO en la que el server PCIecepta conexiones. Practicar el CAMBIO de puerto + validación es la coreografía real de los deployments.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ puerto 8099 configurado\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i \"s/127.0.0.1:8081/127.0.0.1:8099/\" /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/127.0.0.1:8081/127.0.0.1:8099/ /home/agent/nginx/nginx.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+        "cmds": [
+          {
+            "cmd": "nginx",
+            "args": "-t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+            "why": "servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "solo test de configuración"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man nginx»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man nginx»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 nginx-port",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "nginx-port",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i \"s/127.0.0.1:8081/127.0.0.1:8099/\" /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 nginx-port"
+  },
+  {
+    "id": "sysadmin-l9",
+    "track": "sysadmin",
+    "index": 9,
+    "title": "La validación de Apache2",
+    "subtitle": "apache2ctl configtest",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El Apache del dojo retiró una directiva de un vhost en /etc/apache2/sites-available/dojo.conf: la sintaxis rota. configtest cuenta la verdad.",
+    "goal": "Repara /etc/apache2/sites-available/dojo.conf (la directiva DocumentRoot empieza con \"DocumentRtl\") y valida con sudo apache2ctl configtest; luego ejecuta dojo-verificar2 apache-docroot.",
+    "keywords": [
+      "apache2",
+      "configtest",
+      "DocumentRoot",
+      "vhost"
+    ],
+    "hints": [
+      "El typo: \"DocumentRtl\" debería ser \"DocumentRoot\".",
+      "La validación: sudo apache2ctl configtest y debería imprimir \"Syntax OK\".",
+      "sudo sed -i 's/DocumentRtl/DocumentRoot/' /etc/apache2/sites-available/dojo.conf && sudo apache2ctl configtest && dojo-verificar2 apache-docroot"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo apache2ctl configtest",
+        "desc": "valida toda la config del apache"
+      },
+      {
+        "cmd": "ls /etc/apache2/sites-available/",
+        "desc": "lista de vhosts disponibles"
+      }
+    ],
+    "teach": "apache2ctl configtest (o apachectl -t) valida TODA la config del apache: los vhosts, los módulos y los DocumentRoot. Si falla, el out muestra LÍNEA Y FICHERO exactos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Syntax OK\n✓ apache2 config OK\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo sed -i 's/DocumentRtl/DocumentRoot/' /etc/apache2/sites-available/dojo.conf",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "sed -i s/DocumentRtl/DocumentRoot/ /etc/apache2/sites-available/dojo.conf",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo apache2ctl configtest",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "apache2ctl configtest",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 apache-docroot",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "apache-docroot",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo sed -i 's/DocumentRtl/DocumentRoot/' /etc/apache2/sites-available/dojo.conf && sudo apache2ctl configtest && dojo-verificar2 apache-docroot"
+  },
+  {
+    "id": "sysadmin-l10",
+    "track": "sysadmin",
+    "index": 10,
+    "title": "El usuario del sistema",
+    "subtitle": "useradd, usermod y /etc/passwd",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El dojo tiene un NUEVO LIMPIEZA (cuidados de casa) login: el usuario instructor debe EXISTIR, con home y shell /bin/bash.",
+    "goal": "Crea el usuario instructor con home /home/instructor y shell /bin/bash (sudo useradd -m -s /bin/bash instructor); luego dojo-verificar2 useradd.",
+    "keywords": [
+      "useradd",
+      "usuarios",
+      "/bin/bash",
+      "sysadmin"
+    ],
+    "hints": [
+      "useradd -m crea la HOME, -s asigna el shell.",
+      "El verificador busca instructor en /etc/passwd CON /home/instructor y /bin/bash.",
+      "sudo useradd -m -s /bin/bash instructor && dojo-verificar2 useradd"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo useradd -m -s /bin/bash nombre",
+        "desc": "usuario con home y shell"
+      },
+      {
+        "cmd": "id nombre",
+        "desc": "verificar que existe el usuario"
+      },
+      {
+        "cmd": "grep nombre /etc/passwd",
+        "desc": "fila exacta del usuario"
+      }
+    ],
+    "teach": "useradd -m -s maneja usuarios del sistema sin interacción (la alternativa interactiva es adduser). /etc/passwd es la fuente de la verdad: el final deler: la HOME en /home/NAME y el shell /bin/bash apuntados por la fila.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "✓ usuario instructor listo\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo useradd -m -s /bin/bash instructor",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "useradd -m -s /bin/bash instructor",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man sudo»"
+              },
+              {
+                "flag": "-s",
+                "meaning": "flag s del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 useradd",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "useradd",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo useradd -m -s /bin/bash instructor && dojo-verificar2 useradd"
+  },
+  {
+    "id": "sysadmin-l11",
+    "track": "sysadmin",
+    "index": 11,
+    "title": "El binario en tus manos",
+    "subtitle": "file, ldd y sha256sum",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El MAESTRO quiere que reconozcas un binario SIN abrirlo: que tipo es, qué librerías usa y qué SHA256 tiene. La tríada real.",
+    "goal": "Ejecuta: file /bin/cat; ldd /bin/cat; sha256sum /bin/cat (en SERIIE, sin filtros) y luego dojo-verificar2 binary.",
+    "keywords": [
+      "binario",
+      "file",
+      "ldd",
+      "sha256sum"
+    ],
+    "hints": [
+      "file imprime el TIPO de fichero (ELF 64-bit LSB executable, dynamically linked…).",
+      "ldd imprime las LIBRERÍAS compartidadas que el binario va a necesitar.",
+      "sha256sum imprime un HASH ÚNICO: la \"firma digital\" del binario.",
+      "file /bin/cat; ldd /bin/cat; sha256sum /bin/cat; dojo-verificar2 binary"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "file binario",
+        "desc": "qué tipo de binario es"
+      },
+      {
+        "cmd": "ldd binario",
+        "desc": "librerías compartidas que usa"
+      },
+      {
+        "cmd": "sha256sum binario",
+        "desc": "hash SHA del binario"
+      }
+    ],
+    "teach": "La tríada file + ldd + sha256sum responde: QUÉ ES, QUÉ NECESITA y SI ES EL MISMO (hash). Es el pre-check del DOJO ante un binario desconocido y la validación primero de los paquetes sin cambiar nada.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/bin/cat: ELF 64-bit…\n    libc.so.6 => /lib…\nabc…  /bin/cat\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "file /bin/cat",
+        "cmds": [
+          {
+            "cmd": "file",
+            "args": "/bin/cat",
+            "why": "adivina el TIPO real de un fichero mirando su contenido (cabecera mágica), no su extensión",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "ldd /bin/cat",
+        "cmds": [
+          {
+            "cmd": "ldd",
+            "args": "/bin/cat",
+            "why": "imprime las librerías compartidas que necesita un binario (dependencias dinámicas)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sha256sum /bin/cat",
+        "cmds": [
+          {
+            "cmd": "sha256sum",
+            "args": "/bin/cat",
+            "why": "hash SHA-256 por fichero (integridad: dos ficheros iguales → mismo hash)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 binary",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "binary",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "file /bin/cat; ldd /bin/cat; sha256sum /bin/cat; dojo-verificar2 binary"
+  },
+  {
+    "id": "sysadmin-l12",
+    "track": "sysadmin",
+    "index": 12,
+    "title": "El espejo de los procesos",
+    "subtitle": "ps aux y filtrado de PID",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El dojo quiere VER SUS PROCESOS in caestel: que realmenTE WATCHES sudo sshd estén en ejecución y descubrir el PID.",
+    "goal": "Busca los procesos sshd con ps aux; el PID debería ser el DE SPOTTER del pid de sshd: ejecuta DOJO pid file: cat /var/dojo/sshd.pid. EL PID SIEMPRE SE Muestra en la salida (con ps aux).",
+    "keywords": [
+      "ps",
+      "sshd",
+      "procesos",
+      "PID"
+    ],
+    "hints": [
+      "ps aux lista TODOS los procesos con el USER, el PID y el COMANDO completos.",
+      "Con pgrep -x sshd verificas el PID real; no es necesario para el nivel, pero valida el PID por cat.",
+      "ps aux | grep -w sshd; cat /var/dojo/sshd.pid; dojo-verificar2 ps-aux"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ps aux | grep proceso",
+        "desc": "procesos con nombre concisos"
+      },
+      {
+        "cmd": "pgrep -x sshd",
+        "desc": "PID por nombre exacto"
+      }
+    ],
+    "teach": "ps aux es la VENTANA donde ipramos qué procesos están vivos: getpid: UID, PID, %CPU, memoria, CMD. Combinado con grep, es la base de todo el diagnóstico del cansancio de los sistemas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "…root … sshd ...\n1234\n✓ proceso sshd listado\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ps aux | grep -w sshd",
+        "cmds": [
+          {
+            "cmd": "ps",
+            "args": "aux",
+            "why": "lista procesos",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-w sshd",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/dojo/sshd.pid",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/dojo/sshd.pid",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 ps-aux",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "ps-aux",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ps aux | grep -w sshd; cat /var/dojo/sshd.pid; dojo-verificar2 ps-aux"
+  },
+  {
+    "id": "sysadmin-l13",
+    "track": "sysadmin",
+    "index": 13,
+    "title": "El depurador del log",
+    "subtitle": "archivo de LOG de sshd (journalctl simulado)",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El dojo guarda UN COPY del log del sshd en /var/log/dojo-ssh.log. Hay UNA línea con UNA dirección IP del atacante… y también la firma.",
+    "goal": "Del fichero /var/log/dojo-ssh.log, escribe la LÍNEA que contiene la palabra ALERTA (una sola; usas grep). Después dojo-verificar2 log-ssh.",
+    "keywords": [
+      "log",
+      "ssh",
+      "grep",
+      "diagnóstico"
+    ],
+    "hints": [
+      "grep ALERTA /var/log/dojo-ssh.log es el SEGURO.",
+      "Para leer el log (y no SÓLO la última línea) el comando cat, se usa tail -f... pero el nivel solo pide UNA línea exacta.",
+      "grep 'ALERTA' /var/log/dojo-ssh.log; dojo-verificar2 log-ssh"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep ERROR /var/log/...log",
+        "desc": "las líneas del ERROR"
+      },
+      {
+        "cmd": "tail -f /var/log/...log",
+        "desc": "el fichero en vivo"
+      }
+    ],
+    "teach": "Los logs de servicio son LA fuente de la verdad cuando algo falla (journald log en Ubuntu / más primitivo: ficheros /var/log/*). Buscar un patrón exacto es la primera pasada: grep y leer de la salida.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "2026-10-24 09:10 ALERTA … FLAG{…}\n✓ log leído\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'ALERTA' /var/log/dojo-ssh.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "ALERTA /var/log/dojo-ssh.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 log-ssh",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "log-ssh",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'ALERTA' /var/log/dojo-ssh.log; dojo-verificar2 log-ssh"
+  },
+  {
+    "id": "sysadmin-l14",
+    "track": "sysadmin",
+    "index": 14,
+    "title": "El paquete que falta",
+    "subtitle": "dpkg y comando which",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El usuario pregunta si una herramienta determinada INSTALADA es del sistema: which entrega el binario y dpkg -S el paquete que lo trajo.",
+    "goal": "Ejecuta: which curl; dpkg -S $(which curl) (el paquete Debian que instaló el binario curl) y luego dojo-verificar2 package.",
+    "keywords": [
+      "dpkg",
+      "which",
+      "paquete",
+      "binario"
+    ],
+    "hints": [
+      "which CMD imprime el PATH AL binario que se ejecutaría al poner CMD.",
+      "dpkg -S /ruta/al/binario revela el PAQUETE npm propietario del fichero.",
+      "which curl; dpkg -S $(which curl); dojo-verificar2 package"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "which cmd",
+        "desc": "ruta del binario"
+      },
+      {
+        "cmd": "dpkg -S /usr/bin/cmd",
+        "desc": "a qué paquete pertenece"
+      }
+    ],
+    "teach": "which + dpkg -S es el (quién es este) paquete del binario. La cadena de comandos $(...) alimenta dpkg -S con la RUTA que which descubrió: idiom de shell puro.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "/usr/bin/curl\ncurl: /usr/bin/curl\n✓ …\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "which curl",
+        "cmds": [
+          {
+            "cmd": "which",
+            "args": "curl",
+            "why": "comando which — revisa «man which»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dpkg -S $(which curl)",
+        "cmds": [
+          {
+            "cmd": "dpkg",
+            "args": "-S $(which curl)",
+            "why": "gestor de paquetes .deb de bajo nivel",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 package",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "package",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "which curl; dpkg -S $(which curl); dojo-verificar2 package"
+  },
+  {
+    "id": "sysadmin-l15",
+    "track": "sysadmin",
+    "index": 15,
+    "title": "El espacio en disco",
+    "subtitle": "df + du: medida del espacio",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El espacio del CONTAINER se mide: df muestra las particiones y du el PESO de un tree. La salida del free no es la misma que la del df (con esta limp__)",
+    "goal": "Ejecuta: df -h; du -sh /home/agent; luego dojo-verificar2 diskspace.",
+    "keywords": [
+      "df",
+      "du",
+      "disco",
+      "espacio"
+    ],
+    "hints": [
+      "df -h resume las particiones montadas: df /var/log muestra el uso de UNA partición.",
+      "du -sh /path resume el PESO de un árbol ( -s para el total, -h para formato \"legible\").",
+      "df -h; du -sh /home/agent; dojo-verificar2 diskspace"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "df -h",
+        "desc": "espacio por partición"
+      },
+      {
+        "cmd": "du -sh /path",
+        "desc": "peso total de un árbol"
+      }
+    ],
+    "teach": "df (disk free) y du (disk usage) trabajan juntos: df mira el estado del filesystem; du caza el árbol CONSUME. El du -sh PATH es el idiom universal para \"¿qué pesa esto?\"",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "Filesystem … Used …\n20K /home/agent/big\n✓ …\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "df -h",
+        "cmds": [
+          {
+            "cmd": "df",
+            "args": "-h",
+            "why": "uso de espacio en los sistemas de ficheros montados",
+            "flags": [
+              {
+                "flag": "-h",
+                "meaning": "legible para humanos"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "du -sh /home/agent",
+        "cmds": [
+          {
+            "cmd": "du",
+            "args": "-sh /home/agent",
+            "why": "tamaño en disco usado por ficheros/directorios",
+            "flags": [
+              {
+                "flag": "-s",
+                "meaning": "resumen (no el detalle por fichero)"
+              },
+              {
+                "flag": "-h",
+                "meaning": "legible para humanos (K, M, G)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 diskspace",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "diskspace",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "df -h; du -sh /home/agent; dojo-verificar2 diskspace"
+  },
+  {
+    "id": "sysadmin-l16",
+    "track": "sysadmin",
+    "index": 16,
+    "title": "El vigía del puerto",
+    "subtitle": "ss: puertos en escucha de sshd",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El sshd del dojo escucha en un PUERTO NO ESTÁNDAR. Quien quiere accoger, PRIMERO lo dice ss -tln (y ss -tln para la details).",
+    "goal": "Con ss -tln, localiza el puerto donde sshd escucha de la guardia (el setup lo pone). Después cat /var/dojo/puerto.txt para confirmar el puerto Y ejecutar dojo-verificar2 port-watch.",
+    "keywords": [
+      "ss",
+      "puerto",
+      "escucha",
+      "sshd"
+    ],
+    "hints": [
+      "ss -tln muestra los puertos TCP TCP a la escucha: LOCAL ADDRESS:PORT y proceso (con p) y pid.",
+      "El puerto es un 2XXX non estándar: cat /var/dojo/puerto.txt lo confirma.",
+      "ss -tln; cat /var/dojo/puerto.txt; dojo-verificar2 port-watch"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ss -tln",
+        "desc": "puntos de escucha TCP"
+      },
+      {
+        "cmd": "ss -tlnp",
+        "desc": "idem MÁS el proceso (root)"
+      }
+    ],
+    "teach": "La cadena ss -tln | grep puerto es el JUNTADOR de los nuevos administradores: revisar QUÉ ESCUCHA, EN QUÉ PUERTO, ANTES DE ABRIR CUALQUIER COSA. El puerto exacto se suele documentar a la par.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "…LISTEN 0 … xxx:2207 …"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ss -tln",
+        "cmds": [
+          {
+            "cmd": "ss",
+            "args": "-tln",
+            "why": "estado de sockets y puertos (sustituto moderno de netstat)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "sólo TCP"
+              },
+              {
+                "flag": "-l",
+                "meaning": "sólo en escucha"
+              },
+              {
+                "flag": "-n",
+                "meaning": "no resuelve nombres"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/dojo/puerto.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/dojo/puerto.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 port-watch",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "port-watch",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ss -tln; cat /var/dojo/puerto.txt; dojo-verificar2 port-watch"
+  },
+  {
+    "id": "sysadmin-l17",
+    "track": "sysadmin",
+    "index": 17,
+    "title": "El cerrado correcto",
+    "subtitle": "systemctl status / procps",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "En este dojo NO hay systemd ejecutable, pero PROCPS registra el estado de un proceso en /proc/<pid>: leerlo es ver el servicio de verdad.",
+    "goal": "Encuentra el PID de sshd con pgrep -x sshd (LUEGO cat /proc/PID/comm). Después cat /var/dojo/pid.txt para CONFIRMAR EL PID Ydojo-verificar2 comm-check.",
+    "keywords": [
+      "proc",
+      "pid",
+      "sshd",
+      "proceso"
+    ],
+    "hints": [
+      "pgrep -x sshd entrega el PID (solo uno).",
+      "/proc/PID/comm es el NOMBRE COURSO del proceso (sin path): cat /proc/1234/comm imprime sshd.",
+      "pid=$(pgrep -x sshd | head -n 1); cat /proc/$pid/comm; cat /var/dojo/pid.txt; dojo-verificar2 comm-check"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "pgrep -x sshd",
+        "desc": "PID del proceso sshd"
+      },
+      {
+        "cmd": "cat /proc/PID/comm",
+        "desc": "nombre del proceso en el cnt"
+      }
+    ],
+    "teach": "/proc es el sistema de ficheros VIVO del kernel: /proc/PID/comm, status, cmdline… son el instrumento óseo de cualquier introspección de procesos. systemctl solo es la CARA PRETTY de lo mismo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "sshd\n1234\n✓ PID 1234 es sshd\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "pid=$(pgrep -x sshd | head -n 1)",
+        "cmds": [
+          {
+            "cmd": "pid=$(pgrep",
+            "args": "-x sshd",
+            "why": "comando pid=$(pgrep — revisa «man pid=$(pgrep»",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man pid=$(pgrep»"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1)",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /proc/$pid/comm",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/proc/$pid/comm",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/dojo/pid.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/dojo/pid.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 comm-check",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "comm-check",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "pid=$(pgrep -x sshd | head -n 1); cat /proc/$pid/comm; cat /var/dojo/pid.txt; dojo-verificar2 comm-check"
+  },
+  {
+    "id": "sysadmin-l18",
+    "track": "sysadmin",
+    "index": 18,
+    "title": "Boss final sysadmin",
+    "subtitle": "ssh key + copy nginx -t + apache2ctl + log",
+    "xp": 170,
+    "difficulty": 5,
+    "brief": "El acumulado: generar CLAVE, validar SSHD, configurar NGINX, revisar APACHE y BUscar en el log del servicio. La graduación sysadmin.",
+    "goal": "Crea un par SSH ED25519 en ~/.ssh/id_ed25519, REPARA el typo de nginx.conf (servr_name) en /home/agent/nginx/nginx.conf, VALIDA nginx con nginx -t y ejecuta (en orden) dojo-verificar2 sysadmin-boss.",
+    "keywords": [
+      "boss",
+      "ssh",
+      "nginx",
+      "configtest"
+    ],
+    "hints": [
+      "Clave: ssh-keygen -t ed25519 -N \"\" -f ~/.ssh/id_ed25519 ; permisos 600.",
+      "nginx: sed -i s/typo y luego nginx -t -c … -p … con na predicción \"syntax is ok\".",
+      "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 >/dev/null && chmod 600 $HOME/.ssh/id_ed25519 && sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 sysadmin-boss"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ssh-keygen -t ed25519 ... && chmod 600",
+        "desc": "claves SSH del cero"
+      },
+      {
+        "cmd": "nginx -t -c fich -p dir",
+        "desc": "validación nginx en dir"
+      }
+    ],
+    "teach": "El cierre de sysadmin asienta EL FLUJO DE TRABAJO REAL: generar credenciales → tocar la config → valid测评 (configtest) → servir. Nada de arrancar a ciegas: prima el VALIDAR > probar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nginx: syntax is ok\n✓ ssh-key y nginx OK (boss superado)\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 >/dev/null",
+        "cmds": [
+          {
+            "cmd": "ssh-keygen",
+            "args": "-t ed25519 -N -f $HOME/.ssh/id_ed25519 >/dev/null",
+            "why": "genera pares de claves SSH (-t tipo, add ed25519 moderno)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "tipo de clave (ed25519, rsa…)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "ruta del fichero de clave"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "chmod 600 $HOME/.ssh/id_ed25519",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "600 $HOME/.ssh/id_ed25519",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/servr_name/server_name/ /home/agent/nginx/nginx.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+        "cmds": [
+          {
+            "cmd": "nginx",
+            "args": "-t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/",
+            "why": "servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "solo test de configuración"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man nginx»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man nginx»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar2 sysadmin-boss",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar2",
+            "args": "sysadmin-boss",
+            "why": "comando dojo-verificar2 — revisa «man dojo-verificar2»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ssh-keygen -t ed25519 -N \"\" -f $HOME/.ssh/id_ed25519 >/dev/null && chmod 600 $HOME/.ssh/id_ed25519 && sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf -p /home/agent/nginx/ && dojo-verificar2 sysadmin-boss"
+  },
+  {
+    "id": "sysadmin-l19",
+    "track": "sysadmin",
+    "index": 19,
+    "title": "El puerto secreto",
+    "subtitle": "sshd: Port, AllowUsers y MaxAuthTries",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "La política del dojo: SSH en el PUERTO 2222, SOLO el agente conecta y máximo 3 intentos por sesión. Son las directivas de hardening sshd del primer día.",
+    "goal": "Añade en /etc/ssh/sshd_config.d/dojo19.conf las directivas Port 2222, AllowUsers agent y MaxAuthTries 3, valida con sudo sshd -t y cierra con dojo-verificar sshd-port.",
+    "keywords": [
+      "sshd",
+      "port",
+      "allowusers",
+      "hardening"
+    ],
+    "hints": [
+      "Las directivas van EN SU LÍNEA dentro del drop-in: una por línea.",
+      "sshd -t valida la sintaxis COMO root (los drop-in se leen en orden).",
+      "Patrón: sudo bash -c \"printf … >> fichero && sshd -t\" y luego dojo-verificar sshd-port."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sshd -t",
+        "desc": "validar la sintaxis del sshd_config"
+      },
+      {
+        "cmd": "Port / AllowUsers / MaxAuthTries",
+        "desc": "durísimo de SSH: puerto, lista blanca, reintentos"
+      }
+    ],
+    "teach": "Port cambia la escucha (2222 deja de recibir el ruido del escaneo automático del 22), AllowUsers es la lista blanca de QUIÉN puede entrar y MaxAuthTries límita los reintentos por conexión. El trío clásico de hardening sshd.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo bash -c 'printf \"%s\\n\" \"Port 2222\" \"AllowUsers agent\" \"MaxAuthTries 3\" >> /etc/ssh/sshd_config.d/dojo19.conf && sshd -t'",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c printf \"%s\\n\" \"Port 2222\" \"AllowUsers agent\" \"MaxAuthTries 3\" >> /etc/ssh/sshd_config.d/dojo19.conf && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-port",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-port",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo bash -c 'printf \"%s\\n\" \"Port 2222\" \"AllowUsers agent\" \"MaxAuthTries 3\" >> /etc/ssh/sshd_config.d/dojo19.conf && sshd -t' && dojo-verificar sshd-port"
+  },
+  {
+    "id": "sysadmin-l20",
+    "track": "sysadmin",
+    "index": 20,
+    "title": "La pareja de claves",
+    "subtitle": "sshd: ssh-keygen ed25519 + authorized_keys + permisos",
+    "xp": 80,
+    "difficulty": 4,
+    "brief": "Para entrar sin contraseña: generas un par ed25519, colocas la CLAVE PÚBLICA en authorized_keys y dejas los permisos celosos. sshd se niega a aceptar configs con permisos flojos.",
+    "goal": "Genera un par ed25519 en ~/.ssh/ SIN passphrase, añade la .pub a ~/.ssh/authorized_keys y deja 0700/0600. cierra con dojo-verificar sshd-key.",
+    "keywords": [
+      "ssh",
+      "keygen",
+      "authorized_keys",
+      "permisos"
+    ],
+    "hints": [
+      "ssh-keygen -t ed25519 genera el par. La .pub es la CLAVE PÚBLICA; la otra es privada.",
+      "authorized_keys recibe la .pub: cat id_ed25519.pub >> authorized_keys (una línea por clave).",
+      "Los PERMISOS deben ser estrictos: ~/.ssh 0700, authorized_keys 0600. Si no, sshd rechaza."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519",
+        "desc": "generar par ed25519 sin passphrase"
+      },
+      {
+        "cmd": "cat id.pub >> ~/.ssh/authorized_keys",
+        "desc": "instalar la clave pública"
+      }
+    ],
+    "teach": "La pareja: id_ed25519 (privada, viaja contigo) + id_ed25519.pub (pública, va a authorized_keys de cada máquina a la que entras). Permisos rotos (755 en .ssh) = sshd IGNORA la clave: es una medida de seguridad.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 -C dojo-agent",
+        "cmds": [
+          {
+            "cmd": "ssh-keygen",
+            "args": "-t ed25519 -N -f /home/agent/.ssh/id_ed25519 -C dojo-agent",
+            "why": "genera pares de claves SSH (-t tipo, add ed25519 moderno)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "tipo de clave (ed25519, rsa…)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "ruta del fichero de clave"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "chmod 600 /home/agent/.ssh/authorized_keys",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "600 /home/agent/.ssh/authorized_keys",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar sshd-key",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "sshd-key",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 -C dojo-agent && cat /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys && chmod 600 /home/agent/.ssh/authorized_keys && dojo-verificar sshd-key"
+  },
+  {
+    "id": "sysadmin-l21",
+    "track": "sysadmin",
+    "index": 21,
+    "title": "El sitio del dojo",
+    "subtitle": "apache2: VirtualHost, DocumentRoot y configtest",
+    "xp": 85,
+    "difficulty": 4,
+    "brief": "El vhost viene con el DocumentRoot malo (pension/…) y ni está instalado. Configura, valida con apache2ctl configtest y déjalo en sites-available.",
+    "goal": "Repara el DocumentRoot de /home/agent/dojo-vhost.conf (debe ser /home/agent/www/dojo), instala el fichero en /etc/apache2/sites-available/000-dojo.conf, valida con sudo apache2ctl configtest y cierra con dojo-verificar apache-vhost.",
+    "keywords": [
+      "apache",
+      "vhost",
+      "documentroot",
+      "configtest"
+    ],
+    "hints": [
+      "El root apunta a pension/… que NO existe: el DocumentRoot debe ser /home/agent/www/dojo.",
+      "sudo apache2ctl configtest = Syntax OK (parsea el config SIN arrancar puertos).",
+      "Sitio instalado: sudo cp a sites-available/000-dojo.conf."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sudo apache2ctl configtest",
+        "desc": "valida la sintaxis (Syntax OK)"
+      },
+      {
+        "cmd": "DocumentRoot /ruta/sitio",
+        "desc": "raíz de ficheros del vhost"
+      }
+    ],
+    "teach": "Apache sirve ficheros desde DocumentRoot: si apunta a un camino inexistente, el sitio no responde aunque la sintaxis valga. configtest parsea el config y exige «Syntax OK»: la validación correcta antes de enlazar el sitio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i 's#pension/www/dojo#/home/agent/www/dojo#g' /home/agent/dojo-vhost.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s#pension/www/dojo#/home/agent/www/dojo#g /home/agent/dojo-vhost.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo cp /home/agent/dojo-vhost.conf /etc/apache2/sites-available/000-dojo.conf",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "cp /home/agent/dojo-vhost.conf /etc/apache2/sites-available/000-dojo.conf",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sudo apache2ctl configtest",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "apache2ctl configtest",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar apache-vhost",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "apache-vhost",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i 's#pension/www/dojo#/home/agent/www/dojo#g' /home/agent/dojo-vhost.conf && sudo cp /home/agent/dojo-vhost.conf /etc/apache2/sites-available/000-dojo.conf && sudo apache2ctl configtest && dojo-verificar apache-vhost"
+  },
+  {
+    "id": "sysadmin-l22",
+    "track": "sysadmin",
+    "index": 22,
+    "title": "El typo de nginx",
+    "subtitle": "nginx -t: validar TU config",
+    "xp": 80,
+    "difficulty": 4,
+    "brief": "El config trae un typo: servr_name. nginx ni arranca con eso. Encuéntralo, repáralo y valida el fichero PROPIO con nginx -t (sin tocar el del sistema).",
+    "goal": "Repara el typo del /home/agent/nginx/nginx.conf (server_name) y valida TU config con nginx -t -c. cierra con dojo-verificar nginx-conf.",
+    "keywords": [
+      "nginx",
+      "server_name",
+      "validar",
+      "configtest"
+    ],
+    "hints": [
+      "El typo está en servr_name: nginx exige server_name dentro de cada server { }.",
+      "nginx -t -c FICHERO valida un config PROPIO sin tocar /etc/nginx ni arrancar nada.",
+      "Si -t falla, te dice el fichero y la LÍNEA exacta del problema."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "nginx -t -c /ruta/nginx.conf",
+        "desc": "validar config portable"
+      },
+      {
+        "cmd": "server_name dominio;",
+        "desc": "nombre del server virtual"
+      }
+    ],
+    "teach": "nginx -t -c FICHERO prueba la sintaxis de CUALQUIER config (sistema o propio): imprime «syntax is ok / test is successful» o la LÍNEA exacta del fallo. La práctica correcta antes de la recarga real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/servr_name/server_name/ /home/agent/nginx/nginx.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "nginx -t -c /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "nginx",
+            "args": "-t -c /home/agent/nginx/nginx.conf",
+            "why": "servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "solo test de configuración"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man nginx»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar nginx-conf",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "nginx-conf",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && nginx -t -c /home/agent/nginx/nginx.conf && dojo-verificar nginx-conf"
+  },
+  {
+    "id": "sysadmin-l23",
+    "track": "sysadmin",
+    "index": 23,
+    "title": "El binario instalado",
+    "subtitle": "binarios: install -m, which, file, chmod 0755",
+    "xp": 80,
+    "difficulty": 4,
+    "brief": "Tu script dojo-health nació 0644 (¡ni es ejecutable!) y debe convertirse en un comando real de la PATH. Y tool-lame debe quedar ejecutable en tu HOME. BINARIOS: permisos + rutas + which/file.",
+    "goal": "Instala dojo-health en /usr/local/bin con 0755 (sudo install -m 0755), deja ejecutable tool-lame en tu HOME (chmod 0755) y confirma con which/file que EXISTEN y corren. cierra con dojo-verificar binarios.",
+    "keywords": [
+      "chmod",
+      "path",
+      "binarios",
+      "install"
+    ],
+    "hints": [
+      "Un 0644 NO se ejecuta: falta el bit x. install -m 0755 src dst copia a /usr/local/bin y da los permisos de golpe.",
+      "which BINARIO localiza el comando en $PATH; file BINARIO dice el TIPO (ELF, shell script…).",
+      "chmod 0755 sobre el fichero de tu HOME lo vuelve ejecutable sin moverlo."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "install -m 0755 src /usr/local/bin/…",
+        "desc": "instala binario con x bits"
+      },
+      {
+        "cmd": "which cmd && file cmd",
+        "desc": "localiza en PATH e identifica"
+      }
+    ],
+    "teach": "La línea entre «fichero» y «comando» son los bits x y el PATH: install -m 0755 copia a /usr/local/bin con permisos de golpe. which localiza el comando en PATH; file identifica el TIPO (ELF, script shell…). chmod 0755 es la alternativa sin mover el fichero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sudo install -m 0755 /home/agent/dojo-health /usr/local/bin/dojo-health",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "install -m 0755 /home/agent/dojo-health /usr/local/bin/dojo-health",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "chmod 0755 /home/agent/tool-lame",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "0755 /home/agent/tool-lame",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "which dojo-health >/dev/null",
+        "cmds": [
+          {
+            "cmd": "which",
+            "args": "dojo-health >/dev/null",
+            "why": "comando which — revisa «man which»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "file /usr/local/bin/dojo-health >/dev/null",
+        "cmds": [
+          {
+            "cmd": "file",
+            "args": "/usr/local/bin/dojo-health >/dev/null",
+            "why": "adivina el TIPO real de un fichero mirando su contenido (cabecera mágica), no su extensión",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "/home/agent/tool-lame >/dev/null",
+        "cmds": [
+          {
+            "cmd": "/home/agent/tool-lame",
+            "args": ">/dev/null",
+            "why": "comando /home/agent/tool-lame — revisa «man /home/agent/tool-lame»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "/usr/local/bin/dojo-health >/dev/null",
+        "cmds": [
+          {
+            "cmd": "/usr/local/bin/dojo-health",
+            "args": ">/dev/null",
+            "why": "comando /usr/local/bin/dojo-health — revisa «man /usr/local/bin/dojo-health»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar binarios",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "binarios",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sudo install -m 0755 /home/agent/dojo-health /usr/local/bin/dojo-health && chmod 0755 /home/agent/tool-lame && which dojo-health >/dev/null && file /usr/local/bin/dojo-health >/dev/null && /home/agent/tool-lame >/dev/null && /usr/local/bin/dojo-health >/dev/null && dojo-verificar binarios"
+  },
+  {
+    "id": "sysadmin-l24",
+    "track": "sysadmin",
+    "index": 24,
+    "title": "La colada del logger",
+    "subtitle": "tail/grep sobre el log real del servicio",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "Los sistemas no sueltan la flag directa: el log del servicio la esconde entre warnings y ERRORs. tail corta el final; grep filtra la línea del ERROR y -oE extrae.",
+    "goal": "Extrae de /var/log/dojo/service.log ÚNICAMENTE la FLAG{…} que viaja en la línea ERROR connection failed (está al final del log).",
+    "keywords": [
+      "tail",
+      "grep",
+      "log",
+      "servicio"
+    ],
+    "hints": [
+      "tail -3 lee únicamente el FINAL del log: el ERROR reciente está en las 3 últimas líneas.",
+      "La línea del ERROR lleva flag={…}: grep ERROR la filtra y grep -oE la extrae limpia.",
+      "Pipeline: tail -3 log | grep ERROR | grep -oE \"FLAG\\{[^}]*\\}\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tail -5 log",
+        "desc": "últimas 5 líneas del log"
+      },
+      {
+        "cmd": "tail -c 1024 log",
+        "desc": "últimos 1024 bytes"
+      }
+    ],
+    "teach": "El baile de logs reales: tail -n (últimas N) | grep PATRÓN | grep -oE EXTRACT. Es la base de journalctl --since y del tail -f en observación continua: primero aislar, luego extraer.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tail -3 /var/log/dojo/service.log | grep 'ERROR connection failed' | grep -oE 'FLAG\\{[^}]*\\}'",
+        "cmds": [
+          {
+            "cmd": "tail",
+            "args": "-3 /var/log/dojo/service.log",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "ERROR connection failed",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE FLAG\\{[^}]*\\}",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar service-log",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "service-log",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "tail -3 /var/log/dojo/service.log | grep 'ERROR connection failed' | grep -oE 'FLAG\\{[^}]*\\}' && dojo-verificar service-log"
+  },
+  {
+    "id": "sysadmin-l25",
+    "track": "sysadmin",
+    "index": 25,
+    "title": "La unidad bien enrutada",
+    "subtitle": "systemd: Restart, WantedBy, enable y symlink",
+    "xp": 85,
+    "difficulty": 4,
+    "brief": "La unidad dojo.service está a media configuración: falta Restart on-failure, reinicio a 5s y el [Install] con WantedBy. Y hay que enablearla (symlink en wants).",
+    "goal": "Añade a /etc/systemd/system/dojo.service Restart=on-failure y RestartSec=5 en [Service], el bloque [Install] con WantedBy=multi-user.target, y deja el enable: symlink en /etc/systemd/system/multi-user.target.wants/dojo.service. cierra con dojo-verificar systemd-unit.",
+    "keywords": [
+      "systemd",
+      "unit",
+      "restart",
+      "enable"
+    ],
+    "hints": [
+      "La unidad [Service] ajusta Restart y RestartSec; el bloque [Install] ajusta WantedBy.",
+      "systemctl enable CREA el symlink en multi-user.target.wants: aquí lo probamos con ln -sf (equivalente).",
+      "Si el config es erróneo, systemd-analyze verify marcaría las líneas con error."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "systemctl enable my.service",
+        "desc": "crea el symlink en wants/*"
+      },
+      {
+        "cmd": "Restart=on-failure",
+        "desc": "rearranque del servicio caído"
+      }
+    ],
+    "teach": "Un service con Restart=on-failure + RestartSec=N resucita si cae (política de reintentos). WantedBy en [Install] decide QUÉ targets lo quieren; systemctl enable crea el symlink inverso en multi-user.target.wants — sin eso el servicio NO arranca al boot.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "(printf '\\nRestart=on-failure\\nRestartSec=5\\n\\n[Install]\\nWantedBy=multi-user.target\\n' | sudo tee -a /etc/systemd/system/dojo.service >/dev/null)",
+        "cmds": [
+          {
+            "cmd": "(printf",
+            "args": "\\nRestart=on-failure\\nRestartSec=5\\n\\n[Install]\\nWantedBy=multi-user.target\\n",
+            "why": "comando (printf — revisa «man (printf»",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee -a /etc/systemd/system/dojo.service >/dev/null)",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo ln -sf /etc/systemd/system/dojo.service /etc/systemd/system/multi-user.target.wants/dojo.service",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "ln -sf /etc/systemd/system/dojo.service /etc/systemd/system/multi-user.target.wants/dojo.service",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-s",
+                "meaning": "flag s del comando — revisa «man sudo»"
+              },
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar systemd-unit",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "systemd-unit",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "(printf '\\nRestart=on-failure\\nRestartSec=5\\n\\n[Install]\\nWantedBy=multi-user.target\\n' | sudo tee -a /etc/systemd/system/dojo.service >/dev/null) && sudo ln -sf /etc/systemd/system/dojo.service /etc/systemd/system/multi-user.target.wants/dojo.service && dojo-verificar systemd-unit"
+  },
+  {
+    "id": "sysadmin-l26",
+    "track": "sysadmin",
+    "index": 26,
+    "title": "El backup programado",
+    "subtitle": "cron: m h dom mon dow + fichero /etc/cron.d",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El dojo debe lanzar su backup cada día a las 04:05 como agent. Un fichero en /etc/cron.d con la línea correcta Y los permisos correctos: si el script destino no es ejecutable, cron lo ignora.",
+    "goal": "Escribe en /etc/cron.d/dojo-backup la línea 5 4 * * * agent /home/agent/backup.sh, dale chmod 644 y deja el script backup.sh existente y ejecutable. cierra con dojo-verificar cron-dojo.",
+    "keywords": [
+      "cron",
+      "crontab",
+      "backup"
+    ],
+    "hints": [
+      "El formato de cron: m h dom mon dow comando (en /etc/cron.d ADEMÁS va el usuario tras los 5 campos).",
+      "Para este nivel: 04:05, usuario agent, comando /home/agent/backup.sh.",
+      "El fichero /etc/cron.d/dojo-backup debe quedar chmod 644 y el script destination ejecutable (0755)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "m h dom mon dow user cmd",
+        "desc": "formato de /etc/cron.d"
+      },
+      {
+        "cmd": "chmod 644 /etc/cron.d/job",
+        "desc": "permisos obligatorios"
+      }
+    ],
+    "teach": "La línea cron es m h dom mon dow user comando (5 campos de tiempo + usuario en /etc/cron.d). Los ficheros de /etc/cron.d exigen chmod 644 (si hay permisos raros, cron lo ignora). El comando destino DEBE existir y ser ejecutable — si no, cron falla silenciosamente (el error acaba en syslog/mail).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' '5 4 * * * agent /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup >/dev/null",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n 5 4 * * * agent /home/agent/backup.sh",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee /etc/cron.d/dojo-backup >/dev/null",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sudo chmod 644 /etc/cron.d/dojo-backup",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "chmod 644 /etc/cron.d/dojo-backup",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "chmod 755 /home/agent/backup.sh",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "755 /home/agent/backup.sh",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar cron-dojo",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "cron-dojo",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' '5 4 * * * agent /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup >/dev/null && sudo chmod 644 /etc/cron.d/dojo-backup && chmod 755 /home/agent/backup.sh && dojo-verificar cron-dojo"
+  },
+  {
+    "id": "sysadmin-l27",
+    "track": "sysadmin",
+    "index": 27,
+    "title": "El hijo prodigo de PATH",
+    "subtitle": "PATH: orden, command -v, hash -r y shadowing",
+    "xp": 85,
+    "difficulty": 5,
+    "brief": "Un nc sombra en /home/agent/bin puede secuestrar la PATH si va ANTES: la PRIMERA entrada gana. hash -r refresca la caché de bash; command -v es el método fiable de verificar.",
+    "goal": "Monta PATH con ${HOME}/bin delante (export PATH=\"${HOME}/bin:$PATH\"), limpia la caché (hash -r), verifica que nc resuelto por command -v ES el sombra (/home/agent/bin/nc), instala legit como /usr/local/bin/nc-safe (sudo install -m 0755) y comprueba que ejecuta. cierra con dojo-verificar path-hijack.",
+    "keywords": [
+      "path",
+      "which",
+      "command",
+      "hash",
+      "shadow"
+    ],
+    "hints": [
+      "El nc sombra en /home/agent/bin GANA si esa carpeta va ANTES en PATH (la primera entrada manda).",
+      "command -v BINARIO muestra la RUTA REAL que bash ejecutaría: verifica con grep para la ruta sospechosa.",
+      "hash -r limpia la caché de binarios del shell (tras mover/instalar binarios, la caché queda rancia)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "command -v cmd",
+        "desc": "ruta REAL que bash ejecutaría"
+      },
+      {
+        "cmd": "hash -r",
+        "desc": "limpiar la caché de binarios"
+      }
+    ],
+    "teach": "PATH gana el PRIMERO: si /home/agent/bin precede, tu nc sombra dobla a la shell. bash cachea las rutas de binarios en su tabla hash — hash -r es obligatorio tras mover/instalar comandos, o seguirías ejecutando el VIEJO. command -v es la forma fiable de saber la ruta real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "export PATH=\"/home/agent/bin:$PATH\"",
+        "cmds": [
+          {
+            "cmd": "export",
+            "args": "PATH=/home/agent/bin:$PATH",
+            "why": "comando interno de bash: marca variables de entorno visibles para los procesos hijos",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "hash -r",
+        "cmds": [
+          {
+            "cmd": "hash",
+            "args": "-r",
+            "why": "comando hash — revisa «man hash»",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "flag r del comando — revisa «man hash»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "command -v nc | grep -q '/home/agent/bin/nc'",
+        "cmds": [
+          {
+            "cmd": "command",
+            "args": "-v nc",
+            "why": "comando command — revisa «man command»",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "flag v del comando — revisa «man command»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-q /home/agent/bin/nc",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo install -m 0755 /home/agent/legit /usr/local/bin/nc-safe",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "install -m 0755 /home/agent/legit /usr/local/bin/nc-safe",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "command -v nc-safe | grep -q '/usr/local/bin/nc-safe'",
+        "cmds": [
+          {
+            "cmd": "command",
+            "args": "-v nc-safe",
+            "why": "comando command — revisa «man command»",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "flag v del comando — revisa «man command»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-q /usr/local/bin/nc-safe",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "/home/agent/legit | grep -q 'nc-legitimato'",
+        "cmds": [
+          {
+            "cmd": "/home/agent/legit",
+            "args": "",
+            "why": "comando /home/agent/legit — revisa «man /home/agent/legit»",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-q nc-legitimato",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "/home/agent/bin/nc | grep -q 'nc-sombra'",
+        "cmds": [
+          {
+            "cmd": "/home/agent/bin/nc",
+            "args": "",
+            "why": "comando /home/agent/bin/nc — revisa «man /home/agent/bin/nc»",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-q nc-sombra",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar path-hijack",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "path-hijack",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "export PATH=\"/home/agent/bin:$PATH\" && hash -r && command -v nc | grep -q '/home/agent/bin/nc' && sudo install -m 0755 /home/agent/legit /usr/local/bin/nc-safe && command -v nc-safe | grep -q '/usr/local/bin/nc-safe' && /home/agent/legit | grep -q 'nc-legitimato' && /home/agent/bin/nc | grep -q 'nc-sombra' && dojo-verificar path-hijack"
+  },
+  {
+    "id": "sysadmin-l28",
+    "track": "sysadmin",
+    "index": 28,
+    "title": "La gran carrera de servicios",
+    "subtitle": "boss: ssh + nginx + systemd + cron + binarios juntos",
+    "xp": 160,
+    "difficulty": 5,
+    "brief": "El boss de la configuración total: claves SSH + puerto, nginx (typo server_name + nginx -t), systemd (WantedBy + enable), cron (línea + chmod) y un binario instalado en /usr/local/bin. TODO junto, TODO validado.",
+    "goal": "Genera el par ed25519 (id_ed25519 en authorized_keys), arregla el server_name y que nginx -t pase OK, añade Port 2200 / AllowUsers agent / MaxAuthTries 2 al dojo28.conf con sudo sshd -t OK, deja boss.service enable (symlink en multi-user.target.wants), escribe el cron 5 4 * * * agent /home/agent/backup.sh con chmod 644 y instala bin-fake como /usr/local/bin/dojo-boss-cmd con 0755. cierra con dojo-verificar boss-servizi.",
+    "keywords": [
+      "boss",
+      "sysadmin",
+      "servicios",
+      "ssh",
+      "nginx",
+      "systemd"
+    ],
+    "hints": [
+      "La lista de entregables: id_ed25519 (+ .pub en authorized_keys), nginx -t OK (sin servr_name), sshd -t OK con Port 2200, boss.service enable (symlink en multi-user.target.wants), línea cron 5 4 * * * agent con chmod 644 y binario /usr/local/bin/dojo-boss-cmd con 0755.",
+      "Vas uniendo piezas con && (esta tras la otra) o ; (independiente).",
+      "El orden recomendado: ssh-keygen → authorized_keys → sed nginx → sshd config → systemd → cron → install binario → validaciones → dojo-verificar."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "nginx -t -c … && sudo sshd -t",
+        "desc": "validar los configs antes de activar"
+      },
+      {
+        "cmd": "install -m 0755 + ln -sf (enable)",
+        "desc": "instalación + enable"
+      }
+    ],
+    "teach": "El boss pega TODO lo previo en un único entregable: SSH expón claves + puerto, nginx -t valida el config, systemd enable crea el symlink, cron escribe su línea con sus permisos y el binario se instala con install -m 0755 + validaciones. El check final del sysadmin de primer día.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 >/dev/null 2>&1",
+        "cmds": [
+          {
+            "cmd": "ssh-keygen",
+            "args": "-t ed25519 -N -f /home/agent/.ssh/id_ed25519 >/dev/null 2>&1",
+            "why": "genera pares de claves SSH (-t tipo, add ed25519 moderno)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "tipo de clave (ed25519, rsa…)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "ruta del fichero de clave"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/servr_name/server_name/ /home/agent/nginx/nginx.conf",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo bash -c 'printf \"%s\\n\" \"Port 2200\" \"AllowUsers agent\" \"MaxAuthTries 2\" >> /etc/ssh/sshd_config.d/dojo28.conf && sshd -t'",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "bash -c printf \"%s\\n\" \"Port 2200\" \"AllowUsers agent\" \"MaxAuthTries 2\" >> /etc/ssh/sshd_config.d/dojo28.conf && sshd -t",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "printf '\\n[Install]\\nWantedBy=multi-user.target\\n' | sudo tee -a /etc/systemd/system/boss.service >/dev/null",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "\\n[Install]\\nWantedBy=multi-user.target\\n",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee -a /etc/systemd/system/boss.service >/dev/null",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo ln -sf /etc/systemd/system/boss.service /etc/systemd/system/multi-user.target.wants/boss.service",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "ln -sf /etc/systemd/system/boss.service /etc/systemd/system/multi-user.target.wants/boss.service",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-s",
+                "meaning": "flag s del comando — revisa «man sudo»"
+              },
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "printf '%s\\n' '5 4 * * * agent /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup >/dev/null",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n 5 4 * * * agent /home/agent/backup.sh",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee /etc/cron.d/dojo-backup >/dev/null",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sudo chmod 644 /etc/cron.d/dojo-backup",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "chmod 644 /etc/cron.d/dojo-backup",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sudo install -m 0755 /home/agent/bin-fake /usr/local/bin/dojo-boss-cmd",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "install -m 0755 /home/agent/bin-fake /usr/local/bin/dojo-boss-cmd",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "nginx -t -c /home/agent/nginx/nginx.conf",
+        "cmds": [
+          {
+            "cmd": "nginx",
+            "args": "-t -c /home/agent/nginx/nginx.conf",
+            "why": "servidor web/proxy reverso; nginx -t comprueba la sintaxis de la config sin arrancar",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "solo test de configuración"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man nginx»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "[ -e /etc/systemd/system/multi-user.target.wants/boss.service ]",
+        "cmds": [
+          {
+            "cmd": "[",
+            "args": "-e /etc/systemd/system/multi-user.target.wants/boss.service ]",
+            "why": "comando [ — revisa «man [»",
+            "flags": [
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man [»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "[ -x /usr/local/bin/dojo-boss-cmd ]",
+        "cmds": [
+          {
+            "cmd": "[",
+            "args": "-x /usr/local/bin/dojo-boss-cmd ]",
+            "why": "comando [ — revisa «man [»",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man [»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar boss-servizi",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "boss-servizi",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 >/dev/null 2>&1 && cat /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys && sed -i 's/servr_name/server_name/' /home/agent/nginx/nginx.conf && sudo bash -c 'printf \"%s\\n\" \"Port 2200\" \"AllowUsers agent\" \"MaxAuthTries 2\" >> /etc/ssh/sshd_config.d/dojo28.conf && sshd -t' && printf '\\n[Install]\\nWantedBy=multi-user.target\\n' | sudo tee -a /etc/systemd/system/boss.service >/dev/null && sudo ln -sf /etc/systemd/system/boss.service /etc/systemd/system/multi-user.target.wants/boss.service && printf '%s\\n' '5 4 * * * agent /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup >/dev/null && sudo chmod 644 /etc/cron.d/dojo-backup && sudo install -m 0755 /home/agent/bin-fake /usr/local/bin/dojo-boss-cmd && nginx -t -c /home/agent/nginx/nginx.conf && [ -e /etc/systemd/system/multi-user.target.wants/boss.service ] && [ -x /usr/local/bin/dojo-boss-cmd ] && dojo-verificar boss-servizi"
+  },
+  {
+    "id": "dns-l1",
+    "track": "dns",
+    "index": 1,
+    "title": "La primera consulta",
+    "subtitle": "dig: consulta A básica",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "El dojo tiene un servidor DNS excluísta en 127.0.0.1:53535 (dnsmasq). La PRIMERA consulta de cualquier sysadmin es simple: \"¿qué símbolo tiene este nombre?\"",
+    "goal": "Consulta el registro A del dominio app.dojo contra 127.0.0.1 -p 53535 y \"lee\" la respuesta. Después, consulta TXT del dominio secreto.dojo (el mismo servidor): ahí está la firma.",
+    "keywords": [
+      "dns",
+      "dig",
+      "A",
+      "TXT",
+      "dnsmasq"
+    ],
+    "hints": [
+      "dig @servidor -p puerto nombre TIPO. Con @127.0.0.1 -p 53535 consultas a este servidor local.",
+      "La primera parte: dig @127.0.0.1 -p 53535 app.dojo A (el ANSWER dice 10.20.30.40).",
+      "La firma va en un registro TXT del dominio secreto.dojo: dig +short TXT secreto.dojo @127.0.0.1 -p 53535.",
+      "dig @127.0.0.1 -p 53535 app.dojo A; dig +short TXT secreto.dojo @127.0.0.1 -p 53535"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig @serv -p pu nombre TIPO",
+        "desc": "consulta DNS a un servidor/puerto"
+      },
+      {
+        "cmd": "dig +short name tipo",
+        "desc": "respuesta SOLO en texto delineado"
+      }
+    ],
+    "teach": "dig es EL cliente DNS de diagnóstico: @servidor consulta a UNA servidor concreto y TIPO el tipo de registro (A, TXT, MX…). +short te lo mete en modo uno por línea (y es perfecto para pipelines).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "app.dojo. 0 IN A 10.20.30.40\nFLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 app.dojo A",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 app.dojo A",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig +short TXT secreto.dojo @127.0.0.1 -p 53535",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+short TXT secreto.dojo @127.0.0.1 -p 53535",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 app.dojo A; dig +short TXT secreto.dojo @127.0.0.1 -p 53535"
+  },
+  {
+    "id": "dns-l2",
+    "track": "dns",
+    "index": 2,
+    "title": "El registro del correo",
+    "subtitle": "dig MX: los intercambiadores",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Un dominio de correo realmente responde con los MX (los servidores de correo) y la prioridad (el número más pequeño es el PRIMERO).",
+    "goal": "Consulta el registro MX del dominio correo.dojo (servidor 127.0.0.1 -p 53535) Y luego consulta el TXT del dominio secreto.dojo (la firma del nivel).",
+    "keywords": [
+      "dns",
+      "dig",
+      "MX",
+      "correo"
+    ],
+    "hints": [
+      "dig @… -p 53535 correo.dojo MX la respuesta dice mail.correo.dojo (priority 10).",
+      "Después el TXT de secreto.dojo (mismo servidor) para la firma.",
+      "dig @127.0.0.1 -p 53535 correo.dojo MX; dig @127.0.0.1 -p 53535 TXT secreto.dojo +short"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig dominio.com MX",
+        "desc": "registro MX de un dominio"
+      },
+      {
+        "cmd": "dig +short MX dominio",
+        "desc": "respuesta MX en corto"
+      }
+    ],
+    "teach": "el registro MX apunta a los MAIL EXCHANGERS: el nombre del host y la PRIORIDAD (la menor gana). Son la mitad del correo: el envío es un look-up MX antes de la conexión SMTP.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "correo.dojo. 0 IN MX 10 mail.correo.dojo.\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 correo.dojo MX",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 correo.dojo MX",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig @127.0.0.1 -p 53535 TXT secreto.dojo +short",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 TXT secreto.dojo +short",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 correo.dojo MX; dig @127.0.0.1 -p 53535 TXT secreto.dojo +short"
+  },
+  {
+    "id": "dns-l3",
+    "track": "dns",
+    "index": 3,
+    "title": "El reverso del espejo",
+    "subtitle": "dig -x: consulta inversa (PTR)",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "La consulta INVERSA hace el revés: le das UNA IP y el DNS te devuelve el NOMBRE. Después, si el NOMBRE tiene un TXT… la firma reaparece.",
+    "goal": "Con dig -x, resuelve la IP 10.20.30.40 contra el servidor local (reverse=PTR). Ya que tienes el NOMBRE que devuelve, consulta el TXT DE ESE NOMBRE (la firma va en ese TXT del nombre).",
+    "keywords": [
+      "dns",
+      "dig",
+      "-x",
+      "PTR",
+      "reverso"
+    ],
+    "hints": [
+      "dig +short -x IP consulta el PTR (la respuesta es el NOMBRE propietario de esa IP).",
+      "El nombre devuelto es el que lleva el TXT: guárdalo con $(dig +short -x …) y lanza el TXT.",
+      "nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig +short -x IP",
+        "desc": "el nombre de una IP (PTR)"
+      },
+      {
+        "cmd": "dig TXT nombre",
+        "desc": "el TXT de ese nombre"
+      }
+    ],
+    "teach": "dig -x HOSTREV: consulta INVERSA de DNS; sirve para identificar a los hostnames de las máquinas que apuntan a la IP (son los famosos rDNS de producción). El patrón comandante: primer PTR, luego TXT/A del nombre que sale.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "40.30.20.10.in-addr.arpa domain name pointer secreto-dojo.\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1)",
+        "cmds": [
+          {
+            "cmd": "nombre=$(dig",
+            "args": "+short -x 10.20.30.40 @127.0.0.1 -p 53535",
+            "why": "comando nombre=$(dig — revisa «man nombre=$(dig»",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man nombre=$(dig»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man nombre=$(dig»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v ^$",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1)",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig +short TXT $nombre @127.0.0.1 -p 53535",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+short TXT $nombre @127.0.0.1 -p 53535",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535"
+  },
+  {
+    "id": "dns-l4",
+    "track": "dns",
+    "index": 4,
+    "title": "Lo que no existe",
+    "subtitle": "dig y NXDOMAIN: interpretación del的状态",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El DNS no solo devuelve datos: también dice cuando ALGO NO existe (NXDOMAIN y auth=). Saber leer la sección STATUS es EMATAR al diagnóstico.",
+    "goal": "Consulta el TXT de a-nombre-que-NO-EXIXTE.dojo (verás el estado NXDOMAIN), luego consulta el TXT de sec betrachtet.dojo (el ANSIKA has la firma).",
+    "keywords": [
+      "dns",
+      "dig",
+      "NXDOMAIN",
+      "estado"
+    ],
+    "hints": [
+      "La NO-EXISTENCIA: el status section dice NXDOMAIN; el dominio fantasma.dojo NO está en la zona.",
+      "El dominio real (con la firma) es secreto-dojo.dojo (¡nofollows OJO al nombre!).",
+      "dig @127.0.0.1 -p 53535 fantasma.dojo TXT; dig +short TXT secreto-dojo.dojo @127.0.0.1 -p 53535"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig name TIPO",
+        "desc": "el ESTADO responde en la sección"
+      },
+      {
+        "cmd": "dig +noall +comments",
+        "desc": "solo la parte de estado"
+      }
+    ],
+    "teach": "La sección de ESTADO de dig (NXDOMAIN, NOERROR, SERVFAULT) es la más importante al diagnosticar. La lectura de \"status: status: NXDOMAIN\" es la señal clásica de un typo en el dominio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "status: NXDOMAIN\n\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 fantasma.dojo TXT",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 fantasma.dojo TXT",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig +short TXT secreto-dojo.dojo @127.0.0.1 -p 53535",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+short TXT secreto-dojo.dojo @127.0.0.1 -p 53535",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 fantasma.dojo TXT; dig +short TXT secreto-dojo.dojo @127.0.0.1 -p 53535"
+  },
+  {
+    "id": "dns-l5",
+    "track": "dns",
+    "index": 5,
+    "title": "El TXT con TCP",
+    "subtitle": "dig +tcp: forzar el transporte TCP",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El DNS por defecto usa UDP; el +tcp lo fuerza a TCP (utilísimo para las respuestas grandes y para testear firewalls).",
+    "goal": "Consulta el TXT de secreto.dojo contra el servidor local, FORZANDO el uso de TCP (+tcp en dig). Después, repite la consulta SIN +tcp (transporte UDP) para VER que el resultado ES EL MISMO (la misma firma).",
+    "keywords": [
+      "dns",
+      "dig",
+      "+tcp",
+      "udp"
+    ],
+    "hints": [
+      "dig +tcp hace la query por TCP (aunque acepta todas las respuestas de UDP, el unico trasporte conjugado es TCP).",
+      "Ambas consultas ([TCP] y la [UDP] normal) deben devolver la MISMA firma.",
+      "dig +tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short; dig @127.0.0.1 -p 53535 TXT secreto.dojo +short"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig +tcp name tipo",
+        "desc": "consulta sobre TCP"
+      },
+      {
+        "cmd": "dig +udp name tipo",
+        "desc": "consulta UDP (el default)"
+      }
+    ],
+    "teach": "El DNS nativo es UDP con TCP para las respuestas/port >512 BYTES. dig +tcp simula la cap de los FIML'S firewalls que cortan UDP→53: la consulta debe responder IGUAL.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}\nFLAG{…} (mismo resultado que por TCP)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig +tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig @127.0.0.1 -p 53535 TXT secreto.dojo +short",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 TXT secreto.dojo +short",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig +tcp @127.0.0.1 -p 53535 TXT secreto.dojo +short; dig @127.0.0.1 -p 53535 TXT secreto.dojo +short"
+  },
+  {
+    "id": "dns-l6",
+    "track": "dns",
+    "index": 6,
+    "title": "El fichero de resolutores",
+    "subtitle": "/etc/resolv.conf + getent hosts",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "Cuando un programa resuelve un nombre (getent, ssh, curl...) consulta el PRIMER nameserver de /etc/resolv.conf. El setup ya arranca un dnsmasq en el PUERTO 53 y apunta resolv.conf hacia él: tu máquina ahora tiene DNS local.",
+    "goal": "Muestra cat /etc/resolv.conf (el nameserver configurado), resuelve el A de app.dojo con getent hosts app.dojo (viaja por el resolver local) y trae el TXT de app.dojo con dig +short TXT app.dojo (sin @: dig usa /etc/resolv.conf).",
+    "keywords": [
+      "dns",
+      "resolv.conf",
+      "getent",
+      "dig",
+      "resolver"
+    ],
+    "hints": [
+      "getent hosts app.dojo pregunta al nameserver de /etc/resolv.conf (127.0.0.1:53) y devuelve la IP del ANSWER.",
+      "dig SIN @ consulta el mismo resolver: dig +short TXT app.dojo imprime la firma.",
+      "cat /etc/resolv.conf; getent hosts app.dojo; dig +short TXT app.dojo"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cat /etc/resolv.conf",
+        "desc": "ver tus nameservers"
+      },
+      {
+        "cmd": "getent hosts dominio",
+        "desc": "resolución vía nsswitch"
+      },
+      {
+        "cmd": "dig +short TXT dominio",
+        "desc": "TXT vía el resolver por defecto"
+      }
+    ],
+    "teach": "/etc/resolv.conf es el mapa de resolutores de tu máquina: SIN él, el resolver no sabe a quién preguntar. getent hosts es la llamada C que hacen curl/ssh/ping; dig sin @ usa el mismo fichero. Cambiar nameserver = cambiar quién resuelve.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "nameserver 127.0.0.1\n10.20.30.40    app.dojo\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cat /etc/resolv.conf",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/etc/resolv.conf",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "getent hosts app.dojo",
+        "cmds": [
+          {
+            "cmd": "getent",
+            "args": "hosts app.dojo",
+            "why": "consulta las bases de datos del sistema (passwd, hosts, dns…) como lo harían las librerías C",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dig +short TXT app.dojo",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+short TXT app.dojo",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "cat /etc/resolv.conf; getent hosts app.dojo; dig +short TXT app.dojo"
+  },
+  {
+    "id": "dns-l7",
+    "track": "dns",
+    "index": 7,
+    "title": "El selector de secciones",
+    "subtitle": "dig +noall +answer: solo la respuesta",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "La salida dig es un DESPEJE (secciones: status, ANSWER, AUTHORITY). Con +noall +answer solo la ANSWERSe JOINS.",
+    "goal": "Get the TXT of secreto.dojo (o el nombre del servidor DNS del dojo) con +noall +answer (SOLO la sección ANSWER, SIN otras). El ANSWER lleva la firma.",
+    "keywords": [
+      "dns",
+      "dig",
+      "noall",
+      "answer"
+    ],
+    "hints": [
+      "+noall apaga TODAS las secciones; +answer re-encierra SOLO la ANSWER.",
+      "El TXT está en la primera +answer (con todo el resto encerrado).",
+      "dig @127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig +noall +answer nombre tipo",
+        "desc": "clara: SOLO answer"
+      },
+      {
+        "cmd": "dig +noall +stats",
+        "desc": "solo el ESTADO (stats)"
+      }
+    ],
+    "teach": "+noall +answer es LA forma de escribir la salida de dig en un modo limpio una línea (scripts, monitors, completas). Cualquier señal \"meanwhile\"OA= quese o se JOINS se ve de la sección pipe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "secreto.dojo. 0 IN TXT \"FLAG{…}\""
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer"
+  },
+  {
+    "id": "dns-l8",
+    "track": "dns",
+    "index": 8,
+    "title": "El archivo de host",
+    "subtitle": "dig sobre el /etc/hosts (nsswitch files)",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "ANTES de DNS, la libc consulta /etc/hosts (nsswitch: files). El dojo HACE una entrada específica (la firma de la línea 2).",
+    "goal": "De /home/agent/hosts-extra (la COPIA del /etc/hosts, ya preparada por el setup), saca la dirección IP del dominio secreto-dojo (un A record) Y luego ejecuta getent hosts secreto-dojo para VER que la libc la resuelve por HOSTS.",
+    "keywords": [
+      "hosts",
+      "getent",
+      "resolución",
+      "nsswitch"
+    ],
+    "hints": [
+      "grep secreto-dojo $HOME/hosts-extra muestra la entrada y la marca que dejó el dojo.",
+      "getent hosts secreto-dojo mira /etc/hosts (nsswitch: files) ANTES de cualquier DNS.",
+      "grep 'secreto-dojo' /home/agent/hosts-extra; getent hosts secreto-dojo; cat /var/.dojo-hit"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "getent hosts dominio",
+        "desc": "resuelve por hosts → dns"
+      },
+      {
+        "cmd": "grep dominio /etc/hosts",
+        "desc": "el contenido del archivo hosts"
+      }
+    ],
+    "teach": "La RESOLUCIÓN de nombres sigue un ORDEN (nsswitch): primero files (/etc/hosts), luego dns. /etc/hosts es el DNS BAJAR del proceso local, y por eso debe procesarse antes que cualquier consulta por red.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "10.30.40.50    secreto-dojo\nFLAG{…} (si el usuario es root)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'secreto-dojo' /home/agent/hosts-extra",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "secreto-dojo /home/agent/hosts-extra",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "getent hosts secreto-dojo",
+        "cmds": [
+          {
+            "cmd": "getent",
+            "args": "hosts secreto-dojo",
+            "why": "consulta las bases de datos del sistema (passwd, hosts, dns…) como lo harían las librerías C",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/.dojo-hit",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/.dojo-hit",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'secreto-dojo' /home/agent/hosts-extra; getent hosts secreto-dojo; cat /var/.dojo-hit"
+  },
+  {
+    "id": "dns-l9",
+    "track": "dns",
+    "index": 9,
+    "title": "El registro del DNS forense",
+    "subtitle": "log de dnsmasq con los queries",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El servidor del dojo LOGEA TODAS las queries. Hay UNA línea con la firma del ataque en /var/log/dns-log-marca.log.",
+    "goal": "Lanzar UNA consulta por DNS hacia el servidor local (dig @… -p 53535 app.dojo) Y luego extraer del /var/log/dns-log-marca.log (con grep) la línea que menciona app.dojo (la marcará la firma).",
+    "keywords": [
+      "dns",
+      "log",
+      "dnsmasq",
+      "forense",
+      "audit"
+    ],
+    "hints": [
+      "La consulta: dig @127.0.0.1 -p 53535 app.dojo. Después, grep app.dojo en el log.",
+      "La firma viaja en un TXT: dig @127.0.0.1 -p 53535 TXT app.dojo +short la imprime.",
+      "dig @127.0.0.1 -p 53535 app.dojo; dig @127.0.0.1 -p 53535 TXT app.dojo +short; grep 'app.dojo' /var/log/dns-log-marca.log | head -n 6"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig @serv name",
+        "desc": "hago la consulta que quedará en el log"
+      },
+      {
+        "cmd": "grep dominio /var/log/dns.log",
+        "desc": "el query del log"
+      }
+    ],
+    "teach": "dnsmasq --log-queries guarda TODAS las queries al log: es el modo de AUDIT del DNS de una red pequeña. Al revisarlo, detectas dominios raros exfiltrando datos por DNS (el clásico C2 de 101).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "…[127.0.0.1] query[A] app.dojo from 127.0.0.1 (incluye la respuesta del TXT con la flag)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 app.dojo",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 app.dojo",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig @127.0.0.1 -p 53535 TXT app.dojo +short",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 TXT app.dojo +short",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'app.dojo' /var/log/dns-log-marca.log | head -n 6",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "app.dojo /var/log/dns-log-marca.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "head",
+            "args": "-n 6",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              },
+              {
+                "flag": "-n 6",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 6)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 app.dojo; dig @127.0.0.1 -p 53535 TXT app.dojo +short; grep 'app.dojo' /var/log/dns-log-marca.log | head -n 6"
+  },
+  {
+    "id": "dns-l10",
+    "track": "dns",
+    "index": 10,
+    "title": "El peso del nombre",
+    "subtitle": "dig ANY: los registros JUNTOS",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "La consulta ANY intenta AGARRAR todos los tipo de registro de un nombre. En dnsmasq-es, la respuesta devuelve TODOS los tipos que conozca.",
+    "goal": "Consulta el registro ANY de secreto.dojo (o del nombre del servidor local). ALL las respuestas incluyen la TXT con la FIRMA y el resto de los registros (A/AAAA) de decoración.",
+    "keywords": [
+      "dns",
+      "dig",
+      "ANY",
+      "registro"
+    ],
+    "hints": [
+      "dig ANY secreto.dojo (o ALL en elock) pide TODOS los registro de la zona para el nmombre.",
+      "dnsmasq devolverá A + TXT juntitos; la firma va en el TXT.",
+      "dig @127.0.0.1 -p 53535 ANY secreto.dojo"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig ANY name",
+        "desc": "todos los tipos conocidos"
+      },
+      {
+        "cmd": "dig ANY +short name",
+        "desc": "respuesta de ANY en una pasada"
+      }
+    ],
+    "teach": "ANY es una instrucción que quiere TODOS los registros de un dominio en una sóla respuesta. útil para el registro completo (con EXCEPción de datos sensibles).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "secreto.dojo. 0 IN A 10.20.30.42\nsecreto.dojo. 0 IN TXT \"FLAG{…}\""
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53535 ANY secreto.dojo",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53535 ANY secreto.dojo",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53535 ANY secreto.dojo"
+  },
+  {
+    "id": "dns-l11",
+    "track": "dns",
+    "index": 11,
+    "title": "El puerto libre",
+    "subtitle": "dig a un SERVIDOR de otra puerta",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "En el dojo hay UN server DNS en 127.0.0.1:53537 EN otro puerto no estándar (la firma viaja en un TXT pero SOLO en el server de ESE puerto).",
+    "goal": "Consulta el TXT de secreto.dojo EIXTENTEN el servidor 127.0.0.1 -p 53537 (dig a otro puerto).",
+    "keywords": [
+      "dns",
+      "dig",
+      "puerto",
+      "TXT"
+    ],
+    "hints": [
+      "Es el patrón EXACTO del nivel 1 de este canal, pero con un puerto DIFERENTE (53537 en vez de 53535).",
+      "recuerda: dig @HOST -p PUERTO TXT nombre +short.",
+      "dig @127.0.0.1 -p 53537 TXT secreto.dojo +short"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig @host -p puerto TXT name",
+        "desc": "consulta a un puerto no estándar"
+      },
+      {
+        "cmd": "dig +short …",
+        "desc": "el out ni canal de sort"
+      }
+    ],
+    "teach": "El páuis de dig es @HOST -p PUERTO nombre TIPO: cambia el servidor, cambia el puerto, cambia el tipo. La repetición de las CUATRO puestas es lo que hace el flujo meticulos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "\"FLAG{…}\""
+      }
+    ],
+    "steps": [
+      {
+        "raw": "dig @127.0.0.1 -p 53537 TXT secreto.dojo +short",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "@127.0.0.1 -p 53537 TXT secreto.dojo +short",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "dig @127.0.0.1 -p 53537 TXT secreto.dojo +short"
+  },
+  {
+    "id": "dns-l12",
+    "track": "dns",
+    "index": 12,
+    "title": "Boss DNS",
+    "subtitle": "la cadena completa de DNS",
+    "xp": 160,
+    "difficulty": 5,
+    "brief": "El combo ENTRE el reverse-lookup (dig -x), el TXT del nombre (dig +short TXT) y la conversión del DOMINIO a la IP (dance getent). La graduación del DNS de comandos.",
+    "goal": "Paso 1: dig +short -x 10.20.30.44 (el PTR te da el nombre). Paso 2: con el NOMBRE recibido: dig +short TXT nombre. La firma del nivel esta en ESE TXT del nombre retornado.",
+    "keywords": [
+      "boss",
+      "dns",
+      "dig",
+      "txT"
+    ],
+    "hints": [
+      "El PTR está devolviendo dojo-boss. como nombre de la IP 10.20.30.44.",
+      "El TXT de dojo-boss lleva la FIRMA (la TXT está en la cda de la cual del host-record).",
+      "nombre=$(dig +short -x 10.20.30.44 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig +short -x IP",
+        "desc": "paso 1: el nombre de la IP"
+      },
+      {
+        "cmd": "dig +short TXT nombre",
+        "desc": "paso 2: el registro del nombre"
+      }
+    ],
+    "teach": "El boss final COMBINA: -x (reverso), TXT (la firma) y la cadena de comandos $(...). Es el flujo final del \"WSI del dominio\" que usan los sysadmins para rastrear una IP desconocida, con la metadata DNS que la dejamos en el TXT.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "\"FLAG{…}\""
+      }
+    ],
+    "steps": [
+      {
+        "raw": "nombre=$(dig +short -x 10.20.30.44 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1)",
+        "cmds": [
+          {
+            "cmd": "nombre=$(dig",
+            "args": "+short -x 10.20.30.44 @127.0.0.1 -p 53535",
+            "why": "comando nombre=$(dig — revisa «man nombre=$(dig»",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man nombre=$(dig»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man nombre=$(dig»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v ^$",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-n 1)",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 5 = las primeras 5)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dig +short TXT $nombre @127.0.0.1 -p 53535",
+        "cmds": [
+          {
+            "cmd": "dig",
+            "args": "+short TXT $nombre @127.0.0.1 -p 53535",
+            "why": "consulta DNS estilo BIND: registra hacia un servidor; @servidor elige a quién preguntar",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man dig»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "nombre=$(dig +short -x 10.20.30.44 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535"
+  },
+  {
+    "id": "dns-l13",
+    "track": "dns",
+    "index": 13,
+    "title": "El anfitrión jurado",
+    "subtitle": "/etc/hosts: mapear hostname → IP",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "El servicio del dojo espera su hostname. Si /etc/hosts no lo resuelve, el daemon confunde su propio nombre: asegúralo en la tabla local.",
+    "goal": "Añade a /etc/hosts la línea que mapea dojo.local → 10.0.0.5 y cierra con dojo-verificar dns-hosts.",
+    "keywords": [],
+    "hints": [
+      "El formato de línea de /etc/hosts es: IP[TAB o espacios]hostname [alias…].",
+      "La fila correcta aquí: 10.0.0.5 dojo.local (una sola línea, sin alias).",
+      "Con el shell: echo \"10.0.0.5 dojo.local\" >> /etc/hosts"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep dojo.local /etc/hosts",
+        "desc": "verificar la entrada del hosts"
+      },
+      {
+        "cmd": "getent hosts dominio",
+        "desc": "resolver según nsswitch"
+      }
+    ],
+    "teach": "/etc/hosts es el mapeo manual ANTES del resolver (precedencia files > dns en /etc/nsswitch.conf): una línea por entrada IP hostname. Es la tabla que la libc consulta primero en cada getaddrinfo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "echo \"10.0.0.5 dojo.local\" | sudo tee -a /etc/hosts",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "10.0.0.5 dojo.local",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee -a /etc/hosts",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-hosts",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-hosts",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "echo \"10.0.0.5 dojo.local\" | sudo tee -a /etc/hosts && dojo-verificar dns-hosts"
+  },
+  {
+    "id": "dns-l14",
+    "track": "dns",
+    "index": 14,
+    "title": "El badén del resolver",
+    "subtitle": "/etc/resolv.conf: nameserver y search",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El fichero del resolver quedó VACÍO: sin nameserver ni search, getent no resuelve nada. Rellena las dos directivas.",
+    "goal": "Reconstruye /etc/resolv.conf con nameserver 10.0.0.6 y search dojo.local (una línea por directiva) y cierra con dojo-verificar dns-resolver.",
+    "keywords": [],
+    "hints": [
+      "resolv.conf declara nameserver IP (pueden haber varios en orden).",
+      "search añade ese dominio cuando el nombre consultado es corto (no FQDN).",
+      "Una por línea: «nameserver …» en la 1.ª, «search …» en la 2.ª. sudo tee para escribir en /etc/resolv.conf."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cat /etc/resolv.conf",
+        "desc": "leer el resolver actual"
+      },
+      {
+        "cmd": "getent hosts google.com",
+        "desc": "resolver FQDN vía libc"
+      }
+    ],
+    "teach": "/etc/resolv.conf es la CONFIG del resolver del sistema: nameserver IP (por orden de uso) y search dominio (lo que se añade si el nombre no es FQDN). Es lo que getent, dig y casi todas las herramientas consumen.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' 'nameserver 10.0.0.6' 'search dojo.local' | sudo tee /etc/resolv.conf",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n nameserver 10.0.0.6 search dojo.local",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee /etc/resolv.conf",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-resolver",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-resolver",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' 'nameserver 10.0.0.6' 'search dojo.local' | sudo tee /etc/resolv.conf && dojo-verificar dns-resolver"
+  },
+  {
+    "id": "dns-l15",
+    "track": "dns",
+    "index": 15,
+    "title": "La zona con alias",
+    "subtitle": "fichero de zona: A + CNAME (punto final FQDN)",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "La zona de dojo.local tiene el CNAME roto: apunta a un nombre que NO existe. Debe apuntar a web (que sí tiene A) con punto final.",
+    "goal": "Repara el CNAME de /home/agent/dojo.local.zone para que apunte a web.dojo.local. (con punto final) y cierra con dojo-verificar dns-zone.",
+    "keywords": [],
+    "hints": [
+      "Un CNAME debe apuntar a un NOMBRE declarado en la zona: web.dojo.local. ya tiene su A.",
+      "El punto FINAL (dojo.local.) marca FQDN: sin punto, la zona expandiría el origen al final.",
+      "sed -i de wymarcus2 → web con el punto final INCLUÍDO."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig +noall +answer dominio",
+        "desc": "leer los A/AAAA del dominio"
+      },
+      {
+        "cmd": "grep CNAME zone.txt",
+        "desc": "verificar el alias en la zona"
+      }
+    ],
+    "teach": "Un A mapea NOMBRE→IP; un CNAME alias→otro nombre. El punto terminal (dojo.local.) marca FQDN: SIN punto, el nombre es RELATIVO y la zona expande el origen al final. Un CNAME SIEMPRE apunta a un nombre existente (y no coexiste otros registros en el mismo nombre).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i 's/wymarcus2\\.dojo\\.local\\./web.dojo.local./' /home/agent/dojo.local.zone",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/wymarcus2\\.dojo\\.local\\./web.dojo.local./ /home/agent/dojo.local.zone",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-zone",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-zone",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i 's/wymarcus2\\.dojo\\.local\\./web.dojo.local./' /home/agent/dojo.local.zone && dojo-verificar dns-zone"
+  },
+  {
+    "id": "dns-l16",
+    "track": "dns",
+    "index": 16,
+    "title": "El serial del SOA",
+    "subtitle": "SOA: serial +1 y $TTL 300",
+    "xp": 70,
+    "difficulty": 3,
+    "brief": "El SOA tiene un serial VIEJO: los servidores secundarios no replican el update. Actualiza a 20260601 y baja el $TTL por defecto a 300 (5 min).",
+    "goal": "Actualiza el serial del SOA de /home/agent/dojo.zone a 20260601 y el $TTL inicial a 300. cierra con dojo-verificar dns-soa.",
+    "keywords": [],
+    "hints": [
+      "El serial SOA es el RELOJ de la REPLICACIÓN: se INCREMENTA en cada update (nunca atrás).",
+      "Los tiempos son SEGUNDOS: $TTL 3600 = 1h; $TTL 300 = 5 min.",
+      "sed -i en dos pasadas: una para el serial, otra para el $TTL."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep serial zone.txt",
+        "desc": "leer el serial actual"
+      },
+      {
+        "cmd": "grep \"\\$TTL\" zone.txt",
+        "desc": "leer el TTL default"
+      }
+    ],
+    "teach": "El SOA (Start Of Authority) gobierna la zona: el serial es la versión (se incrementa o los secundarios ignoran el update), refresh/retry/expire controlan la recarga por el esclavo y $TTL es el default de cacheo de la zona.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -i 's/20260531/20260601/' /home/agent/dojo.zone",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/20260531/20260601/ /home/agent/dojo.zone",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sed -i 's/\\$TTL 3600/\\$TTL 300/' /home/agent/dojo.zone",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/\\$TTL 3600/\\$TTL 300/ /home/agent/dojo.zone",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-soa",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-soa",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed -i 's/20260531/20260601/' /home/agent/dojo.zone && sed -i 's/\\$TTL 3600/\\$TTL 300/' /home/agent/dojo.zone && dojo-verificar dns-soa"
+  },
+  {
+    "id": "dns-l17",
+    "track": "dns",
+    "index": 17,
+    "title": "El correo prioritario",
+    "subtitle": "zona MX + SRV: prioridad y peso",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "La zona necesita los MX con su sintaxis correcta y el SRV del protocolo VoIP del dojo: prioridad, peso, puerto y destino.",
+    "goal": "Añade a la zona dos MX (10 mail1.dojo.local., 20 mail2.dojo.local.) y un SRV _sip._tcp hacia sip.dojo.local. en puerto 5060. cierra con dojo-verificar dns-mx.",
+    "keywords": [],
+    "hints": [
+      "MX se declara: nombre IN MX PRIORIDAD host. (prioridad MENOR gana).",
+      "SRV: _servicio._proto IN SRV prioridad peso puerto destino. (5 campos).",
+      "ORDEN estricto: mail1 (10) y mail2 (20); SRV 5060 → sip.dojo.local."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig MX dominio",
+        "desc": "consultar MX de un dominio"
+      },
+      {
+        "cmd": "dig SRV _sip._tcp.dom",
+        "desc": "consultar SRV records"
+      }
+    ],
+    "teach": "El MX (Mail Exchange) enruta el correo: prioridad MENOR = más preferente (mail1 10, mail2 20). SRV descubre SERVICIOS: _servicio._proto IN SRV pri peso port target — el estándar de localización para SIP, XMPP y otros.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' '@ IN MX 10 mail1.dojo.local.' '@ IN MX 20 mail2.dojo.local.' '_sip._tcp IN SRV 0 5 5060 sip.dojo.local.' >> /home/agent/dojo.zone",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n @ IN MX 10 mail1.dojo.local. @ IN MX 20 mail2.dojo.local. _sip._tcp IN SRV 0 5 5060 sip.dojo.local. >> /home/agent/dojo.zone",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-mx",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-mx",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' '@ IN MX 10 mail1.dojo.local.' '@ IN MX 20 mail2.dojo.local.' '_sip._tcp IN SRV 0 5 5060 sip.dojo.local.' >> /home/agent/dojo.zone && dojo-verificar dns-mx"
+  },
+  {
+    "id": "dns-l18",
+    "track": "dns",
+    "index": 18,
+    "title": "La pelea de la precedencia",
+    "subtitle": "hosts > dns: nsswitch precedence test",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "getent acepta el resolver EXTERIOR, pero localhost y el alias interno van por /etc/hosts. Comprueba que la PRECEDENCIA respeta (files antes de dns).",
+    "goal": "Mete la mapping local en /etc/hosts (127.0.0.1 dojo.internal) y CAMBIA el orden de /etc/nsswitch.conf a «files dns». Verifica con getent hosts y cierra con dojo-verificar dns-gradation.",
+    "keywords": [],
+    "hints": [
+      "En /etc/nsswitch.conf, la línea hosts define el ORDEN de resolución.",
+      "files = los ficheros locales (hosts); dns = el resolver.",
+      "Con sudo sed -i de la línea hosts: first files, después dns (y sudo tee -a para el /etc/hosts)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cat /etc/nsswitch.conf",
+        "desc": "leer el orden de resolución"
+      },
+      {
+        "cmd": "grep -n \"dojo\" /etc/hosts",
+        "desc": "buscar mappings manual"
+      }
+    ],
+    "teach": "/etc/nsswitch.conf hosts: files dns define la CADENA de resolución: 1) los ficheros locales (/etc/hosts), 2) dns el resolver. Con files de primero, los nombres internos se resuelven SIN tocar el DNS externo — el patrón de los sistemas reales.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' '127.0.0.1 dojo.internal' | sudo tee -a /etc/hosts",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n 127.0.0.1 dojo.internal",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee -a /etc/hosts",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "sudo sed -i 's/hosts: *dns *files/hosts: files dns/' /etc/nsswitch.conf",
+        "cmds": [
+          {
+            "cmd": "sudo",
+            "args": "sed -i s/hosts: *dns *files/hosts: files dns/ /etc/nsswitch.conf",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "getent hosts dojo.internal",
+        "cmds": [
+          {
+            "cmd": "getent",
+            "args": "hosts dojo.internal",
+            "why": "consulta las bases de datos del sistema (passwd, hosts, dns…) como lo harían las librerías C",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-gradation",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-gradation",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' '127.0.0.1 dojo.internal' | sudo tee -a /etc/hosts && sudo sed -i 's/hosts: *dns *files/hosts: files dns/' /etc/nsswitch.conf && getent hosts dojo.internal && dojo-verificar dns-gradation"
+  },
+  {
+    "id": "dns-l19",
+    "track": "dns",
+    "index": 19,
+    "title": "La zona del revés",
+    "subtitle": "PTR: IP → nombre con $ORIGIN in-addr.arpa",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "El auditor pide la ZONA INVERSA: un PTR que diga IP→nombre. Añade el PTR de la IP 10.0.0.11 apuntando a web.dojo.local. dentro del $ORIGIN inverso.",
+    "goal": "Añade a /home/agent/dojo.inversa.zone el PTR: 11 IN PTR web.dojo.local. (en la $ORIGIN 11.0.10.in-addr.arpa. correcta). Cierra con dojo-verificar dns-ptr.",
+    "keywords": [],
+    "hints": [
+      "La zona inversa usa in-addr.arpa: la IP se escribe AL REVÉS (10.0.0.11 → 11.0.10.in-addr.arpa).",
+      "El PTR declara el ÚLTIMO octeto: «11 IN PTR nombre_fqdn.».",
+      "Append con printf: la línea al final del fichero, respetando el punto final."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "dig -x 10.0.0.11",
+        "desc": "consulta inversa (PTR)"
+      },
+      {
+        "cmd": "grep PTR zone.rev",
+        "desc": "leer los PTR del fichero inverso"
+      }
+    ],
+    "teach": "La zona INVERSA en in-addr.arpa resuelve IP→nombre con PTR. El ORIGIN inverso: 11.0.10.in-addr.arpa. es para la IP 10.0.0.11 (¡la IP se escribe AL REVÉS!). El PTR lo miran el correo (anti-spam) y las validaciones de llegada.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' '11 IN PTR web.dojo.local.' >> /home/agent/dojo.inversa.zone",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n 11 IN PTR web.dojo.local. >> /home/agent/dojo.inversa.zone",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-ptr",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-ptr",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' '11 IN PTR web.dojo.local.' >> /home/agent/dojo.inversa.zone && dojo-verificar dns-ptr"
+  },
+  {
+    "id": "dns-l20",
+    "track": "dns",
+    "index": 20,
+    "title": "Boss: el DNS completo",
+    "subtitle": "hosts + resolver + zona (serial + A)",
+    "xp": 150,
+    "difficulty": 5,
+    "brief": "El boss DNS: prepara la máquina para resolver el dominio del dojo SIN servidor real: hosts + resolv.conf + la zona con serial nuevo y su A.",
+    "goal": "Configura /etc/hosts (127.0.0.1 dojo.local), /etc/resolv.conf (nameserver 127.0.0.53, search dojo.local), sube el serial de /home/agent/dojo.completa a ≥ 20260601 y añade el registro web IN A 10.0.0.99. cierra con dojo-verificar dns-boss.",
+    "keywords": [],
+    "hints": [
+      "Tres parejas: hosts (127.0.0.1 dojo.local), resolv.conf (nameserver + search) y la zona (serial + A web).",
+      "El hosts exige la líneas EXACTA 127.0.0.1 dojo.local (agregar con >>).",
+      "El resolv.conf completo SOBREESCRIBE: nameserver 127.0.0.53 + search dojo.local (2 líneas)."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "getent hosts dojo.local",
+        "desc": "verificar el lookup final"
+      },
+      {
+        "cmd": "grep -n \"dojo\" /etc/hosts /etc/resolv.conf",
+        "desc": "auditar el estado dns"
+      }
+    ],
+    "teach": "El DNS ES una CADENA: hosts (mapeos locales) → resolv.conf (a quién pregunta) → zona (el fichero autoritativo con SOA/serial) → inversa (PTR). El boss une la cadena completa. Las consultas se resuelven en el orden del nsswitch: local antes que remoto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '%s\\n' '127.0.0.1 dojo.local' | sudo tee -a /etc/hosts",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n 127.0.0.1 dojo.local",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee -a /etc/hosts",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": [
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man sudo»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "printf '%s\\n' 'nameserver 127.0.0.53' 'search dojo.local' | sudo tee /etc/resolv.conf",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n nameserver 127.0.0.53 search dojo.local",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sudo",
+            "args": "tee /etc/resolv.conf",
+            "why": "ejecuta el siguiente comando con privilegios de root (requiere permiso sudoers)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sed -i 's/20260531/20260602/' /home/agent/dojo.completa",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-i s/20260531/20260602/ /home/agent/dojo.completa",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "flag i del comando — revisa «man sed»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "printf '%s\\n' 'web IN A 10.0.0.99' >> /home/agent/dojo.completa",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": "%s\\n web IN A 10.0.0.99 >> /home/agent/dojo.completa",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "dojo-verificar dns-boss",
+        "cmds": [
+          {
+            "cmd": "dojo-verificar",
+            "args": "dns-boss",
+            "why": "comprobador propio del dojo: valida la elaboración del nivel y, al pasar, descubre la flag",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '%s\\n' '127.0.0.1 dojo.local' | sudo tee -a /etc/hosts && printf '%s\\n' 'nameserver 127.0.0.53' 'search dojo.local' | sudo tee /etc/resolv.conf && sed -i 's/20260531/20260602/' /home/agent/dojo.completa && printf '%s\\n' 'web IN A 10.0.0.99' >> /home/agent/dojo.completa && dojo-verificar dns-boss"
+  },
+  {
+    "id": "sql-l1",
+    "track": "sql",
+    "index": 1,
+    "title": "La primera consulta",
+    "subtitle": "SELECT y FROM",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "La base del dojo es real: una SQLite con la bitácora de los agentes. La primera herramienta siempre es SELECT: «muéstrame estas columnas de esta tabla».",
+    "goal": "Sobre /home/agent/dojo.sqlite: muestro la tabla sellos (SELECT * FROM sellos). La marca del dojo viaja en la columna sello.",
+    "keywords": [
+      "sql",
+      "sqlite",
+      "select",
+      "from"
+    ],
+    "hints": [
+      "sqlite3 FICHERO \"QUERY\" es la forma CLI: abre la base y ejecuta la consulta.",
+      "SELECT * pide todas las columnas; FROM sellos elige la tabla.",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT * FROM sellos;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sqlite3 db.sqlite \"SELECT * FROM t;\"",
+        "desc": "leer una tabla entera"
+      },
+      {
+        "cmd": ".tables",
+        "desc": "listar las tablas (modo interactivo)"
+      }
+    ],
+    "teach": "SELECT col FROM tabla es el latín de las bases de datos. El CLI sqlite3 recibe la base como primer parámetro y la consulta entrecomillada. En SQLite (a diferencia del MySQL) casi todo lo demás tiene la MISMA sintaxis.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "1|trozo-1\n2|FLAG{…}\n3|trozo-3"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT * FROM sellos;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT * FROM sellos;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT * FROM sellos;\""
+  },
+  {
+    "id": "sql-l2",
+    "track": "sql",
+    "index": 2,
+    "title": "El asunto filtrado",
+    "subtitle": "WHERE: filas que cuentan",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "SELECT sin WHERE devuelve TODO. La disciplina del consultor: filtrar. Solo UNA fila de patrullas es del agente borrado y lleva la marca.",
+    "goal": "De tabla patrullas: muestra las filas cuyo agente sea «kaito». La marca está en su notana (columna nota).",
+    "keywords": [
+      "sql",
+      "where",
+      "like",
+      "filtro"
+    ],
+    "hints": [
+      "WHERE agente='kaito' reduce a sus dos filas; añade AND nota LIKE '%FLAG%' para cazar la marca.",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT nota FROM patrullas WHERE agente='kaito';\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "WHERE col='v'",
+        "desc": "igualdad"
+      },
+      {
+        "cmd": "WHERE a='x' AND b LIKE '%F%'",
+        "desc": "combinar filtros"
+      }
+    ],
+    "teach": "WHERE es el filtro de fila: se evalúa en CADA fila y decide si va o no. Combinas condiciones con AND/OR; LIKE permite comodines (%). Ojo: en SQL el = case-sensitive según collation de SQLite (por defecto NO distinguir mayúsculas: careful).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT nota FROM patrullas WHERE agente='kaito' AND nota LIKE '%FLAG%';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT nota FROM patrullas WHERE agente='kaito' AND nota LIKE '%FLAG%';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT nota FROM patrullas WHERE agente='kaito' AND nota LIKE '%FLAG%';\""
+  },
+  {
+    "id": "sql-l3",
+    "track": "sql",
+    "index": 3,
+    "title": "El patrón del escondite",
+    "subtitle": "LIKE y comodines: % y _",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El escondite no es exacto: es un patrón. LIKE con % (cualquier cadena) y _ (UN carácter exacto) es la lupa SQL.",
+    "goal": "De tabla escondites: encuentra las filas cuyo objeto sea «lanterna%» (empieza con lanterna); la marca está en el notably (columna pista).",
+    "keywords": [
+      "sql",
+      "like",
+      "glob",
+      "comodines"
+    ],
+    "hints": [
+      "LIKE 'lanterna%' menciona TODO lo que empiece con lanterna (lanterna-escudo, lanterna-secreta y lanterna3).",
+      "Entre las coincidencias, la pista que lleva la marca es de lanterna-secreta: puedes encadenar AND pista LIKE \"%FLAG%\".",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT pista FROM escondites WHERE objeto LIKE 'lanterna%' AND pista LIKE '%FLAG%';\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "LIKE 'pre%'",
+        "desc": "empieza con pre"
+      },
+      {
+        "cmd": "LIKE '_x%'",
+        "desc": "segundo carácter x"
+      },
+      {
+        "cmd": "LIKE '%mid%'",
+        "desc": "contiene mid"
+      }
+    ],
+    "teach": "LIKE % = cero o más caracteres; _ = UNO exacto. Encadenadas: filtro de patrón + filtro de contenido (`pista LIKE %FLAG%`) es la doble lupa típica. NOT LIKE invierte. Para case-sensitividad HOWA: GLOB distingue mayúsculas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT pista FROM escondites WHERE objeto LIKE 'lanterna%' AND pista LIKE '%FLAG%';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT pista FROM escondites WHERE objeto LIKE 'lanterna%' AND pista LIKE '%FLAG%';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT pista FROM escondites WHERE objeto LIKE 'lanterna%' AND pista LIKE '%FLAG%';\""
+  },
+  {
+    "id": "sql-l4",
+    "track": "sql",
+    "index": 4,
+    "title": "El podio de puntuaciones",
+    "subtitle": "ORDER BY ... DESC LIMIT",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "La gente se rinde: ¿quién es el PRIMERO? ORDER BY ordena y LIMIT corta. La primera fila del podio guarda la marca.",
+    "goal": "De tabla podios: la fila del AGENTE con la puntuación MÁS ALTA (puntos DESC LIMIT 1); su insignia lleva la marca.",
+    "keywords": [
+      "sql",
+      "order",
+      "limit",
+      "top"
+    ],
+    "hints": [
+      "ORDER BY puntos DESC de mayor a menor; LIMIT 1 queda con la primera.",
+      "Muestra TODO para inspeccionar: SELECT * FROM podios ORDER BY puntos DESC LIMIT 1; luego extrae la columna insignia.",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT insignia FROM podios ORDER BY puntos DESC LIMIT 1;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ORDER BY col DESC",
+        "desc": "mayor a menor"
+      },
+      {
+        "cmd": "LIMIT 1",
+        "desc": "quedarse con una fila"
+      }
+    ],
+    "teach": "ORDER BY col [ASC|DESC] ordena; LIMIT N corta. La combinación es el ID de TOP-N universal. Ojo con los empates: añade un segundo criterio (agente) para hacer el orden total.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT insignia FROM podios ORDER BY puntos DESC LIMIT 1;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT insignia FROM podios ORDER BY puntos DESC LIMIT 1;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT insignia FROM podios ORDER BY puntos DESC LIMIT 1;\""
+  },
+  {
+    "id": "sql-l5",
+    "track": "sql",
+    "index": 5,
+    "title": "El recuento de la tribu",
+    "subtitle": "COUNT/GROUP BY/HAVING",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El dojo quiere CUÁNTOS asistentes hubo por gremio. GROUP BY agrupa y los agregados (COUNT, SUM...) resumen cada grupo. HAVING filtra después de agrupar.",
+    "goal": "De tabla eventos: cuenta cuántos asistentes (personas) evento por gremio, agrupando; la serie que da la marca: entre los grupos más grandes (4 personas) el nombre del gremio ES la firma.",
+    "keywords": [
+      "sql",
+      "group by",
+      "having",
+      "count"
+    ],
+    "hints": [
+      "GROUP BY gremio agrupa y COUNT(*) cuenta filas por gremio.",
+      "GROUP_CONCAT(asistentes) junta los valores del grupo: la marca arriba en el grupo de kendo.",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT gremio, COUNT(*), GROUP_CONCAT(asistentes, ' ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "GROUP BY col",
+        "desc": "agrupar y resumir"
+      },
+      {
+        "cmd": "HAVING COUNT(*)>N",
+        "desc": "filtrar grupos"
+      },
+      {
+        "cmd": "COUNT(DISTINCT col)",
+        "desc": "valores únicos por grupo"
+      }
+    ],
+    "teach": "GROUP BY col: UNA fila de salida por grupo; otros cálculos aquí se CONSOLIDAN (COUNT, SUM, AVG, MIN, MAX). HAVING filtra GRUPOS (WHERE filtra FILAS antes). Es el triángulo de los reporting.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "kendo|2 (fila extra con el FLAG en asistentes)"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT gremio, COUNT(*), GROUP_CONCAT(asistentes, ' ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT gremio, COUNT(*), GROUP_CONCAT(asistentes, ' ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT gremio, COUNT(*), GROUP_CONCAT(asistentes, ' ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;\""
+  },
+  {
+    "id": "sql-l6",
+    "track": "sql",
+    "index": 6,
+    "title": "El lienzo combinado",
+    "subtitle": "JOIN entre dos tablas",
+    "xp": 75,
+    "difficulty": 4,
+    "brief": "La información está dividida: una tabla de ENCARGOS y otra de AGENTES. La marca solo aparece al UNIR ambas por la clave.",
+    "goal": "UNE encargos con agentes por id de agente (JOIN); muestra los encargos de kaito: en la tabla encarg unsuspending campo detalle lleva la marca.",
+    "keywords": [
+      "sql",
+      "join",
+      "on",
+      "clave"
+    ],
+    "hints": [
+      "JOIN agentes a ON encargos.agente_id=a.id une por la clave.",
+      "Filtrar por a.nombre = kaito y pedir e.detalle.",
+      "sqlite3 /home/agent/dojo.sqlite \"SELECT e.detalle FROM encargos e JOIN agentes a ON e.agente_id=a.id WHERE a.nombre='kaito';\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "FROM t1 JOIN t2 ON t1.k=t2.k",
+        "desc": "unión por clave"
+      },
+      {
+        "cmd": "LEFT JOIN t2",
+        "desc": "incluye t1 sin pareja"
+      }
+    ],
+    "teach": "JOIN ... ON une filas de dos tablas por una columna compartida (clave). Los ALIAS (a, e) abrevian. INNER JOIN = solo coincidencias; LEFT JOIN conserva las filas sin pareja (con NULL). El 90% del SQL de reporting es esto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT e.detalle FROM encargos e JOIN agentes a ON e.agente_id=a.id WHERE a.nombre='kaito';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT e.detalle FROM encargos e JOIN agentes a ON e.agente_id=a.id WHERE a.nombre='kaito';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT e.detalle FROM encargos e JOIN agentes a ON e.agente_id=a.id WHERE a.nombre='kaito';\""
+  },
+  {
+    "id": "sql-l7",
+    "track": "sql",
+    "index": 7,
+    "title": "La corrección del registro",
+    "subtitle": "UPDATE ... SET ... WHERE",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "Una fila de inventario quedó MAL: estado «konfuso» pero stock -5. Sentencia UPDATE para corregir el estado (a ok) y luego consultas para ver el arreglo.",
+    "goal": "De inventario: cambie el estado de la fila con SKU 42 a «ok» (UPDATE ... SET estado=ok) y también AÚNELA la marca: la columna nota de esa fila debe pasar a contener la FIRMA en vez de vacío (nota = FLAG).",
+    "keywords": [
+      "sql",
+      "update",
+      "set",
+      "where",
+      "changes"
+    ],
+    "hints": [
+      "UPDATE tabla SET col=val WHERE cond: SIEMPRE con WHERE (o cambias TODAS las filas).",
+      "Tras el UPDATE muestra con SELECT ... WHERE sku=42 para VER el resultado.",
+      "sqlite3 /home/agent/dojo.sqlite \"UPDATE inventario SET estado='ok' WHERE sku=42;\" && sqlite3 ... \"SELECT * FROM inventario WHERE sku=42;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "UPDATE t SET c=v WHERE cond",
+        "desc": "actualizar filas"
+      },
+      {
+        "cmd": "SELECT changes();",
+        "desc": "filas afectadas por el último write"
+      }
+    ],
+    "teach": "UPDATE modifica filas CASADAS por WHERE. Regla de oficio: primero el SELECT equivalente, luego el UPDATE (ver CASAQUE va a tocar). En SQLite, sin BEGIN los cambios van a disco al cerrar; no hay un buffer de imagen.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "ok|FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"UPDATE inventario SET estado='ok' WHERE sku=42 AND estado='konfuso';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite UPDATE inventario SET estado='ok' WHERE sku=42 AND estado='konfuso';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT estado, nota FROM inventario WHERE sku=42;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT estado, nota FROM inventario WHERE sku=42;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/.dojo-hit",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/.dojo-hit",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"UPDATE inventario SET estado='ok' WHERE sku=42 AND estado='konfuso';\" && sqlite3 /home/agent/dojo.sqlite \"SELECT estado, nota FROM inventario WHERE sku=42;\" && cat /var/.dojo-hit"
+  },
+  {
+    "id": "sql-l8",
+    "track": "sql",
+    "index": 8,
+    "title": "La fila borrada",
+    "subtitle": "DELETE + validación de resultados",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El dojo quiere que PRACTIQUES el borrado: la fila de prueba debe IRSE del altar y únicamente quedan 3 registros (la firma va en la fila restante más rara).",
+    "goal": "De tabla altaro: borra LA fila cuyo id=99 (DELETE WHERE id=99) y COMPRUEBA con SELECT COUNT(*) que quedan el resto. La marca está en la fila del id 1 (columna obj).",
+    "keywords": [
+      "sql",
+      "delete",
+      "where",
+      "count"
+    ],
+    "hints": [
+      "DELETE FROM tabla WHERE cond borra SOLO las filas concordas; sin WHERE borra TODAS.",
+      "Verifica con COUNT(*) tras borrar (should = 3).",
+      "sqlite3 /home/agent/dojo.sqlite \"DELETE FROM altaro WHERE id=99;\" && sqlite3 db \"SELECT COUNT(*) FROM altaro;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "DELETE FROM t WHERE cond",
+        "desc": "borrar filas concordas"
+      },
+      {
+        "cmd": "DELETE FROM t",
+        "desc": " ¡borra TODO! (peligro)"
+      }
+    ],
+    "teach": "DELETE WHERE remueve filas; sin WHERE remueve LA TABLA entera. La práctica de doble confirm (contar luego) es de los senior: transactions lo hacen reversible (BEGIN; DELETE; ROLLBACK;).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "3\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"DELETE FROM altaro WHERE id=99;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite DELETE FROM altaro WHERE id=99;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT COUNT(*) FROM altaro; SELECT obj FROM altaro WHERE id=1;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT COUNT(*) FROM altaro; SELECT obj FROM altaro WHERE id=1;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"DELETE FROM altaro WHERE id=99;\" && sqlite3 /home/agent/dojo.sqlite \"SELECT COUNT(*) FROM altaro; SELECT obj FROM altaro WHERE id=1;\""
+  },
+  {
+    "id": "sql-l9",
+    "track": "sql",
+    "index": 9,
+    "title": "El registro nuevo",
+    "subtitle": "INSERT INTO ... VALUES",
+    "xp": 65,
+    "difficulty": 3,
+    "brief": "El dojo recibe UN NUEVO ALTARISTA (instructor) y quiere SU REGISTRO insertado con la estación temporal: INSERT de una fila completa.",
+    "goal": "De tabla cadetes: INSERTA una fila (id 5, nombre instructor, rango 3) y con la columna nota de la fila ID 2 (la referencia de estaculo), la marca aparece.",
+    "keywords": [
+      "sql",
+      "insert",
+      "values",
+      "primary key"
+    ],
+    "hints": [
+      "INSERT INTO tabla VALUES (…): una fila por llamada; los tipos pueden diferir pero NOS conviene exactos.",
+      "Tras la inserción, la tabla listará la fila 5 al hacer SELECT *.",
+      "sqlite3 db \"INSERT INTO cadetes (id, nombre, rango) VALUES (5,'instructor',3);\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "INSERT INTO t (cols) VALUES (vals)",
+        "desc": "insertar fila"
+      },
+      {
+        "cmd": "INSERT OR IGNORE",
+        "desc": "evita duplicar la PRIMARY KEY"
+      }
+    ],
+    "teach": "INSERT INTO tabla (cols) VALUES (vals): la forma completa (listar columnas explícitas previene descolocar las columnas). SQLite el ROWID auto con INTEGER PRIMARY KEY.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO cadetes VALUES (5,'instructor',3,'');\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite INSERT INTO cadetes VALUES (5,'instructor',3,'');",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT nota FROM cadetes WHERE id=2;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT nota FROM cadetes WHERE id=2;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO cadetes VALUES (5,'instructor',3,'');\" && sqlite3 /home/agent/dojo.sqlite \"SELECT nota FROM cadetes WHERE id=2;\""
+  },
+  {
+    "id": "sql-l10",
+    "track": "sql",
+    "index": 10,
+    "title": "La forja del esqueleto",
+    "subtitle": "CREATE TABLE con restricciones",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "El dojo auténtico SE CONSTRUYE: crea TU propia tabla (con PRIMARY KEY y NOT NULL) y llena UNA fila con la marca.",
+    "goal": "Crea una tabla torre (id INTEGER PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL) y guarda en una fila la marca (valor en planta). Validación: id=1 nombre de columna planta debe ser el sello.",
+    "keywords": [
+      "sql",
+      "create table",
+      "primary key",
+      "not null"
+    ],
+    "hints": [
+      "CREATE TABLE torre (id INTEGER PRIMARY KEY, planta TEXT NOT NULL);",
+      "INSERT con sustitución de shell: sqlite db \"INSERT INTO torre VALUES (1, '$(cat /var/.dojo-hit)');\" o desde la caja con la marca en una variable.",
+      "sqlite3 db \"CREATE TABLE IF NOT EXISTS torre (id INTEGER PRIMARY KEY, planta TEXT NOT NULL);\" && sqlite3 db \"INSERT INTO torre (id, planta) VALUES (1, '$(cat /var/.dojo-hit)');\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "CREATE TABLE t (id INTEGER PRIMARY KEY, c TEXT NOT NULL);",
+        "desc": "esqueleto de tabla"
+      },
+      {
+        "cmd": ".schema torre",
+        "desc": "ver el CREATE exacto de una tabla"
+      }
+    ],
+    "teach": "CREATE TABLE define el esqueleto: tipos afines (INTEGER, TEXT, REAL...), PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT. INTEGER PRIMARY KEY es ROWID implícito (rápido y compacto). Los de REAL/BLOB NO NULL impone integridad.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"CREATE TABLE IF NOT EXISTS torre (id INTEGER PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite CREATE TABLE IF NOT EXISTS torre (id INTEGER PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO torre VALUES (1, '$(cat /var/.dojo-hit)');\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite INSERT INTO torre VALUES (1, '$(cat /var/.dojo-hit)');",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT planta FROM torre WHERE id=1;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT planta FROM torre WHERE id=1;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"CREATE TABLE IF NOT EXISTS torre (id INTEGER PRIMARY KEY NOT NULL UNIQUE, planta TEXT NOT NULL);\" && sqlite3 /home/agent/dojo.sqlite \"INSERT INTO torre VALUES (1, '$(cat /var/.dojo-hit)');\" && sqlite3 /home/agent/dojo.sqlite \"SELECT planta FROM torre WHERE id=1;\""
+  },
+  {
+    "id": "sql-l11",
+    "track": "sql",
+    "index": 11,
+    "title": "La espina del esqueleto",
+    "subtitle": ".schema y PRAGMA table_info",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "ANTES de tocar, se DELUYE ES A FAZER: la estructura. .schema muestra los CREATE TABLES y PRAGMA table_info(columns) las COLUMNAS con tipos.",
+    "goal": "Sobre la tabla torre (ya existe): imprime su estructura con .schema torre (y también PRAGMA table_info(torre);). La marca está en /var/.dojo-hit: cat para IMPRIMIR.",
+    "keywords": [
+      "sql",
+      "schema",
+      "pragma",
+      "columns"
+    ],
+    "hints": [
+      ".schema torre imprime el CREATE TABLE de la tabla (es un punto-comando, NO SQL).",
+      "PRAGMA table_info(torre) devuelve las columnas con tipo/pk (instrucción específica de SQLite).",
+      "sqlite3 db \".schema torre\"; sqlite3 db \"PRAGMA table_info(torre);\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": ".schema tabla",
+        "desc": "el CREATE TABLE completo"
+      },
+      {
+        "cmd": "PRAGMA table_info(tabla);",
+        "desc": "columnas con tipo y pk"
+      }
+    ],
+    "teach": "Antes de escribir se aprende el ESQUELETO existente. .schema (dot-command del CLI) y PRAGMA (función interna de SQLite) son los dos modos oficiales. PRAGMA table_info es el que usan todos los exploradores DB.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "CREATE TABLE torre(id…)\n\n0|id|INTEGER|0|…\nFLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "printf '.schema torre\\n.PRAGMA table_info(torre);\\n' | sqlite3 /home/agent/dojo.sqlite",
+        "cmds": [
+          {
+            "cmd": "printf",
+            "args": ".schema torre\\n.PRAGMA table_info(torre);\\n",
+            "why": "imprime con formato estilo C: cada %s sustituye un argumento; controla el salto de línea con \\n",
+            "flags": []
+          },
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "PRAGMA=$( ...) 2>/dev/null",
+        "cmds": [
+          {
+            "cmd": "PRAGMA=$(",
+            "args": "...) 2>/dev/null",
+            "why": "comando PRAGMA=$( — revisa «man PRAGMA=$(»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "true",
+        "cmds": [
+          {
+            "cmd": "true",
+            "args": "",
+            "why": "comando true — revisa «man true»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"PRAGMA table_info(torre);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite PRAGMA table_info(torre);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /var/.dojo-hit",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/var/.dojo-hit",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "printf '.schema torre\\n.PRAGMA table_info(torre);\\n' | sqlite3 /home/agent/dojo.sqlite; PRAGMA=$( ...) 2>/dev/null || true; sqlite3 /home/agent/dojo.sqlite \"PRAGMA table_info(torre);\"; cat /var/.dojo-hit"
+  },
+  {
+    "id": "sql-l12",
+    "track": "sql",
+    "index": 12,
+    "title": "La frase en fragmentos",
+    "subtitle": "GROUP_CONCAT: ensamblar",
+    "xp": 80,
+    "difficulty": 5,
+    "brief": "La marca llegó PARTIDA: cinco FRAGMENTOS en el orden de su id. GROUP_CONCAT los junta en UNA autrícula.",
+    "goal": "De tabla fragmento: JUNTA los valores de trozos con ORDER BY id (concatenación con separador → cadena \"una-palabra\": GROUP_CONCAT). Obtén la firma completa como resultado.",
+    "keywords": [
+      "sql",
+      "group_concat",
+      "concatenar",
+      "fragmento"
+    ],
+    "hints": [
+      "Los fragmentos están en el orden de su id; GROUP_CONCAT con separador vacío los pega.",
+      "Con la subconsulta ordenada evitas el ORDER BY interno de GROUP_CONCAT (SQLite 3.44+): SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY id);",
+      "sqlite3 db \"SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY id);\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "GROUP_CONCAT(col, sep)",
+        "desc": "juntar columna en cadena"
+      },
+      {
+        "cmd": "GROUP_CONCAT(c, sep ORDER BY id)",
+        "desc": "juntar ORDENADO (3.44+)"
+      }
+    ],
+    "teach": "GROUP_CONCAT es el ARMA de las «cadenas mil partes» (participants, logs, chunks). Con separador \"\" pega por orden; con sep explicit,\", \" les junta con comas. El ORDER BY DENTRO del GROUP_CONCAT es SQLite ≥ 3.44 (si no, subconsulta ordenada).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{abc111…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY id);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY id);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT GROUP_CONCAT(trozos, '') FROM (SELECT trozos FROM fragmento ORDER BY id);\""
+  },
+  {
+    "id": "sql-l13",
+    "track": "sql",
+    "index": 13,
+    "title": "La consulta dentro",
+    "subtitle": "subconsultas (SELECT dentro de SELECT)",
+    "xp": 80,
+    "difficulty": 5,
+    "brief": "Las subconsultas filtrar CON EL RESULTADO de otra: el agente cuyo rango es el máximo. Profundidad de lectura: primero interior, después exterior.",
+    "goal": "De tabla rangos: selecciona el agente cuyo rango IGUALA el máximo (SELECT MAX(rango)): esa ES la fila del sello.",
+    "keywords": [
+      "sql",
+      "subconsulta",
+      "max",
+      "nested"
+    ],
+    "hints": [
+      "Subconsulta: (SELECT MAX(rango) FROM rangos) devuelve EL máximo → 1500.",
+      "En WHERE: WHERE rango = (…): de la subconsulta sai x cola UNA sola fila (un número).",
+      "sqlite3 db \"SELECT sello FROM rangos WHERE rango=(SELECT MAX(rango) FROM rangos);\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "WHERE c=(SELECT MAX(c) FROM t)",
+        "desc": "igualar al agregado"
+      },
+      {
+        "cmd": "WHERE id IN (SELECT …)",
+        "desc": "lista de la subconsulta"
+      }
+    ],
+    "teach": "Una subconsulta es un SELECT DENTRO de otro: se evalúa primero (como variable) y el exterior la consume. IN: cuando devuelve VARIAS filas; = cuando UNA. Correlacionadas (que heredan la fila actual) las encadenas con EXISTS.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM rangos WHERE rango=(SELECT MAX(rango) FROM rangos);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT sello FROM rangos WHERE rango=(SELECT MAX(rango) FROM rangos);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM rangos WHERE rango=(SELECT MAX(rango) FROM rangos);\""
+  },
+  {
+    "id": "sql-l14",
+    "track": "sql",
+    "index": 14,
+    "title": "La caja de búsqueda",
+    "subtitle": "FULL TEXT y el índice de búsqueda",
+    "xp": 75,
+    "difficulty": 5,
+    "brief": "SQLite trae la BÚSQUEDA de TEXTO REAL: FTS5 crea la tabla de BÚSQUEDA por índice (inverso). Crea tu índice índice virtual y buscas en SEGUNDOS.",
+    "goal": "Crea VIRTUAL TABLE torre_fts con FTS5 (CREATE VIRTUAL TABLE ... USING fts5(...)), INSERTA la fila con la cuenta de la marca (columna docs = FLAG) y BUSCA MATCH contra \"dojo\": devuelven la marca.",
+    "keywords": [
+      "sql",
+      "fts5",
+      "match",
+      "fulltext"
+    ],
+    "hints": [
+      "La tabla virtual: CREATE VIRTUAL TABLE torre_fts USING fts5(docs);",
+      "MATCH busca dentro del índice: SELECT docs FROM torre_fts WHERE torre_fts MATCH \"dojo\";",
+      "sqlite3 db \"INSERT INTO torre_fts (docs) VALUES ('$cat /var/.dojo-hit');\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "CREATE VIRTUAL TABLE t USING fts5(c);",
+        "desc": "tabla de búsqueda"
+      },
+      {
+        "cmd": "WHERE t MATCH 'palabra'",
+        "desc": "búsqueda por índice"
+      }
+    ],
+    "teach": "FTS5 es un MOTOR DE BÚSQUEDA DENTRO de SQLite: crea UNA tabla virtual con índice INVERSO. La columna MATCH busca por palabras. Es LA herramienta de los logs y datasets de texto sin instalar APIs externas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "dojo FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"CREATE VIRTUAL TABLE torre_fts USING fts5(docs);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite CREATE VIRTUAL TABLE torre_fts USING fts5(docs);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO torre_fts VALUES ('dojo $(cat /var/.dojo-hit)');\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite INSERT INTO torre_fts VALUES ('dojo $(cat /var/.dojo-hit)');",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT docs FROM torre_fts WHERE torre_fts MATCH 'dojo';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT docs FROM torre_fts WHERE torre_fts MATCH 'dojo';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"CREATE VIRTUAL TABLE torre_fts USING fts5(docs);\" && sqlite3 /home/agent/dojo.sqlite \"INSERT INTO torre_fts VALUES ('dojo $(cat /var/.dojo-hit)');\" && sqlite3 /home/agent/dojo.sqlite \"SELECT docs FROM torre_fts WHERE torre_fts MATCH 'dojo';\""
+  },
+  {
+    "id": "sql-l15",
+    "track": "sql",
+    "index": 15,
+    "title": "La transacción a prueba",
+    "subtitle": "BEGIN/COMMIT/ROLLBACK",
+    "xp": 80,
+    "difficulty": 5,
+    "brief": "El dótre del UPDATE peligroso: hágelo DENTRO de una transacción para poder ROLLBACK si te equivocas (atomía).",
+    "goal": "BEGIN TRANSACTION; DELETE plano; verificación de resultados (¿quedaron 3 filas?); COMMIT; y luego SELECT … la marca tras el commit en la fila restante.",
+    "keywords": [
+      "sql",
+      "transaction",
+      "begin",
+      "commit",
+      "rollback"
+    ],
+    "hints": [
+      "BEGIN; …COMMIT; haz TODAS las sentencias atómicas: si algo falla en el medio, ROLLBACK devuelto el estado inicial.",
+      "El DELETE dentro de BEGIN: DELETE FROM mudarm WHERE id=99; más luego el COMMIT.",
+      "sqlite3 db \"BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT; SELECT * FROM mudarm;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "BEGIN; … COMMIT;",
+        "desc": "grupo atómico de escrituras"
+      },
+      {
+        "cmd": "ROLLBACK;",
+        "desc": "deshacer desde el BEGIN"
+      }
+    ],
+    "teach": "BEGIN marca el inicio de la transacción; COMMIT la sella; ROLLBACK cipher DESHACE TODO desde el BEGIN. En SQLite cada escritura ES una transacción implícita y begin... toca UNA pattern de producción para «grabes todo O nada».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT; SELECT obj FROM mudarm WHERE id=1;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT; SELECT obj FROM mudarm WHERE id=1;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"BEGIN; DELETE FROM mudarm WHERE id=99; COMMIT; SELECT obj FROM mudarm WHERE id=1;\""
+  },
+  {
+    "id": "sql-l16",
+    "track": "sql",
+    "index": 16,
+    "title": "Boss SQL",
+    "subtitle": "JOIN + GROUP BY + HAVING + ORDER BY",
+    "xp": 170,
+    "difficulty": 5,
+    "brief": "El examen final de SQL: une AGENTES con MISIONES, AGRUPA por agente, MUESTRA el que más misiones cumplió y con estracto SELLO... la máxima graduación.",
+    "goal": "Con JOIN entre agentes y misiones por id: GROUP BY agente → contando misiones, el agente con MÁS (COUNT DESC LIMIT 1)... su columna sello DE agentes ES la marca final.",
+    "keywords": [
+      "boss",
+      "sql",
+      "join",
+      "group by",
+      "ord"
+    ],
+    "hints": [
+      "JOIN agentess a ON m.agente_id=a.id y GROUP BY a.id (o a.nombre).",
+      "ORDER BY COUNT(*) DESC LIMIT 1: solo el que más misiones (kaito, con 3).",
+      "sqlite3 db \"SELECT a.sello FROM agentess a JOIN misiones m ON m.agente_id=a.id GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1;\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1",
+        "desc": "TOP-1 por grupo"
+      },
+      {
+        "cmd": "JOIN + GROUP BY",
+        "desc": "tríada del reporting"
+      }
+    ],
+    "teach": "El boss mezcla TODO: un JOIN (una fila por combinación), GROUP BY (colapso por agente), los AGREGADOS (COUNT), el orden por agregado y LIMIT para el TOP-1. Con ese patrón escribes reportes y dashboards a la primera.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{…}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT a.sello FROM agentess a JOIN misiones m ON m.agente_id=a.id GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT a.sello FROM agentess a JOIN misiones m ON m.agente_id=a.id GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT a.sello FROM agentess a JOIN misiones m ON m.agente_id=a.id GROUP BY a.id ORDER BY COUNT(*) DESC LIMIT 1;\""
+  },
+  {
+    "id": "sql-l17",
+    "track": "sql",
+    "index": 17,
+    "title": "Sub consultas y sello",
+    "subtitle": "SELECT con IN (SELECT …)",
+    "xp": 95,
+    "difficulty": 4,
+    "brief": "La misión «fallo» embarca un agente: la marca viaja en su SELLO. La subconsulta con IN filtra en dos pasos sin JOIN explícito.",
+    "goal": "De agentess, imprime el SELLO (con la marca) de los agentes que TENGAN misión con tarea fallo (IN con SELECT interno).",
+    "keywords": [
+      "sql",
+      "subconsulta",
+      "in",
+      "select"
+    ],
+    "hints": [
+      "Subquery: SELECT con IN (SELECT agente_id FROM misiones WHERE …).",
+      "La tarea fallo pertenece al agente_id 2 — su sello es ORO.",
+      "Una línea: sqlite3 db \"SELECT …\" imprime la cadena."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "WHERE id IN (SELECT id FROM t)",
+        "desc": "subconsulta con IN"
+      },
+      {
+        "cmd": "WHERE id = (SELECT magic)",
+        "desc": "escalar: solo una fila"
+      }
+    ],
+    "teach": "IN (SELECT …) filtra con la lista de otra consulta: cuando buscas UNA familia (los agentes de la misión fallo), a veces un IN es MÁS claro que el JOIN explícito. Escalar (= (SELECT…)) trae 1 fila; IN trae MUCHAS.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones WHERE tarea='fallo');\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones WHERE tarea='fallo');",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones WHERE tarea='fallo');\""
+  },
+  {
+    "id": "sql-l18",
+    "track": "sql",
+    "index": 18,
+    "title": "CASE el sello cambia",
+    "subtitle": "CASE WHEN THEN ELSE END en SELECT",
+    "xp": 95,
+    "difficulty": 4,
+    "brief": "La DB tiene rangos: CASE transforma datos por reglas (ORO → elite, plata → soldado, resto → aprendiz) al vuelo. La marca viaja en el SELLO de sara: sácalo con un segundo SELECT.",
+    "goal": "Del agente sara: SELECT con CASE que lo clasifique (elite/soldado/aprendiz) y después SU SELLO crudo con otro SELECT (la marca viaja ahí).",
+    "keywords": [
+      "sql",
+      "case",
+      "when"
+    ],
+    "hints": [
+      "CASE WHEN cond THEN val [WHEN …] ELSE val END — la evaluación es secuencial.",
+      "El WHERE filtra a sara antes de evaluar el CASE.",
+      "El segundo SELECT (mismo WHERE) imprime su sello crudo: la marca del dojo."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "CASE WHEN x THEN a ELSE b END",
+        "desc": "transforma según condición"
+      },
+      {
+        "cmd": "SELECT CASE WHEN cnt>5 THEN 'alto'",
+        "desc": "agrega por valor"
+      }
+    ],
+    "teach": "CASE WHEN … THEN … [ELSE] END evalúa secuencialmente (la PRIMERA condición que dispara gana). CASE es el IF de SQL: en SELECT, ORDER BY o GROUP BY encienden reportes con categorías. El dato crudo sale con un segundo SELECT.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT CASE WHEN sello='ORO' THEN 'elite' WHEN sello='plata' THEN 'soldado' ELSE 'aprendiz' END FROM agentess WHERE nombre='sara';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT CASE WHEN sello='ORO' THEN 'elite' WHEN sello='plata' THEN 'soldado' ELSE 'aprendiz' END FROM agentess WHERE nombre='sara';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE nombre='sara';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT sello FROM agentess WHERE nombre='sara';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT CASE WHEN sello='ORO' THEN 'elite' WHEN sello='plata' THEN 'soldado' ELSE 'aprendiz' END FROM agentess WHERE nombre='sara';\" && sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE nombre='sara';\""
+  },
+  {
+    "id": "sql-l19",
+    "track": "sql",
+    "index": 19,
+    "title": "Grupos puntillosos",
+    "subtitle": "agrupar con GROUP BY + HAVING",
+    "xp": 100,
+    "difficulty": 4,
+    "brief": "El reporte misiones por agente: los que TENGAN 2 o más son los importantes. HAVING filtra por agregado; el SELLO de esos agentes se baja con una subconsulta IN.",
+    "goal": "Devuelve el SELLO (con la marca) de los agentes que tienen ≥ 2 misiones: GROUP BY + HAVING COUNT(*) >= 2 dentro de un IN, apoyado por la tabla agentess.",
+    "keywords": [
+      "sql",
+      "group by",
+      "having",
+      "count"
+    ],
+    "hints": [
+      "GROUP BY agrupa y HAVING es el WHERE del GRUPO (filtra por COUNT, SUM…).",
+      "El GROUP BY vive DENTRO de la subconsulta IN; el SELECT exterior baja el sello de agentess.",
+      "sqlite3 dojo.sqlite \"SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones GROUP BY agente_id HAVING COUNT(*) >= 2);\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "GROUP BY x HAVING COUNT > 1",
+        "desc": "filtrar por grupos"
+      },
+      {
+        "cmd": "ORDER BY cnt DESC LIMIT 3",
+        "desc": "top-3 por grupo"
+      }
+    ],
+    "teach": "WHERE filtra filas ANTES de agrupar; HAVING es el WHERE del GROUP BY (filtra por agregados). El patrón: GROUP BY + COUNT + HAVING dentro de una subconsulta IN para bajar datos de otra tabla. La herramienta de los reportes reales.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones GROUP BY agente_id HAVING COUNT(*) >= 2);\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones GROUP BY agente_id HAVING COUNT(*) >= 2);",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT sello FROM agentess WHERE id IN (SELECT agente_id FROM misiones GROUP BY agente_id HAVING COUNT(*) >= 2);\""
+  },
+  {
+    "id": "sql-l20",
+    "track": "sql",
+    "index": 20,
+    "title": "El sello se re-escribe",
+    "subtitle": "UPDATE … WHERE: corregir fila exacta",
+    "xp": 100,
+    "difficulty": 4,
+    "brief": "El agente 3 se grada: UPDATE su sello a ORO — CON WHERE (sin WHERE actualiza TODA la tabla, trágico).",
+    "goal": "UPDATE agentess: el agente con id=3 pasa a sello ORO (imprescindible WHERE). Después imprime nombre y sello de TODAS las filas para confirmar (la marca viaja en una de ellas).",
+    "keywords": [
+      "sql",
+      "update",
+      "where",
+      "dml"
+    ],
+    "hints": [
+      "UPDATE tabla SET col=valor WHERE id=3 — SIN WHERE CAMBIA TODA LA TABLA.",
+      "SET es la asignación; WHERE es el filtro de la fila (solo id=3).",
+      "El SELECT final (nombre, sello de TODAS las filas) confirma el resultado: ahí viaja la marca."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "UPDATE t SET v=1 WHERE id=3",
+        "desc": "UPDATE de una fila exacta"
+      },
+      {
+        "cmd": "BEGIN; UPDATE; COMMIT;",
+        "desc": "transacción + confirmar"
+      }
+    ],
+    "teach": "UPDATE es DML: sin WHERE REESCRIBE TODA LA TABLA (error clásico de bases de datos reales). La prática: UPDATE … WHERE + SELECT de confirmación. En producción se envuelven en transacciones (BEGIN … COMMIT).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"UPDATE agentess SET sello='ORO' WHERE id=3;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite UPDATE agentess SET sello='ORO' WHERE id=3;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT nombre, sello FROM agentess;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT nombre, sello FROM agentess;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"UPDATE agentess SET sello='ORO' WHERE id=3;\" && sqlite3 /home/agent/dojo.sqlite \"SELECT nombre, sello FROM agentess;\""
+  },
+  {
+    "id": "sql-l21",
+    "track": "sql",
+    "index": 21,
+    "title": "INSERT SELECT del sello",
+    "subtitle": "INSERT INTO tbl SELECT: copiar filas",
+    "xp": 105,
+    "difficulty": 4,
+    "brief": "La migración de los ORO: para CADA agente con sello ORO, inserta su fila en la tabla promot. INSERT … SELECT es el SELECT de DML.",
+    "goal": "INSERT INTO promot (id, nombre) SELECT id, nombre FROM agentess WHERE sello = ORO; y luego imprime TODAS las filas de promot (la marca viaja en un nombre).",
+    "keywords": [
+      "sql",
+      "insert",
+      "select",
+      "migración"
+    ],
+    "hints": [
+      "INSERT INTO target … SELECT … FROM source, sin VALUES (directo a la SELECT).",
+      "La tabla target debe tener las columnas IGUALES que la SELECT (id, nombre).",
+      "El SELECT final sobre promot muestra las filas migradas: ahí viaja la marca."
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "INSERT INTO t1 SELECT … FROM t2",
+        "desc": "INSERT desde SELECT (sin VALUES)"
+      },
+      {
+        "cmd": "SELECT COUNT(*) FROM t1",
+        "desc": "verificar filas añadidas"
+      }
+    ],
+    "teach": "INSERT … SELECT es la transferencia de FILAS: filtra la origen (WHERE), da forma a las columnas (SELECT col1, col2) e inserta en bloque. Para migraciones/copys es LA manera limpia (sin bucles, sin el API).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO promot (id, nombre) SELECT id, nombre FROM agentess WHERE sello='ORO';\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite INSERT INTO promot (id, nombre) SELECT id, nombre FROM agentess WHERE sello='ORO';",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT * FROM promot;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT * FROM promot;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"INSERT INTO promot (id, nombre) SELECT id, nombre FROM agentess WHERE sello='ORO';\" && sqlite3 /home/agent/dojo.sqlite \"SELECT * FROM promot;\""
+  },
+  {
+    "id": "sql-l22",
+    "track": "sql",
+    "index": 22,
+    "title": "Boss LEFT JOIN y NULLs",
+    "subtitle": "LEFT JOIN + IS NULL: anti-join defensivo",
+    "xp": 170,
+    "difficulty": 5,
+    "brief": "El cheque final: si un agente está CREADO pero NO tiene misiones, es un sospechoso vacío. LEFT JOIN + IS NULL los revela (y sus nombres esconden la marca).",
+    "goal": "De agentess: imprime nombre y sello (la marca viaja en el sello) de los agentes que NO tienen ninguna misión (LEFT JOIN misiones + IS NULL).",
+    "keywords": [
+      "sql",
+      "boss",
+      "left join",
+      "null"
+    ],
+    "hints": [
+      "LEFT JOIN conserva TODAS las del lado izquierdo: sin par, las columnas del lado derecho van NULL.",
+      "ON m.agente_id = a.id es la clave del join: WHERE m.agente_id IS NULL atrapa las NO-matched.",
+      "SELECT a.nombre, a.sello — el anti-join devuelve las filas huérfanas y SU sello.",
+      "SELECT a.nombre, a.sello FROM agentess a LEFT JOIN misiones m ON m.agente_id=a.id WHERE m.agente_id IS NULL;"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL",
+        "desc": "LEFT anti join"
+      },
+      {
+        "cmd": "COUNT(t2.id)",
+        "desc": "cuenta las filas del join (0 si vacío)"
+      }
+    ],
+    "teach": "LEFT JOIN produce filas sin par con columnas del lado derecho en NULL: la WHERE m.col IS NULL atrapa las SIN par (el «LEFT ANTI JOIN»). Es LA técnica de «¿quién no fue?, ¿qué no está asignado?»: la pregunta del debugging SQL real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{d3b09a4f7c2e1b8d6041a5f3}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT a.nombre, a.sello FROM agentess a LEFT JOIN misiones m ON m.agente_id = a.id WHERE m.agente_id IS NULL;\"",
+        "cmds": [
+          {
+            "cmd": "sqlite3",
+            "args": "/home/agent/dojo.sqlite SELECT a.nombre, a.sello FROM agentess a LEFT JOIN misiones m ON m.agente_id = a.id WHERE m.agente_id IS NULL;",
+            "why": "motor SQL embebido: abre/crea un fichero-bd y con -cmd o heredoc ejecuta SQL",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sqlite3 /home/agent/dojo.sqlite \"SELECT a.nombre, a.sello FROM agentess a LEFT JOIN misiones m ON m.agente_id = a.id WHERE m.agente_id IS NULL;\""
   }
 ];
-export const TRACK_ORDER = ["fundamentos","filtrado","busqueda","procesado","permisos","procesos","redes","archivos","scripting","forense","boss","grep","awk","grep-pro","awk-pro"];
+export const TRACK_ORDER = ["fundamentos","filtrado","busqueda","procesado","permisos","procesos","redes","archivos","scripting","forense","boss","grep","awk","grep-pro","awk-pro","sysadmin","dns","sql"];

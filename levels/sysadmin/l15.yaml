@@ -1,0 +1,70 @@
+id: sysadmin-l15
+track: sysadmin
+index: 15
+title: El espacio en disco
+subtitle: "df + du: medida del espacio"
+xp: 65
+difficulty: 3
+brief: "El espacio del CONTAINER se mide: df muestra las particiones y du el
+  PESO de un tree. La salida del free no es la misma que la del df (con esta
+  limp__)"
+goal: "Ejecuta: df -h; du -sh /home/agent; luego dojo-verificar2 diskspace."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /home/agent/big && echo 'x' > /home/agent/big/a && dd if=/dev/zero
+  of=/home/agent/big/b bs=1K count=256 2>/dev/null
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    diskspace) echo "✓ espacio medido"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: df -h; du -sh /home/agent; dojo-verificar2 diskspace
+hints:
+  - "df -h resume las particiones montadas: df /var/log muestra el uso de UNA
+    partición."
+  - du -sh /path resume el PESO de un árbol ( -s para el total, -h para formato
+    "legible").
+  - df -h; du -sh /home/agent; dojo-verificar2 diskspace
+teach: 'df (disk free) y du (disk usage) trabajan juntos: df mira el estado del
+  filesystem; du caza el árbol CONSUME. El du -sh PATH es el idiom universal
+  para "¿qué pesa esto?"'
+cheatsheet:
+  - cmd: df -h
+    desc: espacio por partición
+  - cmd: du -sh /path
+    desc: peso total de un árbol
+keywords:
+  - df
+  - du
+  - disco
+  - espacio
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      Filesystem … Used …
+      20K /home/agent/big
+      ✓ …
+      FLAG{…}

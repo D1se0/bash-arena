@@ -1,0 +1,48 @@
+id: sql-l5
+track: sql
+index: 5
+title: El recuento de la tribu
+subtitle: COUNT/GROUP BY/HAVING
+xp: 70
+difficulty: 4
+brief: El dojo quiere CUÁNTOS asistentes hubo por gremio. GROUP BY agrupa y los agregados
+  (COUNT, SUM...) resumen cada grupo. HAVING filtra después de agrupar.
+goal: "De tabla eventos: cuenta cuántos asistentes (personas) evento por gremio,
+  agrupando; la serie que da la marca: entre los grupos más grandes (4 personas) el nombre
+  del gremio ES la firma."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE eventos (id INTEGER PRIMARY KEY, gremio
+  TEXT, asistentes INT); INSERT INTO eventos VALUES
+  (1,'lint','3'),(2,'kendo','4'),(3,'dojusi','3'),(4,'kendo','$DOJO_FLAG');" && chmod 644
+  /home/agent/dojo.sqlite && chown agent:agent /home/agent/dojo.sqlite
+solution: sqlite3 /home/agent/dojo.sqlite "SELECT gremio, COUNT(*),
+  GROUP_CONCAT(asistentes, ' ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;"
+hints:
+  - GROUP BY gremio agrupa y COUNT(*) cuenta filas por gremio.
+  - "GROUP_CONCAT(asistentes) junta los valores del grupo: la marca arriba en el grupo de
+    kendo."
+  - sqlite3 /home/agent/dojo.sqlite "SELECT gremio, COUNT(*), GROUP_CONCAT(asistentes, '
+    ') FROM eventos GROUP BY gremio ORDER BY COUNT(*) DESC;"
+teach: "GROUP BY col: UNA fila de salida por grupo; otros cálculos aquí se CONSOLIDAN
+  (COUNT, SUM, AVG, MIN, MAX). HAVING filtra GRUPOS (WHERE filtra FILAS antes). Es el
+  triángulo de los reporting."
+cheatsheet:
+  - cmd: GROUP BY col
+    desc: agrupar y resumir
+  - cmd: HAVING COUNT(*)>N
+    desc: filtrar grupos
+  - cmd: COUNT(DISTINCT col)
+    desc: valores únicos por grupo
+keywords:
+  - sql
+  - group by
+  - having
+  - count
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: kendo|2 (fila extra con el FLAG en asistentes)

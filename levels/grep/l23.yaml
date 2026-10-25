@@ -1,0 +1,45 @@
+id: grep-l23
+track: grep
+index: 23
+title: El doble patrón -e
+subtitle: "grep -e A -e B: varios patrones en una pasada"
+xp: 70
+difficulty: 4
+brief: El registro recibe informes de los TURNOS diurnos (DIA) y nocturnos
+  (NOCHE). Ambos importan y la firma viaja con los nocturnos.
+goal: De turnos.log imprime las líneas que contengan NOCHE o DIA (dos patrones
+  en el MISMO grep con -e).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/turnos.log <<EOF
+  12:00 DIA: el memoranda se firmó a tiempo
+  23:30 NOCHE: $DOJO_FLAG
+  03:00 MADRUGADA: guardia de servicio solo
+  EOF
+  chown agent:agent /home/agent/turnos.log
+solution: grep -e 'NOCHE' -e 'DIA' /home/agent/turnos.log
+hints:
+  - -e patrón añade UN patrón más a la búsqueda; puedes poner varios en el mismo
+    comando.
+  - "La alternativa a -e -e es la alternancia -E: NOCHE|DIA. Ambas son válidas."
+  - grep -e 'NOCHE' -e 'DIA' /home/agent/turnos.log
+teach: "grep -e A -e B acepta varios patrones en una pasada, sin la -E. La
+  ventaja: cada patrón es un argumento limpio, sin regex anidadas que te
+  confundan."
+cheatsheet:
+  - cmd: grep -e a -e b f
+    desc: dos patrones, una pasada
+  - cmd: grep -E 'a|b' f
+    desc: idem con alternancia
+keywords:
+  - grep
+  - -e
+  - patrones
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      12:00 DIA…
+      23:30 NOCHE: FLAG{…}

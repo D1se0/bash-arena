@@ -1,0 +1,46 @@
+id: awk-l35
+track: awk
+index: 35
+title: Índice y lookup
+subtitle: "awk FILENAME: join inflexible de tablas"
+xp: 80
+difficulty: 4
+brief: "El registro de precios: precios en precios.txt, pedidos en pedidos.txt. AWK une por el valor
+  del índice con el FILENAME que dice DÓNDE estás."
+goal: De pedidos.txt + precios.txt imprime para CADA pedido su ARTÍCULO y su PRECIO (2 campos
+  separados por espacio).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 35" "Awk"
+  cat > /home/agent/precios.txt <<EOF
+  tornillo 12
+  EOF
+  cat > /home/agent/pedidos.txt <<EOF
+  tornillo 3 $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/pedidos.txt /home/agent/precios.txt
+solution: awk 'FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3}' /home/agent/pedidos.txt
+  /home/agent/precios.txt
+hints:
+  - "FILENAME es el fichero PROCESADO: la condición FILENAME ~ /precios/ filtra las líneas de
+    precios."
+  - En precios llenas p[$1]=$2; con next saltas; en pedidos imprimes pedido + precio con p[$1] (+
+    extra).
+  - awk 'FILENAME ~ /precios/ {p[$1]=$2; next} {print $1, p[$1], $3}' pedidos.txt precios.txt
+teach: "FILENAME selecciona líneas por fichero: el equivalente del join SQL: p[artículo]=precio +
+  print pedido, precio. Ventaja: FILENAME no depende del ORDEN de los ficheros (a diferencia de
+  FNR==NR)."
+cheatsheet:
+  - cmd: awk 'FILENAME ~ /a/ {…next} FILENAME ~ /b/ {…}' a b
+    desc: select por fichero
+  - cmd: awk 'FNR==NR {…}' a a2
+    desc: otro modo de join
+keywords:
+  - awk
+  - FILENAME
+  - join
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

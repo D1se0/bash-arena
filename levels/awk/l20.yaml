@@ -1,0 +1,53 @@
+id: awk-l20
+track: awk
+index: 20
+title: La lista blanca
+subtitle: "awk join NR==FNR: dos ficheros"
+xp: 80
+difficulty: 5
+brief: El sistema de vigilancia tiene una lista blanca de IPs y un log de
+  tráfico. La firma viaja con el tráfico DE la lista blanca.
+goal: De trafico.log imprime las líneas cuya primera columna aparece en
+  permitidas.dat (el patrón del join con NR==FNR).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/permitidas.dat <<EOF
+  10.20.30.40
+  192.168.5.11
+  EOF
+  cat > /home/agent/trafico.log <<EOF
+  10.20.30.40 cliente autorizado: $DOJO_FLAG
+  10.55.55.55 intruso claro
+  192.168.5.11 cliente autorizado también
+  8.8.8.8 tráfico externo
+  EOF
+  chown agent:agent /home/agent/permitidas.dat /home/agent/trafico.log
+solution: awk 'NR==FNR { lista[$1]; next } $1 in lista'
+  /home/agent/permitidas.dat /home/agent/trafico.log
+hints:
+  - "Al recibir DOS ficheros, NR cuenta global y FNR por fichero: NR==FNR es
+    TRUE solo en el PRIMERO."
+  - lista[$1] registra la línea como clave del arreglo; luego $1 in lista
+    consulta el arreglo
+  - awk 'NR==FNR { lista[$1]; next } $1 in lista' /home/agent/permitidas.dat
+    /home/agent/trafico.log
+teach: "NR==FNR {cargar; next} es EL join de awk: el primer fichero alimenta un
+  arreglo, el segundo se consulta contra él. Mantiene listas blancas/negras del
+  shell sin sort ni comm."
+cheatsheet:
+  - cmd: awk 'NR==FNR{a[$1];next} $1 in a' patrón datos
+    desc: join clásico
+  - cmd: awk 'NR==FNR{a[$1];next} !($1 in a)' patrón datos
+    desc: "el inverso: lo NO presente"
+keywords:
+  - awk
+  - NR
+  - FNR
+  - join
+  - lista
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: …las filas de trafico.log con IP blanca, con la flag

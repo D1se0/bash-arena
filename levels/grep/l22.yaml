@@ -1,0 +1,46 @@
+id: grep-l22
+track: grep
+index: 22
+title: La palabra entera
+subtitle: "grep -w: bordes de palabra"
+xp: 75
+difficulty: 5
+brief: 'El log de módulos tiene trampas de nombre: user2, myuser, usuarios… Solo
+  la PALABRA exacta "user" es la señal (y la firma del nivel va a su lado).'
+goal: De modululos.log imprime SOLAMENTE las líneas que contienen la PALABRA
+  COMPLETA user (no user2, no myuser).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/modululos.log <<EOF
+  user solvente, carga controlada con $DOJO_FLAG
+  user2 intentó autenticación fallida
+  myuser no tiene permisos
+  usuarios del grupo recargaron
+  EOF
+  chown agent:agent /home/agent/modululos.log
+solution: grep -w 'user' /home/agent/modululos.log
+hints:
+  - -w casa solo si el patrón es una PALABRA ENTERA, rodeada de bordes
+    (espacios, puntuación, inicio/fin).
+  - user2 y myuser NO casan con -w porque la letra pegada rompe la frontera de
+    palabra.
+  - grep -w 'user' /home/agent/modululos.log
+teach: 'grep -w es el filtro del "solo palabra completa": user ≠ user2.
+  Alternativa en regex extendida: \buser\b. Los falsos positivos por subcadenas
+  desaparecen con esta opción.'
+cheatsheet:
+  - cmd: grep -w palabra f
+    desc: palabra completa
+  - cmd: grep -E '\\buser\\b' f
+    desc: idem con fronteras a mano
+keywords:
+  - grep
+  - -w
+  - palabra
+  - bordes
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: user solvente, carga controlada con FLAG{…}

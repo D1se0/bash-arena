@@ -1,0 +1,58 @@
+id: dns-l4
+track: dns
+index: 4
+title: Lo que no existe
+subtitle: "dig y NXDOMAIN: interpretación del的状态"
+xp: 60
+difficulty: 3
+brief: "El DNS no solo devuelve datos: también dice cuando ALGO NO existe
+  (NXDOMAIN y auth=). Saber leer la sección STATUS es EMATAR al diagnóstico."
+goal: Consulta el TXT de a-nombre-que-NO-EXIXTE.dojo (verás el estado NXDOMAIN),
+  luego consulta el TXT de sec betrachtet.dojo (el ANSIKA has la firma).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --txt-record=secreto-dojo.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53535 fantasma.dojo TXT; dig +short TXT
+  secreto-dojo.dojo @127.0.0.1 -p 53535
+hints:
+  - "La NO-EXISTENCIA: el status section dice NXDOMAIN; el dominio fantasma.dojo
+    NO está en la zona."
+  - El dominio real (con la firma) es secreto-dojo.dojo (¡nofollows OJO al
+    nombre!).
+  - dig @127.0.0.1 -p 53535 fantasma.dojo TXT; dig +short TXT secreto-dojo.dojo
+    @127.0.0.1 -p 53535
+teach: 'La sección de ESTADO de dig (NXDOMAIN, NOERROR, SERVFAULT) es la más
+  importante al diagnosticar. La lectura de "status: status: NXDOMAIN" es la
+  señal clásica de un typo en el dominio.'
+cheatsheet:
+  - cmd: dig name TIPO
+    desc: el ESTADO responde en la sección
+  - cmd: dig +noall +comments
+    desc: solo la parte de estado
+keywords:
+  - dns
+  - dig
+  - NXDOMAIN
+  - estado
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      status: NXDOMAIN
+
+      FLAG{…}

@@ -1,0 +1,64 @@
+id: dns-l1
+track: dns
+index: 1
+title: La primera consulta
+subtitle: "dig: consulta A básica"
+xp: 55
+difficulty: 2
+brief: 'El dojo tiene un servidor DNS excluísta en 127.0.0.1:53535 (dnsmasq). La
+  PRIMERA consulta de cualquier sysadmin es simple: "¿qué símbolo tiene este
+  nombre?"'
+goal: 'Consulta el registro A del dominio app.dojo contra 127.0.0.1 -p 53535 y
+  "lee" la respuesta. Después, consulta TXT del dominio secreto.dojo (el mismo
+  servidor): ahí está la firma.'
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --address=/app.dojo/10.20.30.40 \
+    --txt-record=secreto.dojo,$DOJO_FLAG \
+    --txt-record=marcador.dojo,un-valor-de-relleno >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53535 app.dojo A; dig +short TXT secreto.dojo
+  @127.0.0.1 -p 53535
+hints:
+  - dig @servidor -p puerto nombre TIPO. Con @127.0.0.1 -p 53535 consultas a
+    este servidor local.
+  - "La primera parte: dig @127.0.0.1 -p 53535 app.dojo A (el ANSWER dice
+    10.20.30.40)."
+  - "La firma va en un registro TXT del dominio secreto.dojo: dig +short TXT
+    secreto.dojo @127.0.0.1 -p 53535."
+  - dig @127.0.0.1 -p 53535 app.dojo A; dig +short TXT secreto.dojo @127.0.0.1
+    -p 53535
+teach: "dig es EL cliente DNS de diagnóstico: @servidor consulta a UNA servidor
+  concreto y TIPO el tipo de registro (A, TXT, MX…). +short te lo mete en modo
+  uno por línea (y es perfecto para pipelines)."
+cheatsheet:
+  - cmd: dig @serv -p pu nombre TIPO
+    desc: consulta DNS a un servidor/puerto
+  - cmd: dig +short name tipo
+    desc: respuesta SOLO en texto delineado
+keywords:
+  - dns
+  - dig
+  - A
+  - TXT
+  - dnsmasq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      app.dojo. 0 IN A 10.20.30.40
+      FLAG{d3b09a4f7c2e1b8d6041a5f3}

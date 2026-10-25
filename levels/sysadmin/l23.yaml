@@ -1,0 +1,90 @@
+id: sysadmin-l23
+track: sysadmin
+index: 23
+title: El binario instalado
+subtitle: "binarios: install -m, which, file, chmod 0755"
+xp: 80
+difficulty: 4
+brief: "Tu script dojo-health nació 0644 (¡ni es ejecutable!) y debe convertirse en un comando real
+  de la PATH. Y tool-lame debe quedar ejecutable en tu HOME. BINARIOS: permisos + rutas +
+  which/file."
+goal: Instala dojo-health en /usr/local/bin con 0755 (sudo install -m 0755), deja ejecutable
+  tool-lame en tu HOME (chmod 0755) y confirma con which/file que EXISTEN y corren. cierra con
+  dojo-verificar binarios.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  cat > /home/agent/dojo-health <<'EOF'
+
+  #!/bin/bash
+
+  echo "cpu $(cut -d' ' -f1 /proc/loadavg)"
+
+  EOF
+
+  chmod 0644 /home/agent/dojo-health
+
+  cat > /home/agent/tool-lame <<'EOF'
+
+  #!/bin/bash
+
+  echo lame
+
+  EOF
+
+  chmod 0644 /home/agent/tool-lame
+
+  chown agent:agent /home/agent/dojo-health /home/agent/tool-lame
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    binarios)
+      [ -x /usr/local/bin/dojo-health ] || { echo "dojo-health no se ejecuta: faltan x bits"; exit 1; }
+      [ "$(stat -c %a /usr/local/bin/dojo-health)" = "755" ] || { echo "dojo-health debe ser 755"; exit 1; }
+      [ -x /home/agent/tool-lame ] || { echo "tool-lame no es ejecutable"; exit 1; }
+      /usr/local/bin/dojo-health >/dev/null || { echo "dojo-health falla al ejecutarse"; exit 1; }
+      echo "✓ directo binarios: binarios: install, which, file y chmod 0755"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: sudo install -m 0755 /home/agent/dojo-health /usr/local/bin/dojo-health && chmod 0755
+  /home/agent/tool-lame && which dojo-health >/dev/null && file /usr/local/bin/dojo-health
+  >/dev/null && /home/agent/tool-lame >/dev/null && /usr/local/bin/dojo-health >/dev/null &&
+  dojo-verificar binarios
+hints:
+  - "Un 0644 NO se ejecuta: falta el bit x. install -m 0755 src dst copia a /usr/local/bin y da los
+    permisos de golpe."
+  - which BINARIO localiza el comando en $PATH; file BINARIO dice el TIPO (ELF, shell script…).
+  - chmod 0755 sobre el fichero de tu HOME lo vuelve ejecutable sin moverlo.
+teach: "La línea entre «fichero» y «comando» son los bits x y el PATH: install -m 0755 copia a
+  /usr/local/bin con permisos de golpe. which localiza el comando en PATH; file identifica el TIPO
+  (ELF, script shell…). chmod 0755 es la alternativa sin mover el fichero."
+cheatsheet:
+  - cmd: install -m 0755 src /usr/local/bin/…
+    desc: instala binario con x bits
+  - cmd: which cmd && file cmd
+    desc: localiza en PATH e identifica
+keywords:
+  - chmod
+  - path
+  - binarios
+  - install
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

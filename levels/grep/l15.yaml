@@ -1,0 +1,47 @@
+id: grep-l15
+track: grep
+index: 15
+title: Lo que viene después
+subtitle: "grep -A: contexto posterior"
+xp: 70
+difficulty: 4
+brief: El log del análisis guarda la ALERTA y, en la línea SIGUIENTE, la causa
+  raíz. El diagnóstico vive en la línea de abajo.
+goal: De alerta.log imprime la línea que contiene ALERTA y, además, la línea
+  INMEDIATAMENTE POSTERIOR (1 línea de contexto posterior con -A).
+setup: |-
+  #!/bin/bash
+  set -e
+
+  cat > /home/agent/alerta.log <<EOF
+  recopilación de los datos del sondeo
+  ALERTA: checksum inválido en el nodo 3
+  causa raíz detectada: $DOJO_FLAG
+  la máquina vuelve a operar con normalidad
+  EOF
+  chown agent:agent /home/agent/alerta.log
+solution: grep -A 1 'ALERTA' /home/agent/alerta.log
+hints:
+  - -A N imprime cada match y las N líneas que le SIGUEN (A de after).
+  - "Aquí la flag no está en la línea del match, sino en la de abajo: por eso
+    piden contexto posterior."
+  - grep -A 1 'ALERTA' /home/agent/alerta.log
+teach: "grep -A N añade N líneas posteriores al match: el patrón clásico para
+  logs tipo detalle/causa, donde lo importante VA DESPUÉS del identificador del
+  evento."
+cheatsheet:
+  - cmd: grep -A 1 pat f
+    desc: match + 1 línea siguiente
+  - cmd: grep -B 2 pat f
+    desc: match + 2 líneas previas
+keywords:
+  - grep
+  - -A
+  - contexto
+  - after
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ALERTA: checksum inválido…
+      causa raíz detectada: FLAG{…}

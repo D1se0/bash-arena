@@ -1,0 +1,80 @@
+id: sysadmin-l5
+track: sysadmin
+index: 5
+title: La llave del dojo
+subtitle: "ssh-keygen: par de claves"
+xp: 70
+difficulty: 3
+brief: El agente NO tiene par de claves SSH. Se pide UNA ED25519 de tipo
+  estándar (sin passphrase) en ~/.ssh/id_ed25519.
+goal: Crea un par de claves SSH ED25519 SIN passphrase en
+  /home/agent/.ssh/id_ed25519 (con ssh-keygen -t ed25519 -N ""), y establece el
+  fichero al perms correctos. Luego dojo-verificar ssh-key.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  mkdir -p /home/agent/.ssh && chmod 0700 /home/agent/.ssh
+
+  chown -R agent:agent /home/agent/.ssh
+
+  rm -f /home/agent/.ssh/id_ed25519 /home/agent/.ssh/id_ed25519.pub
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    ssh-key)
+      [ -f $HOME/.ssh/id_ed25519 ] || { echo "falta la clave privada ~/.ssh/id_ed25519"; exit 1; }
+      [ -f $HOME/.ssh/id_ed25519.pub ] || { echo "falta la clave pública ~/.ssh/id_ed25519.pub"; exit 1; }
+      [ "$(stat -c '%a' $HOME/.ssh/id_ed25519)" = 600 ] || { echo "la clave privada debe tener perm 600"; exit 1; }
+      ssh-keygen -y -f $HOME/.ssh/id_ed25519 >/dev/null 2>&1 || { echo "la clave privada no es válida"; exit 1; }
+      echo "✓ par de claves ED25519 listo"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+
+  mkdir -p /home/agent/.ssh && chmod 0700 /home/agent/.ssh && chown -R
+  agent:agent /home/agent/.ssh
+solution: ssh-keygen -t ed25519 -N "" -f $HOME/.ssh/id_ed25519 -C "agent-dojo"
+  && chmod 600 $HOME/.ssh/id_ed25519 && dojo-verificar ssh-key
+hints:
+  - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 crea el par SIN passphrase.
+  - El fichero ~/.ssh/id_ed25519 (private) debe tener permisos 600; el .pub 644.
+  - ssh-keygen -t ed25519 -N "" -f $HOME/.ssh/id_ed25519 -C "agent-dojo" &&
+    chmod 600 $HOME/.ssh/id_ed25519 && dojo-verificar ssh-key
+teach: 'ssh-keygen es el OFICIO digital: -f path, -t algoritmo, -N passphrase
+  (-N "" para sin passphrase). Los permisos 600 de la clave privada son
+  OBLIGATORIOS: con 644 ssh la rechaza.'
+cheatsheet:
+  - cmd: ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
+    desc: par de claves sin passphrase
+  - cmd: chmod 600 ~/.ssh/id_ed25519
+    desc: permisos correctos de la clave privada
+keywords:
+  - ssh
+  - ssh-keygen
+  - ed25519
+  - claves
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ par de claves ED25519 listo
+      FLAG{…}

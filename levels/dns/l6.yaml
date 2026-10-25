@@ -1,0 +1,68 @@
+id: dns-l6
+track: dns
+index: 6
+title: El fichero de resolutores
+subtitle: /etc/resolv.conf + getent hosts
+xp: 70
+difficulty: 4
+brief: "Cuando un programa resuelve un nombre (getent, ssh, curl...) consulta el
+  PRIMER nameserver de /etc/resolv.conf. El setup ya arranca un dnsmasq en el
+  PUERTO 53 y apunta resolv.conf hacia él: tu máquina ahora tiene DNS local."
+goal: "Muestra cat /etc/resolv.conf (el nameserver configurado), resuelve el A
+  de app.dojo con getent hosts app.dojo (viaja por el resolver local) y trae el
+  TXT de app.dojo con dig +short TXT app.dojo (sin @: dig usa
+  /etc/resolv.conf)."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pgrep dnsmasq | xargs -r kill 2>/dev/null; set -e
+
+  dnsmasq --port=53 --no-hosts --no-resolv --bind-interfaces \
+    --address=/app.dojo/10.20.30.40 \
+    --address=/api.dojo/10.20.30.41 \
+    --txt-record=app.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+
+  printf '%s\n' '# nivel dns-l6: resolver local del dojo' 'nameserver 127.0.0.1'
+  > /etc/resolv.conf
+solution: cat /etc/resolv.conf; getent hosts app.dojo; dig +short TXT app.dojo
+hints:
+  - getent hosts app.dojo pregunta al nameserver de /etc/resolv.conf
+    (127.0.0.1:53) y devuelve la IP del ANSWER.
+  - "dig SIN @ consulta el mismo resolver: dig +short TXT app.dojo imprime la
+    firma."
+  - cat /etc/resolv.conf; getent hosts app.dojo; dig +short TXT app.dojo
+teach: "/etc/resolv.conf es el mapa de resolutores de tu máquina: SIN él, el
+  resolver no sabe a quién preguntar. getent hosts es la llamada C que hacen
+  curl/ssh/ping; dig sin @ usa el mismo fichero. Cambiar nameserver = cambiar
+  quién resuelve."
+cheatsheet:
+  - cmd: cat /etc/resolv.conf
+    desc: ver tus nameservers
+  - cmd: getent hosts dominio
+    desc: resolución vía nsswitch
+  - cmd: dig +short TXT dominio
+    desc: TXT vía el resolver por defecto
+keywords:
+  - dns
+  - resolv.conf
+  - getent
+  - dig
+  - resolver
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      nameserver 127.0.0.1
+      10.20.30.40    app.dojo
+      FLAG{…}

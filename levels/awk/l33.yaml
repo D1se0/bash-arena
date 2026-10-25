@@ -1,0 +1,49 @@
+id: awk-l33
+track: awk
+index: 33
+title: Menú del suma la pizarra
+subtitle: "awk arrays con clave: total por grupo y acceso directo"
+xp: 70
+difficulty: 4
+brief: "tickets.txt registra «usuario tickets nota». Suma tickets por usuario (array t) y acumula
+  SUS notas (array n): en END imprime el total y la nota de elka."
+goal: Suma los tickets por usuario (t[$1] += $2), acumula las notas en otro array (n[$1]) y en END
+  imprime el TOTAL de elka y SUS notas (dos líneas).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 33" "Awk"
+  cat > /home/agent/tickets.txt <<EOF
+  elka 2 nota:maniana
+  mira 3 nota:al ESPEJO
+  eka 9 nota:recuento
+  eka3 1 nota:eco
+  elka 7 nota:$DOJO_FLAG
+  sara 5 nota:sueño
+  mira 12 nota:madrugada
+  EOF
+  chown agent:agent /home/agent/tickets.txt
+solution: awk '{t[$1] += $2; n[$1] = n[$1] " " $3} END {print t["elka"]; print n["elka"]}'
+  /home/agent/tickets.txt
+hints:
+  - 'Dos arrays en paralelo: t suma el valor ($2) y n CONCATENA la nota ($3) con n[$1] = n[$1] " "
+    $3.'
+  - En END imprime el total (t["elka"]) y SU nota acumulada (n["elka"]) — dos print.
+  - awk '{t[$1]+=$2; n[$1]=n[$1] " " $3} END {print t["elka"]; print n["elka"]}'
+    /home/agent/tickets.txt
+teach: t[$1] += valor construye la tabla por clave; varios arrays (t, n) guardan distintas piezas
+  por USUARIO, con concatenación para notas. En END accedes a cualquier clave directo (t["elka"]).
+cheatsheet:
+  - cmd: awk '{t[$1] += $2} END {print t["x"]}'
+    desc: acumula por clave y lee un valor
+  - cmd: awk '{c[$1]++} END {print c["x"]}'
+    desc: contar apariciones de la clave
+keywords:
+  - awk
+  - array
+  - grupo
+  - total
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

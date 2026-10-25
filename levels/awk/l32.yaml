@@ -1,0 +1,39 @@
+id: awk-l32
+track: awk
+index: 32
+title: El ruido limpiado
+subtitle: "awk gsub(): sustitución global"
+xp: 65
+difficulty: 4
+brief: "El clima escupe ruidos «eco-N» por la línea: gsub() los barre TODOS y la marca queda limpia."
+goal: De ruido.txt limpia las líneas retirando CADA eco- (patrón eco-[0-9]) y después imprime el
+  resto (la marca visible al final).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 32" "Awk"
+  cat > /home/agent/ruido.txt <<EOF
+  eco-1 $DOJO_FLAG eco-2 señal
+  ruido final eco-3 limpio
+  EOF
+  chown agent:agent /home/agent/ruido.txt
+solution: awk '{gsub(/eco-[0-9]/, ""); print}' /home/agent/ruido.txt
+hints:
+  - gsub(/regex/, "reemplazo") sustituye TODAS las apariciones de la línea ($0).
+  - El gsub modifica $0 en el sitio y el {print} implícito re-escribe limpio.
+  - awk '{gsub(/eco-[0-9]/, ""); print}' /home/agent/ruido.txt
+teach: gsub(/regex/, texto) limpia en toda la línea (reemplazo global) y sub() cambia SOLO el
+  primero. La pareja es la base de la limpieza de logs al vuelo (quitar anexos, blancos, ts…).
+cheatsheet:
+  - cmd: gsub(/ruido/, "")
+    desc: elimina el patrón de la línea
+  - cmd: sub(/una/, "O", $1)
+    desc: sub() = una sola sustitución
+keywords:
+  - awk
+  - gsub
+  - limpiar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

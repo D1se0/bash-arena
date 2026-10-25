@@ -1,0 +1,62 @@
+id: dns-l9
+track: dns
+index: 9
+title: El registro del DNS forense
+subtitle: log de dnsmasq con los queries
+xp: 75
+difficulty: 4
+brief: El servidor del dojo LOGEA TODAS las queries. Hay UNA línea con la firma
+  del ataque en /var/log/dns-log-marca.log.
+goal: Lanzar UNA consulta por DNS hacia el servidor local (dig @… -p 53535
+  app.dojo) Y luego extraer del /var/log/dns-log-marca.log (con grep) la línea
+  que menciona app.dojo (la marcará la firma).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces --log-queries
+  --log-facility=/var/log/dns-log-marca.log \
+    --address=/app.dojo/10.20.30.40 \
+    --txt-record=app.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+
+  chmod 0664 /var/log/dns-log-marca.log 2>/dev/null || true
+solution: dig @127.0.0.1 -p 53535 app.dojo; dig @127.0.0.1 -p 53535 TXT app.dojo
+  +short; grep 'app.dojo' /var/log/dns-log-marca.log | head -n 6
+hints:
+  - "La consulta: dig @127.0.0.1 -p 53535 app.dojo. Después, grep app.dojo en el
+    log."
+  - "La firma viaja en un TXT: dig @127.0.0.1 -p 53535 TXT app.dojo +short la
+    imprime."
+  - dig @127.0.0.1 -p 53535 app.dojo; dig @127.0.0.1 -p 53535 TXT app.dojo
+    +short; grep 'app.dojo' /var/log/dns-log-marca.log | head -n 6
+teach: "dnsmasq --log-queries guarda TODAS las queries al log: es el modo de
+  AUDIT del DNS de una red pequeña. Al revisarlo, detectas dominios raros
+  exfiltrando datos por DNS (el clásico C2 de 101)."
+cheatsheet:
+  - cmd: dig @serv name
+    desc: hago la consulta que quedará en el log
+  - cmd: grep dominio /var/log/dns.log
+    desc: el query del log
+keywords:
+  - dns
+  - log
+  - dnsmasq
+  - forense
+  - audit
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: …[127.0.0.1] query[A] app.dojo from 127.0.0.1 (incluye la respuesta del
+      TXT con la flag)

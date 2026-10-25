@@ -1,0 +1,161 @@
+id: sysadmin-l28
+track: sysadmin
+index: 28
+title: La gran carrera de servicios
+subtitle: "boss: ssh + nginx + systemd + cron + binarios juntos"
+xp: 160
+difficulty: 5
+brief: "El boss de la configuración total: claves SSH + puerto, nginx (typo server_name + nginx -t),
+  systemd (WantedBy + enable), cron (línea + chmod) y un binario instalado en /usr/local/bin. TODO
+  junto, TODO validado."
+goal: Genera el par ed25519 (id_ed25519 en authorized_keys), arregla el server_name y que nginx -t
+  pase OK, añade Port 2200 / AllowUsers agent / MaxAuthTries 2 al dojo28.conf con sudo sshd -t OK,
+  deja boss.service enable (symlink en multi-user.target.wants), escribe el cron 5 4 * * * agent
+  /home/agent/backup.sh con chmod 644 y instala bin-fake como /usr/local/bin/dojo-boss-cmd con 0755.
+  cierra con dojo-verificar boss-servizi.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
+  mkdir -p /run/sshd /run/nginx /run/apache2 /var/dojo 2>/dev/null || true
+
+  mkdir -p /etc/ssh/sshd_config.d /etc/systemd/system /etc/systemd/system/multi-user.target.wants
+  /etc/cron.d
+
+  mkdir -p /home/agent/nginx/logs /home/agent/nginx/html /home/agent/nginx/tmp
+
+  mkdir -p /home/agent/nginx/tmp/body /home/agent/nginx/tmp/proxy /home/agent/nginx/tmp/fastcgi
+  /home/agent/nginx/tmp/uwsgi /home/agent/nginx/tmp/scgi
+
+  mkdir -p /home/agent/.ssh
+
+  printf '%s\n' '<h1>boss dojo</h1>' > /home/agent/nginx/html/index.html
+
+  cat > /home/agent/nginx/nginx.conf <<'EOF'
+
+  pid /home/agent/nginx/logs/nginx.pid;
+
+  worker_processes 1;
+
+  error_log /home/agent/nginx/logs/error.log;
+
+  events { worker_connections 64; }
+
+  http {
+    access_log /home/agent/nginx/logs/access.log;
+    client_body_temp_path /home/agent/nginx/tmp/body;
+    proxy_temp_path /home/agent/nginx/tmp/proxy;
+    fastcgi_temp_path /home/agent/nginx/tmp/fastcgi;
+    uwsgi_temp_path /home/agent/nginx/tmp/uwsgi;
+    scgi_temp_path /home/agent/nginx/tmp/scgi;
+    server {
+      listen 8081;
+      servr_name boss.local;
+      location / { root html; index index.html; }
+    }
+  }
+
+  EOF
+
+  printf '%s\n' '## boss sshd: Port 2200, AllowUsers agent, MaxAuthTries 2' >
+  /etc/ssh/sshd_config.d/dojo28.conf
+
+  printf '%s\n' 'UsePAM no' >> /etc/ssh/sshd_config.d/dojo28.conf
+
+  touch /home/agent/.ssh/authorized_keys && chmod 0600 /home/agent/.ssh/authorized_keys
+
+  cat > /etc/systemd/system/boss.service <<EOF
+
+  [Unit]
+
+  Description=dojo boss
+
+  [Service]
+
+  Type=simple
+
+  ExecStart=/bin/true
+
+  EOF
+
+  echo '# fichero cron vacío del boss' > /etc/cron.d/dojo-backup
+
+  cat > /home/agent/bin-fake <<'EOF'
+
+  #!/bin/bash
+
+  echo boss-cmd-ok
+
+  EOF
+
+  chmod 0644 /home/agent/bin-fake
+
+  chown -R agent:agent /home/agent/nginx /home/agent/.ssh /home/agent/bin-fake
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    boss-servizi)
+      [ -s /home/agent/.ssh/id_ed25519.pub ] || { echo "sin par de claves"; exit 1; }
+      grep -q "$(cut -d' ' -f2 /home/agent/.ssh/id_ed25519.pub 2>/dev/null)" /home/agent/.ssh/authorized_keys || { echo "falta la .pub en authorized_keys"; exit 1; }
+      ! grep -q 'servr_name' /home/agent/nginx/nginx.conf || { echo "queda el typo del server_name"; exit 1; }
+      nginx -t -c /home/agent/nginx/nginx.conf 2>&1 | grep -Eq 'syntax is ok|test is successful' || { echo "nginx -t falla"; exit 1; }
+      sudo sshd -t 2>&1 || { echo "sshd -t falla: el sshd config NI es válido"; exit 1; }
+      grep -Eq '^[[:space:]]*Port[[:space:]]+2200[[:space:]]*$' /etc/ssh/sshd_config.d/dojo28.conf || { echo "falta Port 2200"; exit 1; }
+      [ -e /etc/systemd/system/multi-user.target.wants/boss.service ] || { echo "boss.service no está enable"; exit 1; }
+      grep -q '^5 4 \* \* \* agent /home/agent/backup.sh$' /etc/cron.d/dojo-backup || { echo "cron del boss incorrecto"; exit 1; }
+      [ "$(stat -c %a /etc/cron.d/dojo-backup)" = "644" ] || { echo "cron dentro: chmod 644"; exit 1; }
+      [ -x /usr/local/bin/dojo-boss-cmd ] || { echo "el binario no se instaló con 0755"; exit 1; }
+      echo "✓ directo boss-servizi: boss de los servicios: ssh + nginx + systemd + cron + binarios"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: ssh-keygen -t ed25519 -N '' -f /home/agent/.ssh/id_ed25519 >/dev/null 2>&1 && cat
+  /home/agent/.ssh/id_ed25519.pub >> /home/agent/.ssh/authorized_keys && sed -i
+  's/servr_name/server_name/' /home/agent/nginx/nginx.conf && sudo bash -c 'printf "%s\n" "Port
+  2200" "AllowUsers agent" "MaxAuthTries 2" >> /etc/ssh/sshd_config.d/dojo28.conf && sshd -t' &&
+  printf '\n[Install]\nWantedBy=multi-user.target\n' | sudo tee -a /etc/systemd/system/boss.service
+  >/dev/null && sudo ln -sf /etc/systemd/system/boss.service
+  /etc/systemd/system/multi-user.target.wants/boss.service && printf '%s\n' '5 4 * * * agent
+  /home/agent/backup.sh' | sudo tee /etc/cron.d/dojo-backup >/dev/null && sudo chmod 644
+  /etc/cron.d/dojo-backup && sudo install -m 0755 /home/agent/bin-fake /usr/local/bin/dojo-boss-cmd
+  && nginx -t -c /home/agent/nginx/nginx.conf && [ -e
+  /etc/systemd/system/multi-user.target.wants/boss.service ] && [ -x /usr/local/bin/dojo-boss-cmd ]
+  && dojo-verificar boss-servizi
+hints:
+  - "La lista de entregables: id_ed25519 (+ .pub en authorized_keys), nginx -t OK (sin servr_name),
+    sshd -t OK con Port 2200, boss.service enable (symlink en multi-user.target.wants), línea cron 5
+    4 * * * agent con chmod 644 y binario /usr/local/bin/dojo-boss-cmd con 0755."
+  - Vas uniendo piezas con && (esta tras la otra) o ; (independiente).
+  - "El orden recomendado: ssh-keygen → authorized_keys → sed nginx → sshd config → systemd → cron →
+    install binario → validaciones → dojo-verificar."
+teach: "El boss pega TODO lo previo en un único entregable: SSH expón claves + puerto, nginx -t
+  valida el config, systemd enable crea el symlink, cron escribe su línea con sus permisos y el
+  binario se instala con install -m 0755 + validaciones. El check final del sysadmin de primer día."
+cheatsheet:
+  - cmd: nginx -t -c … && sudo sshd -t
+    desc: validar los configs antes de activar
+  - cmd: install -m 0755 + ln -sf (enable)
+    desc: instalación + enable
+keywords:
+  - boss
+  - sysadmin
+  - servicios
+  - ssh
+  - nginx
+  - systemd
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

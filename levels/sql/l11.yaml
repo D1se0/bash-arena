@@ -1,0 +1,51 @@
+id: sql-l11
+track: sql
+index: 11
+title: La espina del esqueleto
+subtitle: .schema y PRAGMA table_info
+xp: 70
+difficulty: 4
+brief: "ANTES de tocar, se DELUYE ES A FAZER: la estructura. .schema muestra los CREATE
+  TABLES y PRAGMA table_info(columns) las COLUMNAS con tipos."
+goal: "Sobre la tabla torre (ya existe): imprime su estructura con .schema torre (y
+  también PRAGMA table_info(torre);). La marca está en /var/.dojo-hit: cat para IMPRIMIR."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  printf '%s\\n' '$DOJO_FLAG' > /var/.dojo-hit && chmod 0644 /var/.dojo-hit
+
+  sqlite3 /home/agent/dojo.sqlite "CREATE TABLE torre (id INTEGER PRIMARY KEY NOT NULL,
+  planta TEXT NOT NULL DEFAULT 'vacia');" >/dev/null
+
+  true
+solution: printf '.schema torre\n.PRAGMA table_info(torre);\n' | sqlite3
+  /home/agent/dojo.sqlite; PRAGMA=$( ...) 2>/dev/null || true; sqlite3
+  /home/agent/dojo.sqlite "PRAGMA table_info(torre);"; cat /var/.dojo-hit
+hints:
+  - .schema torre imprime el CREATE TABLE de la tabla (es un punto-comando, NO SQL).
+  - PRAGMA table_info(torre) devuelve las columnas con tipo/pk (instrucción específica de
+    SQLite).
+  - sqlite3 db ".schema torre"; sqlite3 db "PRAGMA table_info(torre);"
+teach: Antes de escribir se aprende el ESQUELETO existente. .schema (dot-command del CLI)
+  y PRAGMA (función interna de SQLite) son los dos modos oficiales. PRAGMA table_info es
+  el que usan todos los exploradores DB.
+cheatsheet:
+  - cmd: .schema tabla
+    desc: el CREATE TABLE completo
+  - cmd: PRAGMA table_info(tabla);
+    desc: columnas con tipo y pk
+keywords:
+  - sql
+  - schema
+  - pragma
+  - columns
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      CREATE TABLE torre(id…)
+
+      0|id|INTEGER|0|…
+      FLAG{…}

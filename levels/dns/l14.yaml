@@ -1,0 +1,57 @@
+id: dns-l14
+track: dns
+index: 14
+title: El badén del resolver
+subtitle: "/etc/resolv.conf: nameserver y search"
+xp: 60
+difficulty: 3
+brief: "El fichero del resolver quedó VACÍO: sin nameserver ni search, getent no resuelve nada.
+  Rellena las dos directivas."
+goal: Reconstruye /etc/resolv.conf con nameserver 10.0.0.6 y search dojo.local (una línea por
+  directiva) y cierra con dojo-verificar dns-resolver.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 14" "DNS"
+
+  printf '%s\n' '# sin resolver aún' > /etc/resolv.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-resolver)
+      grep -Eq '^nameserver[[:space:]]+10\.0\.0\.6$' /etc/resolv.conf || { echo "falta nameserver 10.0.0.6"; exit 1; }
+      grep -Eq '^search[[:space:]]+dojo\.local$' /etc/resolv.conf || { echo "falta search dojo.local"; exit 1; }
+      echo "✓ directo dns-resolver: El badén del resolver"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: printf '%s\n' 'nameserver 10.0.0.6' 'search dojo.local' | sudo tee /etc/resolv.conf &&
+  dojo-verificar dns-resolver
+hints:
+  - resolv.conf declara nameserver IP (pueden haber varios en orden).
+  - search añade ese dominio cuando el nombre consultado es corto (no FQDN).
+  - "Una por línea: «nameserver …» en la 1.ª, «search …» en la 2.ª. sudo tee para escribir en
+    /etc/resolv.conf."
+teach: "/etc/resolv.conf es la CONFIG del resolver del sistema: nameserver IP (por orden de uso) y
+  search dominio (lo que se añade si el nombre no es FQDN). Es lo que getent, dig y casi todas las
+  herramientas consumen."
+cheatsheet:
+  - cmd: cat /etc/resolv.conf
+    desc: leer el resolver actual
+  - cmd: getent hosts google.com
+    desc: resolver FQDN vía libc
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

@@ -1,0 +1,73 @@
+id: sysadmin-l10
+track: sysadmin
+index: 10
+title: El usuario del sistema
+subtitle: useradd, usermod y /etc/passwd
+xp: 65
+difficulty: 3
+brief: "El dojo tiene un NUEVO LIMPIEZA (cuidados de casa) login: el usuario
+  instructor debe EXISTIR, con home y shell /bin/bash."
+goal: Crea el usuario instructor con home /home/instructor y shell /bin/bash
+  (sudo useradd -m -s /bin/bash instructor); luego dojo-verificar2 useradd.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  id instructor &>/dev/null && sudo userdel -r instructor 2>/dev/null || true
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    useradd)
+      id instructor &>/dev/null || { echo "el usuario instructor no existe"; exit 1; }
+      grep -E '^instructor:' /etc/passwd | grep -q /home/instructor || { echo "falta -m (home)"; exit 1; }
+      grep -E '^instructor:' /etc/passwd | grep -q '/bin/bash' || { echo "falta -s /bin/bash"; exit 1; }
+      echo "✓ usuario instructor listado"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: sudo useradd -m -s /bin/bash instructor && dojo-verificar2 useradd
+hints:
+  - useradd -m crea la HOME, -s asigna el shell.
+  - El verificador busca instructor en /etc/passwd CON /home/instructor y
+    /bin/bash.
+  - sudo useradd -m -s /bin/bash instructor && dojo-verificar2 useradd
+teach: "useradd -m -s maneja usuarios del sistema sin interacción (la
+  alternativa interactiva es adduser). /etc/passwd es la fuente de la verdad: el
+  final deler: la HOME en /home/NAME y el shell /bin/bash apuntados por la
+  fila."
+cheatsheet:
+  - cmd: sudo useradd -m -s /bin/bash nombre
+    desc: usuario con home y shell
+  - cmd: id nombre
+    desc: verificar que existe el usuario
+  - cmd: grep nombre /etc/passwd
+    desc: fila exacta del usuario
+keywords:
+  - useradd
+  - usuarios
+  - /bin/bash
+  - sysadmin
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      ✓ usuario instructor listo
+      FLAG{…}

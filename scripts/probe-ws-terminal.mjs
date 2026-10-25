@@ -7,6 +7,7 @@ import WebSocket from 'ws';
 
 const port = process.argv[2] || '18080';
 const typed = process.argv[3] || 'ls';
+const wantedLevel = process.argv[4] || '';
 const playerId = 'probe' + Math.random().toString(36).slice(2, 10);
 const log = [];
 let sawLevel, sawData = 0;
@@ -31,7 +32,7 @@ ws.on('message', (raw) => {
   let m; try { m = JSON.parse(String(raw)); } catch { /* mensaje corrupto: se ignora */ return; }
   if (m.type === 'welcome') {
     log.push('welcome ok');
-    ws.send(JSON.stringify({ type: 'start', payload: {} }));
+    ws.send(JSON.stringify({ type: 'start', payload: wantedLevel ? { levelId: wantedLevel } : {} }));
     return;
   }
   if (m.type === 'levelState') {

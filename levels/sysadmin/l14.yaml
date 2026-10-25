@@ -1,0 +1,65 @@
+id: sysadmin-l14
+track: sysadmin
+index: 14
+title: El paquete que falta
+subtitle: dpkg y comando which
+xp: 65
+difficulty: 3
+brief: "El usuario pregunta si una herramienta determinada INSTALADA es del
+  sistema: which entrega el binario y dpkg -S el paquete que lo trajo."
+goal: "Ejecuta: which curl; dpkg -S $(which curl) (el paquete Debian que instaló
+  el binario curl) y luego dojo-verificar2 package."
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar2 <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    package) echo "✓ herramientas de sistema CNAB"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar2
+solution: which curl; dpkg -S $(which curl); dojo-verificar2 package
+hints:
+  - which CMD imprime el PATH AL binario que se ejecutaría al poner CMD.
+  - dpkg -S /ruta/al/binario revela el PAQUETE npm propietario del fichero.
+  - which curl; dpkg -S $(which curl); dojo-verificar2 package
+teach: "which + dpkg -S es el (quién es este) paquete del binario. La cadena de
+  comandos $(...) alimenta dpkg -S con la RUTA que which descubrió: idiom de
+  shell puro."
+cheatsheet:
+  - cmd: which cmd
+    desc: ruta del binario
+  - cmd: dpkg -S /usr/bin/cmd
+    desc: a qué paquete pertenece
+keywords:
+  - dpkg
+  - which
+  - paquete
+  - binario
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: |-
+      /usr/bin/curl
+      curl: /usr/bin/curl
+      ✓ …
+      FLAG{…}

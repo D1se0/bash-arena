@@ -1,0 +1,58 @@
+id: dns-l18
+track: dns
+index: 18
+title: La pelea de la precedencia
+subtitle: "hosts > dns: nsswitch precedence test"
+xp: 75
+difficulty: 4
+brief: getent acepta el resolver EXTERIOR, pero localhost y el alias interno van por /etc/hosts.
+  Comprueba que la PRECEDENCIA respeta (files antes de dns).
+goal: Mete la mapping local en /etc/hosts (127.0.0.1 dojo.internal) y CAMBIA el orden de
+  /etc/nsswitch.conf a «files dns». Verifica con getent hosts y cierra con dojo-verificar
+  dns-gradation.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 18" "DNS"
+
+  printf '%s\n' 'hosts: dns files' > /etc/nsswitch.conf
+
+  printf '%s\n' '$DOJO_FLAG' > /var/.dojo-hit
+
+  chmod 0644 /var/.dojo-hit
+
+  cat > /usr/local/bin/dojo-verificar <<'CHECK'
+
+  #!/bin/bash
+
+  case "$1" in
+    dns-gradation)
+      grep -qE '^127\.0\.0\.1[[:space:]]+dojo\.internal$' /etc/hosts || { echo "mapping no está"; exit 1; }
+      grep -Eq '^hosts:[[:space:]]+files[[:space:]]+dns' /etc/nsswitch.conf || { echo "nsswitch no está files primero"; exit 1; }
+      echo "✓ directo dns-gradation: La pelea de la precedencia"; cat /var/.dojo-hit ;;
+  esac
+
+  CHECK
+
+  chmod 0755 /usr/local/bin/dojo-verificar
+solution: "printf '%s\\n' '127.0.0.1 dojo.internal' | sudo tee -a /etc/hosts && sudo sed -i
+  's/hosts: *dns *files/hosts: files dns/' /etc/nsswitch.conf && getent hosts dojo.internal &&
+  dojo-verificar dns-gradation"
+hints:
+  - En /etc/nsswitch.conf, la línea hosts define el ORDEN de resolución.
+  - files = los ficheros locales (hosts); dns = el resolver.
+  - "Con sudo sed -i de la línea hosts: first files, después dns (y sudo tee -a para el /etc/hosts)."
+teach: "/etc/nsswitch.conf hosts: files dns define la CADENA de resolución: 1) los ficheros locales
+  (/etc/hosts), 2) dns el resolver. Con files de primero, los nombres internos se resuelven SIN
+  tocar el DNS externo — el patrón de los sistemas reales."
+cheatsheet:
+  - cmd: cat /etc/nsswitch.conf
+    desc: leer el orden de resolución
+  - cmd: grep -n "dojo" /etc/hosts
+    desc: buscar mappings manual
+profile: sudo
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

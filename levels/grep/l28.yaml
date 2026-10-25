@@ -1,0 +1,54 @@
+id: grep-l28
+track: grep
+index: 28
+title: Sospechosos habituales
+subtitle: "grep -l y -L: nombres de ficheros"
+xp: 55
+difficulty: 3
+brief: "En carpeta/ hay varios informes. Solo uno recibió la marca leaked: localízalo con -l y
+  muestra SU línea (que lleva la marca)."
+goal: Imprime el NOMBRE del fichero de carpeta/ que contiene leaked (con grep -l) y a continuación
+  SU LÍNEA (grep). La línea lleva la marca del dojo.
+setup: >
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 28" "Grep"
+
+  mkdir -p /home/agent/carpeta
+
+  echo 'informe A: redacción final, sin anexos' > /home/agent/carpeta/informe-A.txt
+
+  echo 'informe B: corrección ortográfica revisada' > /home/agent/carpeta/informe-B.txt
+
+  echo 'informe C: leaked se detectó en el anexo dos: $DOJO_FLAG' >
+  /home/agent/carpeta/informe-C.txt
+
+  echo 'informe D: adjuntos reenviados al archivo' > /home/agent/carpeta/informe-D.txt
+
+  echo 'memorando: revisión de plantilla del mes' > /home/agent/carpeta/memo.txt
+
+  chown -R agent:agent /home/agent/carpeta
+solution: f=$(grep -rl 'leaked' /home/agent/carpeta); echo "$f"; grep 'leaked' "$f"
+hints:
+  - "-l imprime el NOMBRE DE FICHERO (una vez por fichero), no las líneas: guardalo en una variable."
+  - '"f=$(grep -rl …)" captura la ruta; luego grep patrón "$f" muestra la línea culpable (marca
+    incluida).'
+  - f=$(grep -rl 'leaked' carpeta); echo "$f"; grep 'leaked' "$f"
+teach: grep -l lista los ficheros que contienen el patrón (ideal para pipelines con xargs) y -L los
+  que NO lo contienen. La pareja l/L es el filtro de «en qué archivo está» para árboles grandes.
+cheatsheet:
+  - cmd: grep -rl p dir
+    desc: solo nombres de ficheros que casan
+  - cmd: grep -rL p dir
+    desc: ficheros SIN el patrón
+keywords:
+  - grep
+  - -l
+  - -L
+  - lista
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{d3b09a4f7c2e1b8d6041a5f3}

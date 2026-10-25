@@ -1,0 +1,51 @@
+id: dns-l7
+track: dns
+index: 7
+title: El selector de secciones
+subtitle: "dig +noall +answer: solo la respuesta"
+xp: 65
+difficulty: 3
+brief: "La salida dig es un DESPEJE (secciones: status, ANSWER, AUTHORITY). Con
+  +noall +answer solo la ANSWERSe JOINS."
+goal: Get the TXT of secreto.dojo (o el nombre del servidor DNS del dojo) con
+  +noall +answer (SOLO la sección ANSWER, SIN otras). El ANSWER lleva la firma.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  # prelude común de servicios del dojo
+
+  grep -q " $(hostname)" /etc/hosts 2>/dev/null || echo "127.0.0.1 $(hostname)"
+  >> /etc/hosts
+
+  mkdir -p /run/sshd /var/dojo 2>/dev/null || true
+
+
+  true; set +e; pkill -f 'dnsmasq.*53535' 2>/dev/null; set -e
+
+  dnsmasq --port=53535 --no-resolv --bind-interfaces \
+    --txt-record=secreto.dojo,$DOJO_FLAG >/dev/null 2>&1
+  sleep 1
+solution: dig @127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer
+hints:
+  - +noall apaga TODAS las secciones; +answer re-encierra SOLO la ANSWER.
+  - El TXT está en la primera +answer (con todo el resto encerrado).
+  - dig @127.0.0.1 -p 53535 TXT secreto.dojo +noall +answer
+teach: +noall +answer es LA forma de escribir la salida de dig en un modo limpio
+  una línea (scripts, monitors, completas). Cualquier señal "meanwhile"OA= quese
+  o se JOINS se ve de la sección pipe.
+cheatsheet:
+  - cmd: dig +noall +answer nombre tipo
+    desc: "clara: SOLO answer"
+  - cmd: dig +noall +stats
+    desc: solo el ESTADO (stats)
+keywords:
+  - dns
+  - dig
+  - noall
+  - answer
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: secreto.dojo. 0 IN TXT "FLAG{…}"
