@@ -346,7 +346,7 @@ function emit(track, items, startIndex) {
       difficulty: it.difficulty,
       brief: it.brief,
       goal: it.goal,
-      setup: `\#!/bin/bash\nset -e\n${it.setup}`,
+      setup: `#!/bin/bash\nset -e\n${it.setup}`,
       solution: it.solution,
       hints: it.hints,
       teach: it.teach,

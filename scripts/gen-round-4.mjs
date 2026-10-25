@@ -785,7 +785,7 @@ chown -R agent:agent ${HOME}/nginx`,
 SYS.push(svc(23, 'binarios', 'binarios: install, which, file y chmod 0755',
 `cat > ${HOME}/dojo-health <<'EOF'
 #!/bin/bash
-echo "cpu \$(cut -d' ' -f1 /proc/loadavg)"
+echo "cpu $(cut -d' ' -f1 /proc/loadavg)"
 EOF
 chmod 0644 ${HOME}/dojo-health
 cat > ${HOME}/tool-lame <<'EOF'

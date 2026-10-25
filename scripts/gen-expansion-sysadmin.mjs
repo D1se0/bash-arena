@@ -800,7 +800,7 @@ sleep 1`,
     hints: [
       'dig +short -x IP consulta el PTR (la respuesta es el NOMBRE propietario de esa IP).',
       'El nombre devuelto es el que lleva el TXT: guárdalo con $(dig +short -x …) y lanza el TXT.',
-      `nombre=\$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT \$nombre @127.0.0.1 -p 53535`,
+      `nombre=$(dig +short -x 10.20.30.40 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535`,
     ],
     teach: 'dig -x HOSTREV: consulta INVERSA de DNS; sirve para identificar a los hostnames de las máquinas que apuntan a la IP (son los famosos rDNS de producción). El patrón comandante: primer PTR, luego TXT/A del nombre que sale.',
     cheatsheet: [
@@ -1029,7 +1029,7 @@ sleep 1`,
     hints: [
       'El PTR está devolviendo dojo-boss. como nombre de la IP 10.20.30.44.',
       'El TXT de dojo-boss lleva la FIRMA (la TXT está en la cda de la cual del host-record).',
-      `nombre=\$(dig +short -x 10.20.30.44 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT \$nombre @127.0.0.1 -p 53535`,
+      `nombre=$(dig +short -x 10.20.30.44 @127.0.0.1 -p 53535 | grep -v '^$' | head -n 1); dig +short TXT $nombre @127.0.0.1 -p 53535`,
     ],
     teach: 'El boss final COMBINA: -x (reverso), TXT (la firma) y la cadena de comandos $(...). Es el flujo final del "WSI del dominio" que usan los sysadmins para rastrear una IP desconocida, con la metadata DNS que la dejamos en el TXT.',
     cheatsheet: [
