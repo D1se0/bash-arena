@@ -1,0 +1,58 @@
+id: grep-l61
+track: grep
+index: 61
+title: El sediento 101
+subtitle: -c por fichero + ranking + regreso
+xp: 60
+difficulty: 4
+brief: Tres logs de tentativas; en el que MÁS intentos hay… la marca también. El conteo
+  por fichero es la balanza.
+goal: 'Del directorio logs/ localiza el fichero con MÁS líneas "intento" (grep -c) y
+  muestra SU contenido completo: la marca viaja dentro.'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 61" "Grep"
+  mkdir -p /home/agent/logs
+  cat > /home/agent/logs/atras.log <<EOF
+  intento unico
+  fin del fichero
+  EOF
+  cat > /home/agent/logs/medio.log <<EOF
+  intento uno
+  intento dos
+  ctrilla y respiro
+  EOF
+  cat > /home/agent/logs/dominante.log <<EOF
+  intento uno
+  intento dos
+  intento tres
+  intento cuatro flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/logs/*.log
+solution: "f=$(grep -c 'intento' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut
+  -d: -f1); cat \"$f\""
+hints:
+  - '-c sobre GUIONES让我: salida formato "fichero:conteo" por fichero (grep ve cada fichero
+    por separado).'
+  - "sort -t: -k2 -nr ordvuespá排序 por el 2.º campo NUMÉRICO descendente; head -1 elige el
+    GANADOR."
+  - "cut -d: -f1 recupera el NOMBRE del fichero; cat lo muestra entero (la marca viaja
+    dentro)."
+  - "f=$(grep -c 'intento' logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1); cat
+    \"$f\""
+teach: "La trilogía grep -c → sort -k2 -nr | head → regreso con cut/cat es el ESCALADO del
+  conteo: de métrica a apuntar el fichero GANADOR. Escalable a directorios de decenas de
+  logs."
+cheatsheet:
+  - cmd: 'f=$(grep -c p dir/* | sort -t: -k2 -nr | head -1 | cut -d: -f1); cat "$f"'
+    desc: el fichero con MÁS coincidencias
+keywords:
+  - grep
+  - -c
+  - sort
+  - ranking
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

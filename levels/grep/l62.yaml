@@ -1,0 +1,43 @@
+id: grep-l62
+track: grep
+index: 62
+title: Bitácora cerrada
+subtitle: -E con anclas a ambos extremos
+xp: 60
+difficulty: 4
+brief: La bitácora mezcla formatos; una sesión válida EMPIEZA por hora (dígito) y TERMINA
+  en «cierre de sesión» literal. La marca viaja en una de esas filas.
+goal: De bitacora.log imprime SOLO las líneas que EMPIEZAN por dígitos y TERMINAN
+  exactamente con "cierre de sesión" (la marca viaja en una).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 62" "Grep"
+  cat > /home/agent/bitacora.log <<EOF
+  hora no válida
+  09:11 monitor establecio
+  09:21 transición flag=$DOJO_FLAG cierre de sesión
+  10:00 detecciones nemesis cierre de sesión revisada
+  10:11 hipotético completo cierre de sesión
+  EOF
+  chown agent:agent /home/agent/bitacora.log
+solution: grep -E '^[0-9]+.*cierre de sesión$' /home/agent/bitacora.log
+hints:
+  - "^ ancla el inicio de línea; $ ancla el FINAL: ambas a la vez = la línea EMPIEZA por
+    dígito y TERMINA en el texto dado."
+  - Grep normal no hace regex; para anclas + clases usa -E (ERE).
+  - grep -E '^[0-9]+.*cierre de sesión$' bitacora.log
+teach: "Las dos anclas juntas definen la RULE del registro completo: la fila entera como
+  formato. Es la base de la validación de SCHOEMA en logs por línea."
+cheatsheet:
+  - cmd: grep -E '^patrón.*cierre$' f
+    desc: anclas de inicio y fin
+keywords:
+  - grep
+  - -E
+  - anclas
+  - regex
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

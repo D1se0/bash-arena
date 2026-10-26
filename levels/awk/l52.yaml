@@ -1,0 +1,43 @@
+id: awk-l52
+track: awk
+index: 52
+title: El comité del cinco
+subtitle: "NF==5: filtro por Nº de campos"
+xp: 50
+difficulty: 2
+brief: El formulario solo es VÁLIDO si trae EXACTAMENTE 5 campos; las filas rotas se caen.
+  La marca viaja en una fila completa.
+goal: De formularios.txt imprime ÚNICAMENTE las filas con EXACTAMENTE 5 campos (la marca
+  viaja en una).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 52" "Awk"
+  cat > /home/agent/formularios.txt <<EOF
+  fila corta de tres
+  fila con cuatro campos
+  fila valida de cinco flag=$DOJO_FLAG
+  fila extra con seis campos aqui
+  EOF
+  chown agent:agent /home/agent/formularios.txt
+solution: awk 'NF == 5 {print}' /home/agent/formularios.txt
+hints:
+  - "NF (sin $) es el NÚMERO de campos de la fila actual: compárralo en el patrón."
+  - NF==5 filtra la fila «sana»; las rotas (4 o 6 campos) no pasan.
+  - awk 'NF == 5 {print}' formularios.txt
+teach: "El patrón NF condicional es la CARTA DE SALUD del registro: con NF-in/guard
+  detects rotas, truncadas y filas que sobran sin tocar el ELSE."
+cheatsheet:
+  - cmd: awk 'NF == 5 {print}' f
+    desc: filas con exactamente 5 campos
+  - cmd: awk 'NF < 3 {print}' f
+    desc: "filas rotas: menos de 3 campos"
+keywords:
+  - awk
+  - NF
+  - filtro
+  - campos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

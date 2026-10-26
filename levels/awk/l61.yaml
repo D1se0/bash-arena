@@ -1,0 +1,48 @@
+id: awk-l61
+track: awk
+index: 61
+title: El importe mínimo
+subtitle: mínimo dinámico con $0 capturado
+xp: 60
+difficulty: 4
+brief: Los importes llegan empidadados; el MÍNIMO es el cupón premiado. La marca viaja en
+  la FILA COMPLETA del menor (con su fecha y firma).
+goal: De importes.txt imprime la FILA COMPLETA cuyo 2.º campo (el importe) sea el MÍNIMO
+  de todos (la marca viaja en esa fila).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 61" "Awk"
+  cat > /home/agent/importes.txt <<EOF
+  mayo 420 ajuste
+  junio 310 ajuste
+  cupon 105 flag=$DOJO_FLAG
+  julio 220 ajuste
+  EOF
+  chown agent:agent /home/agent/importes.txt
+solution: awk 'BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print
+  ln }' /home/agent/importes.txt
+hints:
+  - m = 1e9 arranca el comparador por ARRIBA de todo importe razonable.
+  - $2 + 0 fuerza NUMÉRICO (evita la comparación de strings); al mejor, GUARDA $0
+    COMPLETO, no solo el número.
+  - "En END imprimes ln: la fila completa ganadora (ahí viaja la marca)."
+  - awk 'BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print ln }'
+    importes.txt
+teach: "Guardar $0 (la fila entera) en variable en vez de reconstruir $1..$NF deja una
+  capación limpia: max/min + devolución de la FILA. `1e9` es el techo inicial de los
+  imports de laboratorio."
+cheatsheet:
+  - cmd: awk 'BEGIN{m=1e9} {if ($2+0<m) {m=$2+0; ln=$0}} END{print ln}' f
+    desc: fila completa del EXTREMO
+  - cmd: awk 'BEGIN{m=-1e9} {if ($2+0>m) {m=$2+0; ln=$0}} END{print ln}' f
+    desc: idem para el MÁXIMO
+keywords:
+  - awk
+  - mínimo
+  - max
+  - fila
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

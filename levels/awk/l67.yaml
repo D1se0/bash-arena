@@ -1,0 +1,51 @@
+id: awk-l67
+track: awk
+index: 67
+title: "Little boss: el campeón por categoría"
+subtitle: array best[] con la FILA completa
+xp: 110
+difficulty: 5
+brief: Cada categoría del campeonato designa a SU fila ganadora (la de mayor puntaje, col
+  2). La marca viaja en la fila GANADORA de una categoría.
+goal: "De campeones.txt imprime, POR CATEGORÍA (1.a col), la FILA COMPLETA con el MAYOR
+  2.º campo: la marca viaja en una fila ganadora."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 67" "Awk"
+  cat > /home/agent/campeones.txt <<EOF
+  peso 90 juan estrella
+  peso 120 maria imperial
+  velocidad 340 luis normal
+  peso 100 sofia propia
+  velocidad 420 ana flash flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/campeones.txt
+solution: awk '!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for
+  (k in best) print best[k] }' /home/agent/campeones.txt
+hints:
+  - "Dos arrays en paralelo: mx[categoría] guarda la mejor PUNTUACIÓN; best[categoría]
+    guarda la FILA COMPLETA ($0) ganadora."
+  - La condición entra si la categoría es NUEVA (!($1 in mx)) o supera al actual.
+  - "En END recorres best[]: una fila ganadora por categoría (la marca viaja en una)."
+  - awk '!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for (k in
+    best) print best[k] }' campeones.txt
+teach: "El par mx/best es el patrón de RANKING bidimensional: máximo por clave sin sort,
+  conservando la evidencia (fila). Superset del max global de la ronda 5: aquí es 1
+  dominante POR GRUPO."
+cheatsheet:
+  - cmd: awk '!($1 in mx) || $2+0 > mx[$1] {mx[$1]=$2+0; best[$1]=$0} END {for (k in best)
+      print best[k]}' f
+    desc: fila campeona por categoría
+  - cmd: awk '{if ($2+0>mx[$1]) mx[$1]=$2+0} END {for (k in mx) print k, mx[k]}' f
+    desc: solo el máximo numérico por grupo
+keywords:
+  - awk
+  - boss
+  - max
+  - grupo
+  - ranking
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

@@ -1341,6 +1341,399 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "tac ~/guia.txt | rev"
   },
   {
+    "id": "fundamentos-l21",
+    "track": "fundamentos",
+    "index": 21,
+    "title": "El callejón de abajo",
+    "subtitle": "rutas relativas con cd",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El dojo guarda una nota en un anejo del árbol; llegar y leerla es todo cuanto se pide.",
+    "goal": "Entra en /home/agent/anejo/abajo con una sola cd (ruta relativa desde tu home) y lee nota.txt que hay dentro.",
+    "keywords": [
+      "cd",
+      "ruta",
+      "navegar"
+    ],
+    "hints": [
+      "Con ruta absoluta no fallas: cd /home/agent/anejo/abajo y desde ahí *nota.txt* ya es directa.",
+      "Si te pierdes, pwd dice dónde estás…",
+      "cd /home/agent/anejo/abajo && cat nota.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cd ruta",
+        "desc": "cambia de directorio"
+      },
+      {
+        "cmd": "cd -",
+        "desc": "vuelve al directorio anterior"
+      }
+    ],
+    "teach": "La navegación es el 80 % del trabajo diario: rutas absolutas (desde /) no fallan; relativas dependen de donde estés (cd - vuelve al anterior).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cd /home/agent/anejo/abajo",
+        "cmds": [
+          {
+            "cmd": "cd",
+            "args": "/home/agent/anejo/abajo",
+            "why": "comando interno del shell: cambia el directorio de trabajo actual; no es un binario, bash lo interpreta",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat nota.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "nota.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "cd /home/agent/anejo/abajo && cat nota.txt"
+  },
+  {
+    "id": "fundamentos-l22",
+    "track": "fundamentos",
+    "index": 22,
+    "title": "El expósito invisible",
+    "subtitle": "ls -A: ficheros ocultos",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "En la cueva hay un fichero oculto (empieza por punto); sin la opción adecuada, ls pasa de largo.",
+    "goal": "Lista TODO el contenido (incluidos ocultos) de /home/agent/cueva y LEE el fichero oculto que encuentres.",
+    "keywords": [
+      "ls",
+      "ocultos",
+      "dotfiles"
+    ],
+    "hints": [
+      "ls -A muestra los ficheros que empiezan por punto (sin . y ..)",
+      "El fichero se llama .oculto: léelo igual que cualquier otro, OJO al punto delante.",
+      "cat cueva/.oculto"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ls -A dir",
+        "desc": "lista incluyendo ocultos (sin . ni ..)"
+      },
+      {
+        "cmd": "ls -la dir",
+        "desc": "formato largo + ocultos"
+      }
+    ],
+    "teach": "Los dotfiles son configuración por excelencia (escondidos por defecto). ls -a incluye . y ..; ls -A muestra solo el contenido real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ls -A /home/agent/cueva",
+        "cmds": [
+          {
+            "cmd": "ls",
+            "args": "-A /home/agent/cueva",
+            "why": "lista el contenido de un directorio",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/cueva/.oculto",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/cueva/.oculto",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ls -A /home/agent/cueva && cat /home/agent/cueva/.oculto"
+  },
+  {
+    "id": "fundamentos-l23",
+    "track": "fundamentos",
+    "index": 23,
+    "title": "Variables del agente",
+    "subtitle": "source + variables",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El perfil del agente trae variables guardadas en un fichero; cargarlas y saludarlas trae la marca.",
+    "goal": "Carga el fichero perfil.sh con source y luego imprime el saludo con la variable $NOMBRE ya definida.",
+    "keywords": [
+      "source",
+      "variables",
+      "env"
+    ],
+    "hints": [
+      "source fichero (o . fichero) ejecuta el script EN TU SHELL: las variables quedan definidas.",
+      "Ojo: ejecutarlo con bash fichero NO sirve — las variables morirían al terminar el proceso hijo.",
+      "source perfil.sh && echo \"hola, $NOMBRE\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "source f.sh",
+        "desc": "carga variables/funciones en la shell actual"
+      },
+      {
+        "cmd": "bash f.sh",
+        "desc": "secto: proceso independiente (no exporta)"
+      }
+    ],
+    "teach": "source ejecuta en el proceso ACTUAL; bash fichero crea un proceso hijo (variables privadas). La diferencia decide si el estado queda en tu shell o se esfuma.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "source /home/agent/perfil.sh",
+        "cmds": [
+          {
+            "cmd": "source",
+            "args": "/home/agent/perfil.sh",
+            "why": "comando interno de bash: interpreta un script EN el shell actual (no en un hijo)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "echo \"hola, $NOMBRE\"",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "hola, $NOMBRE",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "source /home/agent/perfil.sh && echo \"hola, $NOMBRE\""
+  },
+  {
+    "id": "fundamentos-l24",
+    "track": "fundamentos",
+    "index": 24,
+    "title": "La pieza renombrada",
+    "subtitle": "mv: mover y renombrar",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El borrador final ya está listo: renómbralo a final.txt en el mismo paseo y luego léelo.",
+    "goal": "Renombra borrador.txt a final.txt (mv, sin mover de sitio) y comprueba su contenido.",
+    "keywords": [
+      "mv",
+      "renombrar"
+    ],
+    "hints": [
+      "mv origen destino mueve O renombra (rename si el origen y destino están en la misma ruta).",
+      "Después del mv el fichero original ya no existe.",
+      "mv borrador.txt final.txt && cat final.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "mv a b",
+        "desc": "renombra a b (o mueve a dir b)"
+      },
+      {
+        "cmd": "mv -i a b",
+        "desc": "pregunta antes de sobrescribir"
+      }
+    ],
+    "teach": "mv ES el mismo comando para mover y para renombrar: solo cambia si cambias de directorio. Ojo, no pregunta: sobrescribe destino sin drama.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "mv /home/agent/borrador.txt /home/agent/final.txt",
+        "cmds": [
+          {
+            "cmd": "mv",
+            "args": "/home/agent/borrador.txt /home/agent/final.txt",
+            "why": "mueve o renombra ficheros/directorios",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/final.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/final.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "mv /home/agent/borrador.txt /home/agent/final.txt && cat /home/agent/final.txt"
+  },
+  {
+    "id": "fundamentos-l25",
+    "track": "fundamentos",
+    "index": 25,
+    "title": "La obsesión del organizado",
+    "subtitle": "mkdir -p + cp",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Crea la Jerarquía archives/dia-2026 y copia alli la bitácora (ninguno debe quedarse atrás).",
+    "goal": "Crea por completo el directorio archives/dia-2026 si no existía y copia allí bitacora.txt; luego escanea el fichero copiado.",
+    "keywords": [
+      "mkdir",
+      "cp",
+      "árbol"
+    ],
+    "hints": [
+      "mkdir -p crea TODOS los niveles del árbol (padres incluidos) y no protesta si ya existe.",
+      "cp copia pero no borra el original: ambos ficheros quedan.",
+      "mkdir -p archives/dia-2026 && cp bitacora.txt archives/dia-2026/"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "mkdir -p a/b/c",
+        "desc": "crea el árbol completo de una vez"
+      },
+      {
+        "cmd": "cp f dir/",
+        "desc": "copia el fichero al directorio"
+      }
+    ],
+    "teach": "-p de mkdir evita la escalera de directorios a mano; cp conserva el original (a diferencia de mv).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "mkdir -p /home/agent/archives/dia-2026",
+        "cmds": [
+          {
+            "cmd": "mkdir",
+            "args": "-p /home/agent/archives/dia-2026",
+            "why": "crea directorios",
+            "flags": [
+              {
+                "flag": "-p",
+                "meaning": "crea los niveles intermedios que falten y no da error si ya existen"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cp /home/agent/bitacora.txt /home/agent/archives/dia-2026/",
+        "cmds": [
+          {
+            "cmd": "cp",
+            "args": "/home/agent/bitacora.txt /home/agent/archives/dia-2026/",
+            "why": "copia ficheros",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/archives/dia-2026/bitacora.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/archives/dia-2026/bitacora.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "mkdir -p /home/agent/archives/dia-2026 && cp /home/agent/bitacora.txt /home/agent/archives/dia-2026/ && cat /home/agent/archives/dia-2026/bitacora.txt"
+  },
+  {
+    "id": "fundamentos-l26",
+    "track": "fundamentos",
+    "index": 26,
+    "title": "El camino del binario",
+    "subtitle": "which + man-corta heredada",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Los binaries viven en PATH; descubre dónde vive grep y ficha el output en un fichero.",
+    "goal": "Averigua QUÉ BINARIO de grep usa el sistema (which) y escribe el contenido del fichero pista-which.txt que contiene el resultado confirmado.",
+    "keywords": [
+      "which",
+      "type",
+      "PATH"
+    ],
+    "hints": [
+      "which imprime la ruta absoluta del binario local en PATH (bash incorpora type -P).",
+      "El fichero pista-which.txt ya trae la verificación (aquí viaja la marca).",
+      "which grep && cat /home/agent/pista-which.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "which cmd",
+        "desc": "ruta del binario en PATH"
+      },
+      {
+        "cmd": "command -v cmd",
+        "desc": "idem interno de bash (más fiable en scripts)"
+      }
+    ],
+    "teach": "which localiza el BINARIO asignado a tu PATH (type/which/command -v equivalen en bash). Si hay collisiones, PATH decides el orden.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "type -P grep",
+        "cmds": [
+          {
+            "cmd": "type",
+            "args": "-P grep",
+            "why": "comando type — revisa «man type»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/pista-which.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/pista-which.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "type -P grep && cat /home/agent/pista-which.txt"
+  },
+  {
     "id": "filtrado-l1",
     "track": "filtrado",
     "index": 0,
@@ -2686,6 +3079,367 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "tail -n 3 ~/cancion.txt | head -n 1"
+  },
+  {
+    "id": "filtrado-l21",
+    "track": "filtrado",
+    "index": 21,
+    "title": "Las últimas noticias",
+    "subtitle": "tail -n: el final del log",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log crece por abajo; lo último es lo importante (y una línea final trae la marca).",
+    "goal": "Imprime las ÚLTIMAS 3 líneas de noticias.log con tail.",
+    "keywords": [
+      "tail",
+      "final"
+    ],
+    "hints": [
+      "tail imprime el FINAL del fichero; -n NUM limita a NUM líneas.",
+      "default son 10 líneas; con muchas menos, -n manda.",
+      "tail -n 3 noticias.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tail -n 5 f",
+        "desc": "últimas 5 líneas"
+      },
+      {
+        "cmd": "tail -f f",
+        "desc": "sigue el fichero en tiempo real"
+      }
+    ],
+    "teach": "tail -f sigue el fichero EN VIVO (el clásico de logs); tail -c NUM corta por bytes como head.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tail -n 3 /home/agent/noticias.log",
+        "cmds": [
+          {
+            "cmd": "tail",
+            "args": "-n 3 /home/agent/noticias.log",
+            "why": "imprime el final de un fichero/flujo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "cuántas líneas mostrar (-n 3 = las últimas 3)"
+              },
+              {
+                "flag": "-n 3",
+                "meaning": "la flag -n ANTES de un número fija el número (aquí: 3)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "tail -n 3 /home/agent/noticias.log"
+  },
+  {
+    "id": "filtrado-l22",
+    "track": "filtrado",
+    "index": 22,
+    "title": "Los dedos únicos",
+    "subtitle": "sort -u: dedup global",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El registro repite nombres sin control; el censo limpio exige ORDERARI y uniq.",
+    "goal": "De registro.txt imprime cada valor UNA sola vez ( SORT + uniq ) con la 1.er línea del resultado sobre la marca.",
+    "keywords": [
+      "sort",
+      "uniqs",
+      "orden"
+    ],
+    "hints": [
+      "sort -u ordena y descarta duplicados en un paso.",
+      "Equivalencia: sort f | uniq.",
+      "sort -u registro.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sort -u f",
+        "desc": "ordena y deduplica"
+      },
+      {
+        "cmd": "sort -nr f",
+        "desc": "numérico descendente"
+      }
+    ],
+    "teach": "sort -u es la versión integrada de sort | uniq: el dato sale limpio y en orden natural (con -n para números, -r para invertir).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sort -u /home/agent/registro.txt",
+        "cmds": [
+          {
+            "cmd": "sort",
+            "args": "-u /home/agent/registro.txt",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-u",
+                "meaning": "elimina duplicados tras ordenar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "sort -u /home/agent/registro.txt"
+  },
+  {
+    "id": "filtrado-l23",
+    "track": "filtrado",
+    "index": 23,
+    "title": "La columna consular",
+    "subtitle": "cut con delimitador custom",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El boletín separa campos por «|»; solo el 3.er campo (el estado) interesa… hay una fila con estado especial.",
+    "goal": "De boletin.txt imprime SOLO la columna del estado (3.º campo, separador «|»).",
+    "keywords": [
+      "cut",
+      "delimitador",
+      "columna"
+    ],
+    "hints": [
+      "cut -d DELIM -f N selecciona el N-ésimo campo con ese delimitador.",
+      "El delimitador «|» va entre comillas: sino, bash lo interpreta como pipe.",
+      "cut -d '|' -f3 boletin.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cut -d '|' -f3 f",
+        "desc": "3.er campo con pipe como delimitador"
+      },
+      {
+        "cmd": "cut -d ',' -f1-2 f",
+        "desc": "los dos primeros campos CSV"
+      }
+    ],
+    "teach": "cut -d f es el corte de columnas con delimiter configurable (ubernetes raros incluidos). Pairs bien con awk si necesitas lógica por campo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cut -d '|' -f3 /home/agent/boletin.txt",
+        "cmds": [
+          {
+            "cmd": "cut",
+            "args": "-d | -f3 /home/agent/boletin.txt",
+            "why": "corta columnas de texto por delimitador o por posición",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "carácter delimitador (con -f)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "números de campo a conservar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "cut -d '|' -f3 /home/agent/boletin.txt"
+  },
+  {
+    "id": "filtrado-l24",
+    "track": "filtrado",
+    "index": 24,
+    "title": "El contador de términos",
+    "subtitle": "wc -w y wc -c",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Los logs se miden por labor; necesitas las PALABRAS y los CARACTERES de la nota técnica.",
+    "goal": "Imprime las PALABRAS de notas.txt con wc -w y luego el CONTENIDO entero con cat (la marca viaja en el texto).",
+    "keywords": [
+      "wc",
+      "palabras"
+    ],
+    "hints": [
+      "wc hace líneas (-l), palabras (-w) y bytes (-c); el combo habitual es wc -l.",
+      "Solo las palabras no revelan el texto: cierra con cat notas.txt.",
+      "wc -w notas.txt; cat notas.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "wc -l f",
+        "desc": "líneas"
+      },
+      {
+        "cmd": "wc -w f",
+        "desc": "palabras"
+      },
+      {
+        "cmd": "wc -c f",
+        "desc": "bytes"
+      }
+    ],
+    "teach": "wc -w cuenta palabras separadas por whitespace (cualquiera); wc -m cuenta caracteres. wc SUMARIZA; cat MUESTRA — para leer la marca necesitas el texto completo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "wc -w /home/agent/notas.txt",
+        "cmds": [
+          {
+            "cmd": "wc",
+            "args": "-w /home/agent/notas.txt",
+            "why": "cuenta: sin opciones imprime líneas/palabras/bytes",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "sólo nº de palabras"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/notas.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/notas.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "wc -w /home/agent/notas.txt; cat /home/agent/notas.txt"
+  },
+  {
+    "id": "filtrado-l25",
+    "track": "filtrado",
+    "index": 25,
+    "title": "El eco invertido",
+    "subtitle": "tac: el cat al revés",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El poste del dojo enumera hacia abajo; pero el orden correcto es INVERSO para revisarlo último-primero.",
+    "goal": "Imprime poste.txt con las líneas en ORDEN INVERSO.",
+    "keywords": [
+      "tac",
+      "inverso"
+    ],
+    "hints": [
+      "tac imprime el fichero al revés (es cat invertido, une sus letras).",
+      "leed: la última línea sale arriba.",
+      "tac poste.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tac f",
+        "desc": "líneas en orden inverso"
+      },
+      {
+        "cmd": "rev f",
+        "desc": "invierte los caracteres de cada línea"
+      }
+    ],
+    "teach": "tac es barato y directo para último-primero (ideal revisar latest FIRST); a nivel de CARACTERES es rev.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tac /home/agent/poste.txt",
+        "cmds": [
+          {
+            "cmd": "tac",
+            "args": "/home/agent/poste.txt",
+            "why": "invierte el ORDEN de las líneas (cat al revés)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "tac /home/agent/poste.txt"
+  },
+  {
+    "id": "filtrado-l26",
+    "track": "filtrado",
+    "index": 26,
+    "title": "El rango de columnas",
+    "subtitle": "cut con rango -f2-4",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La cabecera lleva 5 columnas; el informe quiere las del MEDIO (2 a 4).",
+    "goal": "De cabecera.txt imprime los CAMPOS 2 a 4 (rango) con el delimitador que toque.",
+    "keywords": [
+      "cut",
+      "rango",
+      "campos"
+    ],
+    "hints": [
+      "cut -f 2-4 selecciona un RANGO (sintaxis 2-4); listas por comas también valen (2,3,4).",
+      "El delimitador de este fichero es el punto y coma.",
+      "cut -d ';' -f2-4 cabecera.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cut -d: -f2-4 f",
+        "desc": "campos 2 a 4"
+      },
+      {
+        "cmd": "cut -d: -f1,3 f",
+        "desc": "campos 1 y 3 (saltando el 2)"
+      }
+    ],
+    "teach": "El rango -f 2-4 (o lista 2,4) cubre cortes múltiples con delimiter; con espacios como delim es cut -d ' ' -f2-4.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cut -d ';' -f2-4 /home/agent/cabecera.txt",
+        "cmds": [
+          {
+            "cmd": "cut",
+            "args": "-d ; -f2-4 /home/agent/cabecera.txt",
+            "why": "corta columnas de texto por delimitador o por posición",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "carácter delimitador (con -f)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "números de campo a conservar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "cut -d ';' -f2-4 /home/agent/cabecera.txt"
   },
   {
     "id": "busqueda-l1",
@@ -4247,6 +5001,484 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "ls -t ~/colmena | head -n 1 | xargs -I{} cat ~/colmena/{}"
   },
   {
+    "id": "busqueda-l21",
+    "track": "busqueda",
+    "index": 21,
+    "title": "El hallazgo por nombre",
+    "subtitle": "find -name + -exec cat",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Un ticket perdido lleva la marca; find por nombre y leerlo en el mismo pasaje.",
+    "goal": "Busca en /home/agent los ficheros llamados ticket-*.txt y muestra su contenido (uno lo lleva).",
+    "keywords": [
+      "find",
+      "name",
+      "exec"
+    ],
+    "hints": [
+      "find RUTA -name 'glob' busca por nombre; pon el glob ENTRE COMILLAS.",
+      "-exec comando {} \\; ejecuta el comando con cada resultado en la posición de {}.",
+      "find /home/agent -name 'ticket-*.txt' -exec cat {} \\;"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "find . -name '*.txt'",
+        "desc": "todos los .txt"
+      },
+      {
+        "cmd": "find . -name '*.log' -exec cat {} \\;",
+        "desc": "encuentra y actúa"
+      }
+    ],
+    "teach": "-exec convierte a find en una cadena de acción: no solo encuentra, OPERA. El ; cierra el -exec (y \\; también lo escapa en un solo -exec por fichero).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "find /home/agent -name 'ticket-*.txt' -exec cat {} ;",
+        "cmds": [
+          {
+            "cmd": "find",
+            "args": "/home/agent -name ticket-*.txt -exec cat {} ;",
+            "why": "busca ficheros jerárquicamente por nombre, tamaño, tiempo o tipo",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "flag n del comando — revisa «man find»"
+              },
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man find»"
+              },
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man find»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "find /home/agent -name 'ticket-*.txt' -exec cat {} \\;"
+  },
+  {
+    "id": "busqueda-l22",
+    "track": "busqueda",
+    "index": 22,
+    "title": "Las jaulas vacías",
+    "subtitle": "find -type d y -empty",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El tree dejó directorios vacíos; el limpiador quiere la lista — contra el manifiesto del árbol, que lleva la marca.",
+    "goal": "Lista los directorios VACÍOS de /home/agent/arbol con find -type d -empty y luego cat /home/agent/arbol/manifiesto.txt (que lleva la marca).",
+    "keywords": [
+      "find",
+      "type",
+      "empty"
+    ],
+    "hints": [
+      "-type d filtra directorios (f fichero); -empty exige sin contenido.",
+      "El resultado imprime las RUTAS vacías.",
+      "find arbol -type d -empty"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "find . -type d -empty",
+        "desc": "directorios vacíos"
+      },
+      {
+        "cmd": "find . -type f -empty",
+        "desc": "ficheros de 0 bytes"
+      }
+    ],
+    "teach": "La pareja -type + -empty es el limpiador de árboles: encontrar candidatos a rmdir sin explorar a mano.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "find /home/agent/arbol -type d -empty",
+        "cmds": [
+          {
+            "cmd": "find",
+            "args": "/home/agent/arbol -type d -empty",
+            "why": "busca ficheros jerárquicamente por nombre, tamaño, tiempo o tipo",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man find»"
+              },
+              {
+                "flag": "-y",
+                "meaning": "flag y del comando — revisa «man find»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man find»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man find»"
+              },
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man find»"
+              },
+              {
+                "flag": "-y",
+                "meaning": "flag y del comando — revisa «man find»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/arbol/manifiesto.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/arbol/manifiesto.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "find /home/agent/arbol -type d -empty; cat /home/agent/arbol/manifiesto.txt"
+  },
+  {
+    "id": "busqueda-l23",
+    "track": "busqueda",
+    "index": 23,
+    "title": "Quién lleva la marca",
+    "subtitle": "grep -l: solo nombres de fichero",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El árbol tiene varios ficheros con texto; en uno, la marca. grep -l identifica al culpable y hacer la marca visible es cat.",
+    "goal": "En /home/agent/secreto localiza con grep -r -l los ficheros que contienen la cadena marca y MUESTRA SU CONTENIDO encadenando xargs cat.",
+    "keywords": [
+      "grep",
+      "-l",
+      "ficheros"
+    ],
+    "hints": [
+      "-l NO imprime líneas: imprime el NOMBRE de cada fichero que contiene al menos una coincidencia.",
+      "Con -r itera el árbol; con xargs cat conviertes esa lista de ficheros en su CONTENIDO.",
+      "grep -r -l 'marca' secreto | xargs cat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -rl 'x' dir",
+        "desc": "lista de ficheros del árbol que la contienen"
+      },
+      {
+        "cmd": "grep -L 'x' *.txt",
+        "desc": "los ficheros que NO la contienen"
+      }
+    ],
+    "teach": "grep -l pasa de resultados a ficheros: ideal para alimentar xargs y encadenar la limpieza solo en los ficheros culpables.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -rl 'marca' /home/agent/secreto | xargs cat",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-rl marca /home/agent/secreto",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "-l",
+                "meaning": "solo nombres de fichero con coincidencia"
+              }
+            ]
+          },
+          {
+            "cmd": "xargs",
+            "args": "cat",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -rl 'marca' /home/agent/secreto | xargs cat"
+  },
+  {
+    "id": "busqueda-l24",
+    "track": "busqueda",
+    "index": 24,
+    "title": "La fecha del delito",
+    "subtitle": "grep -oE con regex de fecha",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log de eventos lleva timestamps; solo el bloque 2026-10-25 trae la marca.",
+    "goal": "Imprime de eventos.log las líneas cuya fecha (formato AAAA-MM-DD al principio) sea 2026-10-25.",
+    "keywords": [
+      "grep",
+      "fecha",
+      "ancla",
+      "^"
+    ],
+    "hints": [
+      "Anclar al origen de línea es ^; el patrón de fecha es AAAA-MM-DD literal (guiones incluidos).",
+      "Con -E los anclajes y cuantificadores funcionan directos.",
+      "grep -E '^2026-10-25' eventos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '^AAAA-MM-DD' f",
+        "desc": "líneas que empiezan por esa fecha"
+      },
+      {
+        "cmd": "grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' f",
+        "desc": "cualquier fecha al inicio"
+      }
+    ],
+    "teach": "El ancla ^ convierte la fecha prefijo en criterio de línea; para patrones de fecha blancos añade [0-9]{4} etc.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E '^2026-10-25' /home/agent/eventos.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E ^2026-10-25 /home/agent/eventos.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '^2026-10-25' /home/agent/eventos.log"
+  },
+  {
+    "id": "busqueda-l25",
+    "track": "busqueda",
+    "index": 25,
+    "title": "El medidor de línea larga",
+    "subtitle": "awk NF — filas con pocas columnas",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El CSV tiene filas con deltaY columnas; las SINSULADAS (menos de 3) va a la papelera, las COMPLETAS valen gold.",
+    "goal": "De columnas.csv imprime las filas con EXACTAMENTE 3 campos (NF==3).",
+    "keywords": [
+      "awk",
+      "NF",
+      "campos"
+    ],
+    "hints": [
+      "NF es el número de CAMPOS de la fila actual: NF==3 filtra las completas.",
+      "La condición sin {print} imprime $0 (la línea entera).",
+      "awk -F',' 'NF==3' columnas.csv"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F, 'NF==3' f",
+        "desc": "solo filas con 3 campos"
+      },
+      {
+        "cmd": "awk -F, 'NF>3 {print NF}' f",
+        "desc": "las sobre-cargadas y su NF"
+      }
+    ],
+    "teach": "NF es la variable de sanity-check de CSVs: filtra filas incompletas al vuelo, sin wc ni miradas manuales.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F',' 'NF==3' /home/agent/columnas.csv",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F, NF==3 /home/agent/columnas.csv",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F',' 'NF==3' /home/agent/columnas.csv"
+  },
+  {
+    "id": "busqueda-l26",
+    "track": "busqueda",
+    "index": 26,
+    "title": "La casa del marcador",
+    "subtitle": "find -type f + grep pipeline",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Busca la única marca en el árbol con find + grep combinando la condición de nombre.",
+    "goal": "Encuentra en /home/agent/pasillos los ficheros .txt que contienen la cadena escondida (grep -l vía -exec) y MUESTRA SU CONTENIDO añadiendo xargs cat.",
+    "keywords": [
+      "find",
+      "grep",
+      "exec"
+    ],
+    "hints": [
+      "Encadena find (por nombre y tipo) con -exec grep: cada fichero leído individualmente.",
+      "grep -l imprime el NOMBRE del fichero; xargs cat convierte esa lista en su contenido.",
+      "find pasillos -type f -name '*.txt' -exec grep -l 'escondida' {} \\; | xargs cat"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "find . -name '*.txt' -exec grep -l 'x' {} \\;",
+        "desc": "find + grep por fichero"
+      },
+      {
+        "cmd": "grep -rl 'x' --include='*.txt' .",
+        "desc": "ídem en un solo comando"
+      }
+    ],
+    "teach": "find | xargs | grep es la cadena de casa: filtra candidatos por TIPO/NOMBRE y deja que grep decida por CONTENIDO. -exec es la versión más rápida para pocos ficheros.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "find /home/agent/pasillos -type f -name '*.txt' -exec grep -l 'escondida' {} ; | xargs cat",
+        "cmds": [
+          {
+            "cmd": "find",
+            "args": "/home/agent/pasillos -type f -name *.txt -exec grep -l escondida {} ;",
+            "why": "busca ficheros jerárquicamente por nombre, tamaño, tiempo o tipo",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man find»"
+              },
+              {
+                "flag": "-y",
+                "meaning": "flag y del comando — revisa «man find»"
+              },
+              {
+                "flag": "-p",
+                "meaning": "flag p del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-n",
+                "meaning": "flag n del comando — revisa «man find»"
+              },
+              {
+                "flag": "-a",
+                "meaning": "flag a del comando — revisa «man find»"
+              },
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man find»"
+              },
+              {
+                "flag": "-e",
+                "meaning": "flag e del comando — revisa «man find»"
+              },
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man find»"
+              },
+              {
+                "flag": "-l",
+                "meaning": "flag l del comando — revisa «man find»"
+              }
+            ]
+          },
+          {
+            "cmd": "xargs",
+            "args": "cat",
+            "why": "convertir la salida de un comando en ARGUMENTOS del siguiente (grep lista → rm borra cada uno)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "find /home/agent/pasillos -type f -name '*.txt' -exec grep -l 'escondida' {} \\; | xargs cat"
+  },
+  {
     "id": "procesado-l1",
     "track": "procesado",
     "index": 0,
@@ -5463,6 +6695,347 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "sed 's/(/{/g;s/)/}/g;s/-/_/g' ~/carta.txt"
+  },
+  {
+    "id": "procesado-l21",
+    "track": "procesado",
+    "index": 21,
+    "title": "El sed de sustitución",
+    "subtitle": "sed s/a/b/ con finales /g",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El mensaje cifró saltos de línea como token «FIN» dentro de una sola línea; python el sed lo devuelve al formato final.",
+    "goal": "De oculto.txt imprime todo el fichero con la palabra FIN cambiada por un SALTO DE LíNEA (s//) para revelar el mensaje (y la marca).",
+    "keywords": [
+      "sed",
+      "s///",
+      "g",
+      "salto"
+    ],
+    "hints": [
+      "El separador de sed es /; s/patrón/reemplazo/flags. Con g cambia TODAS las ocurrencias.",
+      "El reemplazo \\n inserta salto de línea (GNU sed). Ojo al espacio alrededor del FIN para no saltar a mitad de palabra.",
+      "sed 's/ FIN /\\n/g' oculto.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "sed 's/a/b/g' f",
+        "desc": "reemplaza TODAS las apariciones"
+      },
+      {
+        "cmd": "sed 's/SEP/\\n/g' f",
+        "desc": "reparte un token a líneas"
+      }
+    ],
+    "teach": "sed es el editor de flujo: s///g con \\n descompacta texto plano en líneas concretas. Para limpiar tokens invisibles, primero identifica el delimitador EXACTO (con espacios).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed 's/ FIN /\\n/g' /home/agent/oculto.txt",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "s/ FIN /\\n/g /home/agent/oculto.txt",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "sed 's/ FIN /\\n/g' /home/agent/oculto.txt"
+  },
+  {
+    "id": "procesado-l22",
+    "track": "procesado",
+    "index": 22,
+    "title": "El repartidor de colas",
+    "subtitle": "tee: salida y fichero a la vez",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El monitoreo necesita que la entrada pase A CONSOLA y TAMBIÉN al fichero hist.log, en el mismo paseo de pipeline.",
+    "goal": "Vuelca el contenido de entrada.txt por stdout y guárdalo A LA VEZ en hist.log con tee (cat | tee).",
+    "keywords": [
+      "tee",
+      "split",
+      "pipeline"
+    ],
+    "hints": [
+      "tee COPIA la entrada a stdout y a cada fichero argumento: pipea algo a tee fichero.",
+      "El «algo» es el contenido de entrada.txt: cat entrada.txt | tee hist.log.",
+      "cat entrada.txt | tee hist.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "cmd | tee fichero",
+        "desc": "consola + fichero simultáneo"
+      },
+      {
+        "cmd": "cmd | tee -a fichero",
+        "desc": "consola + APPEND al fichero"
+      }
+    ],
+    "teach": "tee es la bifurcación de flujo: consola + N ficheros en el mismo pipeline. Mejor pipe a tee que dos comandos secuentes para ver y guardar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cat /home/agent/entrada.txt | tee /home/agent/hist.log",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/entrada.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          },
+          {
+            "cmd": "tee",
+            "args": "/home/agent/hist.log",
+            "why": "divide el flujo: lo Guía TANTO a un fichero como a stdout (tubería en T)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "cat /home/agent/entrada.txt | tee /home/agent/hist.log"
+  },
+  {
+    "id": "procesado-l23",
+    "track": "procesado",
+    "index": 23,
+    "title": "El mínimo invisible",
+    "subtitle": "awk min con NR==1",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La lista de latencias ms: el evento más RAPIDO ήταν anomalía y lleva la marca.",
+    "goal": "De latencias.txt imprime SOLO la fila con el valor mínimo (de la 2.ª columna) sin cambiar la línea original.",
+    "keywords": [
+      "awk",
+      "min",
+      "END",
+      "una pasada"
+    ],
+    "hints": [
+      "Guarda el MINIMO en m; la línea ORIGINAL en l (así la fila entera sale al final).",
+      "NR==1 inicializa el primer valor como mínimo (correcto para la primera fila).",
+      "awk 'NR==1 || $2 < m {m=$2; l=$0} END {print l}' latencias.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR==1||$2<m{m=$2;l=$0}END{print l}' f",
+        "desc": "línea con el valor mínimo"
+      },
+      {
+        "cmd": "awk 'NR==1||$2>m{m=$2;l=$0}END{print l}' f",
+        "desc": "ídem con el máximo"
+      }
+    ],
+    "teach": "Los patrones awk de min/max guardan AMBAS piezas: el valor para comparar y la línea para imprimir en END. Sin sort, sin head: una sola pasada.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR==1 || $2 < m {m=$2; l=$0} END {print l}' /home/agent/latencias.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR==1 || $2 < m {m=$2; l=$0} END {print l} /home/agent/latencias.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR==1 || $2 < m {m=$2; l=$0} END {print l}' /home/agent/latencias.txt"
+  },
+  {
+    "id": "procesado-l24",
+    "track": "procesado",
+    "index": 24,
+    "title": "El primero que duele",
+    "subtitle": "awk exit al primer hit",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log de alarma tiene infinitas líneas de latencia; la ALARMA es la PRIMERA línea con el umbral pequeño y ahí viaja la marca.",
+    "goal": "De alarma.txt imprime la PRIMERA línea con valor en la 2.ª columna < 30 y TERMINA (sin seguir escaneando).",
+    "keywords": [
+      "awk",
+      "exit",
+      "break"
+    ],
+    "hints": [
+      "exit detiene el awk INMEDIATAMENTE (ni lee más líneas ni ejecuta END).",
+      "El criterio del umbral es solo el 2.º campo.",
+      "awk '{if ($2 < 30) {print; exit}}' alarma.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'cond {print; exit}' f",
+        "desc": "primera línea que cumple y para"
+      },
+      {
+        "cmd": "awk 'cond {print}' f",
+        "desc": "todas las que cumplan"
+      }
+    ],
+    "teach": "exit corta el flujo: es el «break» de awk. Para logs largos con una única alarma evita escanear (y emitir) el resto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{if ($2 < 30) {print; exit}}' /home/agent/alarma.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{if ($2 < 30) {print; exit}} /home/agent/alarma.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{if ($2 < 30) {print; exit}}' /home/agent/alarma.txt"
+  },
+  {
+    "id": "procesado-l25",
+    "track": "procesado",
+    "index": 25,
+    "title": "La contabilidad por grupos",
+    "subtitle": "awk sum con array asociativo",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El registro necesita el total AGRUPADO por usuario (la suma acumulada); el aval del total trae la marca.",
+    "goal": "De gasto.txt imprime para cada usuario la SUMA de sus gastos (formato «usuario SUMA», una línea por usuario) y luego cat /home/agent/aval.txt (la marca).",
+    "keywords": [
+      "awk",
+      "array",
+      "group by"
+    ],
+    "hints": [
+      "El array t[usuario] += cantidad acumula por GRUPO.",
+      "En END el for recorre las claves y imprime cada acumulado.",
+      "awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' gasto.txt; cat aval.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' f",
+        "desc": "suma agrupada por clave"
+      },
+      {
+        "cmd": "awk '{c[$1]++} END {for (u in c) print u, c[u]}' f",
+        "desc": "conteo de apariciones por clave"
+      }
+    ],
+    "teach": "El array asociativo es la base de todo grupo-by en awk: sumas, medias, dedup. El for de END recorre las claves que acumulaste.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' /home/agent/gasto.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{t[$1]+=$2} END {for (u in t) print u, t[u]} /home/agent/gasto.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/aval.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/aval.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' /home/agent/gasto.txt; cat /home/agent/aval.txt"
+  },
+  {
+    "id": "procesado-l26",
+    "track": "procesado",
+    "index": 26,
+    "title": "El traductor de tab",
+    "subtitle": "awk con FS de tabulador",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El fichero usa TABULADORES como separador (poco común); awk tiene su -F \"\\t\" para eso.",
+    "goal": "De tabulado.tsv imprime el 2.º campo de cada línea, con el tabulador como separador de campo.",
+    "keywords": [
+      "awk",
+      "FS",
+      "tsv",
+      "tabulador"
+    ],
+    "hints": [
+      "El separador de TSV es el tabulador: -F'\t' lo asigna (no el espacio default).",
+      "$2 es el segundo campo (el valor real de la fila).",
+      "awk -F'\t' '{print $2}' tabulado.tsv"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F'\t' '{print $2}' f",
+        "desc": "con tabulador como separador"
+      },
+      {
+        "cmd": "awk 'BEGIN{FS=OFS=\"\t\"} {print $1,$3}' f",
+        "desc": "mantener salida también en tabs"
+      }
+    ],
+    "teach": "Con FS por defecto (espacios/tab mezclados), awk cierra tabuladores; cuando el FS ES tab y hay espacios dentro del dato, hay que fijarlo explícito.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F'\\t' '{print $2}' /home/agent/tabulado.tsv",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F\\t {print $2} /home/agent/tabulado.tsv",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              },
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man awk»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F'\\t' '{print $2}' /home/agent/tabulado.tsv"
   },
   {
     "id": "permisos-l1",
@@ -6884,6 +8457,395 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "ls -l ~/cueva/maletin.txt && sudo chown agent ~/cueva/maletin.txt && cat ~/cueva/maletin.txt"
+  },
+  {
+    "id": "permisos-l21",
+    "track": "permisos",
+    "index": 21,
+    "title": "El permiso para ejecutarse",
+    "subtitle": "chmod u+x y correr",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La herramienta viene SIN permiso de ejecución (x); primero se lo concederás y luego la lanzarás.",
+    "goal": "Añade permiso de ejecución al dueño de herramienta.sh y después Ejecuta el script (imprime la marca).",
+    "keywords": [
+      "chmod",
+      "u+x",
+      "script"
+    ],
+    "hints": [
+      "chmod u+x anexe el bit de ejecución (x) al dueño (u).",
+      "Sin ese bit, ./script protesta con «Permission denied».",
+      "chmod u+x herramienta.sh && ./herramienta.sh"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "chmod u+x f",
+        "desc": "permite ejecutar al dueño"
+      },
+      {
+        "cmd": "chmod a+x f",
+        "desc": "todos los usuarios (a)"
+      }
+    ],
+    "teach": "El bit x es la llave de arranque de todo script; chmod u+x es la modalidad AGREGAR al dueño (octal exageraba permisos de lectura/escritura si no cuidado).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "chmod u+x /home/agent/herramienta.sh",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "u+x /home/agent/herramienta.sh",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "/home/agent/herramienta.sh",
+        "cmds": [
+          {
+            "cmd": "/home/agent/herramienta.sh",
+            "args": "",
+            "why": "comando /home/agent/herramienta.sh — revisa «man /home/agent/herramienta.sh»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "chmod u+x /home/agent/herramienta.sh && /home/agent/herramienta.sh"
+  },
+  {
+    "id": "permisos-l22",
+    "track": "permisos",
+    "index": 22,
+    "title": "El cofre del grupo",
+    "subtitle": "chmod octal preciso",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "A digitaliza: rw para el dueño, r para el grupo, NADA para otros. Y luego se cattea el contenido (protegido no es nada).",
+    "goal": "Pon al fichero cofre.txt EXACTAMENTE los permisos rw-r----- (640) y luego lee su contenido (agente es el dueño).",
+    "keywords": [
+      "chmod",
+      "octal",
+      "640"
+    ],
+    "hints": [
+      "El octal 640 es r=4+w=2=6 para dueño, r=4 para grupo, 0 (nada) para otros.",
+      "Orden: chmod en octal SIEMPRE de exacto (sustituye, no añade).",
+      "chmod 640 cofre.txt && cat cofre.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "chmod 640 f",
+        "desc": "rw-r----- dueño, grupo lea"
+      },
+      {
+        "cmd": "chmod u=rw,g=r,o= f",
+        "desc": "ídem con formato simbólico exacto"
+      }
+    ],
+    "teach": "El octal reemplaza sin drama: u=rwx g=rx o= nada — 750. Formato simbólico exacto con = (u=rw,g=r,o=) para asignar precisión.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "chmod 640 /home/agent/cofre.txt",
+        "cmds": [
+          {
+            "cmd": "chmod",
+            "args": "640 /home/agent/cofre.txt",
+            "why": "cambia los permisos de un fichero (mod declarativo u=propietario g=grupo o=otros, octal 644 = rw-r--r--)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/cofre.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/cofre.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "chmod 640 /home/agent/cofre.txt && cat /home/agent/cofre.txt"
+  },
+  {
+    "id": "permisos-l23",
+    "track": "permisos",
+    "index": 23,
+    "title": "El grupo correcto",
+    "subtitle": "chgrp y verificación con ls -l",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El fichero debe pertenecer al grupo dojo (el agente no tiene chown pero sí chgrp si es suyo y del grupo).",
+    "goal": "Cambia el GRUPO de audit.txt a dojo (chgrp) y luego imprime los permisos+dueño para verificarse (agente no puede cambiar el dueño sin sudo, pero SÍ el grupo si es miembro).",
+    "keywords": [
+      "chgrp",
+      "grupo",
+      "stat"
+    ],
+    "hints": [
+      "ls -l imprime dueño:grupo y permisos en la 1.ª línea por fichero.",
+      "Si el grupo ya es dojo, la verificación se queda en ls (y el contenido lleva la marca).",
+      "ls -l audit.txt && cat audit.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "chgrp grupo f",
+        "desc": "cambia el grupo (dueño lo puede si es miembro)"
+      },
+      {
+        "cmd": "stat -c %G f",
+        "desc": "imprime solo el grupo actual"
+      }
+    ],
+    "teach": "El dueño puede cambiar GRUPO del fichero a cualquier grupo al que pertenezca (sin sudo). chown -R para árboles; chgrp solo toca grupo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ls -l /home/agent/audit.txt",
+        "cmds": [
+          {
+            "cmd": "ls",
+            "args": "-l /home/agent/audit.txt",
+            "why": "lista el contenido de un directorio",
+            "flags": [
+              {
+                "flag": "-l",
+                "meaning": "formato largo (permisos, dueño, tamaño, fecha)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/audit.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/audit.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ls -l /home/agent/audit.txt && cat /home/agent/audit.txt"
+  },
+  {
+    "id": "permisos-l24",
+    "track": "permisos",
+    "index": 24,
+    "title": "La umbral de recién creado",
+    "subtitle": "umask: la máscara del cero",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El cero inicial del sistema determina los permisos al crear ficheros; hay que CONSULTAR umask y apuntar la marca.",
+    "goal": "Muestra el umask ACTUAL de tu shell (comando umask) y luego cat nota-umask.txt que relaciona ese valor con la marca.",
+    "keywords": [
+      "umask",
+      "creación"
+    ],
+    "hints": [
+      "umask sin argumentos IMPRIME el valor actual (cifar nxxx).",
+      "La marca viaja en el fichero nota-umask; léelo con cat después de mostrar el umask.",
+      "umask; cat /home/agent/nota-umask.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "umask",
+        "desc": "imprime la máscara actual"
+      },
+      {
+        "cmd": "umask 022",
+        "desc": "fija una máscara (no persiste solo en tu shell)"
+      }
+    ],
+    "teach": "umask SUBSTRAE permisos al crear ficheros: 022 al 666 da 644 para ficheros (y 755 para directorios dibujados con 777).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "umask | tee /home/agent/rez.txt >/dev/null",
+        "cmds": [
+          {
+            "cmd": "umask",
+            "args": "",
+            "why": "comando umask — revisa «man umask»",
+            "flags": []
+          },
+          {
+            "cmd": "tee",
+            "args": "/home/agent/rez.txt >/dev/null",
+            "why": "divide el flujo: lo Guía TANTO a un fichero como a stdout (tubería en T)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/nota-umask.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/nota-umask.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "umask | tee /home/agent/rez.txt >/dev/null; cat /home/agent/nota-umask.txt"
+  },
+  {
+    "id": "permisos-l25",
+    "track": "permisos",
+    "index": 25,
+    "title": "El viajo del sudoers",
+    "subtitle": "sudo NO disponible en sandbox — sudoers audit",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "En la sala por defecto el agente NO tiene sudo (el perfil sudo lo habilita); aquí se audita el fichero de ejemplo y se confirma el permiso con la marca.",
+    "goal": "Imprime las líneas del fichero sudoers-demo.conf que mencionan NOPASSWD y cat del fichero que confirma el permiso real (con la marca).",
+    "keywords": [
+      "sudoers",
+      "NOPASSWD",
+      "sudo"
+    ],
+    "hints": [
+      "grep NOPASSWD sudoers-demo.conf filtra las reglas sin contraseña.",
+      "La marca viaja en el fichero permiso-real: cat para verla.",
+      "grep NOPASSWD sudoers-demo.conf && cat permiso-real.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "visudo",
+        "desc": "edita /etc/sudoers con validación"
+      },
+      {
+        "cmd": "sudo -l",
+        "desc": "lista tus permisos sudo actuales"
+      }
+    ],
+    "teach": "El sudoers real vive en /etc/sudoers: NUNCA lo edites sin visudo. En este track se estudia un fichero de ejemplo (la sala no da sudo real por defecto: perfil sudo lo habilita).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'NOPASSWD' /home/agent/sudoers-demo.conf",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "NOPASSWD /home/agent/sudoers-demo.conf",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/permiso-real.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/permiso-real.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'NOPASSWD' /home/agent/sudoers-demo.conf && cat /home/agent/permiso-real.txt"
+  },
+  {
+    "id": "permisos-l26",
+    "track": "permisos",
+    "index": 26,
+    "title": "El grupo extranjero",
+    "subtitle": "chgrp de árboles con -R",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El árbol transferido quedó con GRUPO ajeno (adm); siendo su dueño, el agente puede reasignar TODO el grupo a su propio equipo con chgrp -R.",
+    "goal": "Cambia el GRUPO de TODO el árbol /home/agent/arbol-roto al grupo agent (chgrp -R) y luego cat firma.txt (la marca).",
+    "keywords": [
+      "chgrp",
+      "-R",
+      "grupo",
+      "recursivo"
+    ],
+    "hints": [
+      "chgrp -R aplica el grupo recursivamente a TODO el árbol (dirs y ficheros).",
+      "Cambiar el DUEÑO requiere root, pero el dueño de un fichero sí puede fijar su GRUPO a uno propio de su pertenencia (agent).",
+      "chgrp -R agent arbol-roto && cat arbol-roto/firma.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "chgrp -R group dir",
+        "desc": "cambia el grupo de TODO el árbol"
+      },
+      {
+        "cmd": "find dir ! -group group",
+        "desc": "qué ficheros NO están en ese grupo"
+      }
+    ],
+    "teach": "chgrp -R reasigna el grupo de todo el tree de una tacada (el dueño puede, si el grupo nuevo le pertenece). Cambiar el DUEÑO (chown) en cambio exige root — por eso las transferencias de dueño se hacen en admin.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "chgrp -R agent /home/agent/arbol-roto",
+        "cmds": [
+          {
+            "cmd": "chgrp",
+            "args": "-R agent /home/agent/arbol-roto",
+            "why": "comando chgrp — revisa «man chgrp»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/arbol-roto/firma.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/arbol-roto/firma.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "chgrp -R agent /home/agent/arbol-roto && cat /home/agent/arbol-roto/firma.txt"
   },
   {
     "id": "procesos-l1",
@@ -8637,6 +10599,476 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "ps -eo args | grep -o 'FLAG{[^}]*}'"
   },
   {
+    "id": "procesos-l21",
+    "track": "procesos",
+    "index": 21,
+    "title": "El fugitivo dormido",
+    "subtitle": "ps ax -o pid,comm",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Un proceso sleep quedó corriendo desde el setup; localiza su PID real con ps y contrástalo con el fichero pid.txt (que lleva la marca).",
+    "goal": "Imprime el PID del proceso sleep y luego cat pid.txt para confirmar que ES el mismo (el fichero lleva la marca).",
+    "keywords": [
+      "ps",
+      "pid",
+      "procesos"
+    ],
+    "hints": [
+      "ps -o pid= -C sleep lista los PID de los procesos llamados sleep (sin cabecera por el =).",
+      "El fichero pid.txt guarda el PID desde el setup: compáralos a simple vista.",
+      "ps -o pid= -C sleep; cat pid.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ps -o pid=,cmd= -C NAME",
+        "desc": "PID+cmd de un proceso exacto"
+      },
+      {
+        "cmd": "ps aux | grep NAME",
+        "desc": "búsqueda laxa clásica"
+      }
+    ],
+    "teach": "ps con -o (output) + -C (por nombre) es el listado quirúrgico: solo los campos que pides, solo ese comando. El = quita la cabecera.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ps -o pid= -C sleep | head -1",
+        "cmds": [
+          {
+            "cmd": "ps",
+            "args": "-o pid= -C sleep",
+            "why": "lista procesos",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man ps»"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/pid.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/pid.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ps -o pid= -C sleep | head -1; cat $HOME/pid.txt"
+  },
+  {
+    "id": "procesos-l22",
+    "track": "procesos",
+    "index": 22,
+    "title": "El mata-sueño",
+    "subtitle": "pkill por nombre",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El proceso sleep estorba; mátalo con pkill y demuestra que ya no existe (el fichero de log lleva la marca).",
+    "goal": "Mata todos los procesos sleep con pkill y luego cat egolog.txt, que registra la hazaña (con la marca).",
+    "keywords": [
+      "pkill",
+      "kill",
+      "procesos"
+    ],
+    "hints": [
+      "pkill NAME es la receta corta: mata por nombre de proceso (sin PID a mano).",
+      "Verifica después con ps que ya NO aparece.",
+      "pkill sleep; ps -C sleep; cat egolog.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "pkill NAME",
+        "desc": "manda TERM a procesos por nombre"
+      },
+      {
+        "cmd": "kill -9 PID",
+        "desc": "mata a las bravas (sin rescate)"
+      }
+    ],
+    "teach": "pkill/pattern mata por NOMBRE; kill PID es quirúrgico. Con procesos que no mueren al primer golpe, kill -9 es el martillo (último recurso).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "pkill sleep",
+        "cmds": [
+          {
+            "cmd": "pkill",
+            "args": "sleep",
+            "why": "comando pkill — revisa «man pkill»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "true",
+        "cmds": [
+          {
+            "cmd": "true",
+            "args": "",
+            "why": "comando true — revisa «man true»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "sleep 1",
+        "cmds": [
+          {
+            "cmd": "sleep",
+            "args": "1",
+            "why": "espera los segundos dados (o s/m/h)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "! ps -o comm -C sleep | grep -q sleep",
+        "cmds": [
+          {
+            "cmd": "!",
+            "args": "ps -o comm -C sleep",
+            "why": "comando ! — revisa «man !»",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man !»"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-q sleep",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/egolog.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/egolog.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "pkill sleep || true; sleep 1; ! ps -o comm -C sleep | grep -q sleep; cat $HOME/egolog.txt"
+  },
+  {
+    "id": "procesos-l23",
+    "track": "procesos",
+    "index": 23,
+    "title": "El pulso del sistema",
+    "subtitle": "uptime y load average",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El latido del sistema se mide con uptime: carga media, usuarios, tiempo activo… y la marca viaja en el fichero final.",
+    "goal": "Imprime uptime (la carga media de la máquina) y luego cat pulso.txt (la marca viaja allí).",
+    "keywords": [
+      "uptime",
+      "load",
+      "diagnóstico"
+    ],
+    "hints": [
+      "uptime imprime la hora, uptime, usuarios y los 3 load-averages (1, 5, 15 min).",
+      "Es el diagnóstico de casa y el 1.er dato en todo post-mortem.",
+      "uptime; cat pulso.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "uptime",
+        "desc": "hora + uptime + load 1/5/15"
+      },
+      {
+        "cmd": "cat /proc/loadavg",
+        "desc": "los mismos números desde procfs"
+      }
+    ],
+    "teach": "load average RELATIVO a núcleos: 2.0 en máquina de 4 cores es descanso; en 1 core es ahogo. La regla de bolsillo: load ≈ cores está al límite.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "uptime",
+        "cmds": [
+          {
+            "cmd": "uptime",
+            "args": "",
+            "why": "tiempo encendido y carga media del sistema",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/pulso.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/pulso.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "uptime; cat $HOME/pulso.txt"
+  },
+  {
+    "id": "procesos-l24",
+    "track": "procesos",
+    "index": 24,
+    "title": "La vida del PID",
+    "subtitle": "kill -0: ¿sigue vivo?",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Un PID apuntado en vida.txt pudo morir; kill -0 no mata, pregunta: el fichero de respuesta lleva la marca.",
+    "goal": "Comprueba si el PID anotado en vida.txt RESPONDE a señales (kill -0 PID; exit status 0 = vivo) y luego cat respuesta.txt (que lleva la marca).",
+    "keywords": [
+      "kill",
+      "-0",
+      "señal"
+    ],
+    "hints": [
+      "kill -0 PID no envía señal real: solo comprueba si ENVIAR sería posible (proceso vivo y permisos).",
+      "El PID se lee del fichero vida.txt (limpia su prefijo).",
+      "kill -0 $(sed 's/.*: //' vida.txt) && cat respuesta.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "kill -0 PID && echo vivo",
+        "desc": "comprueba existencia sin señalar"
+      },
+      {
+        "cmd": "ps -p PID -o comm=",
+        "desc": "ídem consultando la tabla"
+      }
+    ],
+    "teach": "kill -0 es el ping de procesos: barato y fiable antes de hacer kill de verdad (evita matar un PID reutilizado).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "p=$(sed 's/pid del sueño: //' $HOME/vida.txt)",
+        "cmds": [
+          {
+            "cmd": "p=$(sed",
+            "args": "s/pid del sueño: // $HOME/vida.txt)",
+            "why": "comando p=$(sed — revisa «man p=$(sed»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "kill -0 \"$p\"",
+        "cmds": [
+          {
+            "cmd": "kill",
+            "args": "-0 $p",
+            "why": "manda una señal a un proceso; la señal por defecto es TERM (petición de terminar)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "echo \"el proceso $p responde (vivo)\"",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "el proceso $p responde (vivo)",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/respuesta.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/respuesta.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "p=$(sed 's/pid del sueño: //' $HOME/vida.txt); kill -0 \"$p\" && echo \"el proceso $p responde (vivo)\"; cat $HOME/respuesta.txt"
+  },
+  {
+    "id": "procesos-l25",
+    "track": "procesos",
+    "index": 25,
+    "title": "El forestal del disco",
+    "subtitle": "df -h: qué FS y cuán lleno",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Mide el ESPACIO del disco con df -h y deja la huella en el fichero disco.txt (que lleva la marca).",
+    "goal": "Imprime df -h (uso del filesystem) y luego cat disco.txt, que confirma el paseo.",
+    "keywords": [
+      "df",
+      "disco",
+      "espacio"
+    ],
+    "hints": [
+      "df -h resume cada filesystem montado: tamaño, usado, libre y % de uso.",
+      "Última línea por fichero: la marca viaja en disco.txt.",
+      "df -h; cat disco.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "df -h",
+        "desc": "uso de filesystems (legible)"
+      },
+      {
+        "cmd": "du -sh dir",
+        "desc": "tamaño total del directorio"
+      }
+    ],
+    "teach": "df mira los TAKES por filesystem; du mira el fichero/directorio concreto. Ambos son navegación básica del sysadmin.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "df -h",
+        "cmds": [
+          {
+            "cmd": "df",
+            "args": "-h",
+            "why": "uso de espacio en los sistemas de ficheros montados",
+            "flags": [
+              {
+                "flag": "-h",
+                "meaning": "legible para humanos"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/disco.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/disco.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "df -h; cat $HOME/disco.txt"
+  },
+  {
+    "id": "procesos-l26",
+    "track": "procesos",
+    "index": 26,
+    "title": "El semáforo de memoria",
+    "subtitle": "free -m — RAM y swap",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El desbordamiento de memoria tumba el sistema en segundos; con free se vê el estado de RAM en MB (el fichero memoria.txt lo ratifica con la marca).",
+    "goal": "Imprime free -m (memoria libre) y luego cat memoria.txt (donde viaja la marca).",
+    "keywords": [
+      "free",
+      "memoria",
+      "RAM"
+    ],
+    "hints": [
+      "free da memoria total/usada/libre (y swap). -m en MB (o -h legible).",
+      "La fila libre REAL es la de «available», no la de «free» (cache inclusa).",
+      "free -m; cat memoria.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "free -m",
+        "desc": "memoria en MB"
+      },
+      {
+        "cmd": "free -h",
+        "desc": "ídem con unidades legibles"
+      }
+    ],
+    "teach": "La columna «available» resume lo que el kernel puede ceder sin arriesgar el rendimiento; mirar la de «free» lleva a pánicos falsos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "free -m",
+        "cmds": [
+          {
+            "cmd": "free",
+            "args": "-m",
+            "why": "comando free — revisa «man free»",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man free»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/memoria.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/memoria.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "free -m; cat $HOME/memoria.txt"
+  },
+  {
     "id": "redes-l1",
     "track": "redes",
     "index": 0,
@@ -10022,6 +12454,458 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "port=$(grep -oE '[0-9]+' /var/dojo/canal.json | head -n 1); curl -s http://127.0.0.1:$port/tarjeta.txt"
   },
   {
+    "id": "redes-l21",
+    "track": "redes",
+    "index": 21,
+    "title": "El puerto a la escucha",
+    "subtitle": "ss -tln — SÍMBIOSIS de sockets",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El servidor local nc quedó a la escucha en un puerto; ss muestra los LISTEN (y el fichero puerto.txt lleva la marca si lo confirms).",
+    "goal": "Lista los puertos en escucha (ss -tln) y luego cat puerto.txt, que anota el puerto del servicio espía (con la marca).",
+    "keywords": [
+      "ss",
+      "listen",
+      "puerto"
+    ],
+    "hints": [
+      "ss -tln lista sockets TCP (t) en estado LISTEN (l) con números de puerto (-n implicita en tln).",
+      "El servicio espía quedó pegado al puerto 4444: ss debe listar su línea.",
+      "ss -tln; cat puerto.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ss -tln",
+        "desc": "puertos TCP a la escucha"
+      },
+      {
+        "cmd": "ss -tlnp",
+        "desc": "ídem con el PID del dueño"
+      }
+    ],
+    "teach": "ss ES el netstat moderno (iproute2): -t TCP, -l LISTEN, -n numérico sin resolver nombres (muchos más rápido).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ss -tln | grep 4444",
+        "cmds": [
+          {
+            "cmd": "ss",
+            "args": "-tln",
+            "why": "estado de sockets y puertos (sustituto moderno de netstat)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "sólo TCP"
+              },
+              {
+                "flag": "-l",
+                "meaning": "sólo en escucha"
+              },
+              {
+                "flag": "-n",
+                "meaning": "no resuelve nombres"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "4444",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/puerto.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/puerto.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ss -tln | grep 4444; cat $HOME/puerto.txt"
+  },
+  {
+    "id": "redes-l22",
+    "track": "redes",
+    "index": 22,
+    "title": "El saludo del servidor",
+    "subtitle": "nc client: eco TCP simple",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El servidor espía devuelve un banner al conectarte por TCP; ese banner lleva la marca.",
+    "goal": "Conéctate con nc al puerto 4455 LOCAL y muestra el banner que devuelve (que trae la marca).",
+    "keywords": [
+      "nc",
+      "cliente",
+      "tcp"
+    ],
+    "hints": [
+      "nc HOST PORT abre una conexión TCP y pasa stdin/stdout a través.",
+      "Con < /dev/null evitas que nc espere tu entrada; solo lee el banner del servidor.",
+      "nc -w 2 127.0.0.1 4455 < /dev/null"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "nc host port",
+        "desc": "conexión TCP simple"
+      },
+      {
+        "cmd": "nc -z host 1-1000",
+        "desc": "escaneo de puertos (bandera/z)"
+      }
+    ],
+    "teach": "nc es la navaja suiza TCP/UDP: cliente, servidor o escáner. En este nivel hace de CLIENTE y captura el banner.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "nc -w 2 127.0.0.1 4455 < /dev/null",
+        "cmds": [
+          {
+            "cmd": "nc",
+            "args": "-w 2 127.0.0.1 4455 < /dev/null",
+            "why": "netcat: conexiones TCP/UDP crudas para probar puertos o escuchar (sólo localhost en el dojo)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man nc»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "nc -w 2 127.0.0.1 4455 < /dev/null"
+  },
+  {
+    "id": "redes-l23",
+    "track": "redes",
+    "index": 23,
+    "title": "El nombre de la casa",
+    "subtitle": "hostname y /etc/hosts",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El hostname del sandbox es la firma del contenedor; el fichero hosts trae la marca si se lampado.",
+    "goal": "Imprime el hostname del sistema y luego cat /home/agent/hosts-marcado.txt (que lleva la marca).",
+    "keywords": [
+      "hostname",
+      "etc hosts"
+    ],
+    "hints": [
+      "hostname imprime el nombre del contenedor (CONFIG en docker).",
+      "El fichero /etc/hosts mapea IP→nombre SIN DNS (nos vamos con dnsmasq).",
+      "hostname; cat hosts-marcado.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "hostname",
+        "desc": "nombre del host"
+      },
+      {
+        "cmd": "getent hosts localhost",
+        "desc": "resolución real (NSS+DNS)"
+      }
+    ],
+    "teach": "La resolución local ocurre ANTES del DNS si /etc/nsswitch.conf prioriza files: getent hosts consulta esa cadena completa.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "hostname",
+        "cmds": [
+          {
+            "cmd": "hostname",
+            "args": "",
+            "why": "nombre del host (y con -I su IP)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/hosts-marcado.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/hosts-marcado.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "hostname; cat $HOME/hosts-marcado.txt"
+  },
+  {
+    "id": "redes-l24",
+    "track": "redes",
+    "index": 24,
+    "title": "El inventario de interfaces",
+    "subtitle": "ip -4 addr",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El contenedor tiene interfaces de red concretas (lo y quizá alguna vlan); el fichero red.txt ratifica el paseo (y la marca).",
+    "goal": "Imprime las direcciones IP del sistema (ip -4 addr) y luego cat red.txt donde viaje la marca.",
+    "keywords": [
+      "ip",
+      "addr",
+      "interfaz"
+    ],
+    "hints": [
+      "ip -4 addr show es el ifconfig moderno (iproute2): muestra direcciones por interface.",
+      "127.0.0.1/8 en lo SIEMPRE existe aunque el contenedor carezca de red externa.",
+      "ip -4 addr show; cat red.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ip -4 addr",
+        "desc": "direcciones IPv4 por interfaz"
+      },
+      {
+        "cmd": "ip -br addr",
+        "desc": "resumen breve (una línea por interfaz)"
+      }
+    ],
+    "teach": "El boot completo con «ip a» es el punto de partida para ver IPs, MTUs y estado de cada interface; con -br sale a modo compacto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ip -4 addr show",
+        "cmds": [
+          {
+            "cmd": "ip",
+            "args": "-4 addr show",
+            "why": "comando ip — revisa «man ip»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/red.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/red.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ip -4 addr show; cat $HOME/red.txt"
+  },
+  {
+    "id": "redes-l25",
+    "track": "redes",
+    "index": 25,
+    "title": "Las conexiones estables",
+    "subtitle": "ss -tn (establecidas)",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Hola TCP al servicio espía establece una conexión ESTABLECIDA (ESTAB) que ss lista; el fichero conns.txt takea la marca.",
+    "goal": "Abre (en segundo plano) una conexión al puerto 4466 y con ss -tn comprueba que existe ESTAB, luego cat conns.txt (que lleva la marca).",
+    "keywords": [
+      "ss",
+      "estab",
+      "conexiones"
+    ],
+    "hints": [
+      "ss -tn lista las conexiones TCP establecidas (sin flags de estado LISTEN).",
+      "Cada conexión muestra SU STATUS: ESTAB si viva, y los endpoints (IP:PORT a desglose completo).",
+      "ss -tn; cat conns.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ss -tn",
+        "desc": "conexiones TCP activas"
+      },
+      {
+        "cmd": "ss -tn state established",
+        "desc": "filtra por estado directamente"
+      }
+    ],
+    "teach": "Cada boca de un socket TCP tiene 4 datos: local IP:PORT y remote IP:PORT. ss -tn las lista EN ESTABLECIMIENTO (estado ESTAB).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "nc -w 5 127.0.0.1 4466 < /dev/null > /dev/null 2>&1 & sleep 0.3",
+        "cmds": [
+          {
+            "cmd": "nc",
+            "args": "-w 5 127.0.0.1 4466 < /dev/null > /dev/null 2>&1 & sleep 0.3",
+            "why": "netcat: conexiones TCP/UDP crudas para probar puertos o escuchar (sólo localhost en el dojo)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man nc»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "ss -tn | grep -q ESTAB",
+        "cmds": [
+          {
+            "cmd": "ss",
+            "args": "-tn",
+            "why": "estado de sockets y puertos (sustituto moderno de netstat)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "sólo TCP"
+              },
+              {
+                "flag": "-n",
+                "meaning": "no resuelve nombres"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-q ESTAB",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "ss -tn | head -5",
+        "cmds": [
+          {
+            "cmd": "ss",
+            "args": "-tn",
+            "why": "estado de sockets y puertos (sustituto moderno de netstat)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "sólo TCP"
+              },
+              {
+                "flag": "-n",
+                "meaning": "no resuelve nombres"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-5",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/conns.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/conns.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "nc -w 5 127.0.0.1 4466 < /dev/null > /dev/null 2>&1 & sleep 0.3; ss -tn | grep -q ESTAB; ss -tn | head -5; cat $HOME/conns.txt"
+  },
+  {
+    "id": "redes-l26",
+    "track": "redes",
+    "index": 26,
+    "title": "El DNS simulado",
+    "subtitle": "getent hosts con /etc/hosts",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "En la sala la resolución incluye /etc/hosts; getent hosts lo refleja (el fichero dns.txt confirma la marca).",
+    "goal": "Resuelve la entrada personalizada dojo.local con getent hosts y luego cat dns.txt para confirmar (la marca viaja allí).",
+    "keywords": [
+      "getent",
+      "dns",
+      "hosts"
+    ],
+    "hints": [
+      "getent hosts NOMBRE consulta la cadena NSS (incluye /etc/hosts) igual que las apps.",
+      "La entrada se añadió en /etc/hosts en el setup (e.g. 10.10.10.10 dojo.local).",
+      "getent hosts dojo.local; cat dns.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "getent hosts NOMBRE",
+        "desc": "resuelve como lo hace el sistema"
+      },
+      {
+        "cmd": "resolvectl status",
+        "desc": "detalles del resolvedor (con systemd)"
+      }
+    ],
+    "teach": "getent es lo que usan los programas (getaddrinfo), no lo que usan los humanos: refleja el orden REAL de resolución (/etc/hosts primero, luego DNS).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "getent hosts dojo.local",
+        "cmds": [
+          {
+            "cmd": "getent",
+            "args": "hosts dojo.local",
+            "why": "consulta las bases de datos del sistema (passwd, hosts, dns…) como lo harían las librerías C",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/dns.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/dns.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "getent hosts dojo.local; cat $HOME/dns.txt"
+  },
+  {
     "id": "archivos-l1",
     "track": "archivos",
     "index": 0,
@@ -11390,6 +14274,512 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "md5sum ~/estante/* | sort | uniq -D -w32 | sort | head -n 1 | awk '{print $2}' | xargs cat"
+  },
+  {
+    "id": "archivos-l21",
+    "track": "archivos",
+    "index": 21,
+    "title": "El paquete sellado",
+    "subtitle": "tar -czf + -O extract",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El secreto queda dentro de un tar.gz; crea el paquete, confírmalo con -t y extrae el contenido con -O.",
+    "goal": "Empaqueta secreto.txt en paquete.tgz (tar -czf), verifica que la entrada está en el listado (-t) y extrae su contenido a stdout con -O.",
+    "keywords": [
+      "tar",
+      "czf",
+      "tzf",
+      "O"
+    ],
+    "hints": [
+      "tar -czf paquete.tgz fichero crea el paquete comprimido (z=gzip).",
+      "-t lista el contenido sin extraer; -O extrae a STDOUT (no a disco) y permite cat-tear el fichero interior.",
+      "tar czf paquete.tgz secreto.txt; tar tzf paquete.tgz; tar Oxzf paquete.tgz"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tar czf p.tgz f",
+        "desc": "empaca y comprime"
+      },
+      {
+        "cmd": "tar tzf p.tgz",
+        "desc": "lista el contenido"
+      },
+      {
+        "cmd": "tar xOzf p.tgz f",
+        "desc": "extrae f a stdout"
+      }
+    ],
+    "teach": "tar czf empaca; -t inspecciona sin descomprimir; -O extrae a consola. Con -C eliges carpeta para nombrar rutas dentro del paquete (arboless limpios).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tar -czf $HOME/paquete.tgz -C $HOME secreto.txt",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-czf $HOME/paquete.tgz -C $HOME secreto.txt",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "crear archivo"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              },
+              {
+                "flag": "-f",
+                "meaning": "nombre del archivo tar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "tar -tzf $HOME/paquete.tgz | grep -q secreto",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-tzf $HOME/paquete.tgz",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "listar contenido sin extraer"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              },
+              {
+                "flag": "-f",
+                "meaning": "nombre del archivo tar"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-q secreto",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-q",
+                "meaning": "silencioso: solo el código de salida (0 = hubo coincidencia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "tar -Oxz f $HOME/paquete.tgz 2>/dev/null",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-Oxz f $HOME/paquete.tgz 2>/dev/null",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "extraer"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "tar -Oxzf $HOME/paquete.tgz",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-Oxzf $HOME/paquete.tgz",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "extraer"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              },
+              {
+                "flag": "-f",
+                "meaning": "nombre del archivo tar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "tar -czf $HOME/paquete.tgz -C $HOME secreto.txt && tar -tzf $HOME/paquete.tgz | grep -q secreto && tar -Oxz f $HOME/paquete.tgz 2>/dev/null || tar -Oxzf $HOME/paquete.tgz"
+  },
+  {
+    "id": "archivos-l22",
+    "track": "archivos",
+    "index": 22,
+    "title": "El_Cuerpo _Comprido",
+    "subtitle": "gzip -c + zcat",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Comprime ASsenza tocar el fichero (gzip -c > .gz) y comprueba que se puede devolver por zcat.",
+    "goal": "Comprime notas.txt a datos_notas.txt.gz sin tocar el original (gzip -c), luego imprime su contenido comprimido en stdout con zcat (que lleva la marca).",
+    "keywords": [
+      "gzip",
+      "zcat",
+      "comprimir"
+    ],
+    "hints": [
+      "gzip -c escribe el fichero COMPRIMIDO a stdout (no renombra ni borra el original).",
+      "zcat (registro de Z-CAT) desenplota los .gz en stdout.",
+      "gzip -c notas.txt > notas.txt.gz; zcat notas.txt.gz"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "gzip -c f > f.gz",
+        "desc": "comprime sin tocar el original"
+      },
+      {
+        "cmd": "zcat f.gz",
+        "desc": "descomprime a stdout"
+      }
+    ],
+    "teach": "gzip SIN -c elimina el fichero original (le pone el nombre .gz) — usar -c + redirección es la forma no destructiva. Alias: zcat = gzip -dc.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "gzip -c $HOME/notas.txt > $HOME/notas.txt.gz",
+        "cmds": [
+          {
+            "cmd": "gzip",
+            "args": "-c $HOME/notas.txt > $HOME/notas.txt.gz",
+            "why": "comprime un fichero (locreature .gz; el original desaparece)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man gzip»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "zcat $HOME/notas.txt.gz",
+        "cmds": [
+          {
+            "cmd": "zcat",
+            "args": "$HOME/notas.txt.gz",
+            "why": "comando zcat — revisa «man zcat»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "gzip -c $HOME/notas.txt > $HOME/notas.txt.gz && zcat $HOME/notas.txt.gz"
+  },
+  {
+    "id": "archivos-l23",
+    "track": "archivos",
+    "index": 23,
+    "title": "El parche que cicatriza",
+    "subtitle": "patch f < parche.diff",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Un diff -u describe el cambio y patch lo aplica a base.txt: al final las novedades trae la marca.",
+    "goal": "Aplica parche.diff a base.txt con patch y luego cat base.txt (la linea NUEVA trae la marca).",
+    "keywords": [
+      "patch",
+      "diff",
+      "changu"
+    ],
+    "hints": [
+      "patch FICHERO < parche.diff aplica los cambios y muestra «hunk applied».",
+      "Si el fichero ya está parcheado, patch avisa con (reverse; apply anyway?): usa -N o deshacer con -R.",
+      "patch base.txt < parche.diff; cat base.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "patch f < parche.diff",
+        "desc": "aplica el parche"
+      },
+      {
+        "cmd": "patch -R f < parche.diff",
+        "desc": "DESHACE el parche"
+      }
+    ],
+    "teach": "diff genera la RECETA (hunks @@); patch la ejecuta. Son el canal formal para distribuir cambios de código sin fichero entero.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "cd $HOME",
+        "cmds": [
+          {
+            "cmd": "cd",
+            "args": "$HOME",
+            "why": "comando interno del shell: cambia el directorio de trabajo actual; no es un binario, bash lo interpreta",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "patch base.txt < parche.diff",
+        "cmds": [
+          {
+            "cmd": "patch",
+            "args": "base.txt < parche.diff",
+            "why": "aplica un remiendo (diff) sobre un fichero; se lee el diff de stdin con <",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat base.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "base.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "cd $HOME && patch base.txt < parche.diff && cat base.txt"
+  },
+  {
+    "id": "archivos-l24",
+    "track": "archivos",
+    "index": 24,
+    "title": "El espejo duro",
+    "subtitle": "ln sin -s: hardlink",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Los hardlink son DOS NOMBRES para el MISMOS dato; cambia uno y el otro ve lo mismo.",
+    "goal": "Crea un hardlink de dato.txt llamado espejo.txt y comprueba que escribir en espejo apareció también en dato (cat).",
+    "keywords": [
+      "ln",
+      "hardlink",
+      "inode"
+    ],
+    "hints": [
+      "ln SIN -s crea hardlinks (mismo inode, dos nombres).",
+      "Escribe en el espejo y lee el original para ver el efecto espejo.",
+      "ln dato.txt espejo.txt; echo x >> espejo.txt; cat dato.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "ln a b",
+        "desc": "hardlink: mismo inode"
+      },
+      {
+        "cmd": "ls -li f",
+        "desc": "lista con número de inode para verificar"
+      }
+    ],
+    "teach": "Hardlink comparte inode (mismo dato, bajo dos nombres); symlink es un ACCESO con destino: borra el original y el hardlink sigue vivo, el symlink queda roto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "ln $HOME/dato.txt $HOME/espejo.txt",
+        "cmds": [
+          {
+            "cmd": "ln",
+            "args": "$HOME/dato.txt $HOME/espejo.txt",
+            "why": "crea enlaces (duros por defecto; -s para simbólico)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "echo \"anexando nota a espejo\" >> $HOME/espejo.txt",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "anexando nota a espejo >> $HOME/espejo.txt",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/dato.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/dato.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "ln $HOME/dato.txt $HOME/espejo.txt && echo \"anexando nota a espejo\" >> $HOME/espejo.txt && cat $HOME/dato.txt"
+  },
+  {
+    "id": "archivos-l25",
+    "track": "archivos",
+    "index": 25,
+    "title": "El tipo del fichero",
+    "subtitle": "file + strings en binario",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Un fichero BINARIO lleva la marca en texto libre; file determina el tipo y strings extrae cadenas legibles.",
+    "goal": "Determina el tipo de img.bin con file y extrae con strings la marca FLAG que hay escondida en el binario.",
+    "keywords": [
+      "file",
+      "strings",
+      "binario"
+    ],
+    "hints": [
+      "file lee la firma (magic bytes) y determina el tipo real (no el extension).",
+      "strings impime cadenas ASCII legibles dentro de datos binarios.",
+      "file img.bin; strings img.bin | grep FLAG"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "file f",
+        "desc": "identifica el tipo real"
+      },
+      {
+        "cmd": "strings f | grep x",
+        "desc": "cadens legibles dentro del binario"
+      }
+    ],
+    "teach": "file examina los magic bytes al inicio de la cabecera (PNG, ELF, gzip…); strings recorre el binario paraHumanizar las secuencias de impresión que hay dentro.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "file $HOME/img.bin",
+        "cmds": [
+          {
+            "cmd": "file",
+            "args": "$HOME/img.bin",
+            "why": "adivina el TIPO real de un fichero mirando su contenido (cabecera mágica), no su extensión",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "strings $HOME/img.bin | grep 'FLAG'",
+        "cmds": [
+          {
+            "cmd": "strings",
+            "args": "$HOME/img.bin",
+            "why": "extrae las cadenas de texto imprimible de un fichero binario",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "FLAG",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "file $HOME/img.bin; strings $HOME/img.bin | grep 'FLAG'"
+  },
+  {
+    "id": "archivos-l26",
+    "track": "archivos",
+    "index": 26,
+    "title": "El peso del mundo",
+    "subtitle": "du -sh y wc -c del resultado",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El directorio lleva archivos de vario tamaño; du mide el total legible y el manifest lleva la marca.",
+    "goal": "Mide el TAMAÑO total del directorio /home/agent/pesado con du -sh y luego cat manifest.txt (que lleva la marca).",
+    "keywords": [
+      "du",
+      "tamaño",
+      "peso"
+    ],
+    "hints": [
+      "du resume por fichero/directorio: -s SOLO el total del objetivo, -h legible (K/M/G).",
+      "El manifest es el fichero que cataloga el contenido.",
+      "du -sh pesado; cat manifest.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "du -sh dir",
+        "desc": "tamaño total del dir"
+      },
+      {
+        "cmd": "du -h --max-depth=1 dir",
+        "desc": "por hijo (dimensionado)"
+      }
+    ],
+    "teach": "du -sh es el medidor de bolsillo de un directorio; con --max-depth=1 compara hijos entre sí sin bajar más.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "du -sh $HOME/pesado",
+        "cmds": [
+          {
+            "cmd": "du",
+            "args": "-sh $HOME/pesado",
+            "why": "tamaño en disco usado por ficheros/directorios",
+            "flags": [
+              {
+                "flag": "-s",
+                "meaning": "resumen (no el detalle por fichero)"
+              },
+              {
+                "flag": "-h",
+                "meaning": "legible para humanos (K, M, G)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/manifest.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/manifest.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "du -sh $HOME/pesado; cat $HOME/manifest.txt"
   },
   {
     "id": "scripting-l1",
@@ -12910,6 +16300,451 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "for f in ~/tropa/*.txt; do cat \"$f\"; done; echo"
   },
   {
+    "id": "scripting-l21",
+    "track": "scripting",
+    "index": 21,
+    "title": "El bucle de los archivos",
+    "subtitle": "for f in glob; do … done",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El bucle for itera un glob y procesa cada fichero (cat) — una lleva la marca.",
+    "goal": "Con bucle for, imprime el contenido de cada fichero .txt de /home/agent/lotes/ (uno lleva la marca).",
+    "keywords": [
+      "bash",
+      "for",
+      "glob"
+    ],
+    "hints": [
+      "for f in GLOB; do cat \"$f\"; done es la plantilla base de tratamientos por lotes.",
+      "El glob *.txt EXPANDE en la lista de ficheros para el for.",
+      "for f in lotes/*.txt; do cat \"$f\"; done"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "for f in *.txt; do echo \"$f\"; done",
+        "desc": "itera ficheros del dir actual"
+      },
+      {
+        "cmd": "for i in 1 2 3; do …; done",
+        "desc": "itera una lista literal"
+      }
+    ],
+    "teach": "La tripleta for+glob+done es el cimiento de los pipelines batch. \"Citar la variable\" ($f) ENCERRA nombres con espacios — sin cita, rompe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "for f in $HOME/lotes/*.txt",
+        "cmds": [
+          {
+            "cmd": "for",
+            "args": "f in $HOME/lotes/*.txt",
+            "why": "comando for — revisa «man for»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "do cat \"$f\"",
+        "cmds": [
+          {
+            "cmd": "do",
+            "args": "cat $f",
+            "why": "comando do — revisa «man do»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "done",
+        "cmds": [
+          {
+            "cmd": "done",
+            "args": "",
+            "why": "comando done — revisa «man done»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "for f in $HOME/lotes/*.txt; do cat \"$f\"; done"
+  },
+  {
+    "id": "scripting-l22",
+    "track": "scripting",
+    "index": 22,
+    "title": "La pregunta pertinente",
+    "subtitle": "test -d / [ -d dir ]",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Antes de escribir en un dir, SIEMPRE preguntar probe exista [ -d dir ] — el fichero vale la pregunta final con marca.",
+    "goal": "Comprueba si /home/agent/estantería existe como DIRECTORIO ([ -d ]) y luego cat la lista que lleva la marca (lista-ok.txt o similar, según la prueba).",
+    "keywords": [
+      "test",
+      "-d",
+      "if"
+    ],
+    "hints": [
+      "[ -d PATH ] es la prueba de EXISTENCIA COMO DIRECTORIO (exit 0 si existe).",
+      "Y si no es un dir: la alternativa es [ -f ] (fichero normal).",
+      "[ -d estantería ] && cat resultado-test.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "[ -d dir ] && …",
+        "desc": "es directorio"
+      },
+      {
+        "cmd": "[ -f f ] && …",
+        "desc": "es fichero normal"
+      }
+    ],
+    "teach": "Los [ expr ] son las pruebas de la shell: -d dir, -f fichero, -e exist, -r legible, -x ejecutable. El espacio DENTRO de los corchetes es OBLIGATORIO.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "[ -d $HOME/estantería ]",
+        "cmds": [
+          {
+            "cmd": "[",
+            "args": "-d $HOME/estantería ]",
+            "why": "comando [ — revisa «man [»",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "flag d del comando — revisa «man [»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "echo \"es directorio ✓\"",
+        "cmds": [
+          {
+            "cmd": "echo",
+            "args": "es directorio ✓",
+            "why": "imprime sus argumentos en stdout (con \\n final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/resultado-test.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/resultado-test.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "[ -d $HOME/estantería ] && echo \"es directorio ✓\"; cat $HOME/resultado-test.txt"
+  },
+  {
+    "id": "scripting-l23",
+    "track": "scripting",
+    "index": 23,
+    "title": "El while del csv",
+    "subtitle": "while IFS= read -r línea",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El while de línea en línea es el bucle de los CSV grandes: cada línea llega a una variable y la marca sale al cat final.",
+    "goal": "Con while read, imprime cada línea de conjunto.txt (que lleva una con la marca).",
+    "keywords": [
+      "while",
+      "read",
+      "línea"
+    ],
+    "hints": [
+      "El bucle estándar de línea a línea: while IFS= read -r línea; do …; done < fichero.",
+      "IFS= preserva espacios al principio; -r evita interpretar \\\\ en el dato.",
+      "while IFS= read -r l; do echo \"$l\"; done < conjunto.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "while read -r l; do echo \"$l\"; done < f",
+        "desc": "procesa línea a línea"
+      },
+      {
+        "cmd": "while read -r a b; do echo \"$b\"; done < f",
+        "desc": "lee por campos (a=1.º, b=resto)"
+      }
+    ],
+    "teach": "read -r lee LINEA por LINEA (no palabra por palabra). < fichero alimenta el while, y la variable en $\" es cada línea entera.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "while IFS= read -r l",
+        "cmds": [
+          {
+            "cmd": "while",
+            "args": "IFS= read -r l",
+            "why": "comando while — revisa «man while»",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "flag r del comando — revisa «man while»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "do echo \"$l\"",
+        "cmds": [
+          {
+            "cmd": "do",
+            "args": "echo $l",
+            "why": "comando do — revisa «man do»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "done < $HOME/conjunto.txt",
+        "cmds": [
+          {
+            "cmd": "done",
+            "args": "< $HOME/conjunto.txt",
+            "why": "comando done — revisa «man done»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "while IFS= read -r l; do echo \"$l\"; done < $HOME/conjunto.txt"
+  },
+  {
+    "id": "scripting-l24",
+    "track": "scripting",
+    "index": 24,
+    "title": "La función propia",
+    "subtitle": "function y llamadas",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Definir una función (mía) y llamarla una vez es scripting minimal: la llamada devuelve el contenido (con la marca).",
+    "goal": "Define una función shell llamada mifuncion que haga cat del fichero dato.txt y LLÁMELA para ver el output (que lleva la marca).",
+    "keywords": [
+      "bash",
+      "función",
+      "def"
+    ],
+    "hints": [
+      "Forma canónica: nombre() { comandos; } — declarada en la misma línea o en bloques.",
+      "La llamada es SIN paréntesis: solo mifuncion al final.",
+      "mifuncion() { cat dato.txt; }; mifuncion"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "f() { cmds; }; f",
+        "desc": "define y ejecuta"
+      },
+      {
+        "cmd": "x=$(f)",
+        "desc": "captura el stdout de una función"
+      }
+    ],
+    "teach": "Las funciones shell devuelven con $? (exit status) y no con return de datos: para RESULTADOS se usa stdout (por eso capturamos con $(mifuncion)).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "mifuncion() { cat $HOME/dato.txt",
+        "cmds": [
+          {
+            "cmd": "mifuncion()",
+            "args": "{ cat $HOME/dato.txt",
+            "why": "comando mifuncion() — revisa «man mifuncion()»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "}",
+        "cmds": [
+          {
+            "cmd": "}",
+            "args": "",
+            "why": "comando } — revisa «man }»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "mifuncion",
+        "cmds": [
+          {
+            "cmd": "mifuncion",
+            "args": "",
+            "why": "comando mifuncion — revisa «man mifuncion»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "mifuncion() { cat $HOME/dato.txt; }; mifuncion"
+  },
+  {
+    "id": "scripting-l25",
+    "track": "scripting",
+    "index": 25,
+    "title": "El menu atoi",
+    "subtitle": "case … esac — ramificación",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El case unifica ISвана por primera palabra de un fichero: la opción correcta muestra la marca.",
+    "goal": "Lee la 1.er palabra del fichero cmd.txt y con CASE imprime lo que pida: si dice show, muestra el fichero secreto con cat (que lleva la marca).",
+    "keywords": [
+      "case",
+      "esac",
+      "switch"
+    ],
+    "hints": [
+      "case VAR in patrón) …;; esac ramifica por patrón (ojo al «;;» de fin de rama).",
+      "El «head -1 file» entrega la 1.er palabra de comándose (a para el case).",
+      "case $(head -1 cmd.txt) in show) cat secreto.txt;; esac"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "case $x in a) …;; b) …;; esac",
+        "desc": "ramificación por patrones"
+      },
+      {
+        "cmd": "case $x in [0-9]) …;; esac",
+        "desc": "patrones con clases"
+      }
+    ],
+    "teach": "case es el switch de bash: va bien para menús (r como show, help, exit…). Su ventaja: ESCAPA el if-elif anidado.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "case $(head -1 $HOME/cmd.txt) in show) cat $HOME/secreto.txt",
+        "cmds": [
+          {
+            "cmd": "case",
+            "args": "$(head -1 $HOME/cmd.txt) in show) cat $HOME/secreto.txt",
+            "why": "comando case — revisa «man case»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "",
+        "cmds": []
+      },
+      {
+        "raw": "*) echo \"otro comando\"",
+        "cmds": [
+          {
+            "cmd": "*)",
+            "args": "echo otro comando",
+            "why": "comando *) — revisa «man *)»",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "",
+        "cmds": []
+      },
+      {
+        "raw": "esac",
+        "cmds": [
+          {
+            "cmd": "esac",
+            "args": "",
+            "why": "comando esac — revisa «man esac»",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "case $(head -1 $HOME/cmd.txt) in show) cat $HOME/secreto.txt;; *) echo \"otro comando\";; esac"
+  },
+  {
+    "id": "scripting-l26",
+    "track": "scripting",
+    "index": 26,
+    "title": "El trap de salida",
+    "subtitle": "trap … EXIT",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El trap EXIT se dispara al abandonar el script: imprimiendo la marca al morir — la firma del agente de buena muerte.",
+    "goal": "Define un trap EXIT que imprime el contenido de salida.txt cuando el script acaba (y termina la shell para que de dispare).",
+    "keywords": [
+      "trap",
+      "EXIT",
+      "limpieza"
+    ],
+    "hints": [
+      "trap \"cmds\" EXIT ejecuta cmds CADA VEZ que la shell termina sea bien o mal.",
+      "Con bash -c se crea una shell REVIENTA (sale tras echo y dispara el trap).",
+      "bash -c 'trap \"cat salida.txt\" EXIT; echo fin'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "trap \"cmds\" EXIT",
+        "desc": "ejecuta cmds al salir de la shell"
+      },
+      {
+        "cmd": "trap - EXIT",
+        "desc": "quita el trap definido"
+      }
+    ],
+    "teach": "trap EXIT es la acción final del script: limpieza, bitácora, cierre de sockets. En los scripts HARDR es obligatorio para liberar recursos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "bash -c 'trap \"cat $HOME/salida.txt\" EXIT; echo \"el roble\"'",
+        "cmds": [
+          {
+            "cmd": "bash",
+            "args": "-c trap \"cat $HOME/salida.txt\" EXIT; echo \"el roble\"",
+            "why": "ejecuta un script/cadena con bash",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man bash»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "bash -c 'trap \"cat $HOME/salida.txt\" EXIT; echo \"el roble\"'"
+  },
+  {
     "id": "forense-l1",
     "track": "forense",
     "index": 0,
@@ -14244,6 +18079,415 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "echo $(cat ~/rastro.hex) | xxd -r -p | grep -o 'FLAG{[^}]*}'"
+  },
+  {
+    "id": "forense-l21",
+    "track": "forense",
+    "index": 21,
+    "title": "La huella hexadecimal",
+    "subtitle": "xxd -r -p: hex a bytes",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La marca llegó en formato hexadecimal; revertir con xxd -r -p es la herramienta neta.",
+    "goal": "Convierte huella.txt (hex plano) de VUELTA a bytes legibles con xxd -r -p (que lleva la marca).",
+    "keywords": [
+      "xxd",
+      "hex",
+      "rev"
+    ],
+    "hints": [
+      "xxd -p muestra el binario en HEX plano (sin offsets); -r lo devuelve a bytes.",
+      "La pipe es huella hex → xxd -r -p → texto original (la marca intacta).",
+      "xxd -r -p hx3"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "xxd -p f",
+        "desc": "bytes a hex plano"
+      },
+      {
+        "cmd": "xxd -r -p f",
+        "desc": "hex plano a bytes"
+      }
+    ],
+    "teach": "xxd es el convertidor hex↔bytes dependiente del formato; -p mantiene el flujo limpio (sin offsets ni ASCII-gray).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "xxd -r -p $HOME/hx3",
+        "cmds": [
+          {
+            "cmd": "xxd",
+            "args": "-r -p $HOME/hx3",
+            "why": "volcado hexadecimal de un fichero (byte a byte con representación ASCII la derecha)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "revertir: de hexadecimal de vuelta a bytes"
+              },
+              {
+                "flag": "-p",
+                "meaning": "salida limpia: sólo hex sin offsets ni columna ASCII"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "xxd -r -p $HOME/hx3"
+  },
+  {
+    "id": "forense-l22",
+    "track": "forense",
+    "index": 22,
+    "title": "La marca base64",
+    "subtitle": "base64 -d",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La marca viaja en BASE64: decodificar con base64 -d revela el texto limpio.",
+    "goal": "Decodifica codificado.txt (su contenido, base64 puro) y revela la marca con base64 -d.",
+    "keywords": [
+      "base64",
+      "decode"
+    ],
+    "hints": [
+      "base64 SIN argumentos codifica; con -d decodifica lo que recibe.",
+      "El fichero es insert: una única línea BASE-64 (sin texto alrededor, o la decodificación se queja).",
+      "base64 -d codificado.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "base64 f",
+        "desc": "codifica a base64"
+      },
+      {
+        "cmd": "base64 -d f",
+        "desc": "decodifica (los -e alterna ambos sentidos)"
+      }
+    ],
+    "teach": "base64 saca cualquier binario por TEXTO seguro (87 % de overhead): imprescindible para fichero emailing y cuerpos de HTTP.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "base64 -d $HOME/codificado.txt",
+        "cmds": [
+          {
+            "cmd": "base64",
+            "args": "-d $HOME/codificado.txt",
+            "why": "codifica/decodifica base64 (binario ↔ texto plano)",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "decodifica (de base64 a binario)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "base64 -d $HOME/codificado.txt"
+  },
+  {
+    "id": "forense-l23",
+    "track": "forense",
+    "index": 23,
+    "title": "El log arrugado",
+    "subtitle": "grep por fecha + rango de horas",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log chapuza en timestamp sin fecha; find por franja horaria 10:40 a 10:50 revela la marca.",
+    "goal": "Imprime de syslog.txt las líneas entre las horas 10:40 y 10:50 (grep -E con el patrón adecuado).",
+    "keywords": [
+      "grep",
+      "log",
+      "hora",
+      "franja"
+    ],
+    "hints": [
+      "El criterio es la HORA (prefijo 10:4x): con la clase [0-9] flexibles las unidades.",
+      "El ancla ^ garantiza que solo casa el timestamp al inicio.",
+      "grep -E '^10:4[0-9]' syslog.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '^10:4[0-9]' f",
+        "desc": "franja de minutos concreta"
+      },
+      {
+        "cmd": "grep -E '^10:(40|41|42)' f",
+        "desc": "alternancia literal de minutos"
+      }
+    ],
+    "teach": "Los logs crecen al revés (latest first); grep con franjas de tiempo prefijo es el cuchillo de la búsqueda temporal precisa.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E '^10:4[0-9]' $HOME/syslog.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E ^10:4[0-9] $HOME/syslog.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '^10:4[0-9]' $HOME/syslog.txt"
+  },
+  {
+    "id": "forense-l24",
+    "track": "forense",
+    "index": 24,
+    "title": "El mensaje rot13",
+    "subtitle": "tr con rangos a-z",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El mensaje guardado en roto.txt está en ROT13; tr con doble rango lo devuelve a texto (la marca en claro).",
+    "goal": "Decodifica roto.txt con el algoritmo ROT13 (tr con los dos rangos de letras). La marca aparece en claro.",
+    "keywords": [
+      "tr",
+      "ROT13",
+      "cifrado"
+    ],
+    "hints": [
+      "ROT13: tr a-zA-Z en n-za-mN-ZA-M (en minúsculas n-z = primera mitad; a-m = segunda).",
+      "Aplicar el MISMO tr dos veces reintegra el original (idempotente).",
+      "tr 'a-zA-Z' 'n-za-mN-ZA-M' < roto.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tr a-zA-Z n-za-mN-ZA-M < f",
+        "desc": "aplica ROT13"
+      },
+      {
+        "cmd": "tr a-z A-Z < f",
+        "desc": "general: a mayúsculas"
+      }
+    ],
+    "teach": "tr traduce bajos bytes; el ROT13 es el cifrado más simple (rotate de 13 posiciones). Doble cifrado = mensaje original.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tr 'a-zA-Z' 'n-za-mN-ZA-M' < $HOME/roto.txt",
+        "cmds": [
+          {
+            "cmd": "tr",
+            "args": "a-zA-Z n-za-mN-ZA-M < $HOME/roto.txt",
+            "why": "traduce/borra caracteres del flujo, uno a uno (p. ej. tr a-z A-Z pasa a mayúsculas)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "tr 'a-zA-Z' 'n-za-mN-ZA-M' < $HOME/roto.txt"
+  },
+  {
+    "id": "forense-l25",
+    "track": "forense",
+    "index": 25,
+    "title": "Las visitas del intruso",
+    "subtitle": "conteo por IP con sort/uniq",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log de visitas repite IPs; la más FRECUENTE es el intruso y SU línea lleva la marca.",
+    "goal": "De visitas.log calcula la IP MÁS frecuente (ranking) y DESPUÉS imprime TODAS sus visitas con grep (una lleva la marca).",
+    "keywords": [
+      "forense",
+      "ips",
+      "ranking",
+      "uniq"
+    ],
+    "hints": [
+      "grep -oE \"([0-9]+\\.){3}[0-9]+\" extrae IPs.",
+      "sort | uniq -c | sort -nr ordena por FRECUENCIA descendente; con awk {print $2} aislada la IP ganadora.",
+      "Con la IP en mano, grep \"$ip\" visitas.log imprime TODAS sus visitas (la última lleva la marca).",
+      "g=$(grep -oE '([0-9]+\\.){3}[0-9]+' visitas.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"$g\" visitas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE ' patron' f | sort | uniq -c | sort -nr",
+        "desc": "ranking de los patrones más repetidos"
+      },
+      {
+        "cmd": "uniq -c | sort -rn | head -3",
+        "desc": "top 3"
+      }
+    ],
+    "teach": "La espiral sort | uniq -c | sort -nr es EL ranking de frecuencias; con IPs, dominios y user-agents es el primer análisis forense real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "g=$(grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' $HOME/visitas.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}')",
+        "cmds": [
+          {
+            "cmd": "g=$(grep",
+            "args": "-oE [0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+ $HOME/visitas.log",
+            "why": "comando g=$(grep — revisa «man g=$(grep»",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "flag o del comando — revisa «man g=$(grep»"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \"$g\" $HOME/visitas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "$g $HOME/visitas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "g=$(grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' $HOME/visitas.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"$g\" $HOME/visitas.log"
+  },
+  {
+    "id": "forense-l26",
+    "track": "forense",
+    "index": 26,
+    "title": "El maletín base64 de doble capa",
+    "subtitle": "base64 dentro de base64",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "La marca fue codificada EN DOS CAPAS base64; decodifica doble para revelarla.",
+    "goal": "Lee doble.txt (base64 de base64) y decodifica DOS veces para revelar la marca.",
+    "keywords": [
+      "base64",
+      "doble",
+      "forense"
+    ],
+    "hints": [
+      "Decodifica DOS veces: la salida de la 1.a (binario) es la entrada de la 2.a.",
+      "La primera decodificación devuelve OTRO base64; la segunda devuelve el texto (la marca).",
+      "base64 -d doble.txt | base64 -d"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "base64 -d f | base64 -d",
+        "desc": "doble decodificación encadenada"
+      },
+      {
+        "cmd": "base64 -d f | xxd -r -p",
+        "desc": "base64 y después hex"
+      }
+    ],
+    "teach": "Los ataques de ofuscación abusa del software-cuento (base64, base64, hex, rot13): decodificar capas por orden es la técnica forense estándar.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "base64 -d $HOME/doble.txt | base64 -d",
+        "cmds": [
+          {
+            "cmd": "base64",
+            "args": "-d $HOME/doble.txt",
+            "why": "codifica/decodifica base64 (binario ↔ texto plano)",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "decodifica (de base64 a binario)"
+              }
+            ]
+          },
+          {
+            "cmd": "base64",
+            "args": "-d",
+            "why": "codifica/decodifica base64 (binario ↔ texto plano)",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "decodifica (de base64 a binario)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "base64 -d $HOME/doble.txt | base64 -d"
   },
   {
     "id": "boss-l1",
@@ -15748,6 +19992,486 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "rev ~/enigma.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'"
+  },
+  {
+    "id": "boss-l21",
+    "track": "boss",
+    "index": 21,
+    "title": "Boss: la cadena completa",
+    "subtitle": "grep+awk+sort+uniq",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log encadena: extrae el campo clave con awk, cuéntalo y muestra el ganador con su marca.",
+    "goal": "De cadena.log calcula el valor (2.º campo) que MÁS se repite y DESPUÉS imprime TODAS sus líneas con grep (una lleva la marca).",
+    "keywords": [
+      "boss",
+      "pipeline",
+      "uniq"
+    ],
+    "hints": [
+      "awk saca el 2.º campo; sort agrupa; uniq -c cuenta; sort -nr ordena por frecuencia.",
+      "El head -1 entrega el RANKING ganador; con awk {print $2} aislado el VALOR.",
+      "Con el valor en mano, grep \" $g \" cadena.log imprime TODAS sus líneas (una lleva la marca).",
+      "g=$(awk '{print $2}' cadena.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \" $g \" cadena.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print $2}' f | sort | uniq -c | sort -nr | head -1",
+        "desc": "el valor más frecuente del 2.º campo"
+      },
+      {
+        "cmd": "sort -k2 f | uniq -c -f1 | sort -nr | head",
+        "desc": "ídem trabajando solo con sort/uniq"
+      }
+    ],
+    "teach": "La cadena sort | uniq -c | sort -nr es el análisis de frecuencia basico; con awk delante descaturas de columna. Es el pipeline de «¿quién domina este campo?».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "g=$(awk '{print $2}' $HOME/cadena.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}')",
+        "cmds": [
+          {
+            "cmd": "g=$(awk",
+            "args": "{print $2} $HOME/cadena.log",
+            "why": "comando g=$(awk — revisa «man g=$(awk»",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \" $g \" $HOME/cadena.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": " $g  $HOME/cadena.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "g=$(awk '{print $2}' $HOME/cadena.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \" $g \" $HOME/cadena.log"
+  },
+  {
+    "id": "boss-l22",
+    "track": "boss",
+    "index": 22,
+    "title": "Boss: dos llaves, un talón",
+    "subtitle": "join awk across files",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "Dos ficheros comparten el nombre como Clave; un awk unel el precio con el stock y marca la línea COMPLETA.",
+    "goal": "Une precios.txt con stock.txt POR NOMBRE e imprime el catálogo combinado: nombre, precio del primero y TODAS las columnas del stock (donde viaja la marca).",
+    "keywords": [
+      "boss",
+      "join",
+      "awk"
+    ],
+    "hints": [
+      "NR==FNR construye el índice del 1.er fichero (p = precio); en el 2.º, imprime y resuelve.",
+      "El fase procesando: precios.txt PRIMERO, stock.txt después (los órdenes importan).",
+      "awk 'NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2}' precios.txt stock.txt | grep lampara"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR==FNR {a[$1]=$2; next} {print a[$1], $0}' idx datos",
+        "desc": "join tablas por clave"
+      }
+    ],
+    "teach": "El awk-join es el relacional de shell: dos tablas, una clave, un solo comando. Su posición de orden: indice primero, datos después.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2, $3}' $HOME/precios.txt $HOME/stock.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2, $3} $HOME/precios.txt $HOME/stock.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2, $3}' $HOME/precios.txt $HOME/stock.txt"
+  },
+  {
+    "id": "boss-l23",
+    "track": "boss",
+    "index": 23,
+    "title": "Boss: la malla de logs",
+    "subtitle": "grep multi-criterio con anclas",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El log mixto solo revela su marca si casan DOS criteria al mismo tiempo (IP y modo).",
+    "goal": "Imprime las líneas de malla.log que contengan 203.0.113.9 Y (ERROR o FAILED) al mismo tiempo (grep -E patrones).*",
+    "keywords": [
+      "boss",
+      "grep",
+      "AND",
+      "OR"
+    ],
+    "hints": [
+      "El 1.er grep filtra IP; el 2.º exige ERROR o FAILED (grep -E con alternancia).",
+      "El criterio exacto AND/OR: la línea ganadora lleva la marca.",
+      "grep '203.0.113.9' malla.log | grep -E 'ERROR|FAILED'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep A f | grep -E 'B|C'",
+        "desc": "AND + OR combinados en 2 greps"
+      },
+      {
+        "cmd": "grep -E 'A.*B|B.*A' f",
+        "desc": "ídem en un solo grep (más frágil)"
+      }
+    ],
+    "teach": "El patrón «FILTRA A | EXIGE B» (pipa con and) es demasiado común en log-filtrado: cada grep agrega un criterio sin regex síntesis.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep '203.0.113.9' $HOME/malla.log | grep -E 'ERROR|FAILED'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "203.0.113.9 $HOME/malla.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-E ERROR|FAILED",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep '203.0.113.9' $HOME/malla.log | grep -E 'ERROR|FAILED'"
+  },
+  {
+    "id": "boss-l24",
+    "track": "boss",
+    "index": 24,
+    "title": "Boss: el alquimista integral",
+    "subtitle": "awk sum con guard",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El registro trae importes y filas rotas; el total VÁLIDO (solo importes numéricos) lleva la marca.",
+    "goal": "Suma el 2.º campo de totales.txt SOLO donde sea un importe numérico (el guard de regex que toque); imprime la SUMA TOTAL.",
+    "keywords": [
+      "boss",
+      "suma",
+      "guard",
+      "awk"
+    ],
+    "hints": [
+      "El guard $2 ~ /^[0-9]+(\\.[0-9]+)?$/ filtra floats e ints (la fila rot «devol» se cae).",
+      "La marca viaja en sumario.txt: cat al final.",
+      "awk '$2 ~ /^[0-9.]+$/{s+=$2} END {print s}' totales.txt; cat sumario.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2 ~ /^[0-9.]+$/ {s+=$2} END {print s}' f",
+        "desc": "suma blindada"
+      },
+      {
+        "cmd": "awk '!n[$0]++ {print}' f | sort",
+        "desc": "complemento: dedup antes de sumar"
+      }
+    ],
+    "teach": "Combinar SUMA y GUARD de tipo es el escudo anti-datos-rotos de awk: ni suspendes el cálculo ni sueltas el dato malo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s}' $HOME/totales.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s} $HOME/totales.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat $HOME/sumario.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$HOME/sumario.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s}' $HOME/totales.txt; cat $HOME/sumario.txt"
+  },
+  {
+    "id": "boss-l25",
+    "track": "boss",
+    "index": 25,
+    "title": "Boss: el diagrama compositivo",
+    "subtitle": "tar + grep del manifest interior",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El manifiesto dentro del tar.gz lista los ficheros; hay que descomprimir, localizar el fichero marcado y señalar SU contenido (que viajó dentro).",
+    "goal": "Empaqueta el árbol /home/agent/proy en proy.tgz (sin incluir el tar en sí), y localiza via tar -t el fichero clave.txt; imprime su contenido con tar -Oxz.",
+    "keywords": [
+      "boss",
+      "tar",
+      "paquete"
+    ],
+    "hints": [
+      "tar -C DIR cambia el BASE dir al empacar (rutas limpies dentro del tar).",
+      "Con -O stracción con salida a stdout del fichero interior sin extraer a disco.",
+      "tar czf proy.tgz -C ~ proy; tar tzf proy.tgz; tar -Oxz -f proy.tgz proy/ins/clave.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "tar czf p.tgz -C born dir",
+        "desc": "empaca con base limpio"
+      },
+      {
+        "cmd": "tar xOzf p.tgz path/dentro",
+        "desc": "imprime un fichero interior"
+      }
+    ],
+    "teach": "El paquete de árbol con -C, la inspección con -t y la extracción quirúrgica con -O forman el flujo de CASO REAL: luego es Copiarlo, no IMÁGENELO.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "tar czf $HOME/proy.tgz -C $HOME proy",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "czf $HOME/proy.tgz -C $HOME proy",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "tar tzf $HOME/proy.tgz | grep clave",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "tzf $HOME/proy.tgz",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "clave",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "tar -Oxz -f $HOME/proy.tgz proy/ins/clave.txt",
+        "cmds": [
+          {
+            "cmd": "tar",
+            "args": "-Oxz -f $HOME/proy.tgz proy/ins/clave.txt",
+            "why": "empaqueta (tar) y, con las letras compuestas, descomprime (tar -xzf = eXtract + gZip + File)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "extraer"
+              },
+              {
+                "flag": "-z",
+                "meaning": "filtro gzip"
+              },
+              {
+                "flag": "-f",
+                "meaning": "nombre del archivo tar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "tar czf $HOME/proy.tgz -C $HOME proy && tar tzf $HOME/proy.tgz | grep clave && tar -Oxz -f $HOME/proy.tgz proy/ins/clave.txt"
+  },
+  {
+    "id": "boss-l26",
+    "track": "boss",
+    "index": 26,
+    "title": "Boss: la batalla final",
+    "subtitle": "combina-x: awk+sort+grep+uniq+head",
+    "xp": 30,
+    "difficulty": 2,
+    "brief": "El colofón del track: un log entero se reduce a la línea GANADORA (que lleva la marca), pasando por campo, conteo y extracción.",
+    "goal": "De final.log extrae el lugar (2.º campo) MÁS FRECUENTE, y con su clave imprime TODAS sus líneas del log (una lleva la marca).",
+    "keywords": [
+      "boss",
+      "master",
+      "pipeline"
+    ],
+    "hints": [
+      "Paso 1: el valor dominante con awk+sort+uniq+sort -nr+head -1 (guárdalo como $g).",
+      "Paso 2: el head -1 del ranking NO sirve: regresa al log con grep \" $g \" e imprime TODAS sus líneas.",
+      "g=$(awk '{print $2}' final.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \" $g \" final.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "g=$(awk '{print $2}' f | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \" $g \" f | head -1",
+        "desc": "el campo dominante y SU línea"
+      }
+    ],
+    "teach": "El boss de final de round: awk al análisis, sort|uniq al ranking, grep al regreso, head al corte. Todo el repertorio operando en una sola línea — nivel MASTERS.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "g=$(awk '{print $2}' $HOME/final.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}')",
+        "cmds": [
+          {
+            "cmd": "g=$(awk",
+            "args": "{print $2} $HOME/final.log",
+            "why": "comando g=$(awk — revisa «man g=$(awk»",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \" $g \" $HOME/final.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": " $g  $HOME/final.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "g=$(awk '{print $2}' $HOME/final.log | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \" $g \" $HOME/final.log"
   },
   {
     "id": "grep-l1",
@@ -18130,6 +22854,2160 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "raw": "ip=$(grep 'AUTH FAIL' /home/agent/auth.log | grep -oE 'ip [0-9.]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $3}'); grep \"ip $ip\" /home/agent/auth.log | grep 'AUTH OK' | grep -oE 'flag=\\S+'"
   },
   {
+    "id": "grep-l37",
+    "track": "grep",
+    "index": 37,
+    "title": "La primera señal",
+    "subtitle": "-m: deténte en la N-ésima coincidencia",
+    "xp": 45,
+    "difficulty": 2,
+    "brief": "El radar emite sin parar y la señal «hallada» se repite; solo el PRIMER eco trae la marca. grep tiene un freno de results.",
+    "goal": "Imprime de radar.log ÚNICAMENTE la primera línea que contiene hallada (la que lleva la marca).",
+    "keywords": [
+      "grep",
+      "-m",
+      "límite",
+      "primera"
+    ],
+    "hints": [
+      "-m NUM corta después de la NUM-ésima coincidencia: con 1, solo imprime la primera y para.",
+      "grep deja de LEER el fichero al alcanzar el límite: en logs gigantescos es una diferencia abismal.",
+      "grep -m 1 'hallada' radar.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -m 1 patrón f",
+        "desc": "solo la primera aciertada y para"
+      },
+      {
+        "cmd": "grep -m 3 patrón f",
+        "desc": "como máximo tres"
+      }
+    ],
+    "teach": "-m limita resultados, no filtra contenido: imprime como máximo NUM líneas acertadas y termina en cuanto las tiene. Es el remedio canónico ante logs demasaido ruidosos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -m 1 'hallada' /home/agent/radar.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-m 1 hallada /home/agent/radar.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-m",
+                "meaning": "flag m del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -m 1 'hallada' /home/agent/radar.log"
+  },
+  {
+    "id": "grep-l38",
+    "track": "grep",
+    "index": 38,
+    "title": "El recolector de tokens",
+    "subtitle": "-o: imprime cada match suelto",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El fichero de etapas resume el cruce en frases largas; necesitas SOLO las palabras terminadas en «ión» — y entre elles viaja la marca.",
+    "goal": "De etapas.txt imprime, una por línea, todos los tokens que casan con la ERE del conteo: las palabras que acaban en «ión» y la marca FLAG{…}.",
+    "keywords": [
+      "grep",
+      "-o",
+      "tokens",
+      "análisis"
+    ],
+    "hints": [
+      "-o cambia la SALIDA: imprime cada coincidencia aislada, una por línea, sin el resto de la línea.",
+      "La ERE [a-z]+ión captura palabras completas terminadas en ión; añade la alternativa del formato de la marca.",
+      "grep -oE '[a-z]+ión|FLAG{[a-f0-9]+}' etapas.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE 'REGEX' f",
+        "desc": "solo los matches, uno por línea"
+      },
+      {
+        "cmd": "grep -o 'palabra' f | sort | uniq -c",
+        "desc": "conteo de frecuencia por token"
+      }
+    ],
+    "teach": "grep -o pasa de líneas a tokens: con sort | uniq -c te da la frecuencia exacta de cualquier patrón en un corpus. Es el cimiento del análisis léxico en shell.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -oE '[a-z]+ión|FLAG{[a-f0-9]+}' /home/agent/etapas.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE [a-z]+ión|FLAG{[a-f0-9]+} /home/agent/etapas.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '[a-z]+ión|FLAG{[a-f0-9]+}' /home/agent/etapas.txt"
+  },
+  {
+    "id": "grep-l39",
+    "track": "grep",
+    "index": 39,
+    "title": "El censo limpio",
+    "subtitle": "-v: solo lo que NO casa",
+    "xp": 45,
+    "difficulty": 2,
+    "brief": "El control de calidad marca con «FALLA» los lotes defectuosos; una de las líneas sanas lleva la marca.",
+    "goal": "Imprime las líneas de calidad.txt que NO contienen la palabra FALLA (una de ellas lleva la marca).",
+    "keywords": [
+      "grep",
+      "-v",
+      "complemento"
+    ],
+    "hints": [
+      "-v invierte el filtro: imprime las líneas que NO contienen el patrón.",
+      "Si además quieres contar, cronometra con grep -cv.",
+      "grep -v 'FALLA' calidad.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -v 'x' f",
+        "desc": "líneas que NO contienen x"
+      },
+      {
+        "cmd": "grep -cv 'x' f",
+        "desc": "cuántas líneas NO contienen x"
+      }
+    ],
+    "teach": "-v es el complemento del grep: el «límite fuera». Encadenado con otra condición (grep -v A f | grep B) construyes lógica AND/OR compleja sin regex sobrecargadas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -v 'FALLA' /home/agent/calidad.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-v FALLA /home/agent/calidad.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -v 'FALLA' /home/agent/calidad.txt"
+  },
+  {
+    "id": "grep-l40",
+    "track": "grep",
+    "index": 40,
+    "title": "Dígitos de tres",
+    "subtitle": "clases POSIX + repetición {n}",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El padrón de inventario usa etiquetas; solo las líneas con TRES dígitos seguidos son válidas (y una de ellas trae la marca).",
+    "goal": "Imprime de padron.txt las líneas que contienen 3 dígitos seguidos (usa la clase POSIX [[:digit:]]).",
+    "keywords": [
+      "grep",
+      "posix",
+      "clases",
+      "{n}"
+    ],
+    "hints": [
+      "Las clases POSIX van con corchetes dobles: [[:digit:]] es la clase COMPLETA dentro de un par externo.",
+      "Con -E el cuantificador {3} exige exactamente tres repeticiones seguidas de la clase.",
+      "grep -E '[[:digit:]]{3}' padron.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '[[:digit:]]{3}' f",
+        "desc": "tres dígitos seguidos"
+      },
+      {
+        "cmd": "grep -E '[[:alpha:]]{4}' f",
+        "desc": "cuatro letras seguidas"
+      }
+    ],
+    "teach": "[[:digit:]] [[:alpha:]] [[:space:]] [[:upper:]]… son clases POSIX portables (resistentes a locales raras donde [0-9] puede no valer). Cuantificador {n} = «exactamente n veces».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E '[[:digit:]]{3}' /home/agent/padron.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E [[:digit:]]{3} /home/agent/padron.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '[[:digit:]]{3}' /home/agent/padron.txt"
+  },
+  {
+    "id": "grep-l41",
+    "track": "grep",
+    "index": 41,
+    "title": "La lista de culpables",
+    "subtitle": "-f: patrones desde un fichero",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El archivo prohibido lista comandos vetados (uno por línea). La auditoría anota ejecuciones: solo la entrada donde el comando coincide con la lista lleva la marca.",
+    "goal": "Imprime de audit.log SOLO la línea cuyo comando aparece dentro de vetados.txt.",
+    "keywords": [
+      "grep",
+      "-f",
+      "lista negra",
+      "blacklist"
+    ],
+    "hints": [
+      "-f FICHAERO: cada línea del fichero se convierte en UN patrón a buscar (alternancia masiva).",
+      "Con -F los patrones se interpretan como texto literal (sin regex): ideal conslashes y metacaracteres raros.",
+      "grep -Ff vetados.txt audit.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -f patrones.txt f",
+        "desc": "cada línea del fichero es un patrón"
+      },
+      {
+        "cmd": "grep -Ff patrones.txt f",
+        "desc": "idem con patrones literales (sin regex)"
+      }
+    ],
+    "teach": "El grep de listas negras: IPs baneadas, dominios dudosos, comandos vetados. -f carga el diccionario; -F evita que los caracteres especiales de las entradas exploten la regex.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -Ff /home/agent/vetados.txt /home/agent/audit.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-Ff /home/agent/vetados.txt /home/agent/audit.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "patrón literal, sin regex"
+              },
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -Ff /home/agent/vetados.txt /home/agent/audit.log"
+  },
+  {
+    "id": "grep-l42",
+    "track": "grep",
+    "index": 42,
+    "title": "El censo de palabras",
+    "subtitle": "-w: palabra COMPLETA",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El diario habla de «hilo», «hilos» y «hilo2» a la vez; solo la fila donde hilo es palabra ENTERA trae la marca.",
+    "goal": "Imprime las líneas de diario.txt donde hilo aparece como PALABRA COMPLETA (no dentro de hilos ni hilo2).",
+    "keywords": [
+      "grep",
+      "-w",
+      "palabra",
+      "frontera"
+    ],
+    "hints": [
+      "-w exige coincidencia de palabra entera: hilo no casa dentro de hilos ni hilo2.",
+      "Sin -w también saldrían hilos y hilo2 (son coincidencias de SUBCADENA).",
+      "grep -w 'hilo' diario.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -w 'palabra' f",
+        "desc": "coincidencia de palabra entera"
+      },
+      {
+        "cmd": "grep -wo 'palabra' f",
+        "desc": "imprime la palabra misma si casa entera"
+      }
+    ],
+    "teach": "-w delimita por fronteras de palabra (equivalente a \\< y \\> en BRE). Es la diferencia entre buscar un nombre exacto y un prefijo de todo lo que empiece igual.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -w 'hilo' /home/agent/diario.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-w hilo /home/agent/diario.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -w 'hilo' /home/agent/diario.txt"
+  },
+  {
+    "id": "grep-l43",
+    "track": "grep",
+    "index": 43,
+    "title": "El coto de caza",
+    "subtitle": "-r + --exclude-dir",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El proyecto tiene node_modules enorme y un fichero real con la marca. Busca recursivamente PERO omite esa jaula.",
+    "goal": "Busca la cadena marca (recursivamente) en /home/agent/proyecto excluyendo node_modules, e imprime las líneas acertadas.",
+    "keywords": [
+      "grep",
+      "-r",
+      "exclude-dir",
+      "recursivo"
+    ],
+    "hints": [
+      "La búsqueda recursiva es -r.",
+      "--exclude-dir=DIR omite directorios completos durante el recorrido (se puede repetir).",
+      "grep -r --exclude-dir=node_modules 'marca' proyecto"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --exclude-dir=node_modules 'x' .",
+        "desc": "recursivo sin ese directorio"
+      },
+      {
+        "cmd": "grep -r --exclude-dir='.git' --exclude-dir='venv' 'x' .",
+        "desc": "varios excluidos apilados"
+      }
+    ],
+    "teach": "En árboles reales grep -r sin filtro escanea node_modules, .git, __pycache__… --exclude-dir los aparta y convierte minutos en milisegundos. Admite globs: --exclude-dir={node_modules,.git} tras expandir bash.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -r --exclude-dir=node_modules 'marca' /home/agent/proyecto",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --exclude-dir=node_modules marca /home/agent/proyecto",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--exclude-dir=node_modules",
+                "meaning": "flag larga del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --exclude-dir=node_modules 'marca' /home/agent/proyecto"
+  },
+  {
+    "id": "grep-l44",
+    "track": "grep",
+    "index": 44,
+    "title": "La baliza exacta",
+    "subtitle": "-x: la línea COMPLETA",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El registro de balizas alterna estados y hay ruido; solo una línea es EXACTAMENTE la palabra ENCENDIDO (con la marca al final tras un tabulador? no: la marca viaja en la línea exacta).",
+    "goal": "Imprime de balizas.txt la línea cuya totalidad sea la palabra ENCENDIDO Y que además lleve la marca (la marca forma parte de la línea exacta).",
+    "keywords": [
+      "grep",
+      "-x",
+      "ancla",
+      "encadenar"
+    ],
+    "hints": [
+      "La línea buena empieza por ENCENDIDO y lleva la marca FLAG{…} al final; grep -x solo casaría si dieras el patrón completo de mano en mano, así que filtra en cadena.",
+      "Filtra por ENCENDIDO y descarta las variantes falsas con grep -v apilados.",
+      "grep 'ENCENDIDO' balizas.txt | grep 'FLAG{'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -x 'TEXTO' f",
+        "desc": "casa solo si la línea COMPLETA es TEXTO"
+      },
+      {
+        "cmd": "grep A f | grep B",
+        "desc": "AND: dos filtros en serie"
+      }
+    ],
+    "teach": "Cuando el ruido y el señal comparten prefijo, el filtro se decide con un criterio EXTERNO al patrón (en este caso, la marca FLAG{…} que solo viaja en la línea buena): encadena greps y deja que el segundo afine.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep 'ENCENDIDO' /home/agent/balizas.txt | grep -v 'con espacios' | grep -v 'una' | grep -v 'APAGADO' | grep -v 'encendido'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "ENCENDIDO /home/agent/balizas.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-v con espacios",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v una",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v APAGADO",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v encendido",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep 'ENCENDIDO' /home/agent/balizas.txt | grep -v 'con espacios' | grep -v 'una' | grep -v 'APAGADO' | grep -v 'encendido'"
+  },
+  {
+    "id": "grep-l45",
+    "track": "grep",
+    "index": 45,
+    "title": "El inspector de extensiones",
+    "subtitle": "-r + --include=*.ext",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El directorio mezcla .log, .txt y .conf; solo los .log pueden contener la marca, el resto es ruido.",
+    "goal": "Busca (recursivamente) la cadena marca en /home/agent/mixto imprimiendo SOLO las coincidencias dentro de ficheros .log.",
+    "keywords": [
+      "grep",
+      "include",
+      "recursivo",
+      "glob"
+    ],
+    "hints": [
+      "--include=GLOB limita la recursión a los ficheros que casan el patrón de nombre.",
+      "Pon el glob entre comillas: si no, bash intentaría expandirlo antes de pasarlo a grep.",
+      "grep -r --include='*.log' 'marca' mixto"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --include='*.log' 'x' .",
+        "desc": "recursivo pero solo .log"
+      },
+      {
+        "cmd": "grep -r --include='*.conf' 'x' .",
+        "desc": "solo los de configuración"
+      }
+    ],
+    "teach": "--include filtra QUÉ ficheros se leen en la recursión (complemento de --exclude-dir). Para auditorías por tipo (solo logs, solo logs y only.conf) es el riego exacto.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -r --include='*.log' 'marca' /home/agent/mixto",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --include=*.log marca /home/agent/mixto",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--include=*.log",
+                "meaning": "patrones de ficheros a incluir en la búsqueda"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --include='*.log' 'marca' /home/agent/mixto"
+  },
+  {
+    "id": "grep-l46",
+    "track": "grep",
+    "index": 46,
+    "title": "El intruso concreto",
+    "subtitle": "grep | grep: AND encadenado",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El log de autenticación mezcla FAIL y OK con varias IPs; el atacante concreto es 203.0.113.77 y SU línea de OK lleva la marca.",
+    "goal": "Imprime de auth.log ÚNICAMENTE la línea con la IP 203.0.113.77 Y el estado OK (las dos condiciones).",
+    "keywords": [
+      "grep",
+      "pipe",
+      "AND",
+      "encadenar"
+    ],
+    "hints": [
+      "Un solo grep no conduce un AND con dos criterios: encadena DOS greps con pipe.",
+      "Ordena los filtros del más ruidoso al más fino para que el segundo pase lo mínimo.",
+      "grep '203.0.113.77' auth2.log | grep 'AUTH OK'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep A f | grep B",
+        "desc": "AND: líneas que cumplen A y también B"
+      },
+      {
+        "cmd": "grep -E 'A|B' f",
+        "desc": "OR: un solo grep con alternancia"
+      }
+    ],
+    "teach": "grep | grep es el patrón más repetido del mundo real: cada grep añade un criterio. Alternativa equivalente: un único grep -E \"203.0.113.77.*AUTH OK|AUTH OK.*203.0.113.77\" (más feo y frágil).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep '203.0.113.77' /home/agent/auth2.log | grep 'AUTH OK'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "203.0.113.77 /home/agent/auth2.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "AUTH OK",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep '203.0.113.77' /home/agent/auth2.log | grep 'AUTH OK'"
+  },
+  {
+    "id": "grep-l47",
+    "track": "grep",
+    "index": 47,
+    "title": "Los puertos 8xxx",
+    "subtitle": "ERE con {n} delimitado",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "El listado de servicios lista puertos y programas. Los de la serie 8000–8999 son los inquietantes (y uno lleva la marca).",
+    "goal": "Imprime de ports.txt las líneas cuyo 2.nº campo es un número de 4 cifras que EMPIEZA POR 8 (8000–8999).",
+    "keywords": [
+      "grep",
+      "regex",
+      "puertos",
+      "{n}"
+    ],
+    "hints": [
+      "Delimita el puerto con espacios: sin ellos 80 y 5432 colarían.",
+      "El patrón 8[0-9]{3} exige un 8 seguido de TRES dígitos cualesquiera.",
+      "grep -E ' 8[0-9]{3} ' ports.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E ' 8[0-9]{3} ' f",
+        "desc": "números 4 cifras que empiezan por 8"
+      },
+      {
+        "cmd": "grep -E '[[:space:]]8080[[:space:]]' f",
+        "desc": "el puerto exacto como palabra"
+      }
+    ],
+    "teach": "Cuantificadores {n} + delimitadores explícitos evitan coincidencias parásitas: es la gran diferencia entre grep -E \"8\" y grep -E \" 8[0-9]{3} \".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E ' 8[0-9]{3} ' /home/agent/ports.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E  8[0-9]{3}  /home/agent/ports.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E ' 8[0-9]{3} ' /home/agent/ports.txt"
+  },
+  {
+    "id": "grep-l48",
+    "track": "grep",
+    "index": 48,
+    "title": "Los números del acierto",
+    "subtitle": "-n + cut + sed -n: línea N a línea",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El almacén tiene réplicas GOOD y POS (posiblemente rotas); el informe se arma SOLO con los NÚMEROS de las líneas GOOD — y esos números rescatan el registro marcado.",
+    "goal": "De almacen.txt calcula los números de línea que contienen GOOD (grep -n | cut) y usa ese listado dentro de sed -n 'N1p;N2p;…' para IMPRIMIR esas líneas completas.",
+    "keywords": [
+      "grep",
+      "-n",
+      "cut",
+      "números"
+    ],
+    "hints": [
+      "-n prefija cada coincidencia con su número de línea: «N: contenido»; cut -d: -f1 deja solo N.",
+      "sed 's/$/p/' convierte cada número en el comando «Np» y paste -sd';' los une (1p;3p;5p).",
+      "sed -n \"$(grep -n 'GOOD' almacen.txt | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\" almacen.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -n 'x' f | cut -d: -f1",
+        "desc": "solo los números de línea acertados"
+      },
+      {
+        "cmd": "sed -n \"$(grep -n 'x' f | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\" f",
+        "desc": "rescatar las líneas por número calculado"
+      }
+    ],
+    "teach": "La cadena -n → cut → sed 's/$/p/' → paste -sd';' construye una EXPRESIÓN de sed a partir de un grep: los números vuelven convertidos en comandos p. Es el patrón «obtén los números y retómalos».",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "sed -n \"$(grep -n 'GOOD' /home/agent/almacen.txt | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\" /home/agent/almacen.txt",
+        "cmds": [
+          {
+            "cmd": "sed",
+            "args": "-n $(grep -n 'GOOD' /home/agent/almacen.txt | cut -d: -f1 | sed 's/$/p/' | paste -sd';') /home/agent/almacen.txt",
+            "why": "editor de streams: recorre línea a línea aplicando comandos de sustitución/eliminación",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "suprime la impresión automática (útil con el comando p)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "sed -n \"$(grep -n 'GOOD' /home/agent/almacen.txt | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\" /home/agent/almacen.txt"
+  },
+  {
+    "id": "grep-l49",
+    "track": "grep",
+    "index": 49,
+    "title": "La depuradora doble",
+    "subtitle": "-v apilado: ni A ni B",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El volcado viene cargado de ruido y debug; limpiar DUPLICA el valor del signal real.",
+    "goal": "Imprime las líneas de volcado.txt que NO mencionan ruido y TAMPOCO debug.",
+    "keywords": [
+      "grep",
+      "-v",
+      "exclusión",
+      "limpieza"
+    ],
+    "hints": [
+      "Cada -v elimina UN tipo de ruido: apílalos con pipes.",
+      "Equivalente en un solo comando: grep -Ev \"ruido|debug\" volcado.txt",
+      "grep -v 'ruido' volcado.txt | grep -v 'debug'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -v A f | grep -v B",
+        "desc": "ni A ni B (exclusiones apiladas)"
+      },
+      {
+        "cmd": "grep -Ev 'A|B' f",
+        "desc": "idem en un solo comando"
+      }
+    ],
+    "teach": "Varios -v encadenados definen una lista de exclusiones: solo sobreviven las líneas que no pegan con nada de la lista de ruido. En un solo paso: grep -Ev \"A|B\".",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -v 'ruido' /home/agent/volcado.txt | grep -v 'debug'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-v ruido /home/agent/volcado.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          },
+          {
+            "cmd": "grep",
+            "args": "-v debug",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "invierte el filtro: descarta las que SÍ coinciden"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -v 'ruido' /home/agent/volcado.txt | grep -v 'debug'"
+  },
+  {
+    "id": "grep-l50",
+    "track": "grep",
+    "index": 50,
+    "title": "Boss: la triangulación",
+    "subtitle": "conteo dominante + regreso al log",
+    "xp": 140,
+    "difficulty": 5,
+    "brief": "Tres nodos reportan FAIL con distinta intensidad; el nodo que MÁS falla logró un único SUCCESS… y ahí viaja la marca. Une el conteo y la extracción en una sola cadena.",
+    "goal": "De triangulo.log imprime ÚNICAMENTE la marca FLAG{…} que viaja en la línea de SUCCESS del nodo con MÁS FAIL.",
+    "keywords": [
+      "grep",
+      "boss",
+      "cadena",
+      "uniq"
+    ],
+    "hints": [
+      "Pasa 1: identifica el nodo dominante en FAIL con grep FAIL f | awk \"{print $1}\" | sort | uniq -c | sort -nr.",
+      "Pasa 2: vuelve al log CON ESA CLAVE y filtra por SUCCESS; ahí viaja la marca.",
+      "g=$(grep FAIL triangulo.log | awk '{print $1}' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"^$g \" triangulo.log | grep SUCCESS"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep x f | awk … | sort | uniq -c | sort -nr | head -1",
+        "desc": "el valor dominante en un campo"
+      },
+      {
+        "cmd": "grep \"^$clave\" f | grep OK",
+        "desc": "regreso al log por la clave ganadora"
+      }
+    ],
+    "teach": "El boss de auditoría real: primero «¿quién domina el fallo?» (conteo), luego «¿cuál fue SU conexión buena?» (regreso al log por la clave). Dos pasadas, una historia.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "g=$(grep 'FAIL' /home/agent/triangulo.log | awk '{print $1}' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}')",
+        "cmds": [
+          {
+            "cmd": "g=$(grep",
+            "args": "FAIL /home/agent/triangulo.log",
+            "why": "comando g=$(grep — revisa «man g=$(grep»",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $1}",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \"^$g \" /home/agent/triangulo.log | grep 'SUCCESS'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "^$g  /home/agent/triangulo.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "SUCCESS",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "g=$(grep 'FAIL' /home/agent/triangulo.log | awk '{print $1}' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"^$g \" /home/agent/triangulo.log | grep 'SUCCESS'"
+  },
+  {
+    "id": "grep-l51",
+    "track": "grep",
+    "index": 51,
+    "title": "El censo de fallos",
+    "subtitle": "-c: cuenta, no muestra",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El turnero registra los accesos; interesa CUÁNTOS fallos hubo y verlos todos: la marca viaja en uno de ellos.",
+    "goal": "De acceso.log imprime PRIMERO el CONTEO de líneas FAIL (solo el número) y a continuación TODAS las líneas FAIL (la marca viaja en una).",
+    "keywords": [
+      "grep",
+      "-c",
+      "contar",
+      "conteo"
+    ],
+    "hints": [
+      "-c cambia el modo de salida: en vez de las líneas, imprime CUÁNTAS casan.",
+      "El conteo va en la primera impresión; para las líneas completas ejecuta un grep normal después (separados por ; desde tu terminal).",
+      "grep -c 'FAIL' acceso.log; grep 'FAIL' acceso.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -c p f",
+        "desc": "número de líneas que casan (no las líneas)"
+      },
+      {
+        "cmd": "grep -cv p f",
+        "desc": "cuenta de las que NO casan"
+      }
+    ],
+    "teach": "-c es el «říke « cuántas?» de grep: en auditores de rápido uso es la primera métrica. Combinarlo con un grep de líneas completas te da conteo Y evidencia en una sola pasada de flujo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -c 'FAIL' /home/agent/acceso.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-c FAIL /home/agent/acceso.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "cuenta coincidencias en vez de imprimirlas"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'FAIL' /home/agent/acceso.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "FAIL /home/agent/acceso.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -c 'FAIL' /home/agent/acceso.log; grep 'FAIL' /home/agent/acceso.log"
+  },
+  {
+    "id": "grep-l52",
+    "track": "grep",
+    "index": 52,
+    "title": "Palabra exacta",
+    "subtitle": "-w: la coincidencia completa",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El fichero es un zoo de derivados «fallo», «fallos», «fallo2026»… solo con LA PALABRA CASI SIN PEGAMENTO es legítima y ahí viaja la marca.",
+    "goal": "De acciones.txt imprime ÚNICAMENTE las líneas que contienen la PALABRA «fallo» como palabra completa (no derivados ni mezclas).",
+    "keywords": [
+      "grep",
+      "-w",
+      "palabra",
+      "límites"
+    ],
+    "hints": [
+      "-w solo casa cuando el patrón está rodeado por límites de palabra (letras, números o _ cuentan como pegamento).",
+      "Con -w, «fallos» y «fallo2026» NO casan «fallo»: el pegamento de detrás mata la coincidencia.",
+      "grep -w 'fallo' acciones.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -w p f",
+        "desc": "coincidencia con palabra completa"
+      }
+    ],
+    "teach": "-w es el antídoto contra el «casi»: cuando buscas un token EXACTO entre derivados, evita recortados a MessageBox y falso-positivos de subsegún.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -w 'fallo' /home/agent/acciones.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-w fallo /home/agent/acciones.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-w",
+                "meaning": "flag w del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -w 'fallo' /home/agent/acciones.txt"
+  },
+  {
+    "id": "grep-l53",
+    "track": "grep",
+    "index": 53,
+    "title": "La empresa exacta",
+    "subtitle": "-x: línea completa + vecina con -A",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El tablero lista estados: la mayoría son variantes; la línea EXACTA de proceder es un baliza — y SU siguiente línea trae la marca.",
+    "goal": "De tareas.log imprime la línea EXACTA \"procedimiento: completo\" (y solo ella) JUNTO con la línea que la sigue en el fichero: la marca viaja en la vecina.",
+    "keywords": [
+      "grep",
+      "-x",
+      "-A",
+      "exacta",
+      "vecina"
+    ],
+    "hints": [
+      "-x ANCLA el patrón a toda la línea: para casar, la línea debe COINCIDIR de principio a fin.",
+      "Las variantes «parcial», «revisado», «cancelado» caen por no ser *exactamente* iguales.",
+      "Con -A 1 la coincidenciaexacta ARRASTRA su vecina siguiente: ahí está la marca.",
+      "grep -A 1 -x 'procedimiento: completo' tareas.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -x 'toda la línea' f",
+        "desc": "coincide solo si ES la línea entera"
+      },
+      {
+        "cmd": "grep -A 1 -x 'toda la línea' f",
+        "desc": "línea exacta + vecina de abajo"
+      }
+    ],
+    "teach": "-x + -A forman el par preciso: primero recorto a la línea ÚNICA; luego me quedo con quien llega después. Es el reconocimiento de EVENTO + EFECTO sobre un log.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -A 1 -x 'procedimiento: completo' /home/agent/tareas.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-A 1 -x procedimiento: completo /home/agent/tareas.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-x",
+                "meaning": "flag x del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -A 1 -x 'procedimiento: completo' /home/agent/tareas.log"
+  },
+  {
+    "id": "grep-l54",
+    "track": "grep",
+    "index": 54,
+    "title": "Los antecedentes",
+    "subtitle": "-B: lo que pasó ANTES",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "Al cerrar cada bloque del informe electronically borra las evidencias… pero las 2 líneas ANTERIORES al cierre siguen en disco. La marca viaja en una de ellas.",
+    "goal": "De informe.txt imprime las DOS líneas PREVIAS a cada \"cierre de bloque\" (la marca viaja en una de las previas; la de cierre también puede aparecer).",
+    "keywords": [
+      "grep",
+      "-B",
+      "contexto",
+      "previas"
+    ],
+    "hints": [
+      "-B N arranca el corte ANTES de la coincidencia: imprime N líneas previas + la línea de la coincidencia.",
+      "Con -B 2, para «cierre de bloque» incluyes «resumen con marca…» y «anexo sin valor».",
+      "grep -B 2 'cierre de bloque' informe.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B N p f",
+        "desc": "N líneas previas + la coincidencia"
+      },
+      {
+        "cmd": "grep -C N p f",
+        "desc": "N antes y N después (simétrico)"
+      }
+    ],
+    "teach": "-B es el «contexto_previo»: inservible para informes de rollo-lineaal.» cuando el HECHO está EN LA LÍNEA de cierre pero la marca viajó ANTES. Usado hasta el abeedo en logs de auditoría real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -B 2 'cierre de bloque' /home/agent/informe.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B 2 cierre de bloque /home/agent/informe.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B 2 'cierre de bloque' /home/agent/informe.txt"
+  },
+  {
+    "id": "grep-l55",
+    "track": "grep",
+    "index": 55,
+    "title": "El bache simétrico",
+    "subtitle": "-C: contexto a AMBOS lados",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "El sensor bota un valor PICO cada cierto tramo; alrededor de cada pico hay ruido útil. La marca viaja pegada a un pico (a un lado u otro).",
+    "goal": "De sensor.txt imprime cada línea \"PICO\" con UNA línea de contexto por cada lado (antes y después): la marca viaja en el alrededor.",
+    "keywords": [
+      "grep",
+      "-C",
+      "simétrico",
+      "contexto"
+    ],
+    "hints": [
+      "-C N es el atajo de -A N -B N: contexto SIMÉTRICO alrededor de la coincidencia.",
+      "Con -C 1 los PICOs «latencia» y «memoria» traen su vecina; entre ellas, la marcada.",
+      "grep -C 1 'PICO' sensor.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -C N p f",
+        "desc": "simétrico: N antes+N después"
+      }
+    ],
+    "teach": "-C 1 es el modo «zoom» del log: ver el pico SIN perder el vecino. Casi todos los triajes de monitoreo (alerta + entorno) se montan con -C.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -C 1 'PICO' /home/agent/sensor.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-C 1 PICO /home/agent/sensor.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -C 1 'PICO' /home/agent/sensor.txt"
+  },
+  {
+    "id": "grep-l56",
+    "track": "grep",
+    "index": 56,
+    "title": "Laповід casing",
+    "subtitle": "-i: mayúsculas no les interesa",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "La radio reporta la señal en cualquier formato: «señal», «SEÑAL», «Señal»… la marca viaja en la línea CON LA MAYÚSCULA más ruidosa.",
+    "goal": "De rf.log imprime TODAS las líneas con «señal» IGNORENDO mayúsculas/minúsculas (la marca viaja en una con mayúsculas).",
+    "keywords": [
+      "grep",
+      "-i",
+      "case",
+      "mayúsculas"
+    ],
+    "hints": [
+      "-i ignora el CASE: «señal» casa con «SEÑAL», «Señal», «sEñal»…",
+      "Sin -i, la línea mayúsculizada que trae la flag SE ESCAPA.",
+      "grep -i 'señal' rf.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -i p f",
+        "desc": "case-insensitive"
+      }
+    ],
+    "teach": "Cuidado: -i SÍ traga acentos FREE-UTF8 en la locale C.UTF-8 del dojo. La regla práctica: si tu patrón describe CONCEPTOS (no exactas), -i siempre.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -i 'señal' /home/agent/rf.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-i señal /home/agent/rf.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-i",
+                "meaning": "insensible a mayúsculas"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -i 'señal' /home/agent/rf.log"
+  },
+  {
+    "id": "grep-l57",
+    "track": "grep",
+    "index": 57,
+    "title": "Stream limpio",
+    "subtitle": "-h: multi-fichero SIN prefijo",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "Tres diarios del mismo servicio llegan mezclados; cuando grep recibe varios ficheros, PREPONDRÁ el nombre a cada línea — para unir el stream necesitas quitarlo.",
+    "goal": "Del directorio diario/ imprime las líneas \"eco especial\" (están en los .log) SIN el prefijo de nombre de fichero: la marca viaja en una de ellas.",
+    "keywords": [
+      "grep",
+      "-h",
+      "stream",
+      "multifichero"
+    ],
+    "hints": [
+      "Con VARIOS ficheros, grep antepone \"fichero:\" por defecto; -h SUPRIME ese prefijo.",
+      "Con patrón literal \"eco especial\" el índice.txt (que no matchea) ni molesta.",
+      "grep -h 'eco especial' diario/*.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -h p f1 f2",
+        "desc": "sin prefijo de nombre de fichero"
+      }
+    ],
+    "teach": "-h es el interruptor del «stream JOIN»: el resultado se comporta como UN solo log, ideal para redirecciones y pipes de análisis.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -h 'eco especial' /home/agent/diario/*.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-h eco especial /home/agent/diario/*.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-h",
+                "meaning": "flag h del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -h 'eco especial' /home/agent/diario/*.log"
+  },
+  {
+    "id": "grep-l58",
+    "track": "grep",
+    "index": 58,
+    "title": "El recolector recursivo",
+    "subtitle": "-r --include: solo los .log",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El pool tiene mezcla de yaml, txt y logs; el sello está en el ÚNICO log. Barrer TODO con find es fácil… pero grep puede hacerlo solo.",
+    "goal": "Recorre POOL/ de forma recursiva y hayarle la línea \"sello del pool\" limitándose a los ficheros EXTENSIÓN .log (la marca viaja en el único log).",
+    "keywords": [
+      "grep",
+      "-r",
+      "include",
+      "recursivo"
+    ],
+    "hints": [
+      "-r baja recursivo por el árbol; --include PATTERN filtra los ficheros por su NOMBRE (glob).",
+      "Sin --include, el txt y el yaml también se procesarían (harto ruido).",
+      "grep -r --include '*.log' 'sello del pool' ../pool"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -r --include \"*.log\" p dir",
+        "desc": "recursivo SOLO ficheros .log"
+      }
+    ],
+    "teach": "-r con --include es la navaja del «barrer árboles SIN find»: en un nutrido catálogo la diferencia es el ruido que evita.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -r --include '*.log' 'sello del pool' /home/agent/pool",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-r --include *.log sello del pool /home/agent/pool",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-r",
+                "meaning": "búsqueda recursiva en directorios"
+              },
+              {
+                "flag": "--include",
+                "meaning": "patrones de ficheros a incluir en la búsqueda"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -r --include '*.log' 'sello del pool' /home/agent/pool"
+  },
+  {
+    "id": "grep-l59",
+    "track": "grep",
+    "index": 59,
+    "title": "El patrocinio del bloc",
+    "subtitle": "-f: patrones desde fichero",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El equipo franco «vencidos» es una lista en disco; el registro rumana maneja eventos. Recetea con TODAS las líneas cuyo texto COINCIDA con ALGÚN FAHREN?—, y una de ellas trae la marca.",
+    "goal": "De registro.log imprime las líneas que coinciden con ALGÚN patrón de vencidos.txt (la lista puede ser larga; los patrones viven en un fichero). La marca viaja en una de las líneas.",
+    "keywords": [
+      "grep",
+      "-f",
+      "fichero de patrones",
+      "lista negra"
+    ],
+    "hints": [
+      "-f FICHERO toma los patrones, uno por línea del fichero: grep los testea TODOS.",
+      "Es el equivalente a 3 greps con OR pero sin límite arbitrario de patrones.",
+      "grep -f vencidos.txt registro.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -f patrones.txt f",
+        "desc": "muchos patrones desde fichero"
+      }
+    ],
+    "teach": "-f convierte grep en un MATCHER INSTEAD más: lista negra/liverpool por fichero, una rol fila por patrón. Es la SEMILLA de la auditoría periódica.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -f /home/agent/vencidos.txt /home/agent/registro.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-f /home/agent/vencidos.txt /home/agent/registro.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -f /home/agent/vencidos.txt /home/agent/registro.log"
+  },
+  {
+    "id": "grep-l60",
+    "track": "grep",
+    "index": 60,
+    "title": "La sombra legítima",
+    "subtitle": "-l: ¿en QUÉ fichero está?",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Entre las sombras solo una se legitima: el ÚNICO fichero que contiene el \"sello\"对所有 los demás pasan. La marca viaja dentro de él.",
+    "goal": "Del directorio sombras/ localiza el ÚNICO fichero que contiene \"sello\" (sin imprimir sus líneas) y muestra SU CONTENIDO completo: la marca viaja dentro.",
+    "keywords": [
+      "grep",
+      "-l",
+      "fichero",
+      "localizar"
+    ],
+    "hints": [
+      "-l imprime SOLO el nombre del fichero que casó (una vez), no sus líneas.",
+      "Captúralo en una variable con $() y SACA su contenido completo.",
+      "f=$(grep -l 'sello' sombras/*.log); cat \"$f\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "f=$(grep -l p dir/*); cat \"$f\"",
+        "desc": "localiza y muestra el fichero"
+      }
+    ],
+    "teach": "-l + variable + cat es el REGRESO al fichero: grep te dice DÓNDE; tú decides QUÉ ver. Modo de trabajo canónico en repos de tamaño logarítico.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "f=$(grep -l 'sello' /home/agent/sombras/*.log)",
+        "cmds": [
+          {
+            "cmd": "f=$(grep",
+            "args": "-l sello /home/agent/sombras/*.log)",
+            "why": "comando f=$(grep — revisa «man f=$(grep»",
+            "flags": [
+              {
+                "flag": "-l",
+                "meaning": "flag l del comando — revisa «man f=$(grep»"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat \"$f\"",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$f",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "f=$(grep -l 'sello' /home/agent/sombras/*.log); cat \"$f\""
+  },
+  {
+    "id": "grep-l61",
+    "track": "grep",
+    "index": 61,
+    "title": "El sediento 101",
+    "subtitle": "-c por fichero + ranking + regreso",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "Tres logs de tentativas; en el que MÁS intentos hay… la marca también. El conteo por fichero es la balanza.",
+    "goal": "Del directorio logs/ localiza el fichero con MÁS líneas \"intento\" (grep -c) y muestra SU contenido completo: la marca viaja dentro.",
+    "keywords": [
+      "grep",
+      "-c",
+      "sort",
+      "ranking"
+    ],
+    "hints": [
+      "-c sobre GUIONES让我: salida formato \"fichero:conteo\" por fichero (grep ve cada fichero por separado).",
+      "sort -t: -k2 -nr ordvuespá排序 por el 2.º campo NUMÉRICO descendente; head -1 elige el GANADOR.",
+      "cut -d: -f1 recupera el NOMBRE del fichero; cat lo muestra entero (la marca viaja dentro).",
+      "f=$(grep -c 'intento' logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1); cat \"$f\""
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "f=$(grep -c p dir/* | sort -t: -k2 -nr | head -1 | cut -d: -f1); cat \"$f\"",
+        "desc": "el fichero con MÁS coincidencias"
+      }
+    ],
+    "teach": "La trilogía grep -c → sort -k2 -nr | head → regreso con cut/cat es el ESCALADO del conteo: de métrica a apuntar el fichero GANADOR. Escalable a directorios de decenas de logs.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "f=$(grep -c 'intento' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1)",
+        "cmds": [
+          {
+            "cmd": "f=$(grep",
+            "args": "-c intento /home/agent/logs/*.log",
+            "why": "comando f=$(grep — revisa «man f=$(grep»",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man f=$(grep»"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-t: -k2 -nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man sort»"
+              },
+              {
+                "flag": "-k",
+                "meaning": "ordena por columna concreta (k2 = segunda)"
+              },
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "cut",
+            "args": "-d: -f1)",
+            "why": "corta columnas de texto por delimitador o por posición",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "carácter delimitador (con -f)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "números de campo a conservar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "cat \"$f\"",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "$f",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "f=$(grep -c 'intento' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1); cat \"$f\""
+  },
+  {
+    "id": "grep-l62",
+    "track": "grep",
+    "index": 62,
+    "title": "Bitácora cerrada",
+    "subtitle": "-E con anclas a ambos extremos",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "La bitácora mezcla formatos; una sesión válida EMPIEZA por hora (dígito) y TERMINA en «cierre de sesión» literal. La marca viaja en una de esas filas.",
+    "goal": "De bitacora.log imprime SOLO las líneas que EMPIEZAN por dígitos y TERMINAN exactamente con \"cierre de sesión\" (la marca viaja en una).",
+    "keywords": [
+      "grep",
+      "-E",
+      "anclas",
+      "regex"
+    ],
+    "hints": [
+      "^ ancla el inicio de línea; $ ancla el FINAL: ambas a la vez = la línea EMPIEZA por dígito y TERMINA en el texto dado.",
+      "Grep normal no hace regex; para anclas + clases usa -E (ERE).",
+      "grep -E '^[0-9]+.*cierre de sesión$' bitacora.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '^patrón.*cierre$' f",
+        "desc": "anclas de inicio y fin"
+      }
+    ],
+    "teach": "Las dos anclas juntas definen la RULE del registro completo: la fila entera como formato. Es la base de la validación de SCHOEMA en logs por línea.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E '^[0-9]+.*cierre de sesión$' /home/agent/bitacora.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E ^[0-9]+.*cierre de sesión$ /home/agent/bitacora.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '^[0-9]+.*cierre de sesión$' /home/agent/bitacora.log"
+  },
+  {
+    "id": "grep-l63",
+    "track": "grep",
+    "index": 63,
+    "title": "La fórmula literal",
+    "subtitle": "-F: los metacaracteres NO rompen",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El config usa fragmentos rícos de metacaracteres tipo mod[$1](*) ; grep con regex los descompone… a no ser que Uses el MODOFIJO. La marca viaja en esa línea.",
+    "goal": "De config.toml imprime SOLO la línea cuyo texto contiene EXACTAMENTE el fragmento mod[$1](*) (los corchetes, paréntesis y asterisco son LITERAres).",
+    "keywords": [
+      "grep",
+      "-F",
+      "literal",
+      "metacaracteres"
+    ],
+    "hints": [
+      "-F cambia a modo FIJO: el patrón se compara línea por línea TAL CUAL, sin regex.",
+      "Con corchetes y paréntesis, el mod RE interpreta [... ] etc. y tu patrón se rompe: con -F no.",
+      "grep -F 'mod[$1](*)' config.toml"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -F 'texto.tal_cual[*]' f",
+        "desc": "coincidencia literal sin regex"
+      }
+    ],
+    "teach": "-F es el antídoto del metacaracter: cuando buscas código, yaml, sql u otras sintaxis LLENAS de símbolos especiales, el modo fijo te salva. Más rápido además.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -F 'mod[$1](*)' /home/agent/config.toml",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-F mod[$1](*) /home/agent/config.toml",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "patrón literal, sin regex"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -F 'mod[$1](*)' /home/agent/config.toml"
+  },
+  {
+    "id": "grep-l64",
+    "track": "grep",
+    "index": 64,
+    "title": "El corte asimétrico",
+    "subtitle": "-B 3 -A 1: distinto antes y después",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "El error crítico deja 3 líneas de antecedentes y solo 1 de reacción — la marca viaja JUSTO DETRÁS. El corte no es simétrico: se afina por separado.",
+    "goal": "De secuencia.log imprime cada \"ERROR crítico\" con TRES líneas previas y UNA posterior (la marca viaja en la posterior).",
+    "keywords": [
+      "grep",
+      "-B",
+      "-A",
+      "asimétrico"
+    ],
+    "hints": [
+      "Puedes combinar -B y -A en el MISMO grep: -B 3 -A 1 imprime 3 antes y 1 después.",
+      "La simetría NO es obligatoria: se ajusta al corte que tu auditoría necesita.",
+      "grep -B 3 -A 1 'ERROR crítico' secuencia.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -B 3 -A 1 p f",
+        "desc": "corte asimétrico: 3 antes, 1 después"
+      }
+    ],
+    "teach": "-B N -A M es el corte quirúrgico FACTURADO: prefacio y reacción por separado. Prevalece antes que -C cuando el mapa del incidente es asimétrico.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -B 3 -A 1 'ERROR crítico' /home/agent/secuencia.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-B 3 -A 1 ERROR crítico /home/agent/secuencia.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -B 3 -A 1 'ERROR crítico' /home/agent/secuencia.log"
+  },
+  {
+    "id": "grep-l65",
+    "track": "grep",
+    "index": 65,
+    "title": "El goteo de dominios",
+    "subtitle": "-oE con clase + nota al margen",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "La agenda cruza CONTACTO@DOMINIO; te interesan SOLO los dominios @dojo.lan… y al final hay una nota al margen que contiene la marca.",
+    "goal": "De contactos.txt extrae SOLO los dominios (fragmentos que empezando por la @ van seguidos de letras/números/puntos) y después imprime la línea \"nota clave\" (la marca viaja en ella).",
+    "keywords": [
+      "grep",
+      "-oE",
+      "dominios",
+      "extracción"
+    ],
+    "hints": [
+      "-o imprime solo el TEXTO casado; -E con clase @[A-Za-z0-9.]+ captura @ + alfanuméricos/puntos.",
+      "Después, el grep del segundo bloque imprime la línea de la marca (del mismo fichero).",
+      "grep -oE '@[A-Za-z0-9.]+' contactos.txt; grep 'nota clave' contactos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -oE '@[A-Za-z0-9.]+' f",
+        "desc": "extrae solo el fragmento casado"
+      }
+    ],
+    "teach": "El patrón de «token pegado» con clases + -o es la EXTRACCIÓN por excelencia (dominios, tags, refs). Combinado con un segundo grep del marcador obtienes extracción + evidencia en una sola llamada.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -oE '@[A-Za-z0-9.]+' /home/agent/contactos.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-oE @[A-Za-z0-9.]+ /home/agent/contactos.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "grep 'nota clave' /home/agent/contactos.txt",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "nota clave /home/agent/contactos.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep -oE '@[A-Za-z0-9.]+' /home/agent/contactos.txt; grep 'nota clave' /home/agent/contactos.txt"
+  },
+  {
+    "id": "grep-l66",
+    "track": "grep",
+    "index": 66,
+    "title": "El token de plaza",
+    "subtitle": "-E con clase POSIX + cuantificador",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero de visitantes tiene identidades con códigos de longitud variable; a los de AL MENOS 3 dígitos seguidos se les concede acceso. La marca viaja en una de esas filas.",
+    "goal": "De visitantes.log imprime SOLO las líneas cuyo texto contenga TRES O MÁS dígitos CONSECUTIVOS (clase POSIX numeral + cuantificador): la marca viaja en una.",
+    "keywords": [
+      "grep",
+      "posix",
+      "[[:digit:]]",
+      "cuantificador"
+    ],
+    "hints": [
+      "[[:digit:]] es la clase POSIX de dígitos (fiable incluso en locales raras); {3,} exige TRES O MÁS seguidos.",
+      "\"12\" y \"9X\" quedan fuera: no alcanzan las 3 cifras seguidas.",
+      "grep -E '[[:digit:]]{3,}' visitantes.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -E '[[:digit:]]{3,}' f",
+        "desc": "3+ dígitos seguidos si o si"
+      }
+    ],
+    "teach": "POSIX con cuantificador mezcla PORTABILIDAD y semana: en logs multilenguaje la clase POSIX evita sorpresas de acento/locale. Tres cifras seguidas suele significar «código de plaza» real.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -E '[[:digit:]]{3,}' /home/agent/visitantes.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-E [[:digit:]]{3,} /home/agent/visitantes.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -E '[[:digit:]]{3,}' /home/agent/visitantes.log"
+  },
+  {
+    "id": "grep-l67",
+    "track": "grep",
+    "index": 67,
+    "title": "El little boss: Plantilla literal",
+    "subtitle": "-Ff: lista literal desde fichero",
+    "xp": 110,
+    "difficulty": 5,
+    "brief": "La plantilla contiene FRASES EXACTAS cargadas de metacaracteres; el flujo boardioesto tracks que matchean. Con -F y -f a la vez, la lista y el filtro operan en MODOFIJO. La marca viaja en la línea que casó.",
+    "goal": "Del directorio actual: imprime las líneas de flujo.log cuyo texto contenga ALGUNA de las frases LITERALES de plantilla.txt (sin interpretar regex; la marca viaja en una).",
+    "keywords": [
+      "grep",
+      "-F",
+      "-f",
+      "boss",
+      "literal"
+    ],
+    "hints": [
+      "-F activa modo fijo; -f toma los PATRONES de un fichero: las dos juntas = lista literal de frases.",
+      "Sin -F, los corchetes o el asterisco de la plantilla se interpretarían como regex y NO casarían.",
+      "grep -Ff plantilla.txt flujo.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -Ff literales.txt f",
+        "desc": "lista de frases LITERALES como patrones"
+      }
+    ],
+    "teach": "-Ff es el mini-boss del filtrado por LISTA: cuando los patrones son FRASES de config o SQL y no regex, es el único modo sano. Prueba quitar -F y mira cómo explota.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep -Ff /home/agent/plantilla.txt /home/agent/flujo.log",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "-Ff /home/agent/plantilla.txt /home/agent/flujo.log",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "patrón literal, sin regex"
+              },
+              {
+                "flag": "-f",
+                "meaning": "flag f del comando — revisa «man grep»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "grep -Ff /home/agent/plantilla.txt /home/agent/flujo.log"
+  },
+  {
+    "id": "grep-l68",
+    "track": "grep",
+    "index": 68,
+    "title": "¡Boss!: la balanza de las fallas",
+    "subtitle": "-c ranking → IP dominante → regreso OK con flag",
+    "xp": 150,
+    "difficulty": 5,
+    "brief": "Tres logs compiten; el que más FALLAS acumula es el punto de intrusión. Dentro de él, la IP con más fallos logró UNA conexión OK — ahí viaja la marca.",
+    "goal": "Del directorio logs/: 1) localiza el fichero con MÁS FALLAS (grep -c + sort + head); 2) extrae la IP dominante de sus fallos (grep -oE + sort | uniq -c); 3) regresa al fichero y imprime su ÚNICA línea OK de esa IP (la marca viaja en ella).",
+    "keywords": [
+      "grep",
+      "boss",
+      "c",
+      "ranking",
+      "uniq"
+    ],
+    "hints": [
+      "Paso 1: la BALANZA por fichero: f=$(grep -c FAIL logs/* | sort -t: -k2 -nr | head -1 | cut -d: -f1) → gamma.",
+      "Paso 2: la IP dominante de los FAIL de $f: grep -oE \"[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\" + sort | uniq -c | sort -nr | head -1 | awk {print $2}.",
+      "Paso 3: el REGRESO: grep \"ip $ip\" \"$f\" | grep OK → una única línea (la de la marca).",
+      "f=$(grep -c 'FAIL' logs/* | sort -t: -k2 -nr | head -1 | cut -d: -f1); ip=$(grep 'FAIL' \"$f\" | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"ip $ip\" \"$f\" | grep 'OK'"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "grep -c p dir/* | sort -t: -k2 -nr | head -1",
+        "desc": "fichero con más coincidencias"
+      },
+      {
+        "cmd": "grep p f | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort | uniq -c | sort -nr | head -1",
+        "desc": "IP dominante"
+      },
+      {
+        "cmd": "grep \"ip $ip\" f | grep OK",
+        "desc": "regreso: la única línea OK del atacante"
+      }
+    ],
+    "teach": "El boss de round 6 encadena TRES grep por función distinta: -c métrica, -oE extractor, -h filtro final etapa. Es el flujo completo de ratio→detalle→evidencia de un SOC, todo con una sola herramienta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "f=$(grep -c 'FAIL' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1)",
+        "cmds": [
+          {
+            "cmd": "f=$(grep",
+            "args": "-c FAIL /home/agent/logs/*.log",
+            "why": "comando f=$(grep — revisa «man f=$(grep»",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "flag c del comando — revisa «man f=$(grep»"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-t: -k2 -nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-t",
+                "meaning": "flag t del comando — revisa «man sort»"
+              },
+              {
+                "flag": "-k",
+                "meaning": "ordena por columna concreta (k2 = segunda)"
+              },
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "cut",
+            "args": "-d: -f1)",
+            "why": "corta columnas de texto por delimitador o por posición",
+            "flags": [
+              {
+                "flag": "-d",
+                "meaning": "carácter delimitador (con -f)"
+              },
+              {
+                "flag": "-f",
+                "meaning": "números de campo a conservar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "raw": "ip=$(grep 'FAIL' \"$f\" | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}')",
+        "cmds": [
+          {
+            "cmd": "ip=$(grep",
+            "args": "FAIL $f",
+            "why": "comando ip=$(grep — revisa «man ip=$(grep»",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "-oE [0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": [
+              {
+                "flag": "-o",
+                "meaning": "imprime solo la parte que coincide (no la línea entera)"
+              },
+              {
+                "flag": "-E",
+                "meaning": "regex extendida (ERE: +, ?, |, alternancia)"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": []
+          },
+          {
+            "cmd": "uniq",
+            "args": "-c",
+            "why": "comprime líneas duplicadas ADYACENTES (por eso casi siempre va tras sort)",
+            "flags": [
+              {
+                "flag": "-c",
+                "meaning": "prefija cada línea con su nº de repeticiones"
+              }
+            ]
+          },
+          {
+            "cmd": "sort",
+            "args": "-nr",
+            "why": "ordena líneas lexicográficamente por defecto",
+            "flags": [
+              {
+                "flag": "-n",
+                "meaning": "orden numérico"
+              },
+              {
+                "flag": "-r",
+                "meaning": "inverso (descendente)"
+              }
+            ]
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          },
+          {
+            "cmd": "awk",
+            "args": "{print $2})",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "grep \"ip $ip\" \"$f\" | grep 'OK'",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "ip $ip $f",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "grep",
+            "args": "OK",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "f=$(grep -c 'FAIL' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut -d: -f1); ip=$(grep 'FAIL' \"$f\" | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"ip $ip\" \"$f\" | grep 'OK'"
+  },
+  {
     "id": "awk-l1",
     "track": "awk",
     "index": 1,
@@ -19994,10 +26872,10 @@ export const WALKTHROUGHS: WalkthroughData[] = [
     "track": "awk",
     "index": 36,
     "title": "Boss: la hora pico",
-    "subtitle": "awkk acumula por franja y END top",
+    "subtitle": "awk acumula por franja y END top",
     "xp": 140,
     "difficulty": 5,
-    "brief": "El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la pico. Extrae el VALOR total acumulado de esa hora.",
+    "brief": "El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la franja pico. La marca viaja en la fila pico.",
     "goal": "Imprime de trafico.txt las LÍNEAS de la hora (1.º campo) con MÁS tráfico total (suma del 3.º campo) — la marca viaja en la fila pico.",
     "keywords": [
       "awk",
@@ -20054,6 +26932,1753 @@ export const WALKTHROUGHS: WalkthroughData[] = [
       }
     ],
     "raw": "h=$(awk '{t[$1] += $3} END {for (x in t) if (t[x] > m) {m = t[x]; horax = x} print horax}' /home/agent/trafico.txt); grep \"^$h \" /home/agent/trafico.txt"
+  },
+  {
+    "id": "awk-l37",
+    "track": "awk",
+    "index": 37,
+    "title": "Separador de dos piezas",
+    "subtitle": "-F \", \" — FS multichar",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El CSV del dojo usa «, » (coma con espacio) como separador para que los nombres con espacios no se rompan; awk acepta un FS de varios caracteres.",
+    "goal": "De personas.csv imprime el 3.er campo de la fila 2 con el separador «, » (es la credencial).",
+    "keywords": [
+      "awk",
+      "FS",
+      "csv",
+      "separador"
+    ],
+    "hints": [
+      "Un FS puede tener VARIOS caracteres o ser regex: -F\", \" corta por coma+espacio.",
+      "NR filtra por posición de línea: NR==2 es la segunda.",
+      "awk -F', ' 'NR==2 {print $3}' personas.csv"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F', ' '{print $3}' f",
+        "desc": "separador multichar: coma + espacio"
+      },
+      {
+        "cmd": "awk 'BEGIN {FS=\"\\t\\t\"} {print $2}' f",
+        "desc": "dos tabuladores como delimitador"
+      }
+    ],
+    "teach": "El separador no está atado a un único carácter: cualquier string (o regex completa) sirve. Con \", \" evitas arrastrar el espacio sobrante a $2 y $3 — sin él, print $3 imprimiría \" perros\" con espacio inicial.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F', ' 'NR==2 {print $3}' /home/agent/personas.csv",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F,  NR==2 {print $3} /home/agent/personas.csv",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F', ' 'NR==2 {print $3}' /home/agent/personas.csv"
+  },
+  {
+    "id": "awk-l38",
+    "track": "awk",
+    "index": 38,
+    "title": "Las filas completas",
+    "subtitle": "$3 != \\\"\\\" — higiene de datos",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El inventario tiene filas rotas (el 3.er campo quedó vacío); el informe solo tolera filas COMPLETAS.",
+    "goal": "De inventario.csv imprime el 3.er campo de las filas cuyo 3.er campo NO está vacío (afecta: una completa trae la marca).",
+    "keywords": [
+      "awk",
+      "campo vacío",
+      "higiene",
+      "filtro"
+    ],
+    "hints": [
+      "Un campo vacío es la cadena vacía: compara con \"\" para filtrarlo.",
+      "Si el separador es una sola coma, el campo quedaría con espacio inicial; usa el FS adecuado.",
+      "awk -F', ' '$3 != \"\" {print $1}' inventario.csv"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -F, '$3 != \"\" {print $1}' f",
+        "desc": "solo filas con 3.er campo lleno"
+      },
+      {
+        "cmd": "awk -F, 'NF==3 {print $1}' f",
+        "desc": "idem contando los campos de la fila"
+      }
+    ],
+    "teach": "La comparación $N != \"\" es la higiene de datos más común en awk: descarta celdas vacías sin recurrir a NF==k y deja el flujo de filtrado limpio para el informe.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -F', ' '$3 != \"\" {print $3}' /home/agent/inventario.csv",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-F,  $3 != \"\" {print $3} /home/agent/inventario.csv",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-F",
+                "meaning": "cambia el separador de campos (p. ej. -F:)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -F', ' '$3 != \"\" {print $3}' /home/agent/inventario.csv"
+  },
+  {
+    "id": "awk-l39",
+    "track": "awk",
+    "index": 39,
+    "title": "Mayúsculas sin drama",
+    "subtitle": "toupper() — case-insensitive",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "El catálogo mezcla minúsculas y mayúsculas; el producto SELLADOR aparece escrito en cualquier forma — y su fila completa lleva la marca.",
+    "goal": "De catalogo.txt imprime la FILA COMPLETA del producto cuyo 1.er campo, convertido a MAYÚSCULAS, es SELLADOR (ahí viaja la marca).",
+    "keywords": [
+      "awk",
+      "toupper",
+      "comparar",
+      "caso"
+    ],
+    "hints": [
+      "toupper(cadena) pasa a mayúsculas: comparar SIN depender del caso original.",
+      "Imprime la LÍNEA completa: print (o print $0), no print $2.",
+      "awk 'toupper($1)==\"SELLADOR\" {print}' catalogo.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'toupper($1)==\"X\" {print}' f",
+        "desc": "compara sin case y devuelve la fila completa"
+      },
+      {
+        "cmd": "awk '{print tolower($0)}' f",
+        "desc": "baja TODA la línea a minúsculas"
+      }
+    ],
+    "teach": "toupper/tolower normalizan comparaciones textuales sin tocar el dato. Son la versión completa del == case-insensitive: comparar la forma canónica y devolver la fila ORIGINAAL intacta.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'toupper($1)==\"SELLADOR\" {print}' /home/agent/catalogo.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "toupper($1)==\"SELLADOR\" {print} /home/agent/catalogo.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'toupper($1)==\"SELLADOR\" {print}' /home/agent/catalogo.txt"
+  },
+  {
+    "id": "awk-l40",
+    "track": "awk",
+    "index": 40,
+    "title": "Posiciones pares",
+    "subtitle": "NR%2 — filtra por NÚMERO de línea",
+    "xp": 55,
+    "difficulty": 2,
+    "brief": "La señal alterna mensaje/ruido línea a línea; solo las líneas con número IMPAR (1.ª, 3.ª, 5.ª…) son pulso real.",
+    "goal": "De senial.txt imprime SOLO las líneas con posición IMPAR (NR impar).",
+    "keywords": [
+      "awk",
+      "NR",
+      "par",
+      "posición"
+    ],
+    "hints": [
+      "NR es el número de línea GLOBAL; el resto con % filtra por POSICIÓN, no por contenido.",
+      "El patrón puede ser una expresión: awk \"NR%2==1\" es «imprime las impares».",
+      "awk 'NR%2==1' senial.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR%2==1' f",
+        "desc": "líneas impares"
+      },
+      {
+        "cmd": "awk 'NR%2==0' f",
+        "desc": "líneas pares"
+      },
+      {
+        "cmd": "awk 'NR%5==0' f",
+        "desc": "cada 5.ª línea"
+      }
+    ],
+    "teach": "La aritmética sobre NR permite filtrar por posición (pares, impares, cada 3.ª con NR%3==0) — algo que ni grep ni sed hacen tan cómodo.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR%2==1' /home/agent/senial.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR%2==1 /home/agent/senial.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR%2==1' /home/agent/senial.txt"
+  },
+  {
+    "id": "awk-l41",
+    "track": "awk",
+    "index": 41,
+    "title": "El panel alineado",
+    "subtitle": "printf con anchuras",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El panel del dojo exige columnas RECTAS: nombre a 10 posiciones a la izquierda y nota a 6 a la derecha con 2 decimales. La última fila, de sistema, firma el panel.",
+    "goal": "De panel.txt imprime cada fila alineada: nombre con %-10s y nota con %6.2f (printf) y salto de línea final (la última fila con la firma sale tal cual).",
+    "keywords": [
+      "awk",
+      "printf",
+      "alinear",
+      "formato"
+    ],
+    "hints": [
+      "printf usa \"%-10s\" (izquierda, 10 ancho) y \"%6.2f\" (derecha, 6 ancho, 2 decimales).",
+      "printf NO salta de línea solo: no olvides el \\n final.",
+      "awk '{printf \"%-10s %6.2f\\n\", $1, $2}' panel.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{printf \"%-10s %6.2f\\n\", $1, $2}' f",
+        "desc": "columnas rectas con decimales"
+      },
+      {
+        "cmd": "awk 'END {printf \"%d filas\\n\", NR}' f",
+        "desc": "formato de enteros en el cierre"
+      }
+    ],
+    "teach": "printf da control total del formato: anchuras, alineación, decimales. Es imprescindible para paneles legibles (tablas comparables) donde el print plano descuadra por diferencias de longitud.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{printf \"%-10s %6.2f\\n\", $1, $2}' /home/agent/panel.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{printf \"%-10s %6.2f\\n\", $1, $2} /home/agent/panel.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{printf \"%-10s %6.2f\\n\", $1, $2}' /home/agent/panel.txt"
+  },
+  {
+    "id": "awk-l42",
+    "track": "awk",
+    "index": 42,
+    "title": "El incidente por bloques",
+    "subtitle": "rangos /a/,/b/",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El diario marca el inicio del incidente con «INICIO» y su final con «FIN»; solo ese BLOQUE (línea a línea, incluidos extremos) interesa, y DENTRO del bloque viaja la marca.",
+    "goal": "Imprime desde la línea que contiene INICIO hasta la que contiene FIN de incidente.txt (ambas incluidas) — la marca está dentro del bloque.",
+    "keywords": [
+      "awk",
+      "rango",
+      "regex",
+      "bloque"
+    ],
+    "hints": [
+      "El rango /a/,/b/ activa la impresión al casar a y la apaga al casar b (extremos incluidos).",
+      "El rango se reactiva cada vez que vuelve a casar el primer patrón.",
+      "awk '/INICIO/,/FIN/' incidente.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '/a/,/b/' f",
+        "desc": "desde casa a hasta casa b, incluidos"
+      },
+      {
+        "cmd": "awk '/a/,0' f",
+        "desc": "desde a hasta el final del fichero"
+      }
+    ],
+    "teach": "Los rangos de patrones seleccionan TRAMOS por evento, no por contenido: equivalente a sed -n /a/,/b/p pero awk da además la aritmética de columnas dentro del bloque.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '/INICIO/,/FIN/' /home/agent/incidente.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "/INICIO/,/FIN/ /home/agent/incidente.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '/INICIO/,/FIN/' /home/agent/incidente.txt"
+  },
+  {
+    "id": "awk-l43",
+    "track": "awk",
+    "index": 43,
+    "title": "Las fechas con guiones",
+    "subtitle": "gsub dentro del campo",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Las fechas llegan con barras y el sistema nuevo exige guiones; cambia el 1.er campo SIN perder el resto — y una fila lleva la marca.",
+    "goal": "De fechas.txt imprime cada fila COMPLETA con el 1.er campo reformateado (12/05/2024 → 12-05-2024): gsub sobre $1 y print sin argumentos.",
+    "keywords": [
+      "awk",
+      "gsub",
+      "sub",
+      "reformat"
+    ],
+    "hints": [
+      "gsub(rgx, reemplazo, campo) sustituye DENTRO del campo (aquí $1); al modificar $1, awk reconstruye $0: print sin argumentos imprime la fila completa.",
+      "La regex de la barra se escapa: /\\// casaría /; el reemplazo es el guión literal.",
+      "awk '{gsub(/\\//, \"-\", $1); print}' fechas.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{gsub(/a/, \"b\", $1); print}' f",
+        "desc": "reemplaza TODAS las ocurrencias del 1.er campo (y $0 se reconstruye)"
+      },
+      {
+        "cmd": "awk '{sub(/a/, \"b\", $2); print $2}' f",
+        "desc": "sub: solo la PRIMERA ocurrencia"
+      }
+    ],
+    "teach": "gsub opera sobre campo o variable y MODIFICA el dato en el mismo flujo awk (sin sed externo). Es la herramienta de normalización cuando ya estás parseando columnas.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{gsub(/\\//, \"-\", $1); print}' /home/agent/fechas.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{gsub(/\\//, \"-\", $1); print} /home/agent/fechas.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{gsub(/\\//, \"-\", $1); print}' /home/agent/fechas.txt"
+  },
+  {
+    "id": "awk-l44",
+    "track": "awk",
+    "index": 44,
+    "title": "Los invitados de una vez",
+    "subtitle": "!a[k]++ — deduplicar",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "La lista de invitados repite apuntes (alguien se apuntó dos veces); necesitas el censo de UNA APARICIÓN por persona, en orden de llegada.",
+    "goal": "De invitados.txt imprime cada nombre UNA sola vez (mantendo el orden en que apareció).",
+    "keywords": [
+      "awk",
+      "dedup",
+      "array",
+      "una vez"
+    ],
+    "hints": [
+      "El idioma !a[k]++ deja pasar solo la PRIMERA aparición de una clave.",
+      "La negación ! hace el patrón verdadero SOLO si la clave aún no existía.",
+      "awk '!v[$1]++ {print}' invitados.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '!a[$1]++ {print $1}' f",
+        "desc": "deduplica manteniendo el orden original"
+      },
+      {
+        "cmd": "sort f | uniq",
+        "desc": "idem con sort (alterna el orden alfabético)"
+      }
+    ],
+    "teach": "El one-liner de deduplicación por excelencia: !a[k]++ guarda el estado en un array asociativo (ojo: también la clave y el subíndice) y deja pasar el primer avistamiento de cada valor. Sin sort, sin uniq, sin memoria extra.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '!visto[$1]++ {print}' /home/agent/invitados.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "!visto[$1]++ {print} /home/agent/invitados.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '!visto[$1]++ {print}' /home/agent/invitados.txt"
+  },
+  {
+    "id": "awk-l45",
+    "track": "awk",
+    "index": 45,
+    "title": "La nómina unificada",
+    "subtitle": "NR==FNR — join de 2 ficheros",
+    "xp": 70,
+    "difficulty": 4,
+    "brief": "Los datos están en 2 ficheros: salarios.txt (nombre, cantidad) y cargos.txt (nombre, cargo); necesitas unirlos POR NOMBRE en una sola salida.",
+    "goal": "Por cada línea de salarios.txt imprime: nombre, cantidad y el CARGO con el mismo nombre leído de cargos.txt (dos ficheros, un solo awk) — el cargo de una trabajadora es la credencial.",
+    "keywords": [
+      "awk",
+      "join",
+      "NR",
+      "FNR"
+    ],
+    "hints": [
+      "NR==FNR distingue el PRIMER fichero del resto: patrón clásico de join en awk.",
+      "Durante el 1.er fichero almacena cargo[nombre]; en el 2.º imprime resuelto cargo[$1].",
+      "awk 'NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]}' cargos.txt salarios.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NR==FNR {a[$1]=$2; next} {print $1, a[$1]}' idx.txt datos.txt",
+        "desc": "join de 2 ficheros por clave"
+      },
+      {
+        "cmd": "awk 'FNR==NR'",
+        "desc": "idem equivalente (FNR vs NR)"
+      }
+    ],
+    "teach": "El truco NR==FNR es EL join de awk: el 1.er fichero construye el índice, el 2.º resuelve. Sin sort previo ni join externo: un único comando.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]}' /home/agent/cargos.txt /home/agent/salarios.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]} /home/agent/cargos.txt /home/agent/salarios.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]}' /home/agent/cargos.txt /home/agent/salarios.txt"
+  },
+  {
+    "id": "awk-l46",
+    "track": "awk",
+    "index": 46,
+    "title": "El umbral a la carta",
+    "subtitle": "-v var=valor — parámetros",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El umbral del panel cambia a diario (30, 50, 70…); no edites el awk — PARAMETRIZA el valor con -v.",
+    "goal": "De umbral.txt imprime las FILAS COMPLETAS cuya nota (2.º campo) sea >= al valor pasado con -v u=60.",
+    "keywords": [
+      "awk",
+      "-v",
+      "variable",
+      "umbral"
+    ],
+    "hints": [
+      "-v var=valor define una variable awk desde la CLI.",
+      "Dentro del programa: $2 >= u — ¡sin $ delante de la VARIABLE (u) y con $ en el campo ($2)!",
+      "Imprime la fila completa: print sin argumentos (la marca va en las filas que pasan).",
+      "awk -v u=60 '$2 >= u {print}' umbral.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk -v u=60 '$2>=u {print $1}' f",
+        "desc": "pasa el UMBRAL como parámetro"
+      },
+      {
+        "cmd": "awk -v tag=hoy 'END {print tag}' f",
+        "desc": "incluye texto externo en el awk"
+      }
+    ],
+    "teach": "Con -v el awk se vuelve un mini-programa parametrizable: umbrales, tags, regex — todo viaja en la CLI sin reescribir el código.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk -v u=60 '$2 >= u {print}' /home/agent/umbral.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "-v u=60 $2 >= u {print} /home/agent/umbral.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": [
+              {
+                "flag": "-v",
+                "meaning": "flag v del comando — revisa «man awk»"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "raw": "awk -v u=60 '$2 >= u {print}' /home/agent/umbral.txt"
+  },
+  {
+    "id": "awk-l47",
+    "track": "awk",
+    "index": 47,
+    "title": "El mapa de subredes",
+    "subtitle": "split() — cortar por puntos",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El registro de accesos guarda IPs completas; el informe de privacidad las ANONIMIZA a nivel de SUBRED (los 3 primeros octetos) — y una fila lleva la marca.",
+    "goal": "De accesos.log imprime cada fila con la IP reducida a «o1.o2.o3.*» (anónima) y el resto de columnas intacto (split).",
+    "keywords": [
+      "awk",
+      "split",
+      "ip",
+      "subred"
+    ],
+    "hints": [
+      "split(cadena, array, sep) corta la IP por puntos y deja o[1], o[2], o[3] (y o[4]).",
+      "La salida necesita CONCATENAR octetos: o[1] \".\" o[2] \".\" o[3] \".*\", seguido de $2 y $3.",
+      "awk '{split($1,o,\".\"); print o[1]\".\"o[2]\".\"o[3]\".*\", $2, $3}' accesos.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{split($1,a,\".\"); print a[1]\".\"a[2]\".\"a[3]\".*\", $2, $3}' f",
+        "desc": "IP a nivel de subred, resto intacto"
+      },
+      {
+        "cmd": "awk '{n=split($1,a,\".\"); print n}' f",
+        "desc": "split devuelve cuántas piezas corta"
+      }
+    ],
+    "teach": "split corta cadenas estructuradas (IPs, paths, timestamps) en campos propios. Reimplantar la fila con los pedazos elegidos (aquí «+ .*») es la anonimización a nivel de subred en awk.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{split($1, o, \".\"); print o[1]\".\"o[2]\".\"o[3]\".*\", $2, $3}' /home/agent/accesos.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{split($1, o, \".\"); print o[1]\".\"o[2]\".\"o[3]\".*\", $2, $3} /home/agent/accesos.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{split($1, o, \".\"); print o[1]\".\"o[2]\".\"o[3]\".*\", $2, $3}' /home/agent/accesos.log"
+  },
+  {
+    "id": "awk-l48",
+    "track": "awk",
+    "index": 48,
+    "title": "El apodo entre marcas",
+    "subtitle": "index() + substr() — bisturí",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El fichero lista tickets como tkt-9a1.txt: el identificador va entre el primer guion y el punto final. La credencial viaja en el ticket del fondo.",
+    "goal": "De ficheros.txt imprime el identificador (lo situado entre el primer guion y el punto final) de cada ticket, línea a línea.",
+    "keywords": [
+      "awk",
+      "index",
+      "substr",
+      "cortar"
+    ],
+    "hints": [
+      "index(cad, sub) devuelve la posición (1-based) del primer match; 0 si no está.",
+      "substr(cad, inicio, longitud) corta: substr($1, n+1, m-n-1) dónde empieza y cuánto mide.",
+      "awk '{n=index($1,\"-\"); m=index($1,\".\"); print substr($1,n+1,m-n-1)}' ficheros.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print substr($1, 2, 3)}' f",
+        "desc": "corta desde la posición 2 tres letras"
+      },
+      {
+        "cmd": "awk '{print index($1, \"x\")}' f",
+        "desc": "posición de la 1.ª aparición"
+      }
+    ],
+    "teach": "index + substr forman el bisturí de awk para extraer sub-cadenas por posición (cuándo la regex es excesiva y el delimitador estable).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{n=index($1, \"-\"); m=index($1, \".\"); print substr($1, n+1, m-n-1)}' /home/agent/ficheros.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{n=index($1, \"-\"); m=index($1, \".\"); print substr($1, n+1, m-n-1)} /home/agent/ficheros.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{n=index($1, \"-\"); m=index($1, \".\"); print substr($1, n+1, m-n-1)}' /home/agent/ficheros.txt"
+  },
+  {
+    "id": "awk-l49",
+    "track": "awk",
+    "index": 49,
+    "title": "La suma con blindaje",
+    "subtitle": "$2 ~ /^[0-9.]+$/ — solo números",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El recibo viene con encabezados y filas rotas; los importes válidos son el 2.nº campo numérico. El cierre del total lleva la marca.",
+    "goal": "De recibo.txt imprime la suma del 2.º campo SOLO de las filas cuyo 2.º campo es un número (entero o decimal); los headers no cuentan. Luego cat /home/agent/cierre.txt (la marca).",
+    "keywords": [
+      "awk",
+      "suma",
+      "regex",
+      "END"
+    ],
+    "hints": [
+      "El patrón $2 ~ /^[0-9]+(\\.[0-9]+)?$/ garantiza que el 2.º campo ES un número (entero o decimal).",
+      "Suma con s+=$2 en el cuerpo, en END imprime el total y cierra con el fichero de cierre.",
+      "awk '$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s}' recibo.txt; cat cierre.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$2 ~ /^[0-9.]+$/ {s+=$2} END {print s}' f",
+        "desc": "suma solo importes numéricos"
+      },
+      {
+        "cmd": "awk '/^(concepto|teclado)/ {next} END {print s}' f",
+        "desc": "descartar cabeceras con next"
+      }
+    ],
+    "teach": "El match de tipo con regex hace de \"is_number\": suma con blindaje; las filas rotas se descartan sin bloquear el cálculo, y en END la total sale limpia.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s}' /home/agent/recibo.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s} /home/agent/recibo.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/cierre.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/cierre.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$2 ~ /^[0-9]+(\\.[0-9]+)?$/ {s+=$2} END {print s}' /home/agent/recibo.txt; cat /home/agent/cierre.txt"
+  },
+  {
+    "id": "awk-l50",
+    "track": "awk",
+    "index": 50,
+    "title": "Boss: la normalización",
+    "subtitle": "gsub + array + END + regreso",
+    "xp": 140,
+    "difficulty": 5,
+    "brief": "El registro viene con tags precedidos de «#»; limpia la almohadilla, cuenta por tag y REESCATA la primera línea del tag ganador (que lleva la marca).",
+    "goal": "De registro.txt calcula el tag (4.º campo, sin «#») MÁS frecuente y, con esa clave, imprime la PRIMERA línea de dicho tag (que lleva la marca).",
+    "keywords": [
+      "awk",
+      "boss",
+      "gsub",
+      "frecuencia"
+    ],
+    "hints": [
+      "Limpia la almohadilla con gsub(/#/, \"\", $4) ANTES de contar.",
+      "El array t[$4]++ acumula la frecuencia; en END encuentra el ganador y guarda SU CLAVE (no el conteo).",
+      "Con la clave en mano, regresa al log y ejecuta grep sobre el TAG ORIGINAL (con # delante).",
+      "g=$(awk '{gsub(/#/, \"\", $4); t[$4]++} END {for (x in t) if (t[x] > m) {m = t[x]; w = x} print w}' registro.txt); grep \"#$g\" registro.txt | head -1"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{gsub(/#/, \"\", $4); t[$4]++} END {for (x in t) if (t[x]>m) {m=t[x]; w=x} print w}' f",
+        "desc": "tag ganador (la clave, no el conteo)"
+      },
+      {
+        "cmd": "grep \"#$g\" f | head -1",
+        "desc": "primera línea del tag ganador"
+      }
+    ],
+    "teach": "El boss de normalización encadena las 5 piezas de awk: gsub para limpiar, array para contar, END para decidir, clave ganadora y regreso al log con grep. Es el flujo completo de un mini-ETL textual.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round5-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "grep \"#$(awk '{gsub(/#/, \"\", $4); t[$4]++} END {for (x in t) if (t[x] > m) {m = t[x]; w = x} print w}' /home/agent/registro.txt)\" /home/agent/registro.txt | head -1",
+        "cmds": [
+          {
+            "cmd": "grep",
+            "args": "#$(awk '{gsub(/#/, , $4); t[$4]++} END {for (x in t) if (t[x] > m) {m = t[x]; w = x} print w}' /home/agent/registro.txt) /home/agent/registro.txt",
+            "why": "filtra las líneas que coinciden con un patrón (regex básica por defecto)",
+            "flags": []
+          },
+          {
+            "cmd": "head",
+            "args": "-1",
+            "why": "imprime el principio de un fichero/flujo",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "grep \"#$(awk '{gsub(/#/, \"\", $4); t[$4]++} END {for (x in t) if (t[x] > m) {m = t[x]; w = x} print w}' /home/agent/registro.txt)\" /home/agent/registro.txt | head -1"
+  },
+  {
+    "id": "awk-l51",
+    "track": "awk",
+    "index": 51,
+    "title": "La cola del registro",
+    "subtitle": "$NF: el último campo",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El catálogo termina siempre en estado; el último campo es el que manda. La marca viaja en el campo final de una fila.",
+    "goal": "De catalogo.txt imprime el ÚLTIMO campo de cada línea (la marca viaja en el de una fila).",
+    "keywords": [
+      "awk",
+      "NF",
+      "último",
+      "campo"
+    ],
+    "hints": [
+      "$NF es el ÚLTIMO campo (NF = número de campos): no importa cuántos haya.",
+      "Es la receta para «cualquiera que sea la última palabra», sin contar la posición.",
+      "awk '{print $NF}' catalogo.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print $NF}' f",
+        "desc": "último campo"
+      },
+      {
+        "cmd": "awk '{print $(NF-1)}' f",
+        "desc": "penúltimo campo"
+      }
+    ],
+    "teach": "$NF libera el campo variable: parses de logs con número de columnas irregular viven de $NF (y de $(NF-1) para la penúltima).",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{print $NF}' /home/agent/catalogo.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{print $NF} /home/agent/catalogo.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{print $NF}' /home/agent/catalogo.txt"
+  },
+  {
+    "id": "awk-l52",
+    "track": "awk",
+    "index": 52,
+    "title": "El comité del cinco",
+    "subtitle": "NF==5: filtro por Nº de campos",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El formulario solo es VÁLIDO si trae EXACTAMENTE 5 campos; las filas rotas se caen. La marca viaja en una fila completa.",
+    "goal": "De formularios.txt imprime ÚNICAMENTE las filas con EXACTAMENTE 5 campos (la marca viaja en una).",
+    "keywords": [
+      "awk",
+      "NF",
+      "filtro",
+      "campos"
+    ],
+    "hints": [
+      "NF (sin $) es el NÚMERO de campos de la fila actual: compárralo en el patrón.",
+      "NF==5 filtra la fila «sana»; las rotas (4 o 6 campos) no pasan.",
+      "awk 'NF == 5 {print}' formularios.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'NF == 5 {print}' f",
+        "desc": "filas con exactamente 5 campos"
+      },
+      {
+        "cmd": "awk 'NF < 3 {print}' f",
+        "desc": "filas rotas: menos de 3 campos"
+      }
+    ],
+    "teach": "El patrón NF condicional es la CARTA DE SALUD del registro: con NF-in/guard detects rotas, truncadas y filas que sobran sin tocar el ELSE.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'NF == 5 {print}' /home/agent/formularios.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "NF == 5 {print} /home/agent/formularios.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'NF == 5 {print}' /home/agent/formularios.txt"
+  },
+  {
+    "id": "awk-l53",
+    "track": "awk",
+    "index": 53,
+    "title": "El token largo",
+    "subtitle": "length($NF): medir el último campo",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El registro guarda tokens al final; los kunst LARGOS (más de 8 caracteres) son los secretos. Ahí viaja la marca.",
+    "goal": "De tokens.txt imprime las filas cuyo ÚLTIMO campo supere 8 caracteres (la marca viaja en una: es un token largo).",
+    "keywords": [
+      "awk",
+      "length",
+      "último",
+      "filtro"
+    ],
+    "hints": [
+      "length($NF) mide la LONGITUD del último campo; compárrala en el patrón.",
+      "La cadena de 24 hex de la marca siempre supera 8: esa fila pasa el filtro.",
+      "awk 'length($NF) > 8 {print}' tokens.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'length($NF) > 8 {print}' f",
+        "desc": "filas con último campo largo"
+      }
+    ],
+    "teach": "length() en el GUARD es el compass de calibración del texto: tokens/sessiones/IDs de tamaño ⁪min⁪imo se filtran sin éxito algo regex.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'length($NF) > 8 {print}' /home/agent/tokens.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "length($NF) > 8 {print} /home/agent/tokens.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'length($NF) > 8 {print}' /home/agent/tokens.txt"
+  },
+  {
+    "id": "awk-l54",
+    "track": "awk",
+    "index": 54,
+    "title": "El prefijo ZM",
+    "subtitle": "substr() en el guard",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "Los códigos del almacén MEZclan series; a las filas cuyo código EMPIEZA con ZM se las expedis hacia la zona segura. La marca viaja en una de ellas.",
+    "goal": "De codigos.txt imprime Únicamente las filas cuyo PRIMER campo empieza por «ZM» (los 2 primeros caracteres de la columna 1): la marca viaja en una.",
+    "keywords": [
+      "awk",
+      "substr",
+      "prefijo",
+      "guard"
+    ],
+    "hints": [
+      "substr($1, 1, 2) recorta los DOS primeros caracteres del 1.er campo; compárralo en el guard.",
+      "El equivalente regex sería /^ZM/ anclado al inicio de la línea; con substr NO necesitas regex.",
+      "awk 'substr($1, 1, 2) == \"ZM\" {print}' codigos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'substr($1, 1, 2) == \"XX\" {print}' f",
+        "desc": "filas cuyo 1.er campo empieza por XX"
+      }
+    ],
+    "teach": "substr() en el GUARD es el mecanismo de REGLAS por prefijo (códigos, SKU, rutas). Es lectura directa cuando la posición fija se conoce.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'substr($1, 1, 2) == \"ZM\" {print}' /home/agent/codigos.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "substr($1, 1, 2) == \"ZM\" {print} /home/agent/codigos.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'substr($1, 1, 2) == \"ZM\" {print}' /home/agent/codigos.txt"
+  },
+  {
+    "id": "awk-l55",
+    "track": "awk",
+    "index": 55,
+    "title": "La normalización de columnas",
+    "subtitle": "BEGIN{OFS} + composición de salida",
+    "xp": 50,
+    "difficulty": 2,
+    "brief": "El visor quiere UNIFICAR el formato «ID | ESTADO» aunque la fila tenga muchos campos del medio: awk recomponniendo con OFS. La marca viaja como estado.",
+    "goal": "De inventario.txt imprime dos columnas separadas por \" | \": el PRIMER campo y el ÚLTIMO campo de cada fila (la marca viaja en el último de una).",
+    "keywords": [
+      "awk",
+      "OFS",
+      "BEGIN",
+      "columnas"
+    ],
+    "hints": [
+      "BEGIN { OFS = \" | \"} define el separador de SALIDA: los print con comas lo usan.",
+      "print $1, $NF emite 1.er campo y último con el OFS enmedio — el central se descarta.",
+      "awk 'BEGIN { OFS = \" | \" } { print $1, $NF }' inventario.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN{OFS=\" | \"} {print $1, $NF}' f",
+        "desc": "recompone 1.º y último campo"
+      },
+      {
+        "cmd": "awk 'BEGIN{OFS=\",\"} {print $3,$1}' f",
+        "desc": "reordena y cambia separador"
+      }
+    ],
+    "teach": "El par BEGIN{OFS} + print $1, $NF es el reconstructor de columnas: normaliza formatos antes de un export u otro tool. $NF absorbe catálogos con muchos campos.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { OFS = \" | \" } { print $1, $NF }' /home/agent/inventario.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { OFS = \" | \" } { print $1, $NF } /home/agent/inventario.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { OFS = \" | \" } { print $1, $NF }' /home/agent/inventario.txt"
+  },
+  {
+    "id": "awk-l56",
+    "track": "awk",
+    "index": 56,
+    "title": "El código escondido",
+    "subtitle": "match() + RSTART + RLENGTH",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "Cada fila tiene un código embebido de cualquier manera: DOS MAYÚSCULAS + guion + 4 dígitos. Awk puede localizarlos SIN saber en qué columna. La marca viaja en una fila final aparte.",
+    "goal": "De codigos.txt: 1) extrae de cada fila el código que casa con DOS mayúsculas + guion + 4 dígitos; 2) además imprimé la línea completa donde aparezca la palabra \"marca\" (la marca viaja ahí).",
+    "keywords": [
+      "awk",
+      "match",
+      "RSTART",
+      "RLENGTH",
+      "substr"
+    ],
+    "hints": [
+      "match($0, REGEX) devuelve posición y fija RSTART (inicio) y RLENGTH (largo) del TROSO casado.",
+      "substr($0, RSTART, RLENGTH) recoge EXACTAMENTE el fragmento casa — sin depender de columnas.",
+      "El guard /marca/ { print } imprime la fila completa de la firma (otro if por modo).",
+      "awk '{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) } /marca/ { print }' codigos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'match($0, /[A-Z]{2}-[0-9]{4}/) {print substr($0, RSTART, RLENGTH)}' f",
+        "desc": "extrae el trozo casado"
+      },
+      {
+        "cmd": "awk 'match($0, re) {print RSTART, RLENGTH}' f",
+        "desc": "posición y largo del match"
+      }
+    ],
+    "teach": "El trípode match + RSTART/RLENGTH + substr es el extractor UNIVERSAL de awk: cuando el dato NO vive en una columna fija, es el plan B. La regex ERE compatible con awk es potente.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) } /marca/ { print }' /home/agent/codigos.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) } /marca/ { print } /home/agent/codigos.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) } /marca/ { print }' /home/agent/codigos.txt"
+  },
+  {
+    "id": "awk-l57",
+    "track": "awk",
+    "index": 57,
+    "title": "El bloque entero",
+    "subtitle": "BEGIN{RS=\"\"} con registros de párrafo",
+    "xp": 55,
+    "difficulty": 3,
+    "brief": "El informe tiene PÁRRAFOS quasi-espaciados por línea vacía; el «sello» vive dentro de UN bloque entero. Cambiar RS hace que awk razona a nivel BLOQUE.",
+    "goal": "De informe.txt imprime COMPLETO el párrafo (grupo de líneas separadas por línea en blanco) que contiene la palabra \"sello\" (la marca viaja en el bloque).",
+    "keywords": [
+      "awk",
+      "RS",
+      "párrafo",
+      "bloque"
+    ],
+    "hints": [
+      "RS es el separador de REGISTRO; por defecto es \"\n\" (línea). Con RS=\"\" cada PÁRRAFO es un registro.",
+      "En ese modo, /sello/ busca EN TODO EL BLOQUE y print emite el bloque COMPLETO (sin la línea vacía).",
+      "awk 'BEGIN { RS = \"\" } /sello/ { print }' informe.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN{RS=\"\"} /p/ {print}' f",
+        "desc": "imprime párrafos que contienen el patrón"
+      },
+      {
+        "cmd": "awk 'BEGIN{RS=\"\"} {print NR, NF}' f",
+        "desc": "cuántas párrafos y palabras por bloque"
+      }
+    ],
+    "teach": "El cambio de RS re-formula qué es «una línea» para awk: párrafos, mensajes multi-línea y bloques de config se procesan como UNA entidad. Es pivote para parsear correos y configs.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { RS = \"\" } /sello/ { print }' /home/agent/informe.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { RS = \"\" } /sello/ { print } /home/agent/informe.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { RS = \"\" } /sello/ { print }' /home/agent/informe.txt"
+  },
+  {
+    "id": "awk-l58",
+    "track": "awk",
+    "index": 58,
+    "title": "La matriz del stock",
+    "subtitle": "claves compuestas con FS + nota final",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "El stock se apila por CATEGORÍA y PRODUCTO: una clave compuesta es el resumen justo. La marca viaja en una nota final aparte.",
+    "goal": "De stocks.txt sumar el 3.er campo agrupando por los DOS primeros (clave compuesta) y al final imprimir la nota (cat nota.txt). La marca viaja en la nota.",
+    "keywords": [
+      "awk",
+      "array",
+      "FS",
+      "clave compuesta"
+    ],
+    "hints": [
+      "Las claves asociativas aceptan CONCATENACIÓN: t[$1 FS $2] crea POR CATEGORÍA+PRODUCTO un bucket sinón del «GROUP BY» a dos niveles.",
+      "FS dentro de la clave garantiza unido SIN ambiguos; en END recorres el tensor y sumas por bucket.",
+      "awk '{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] }' stocks.txt; cat nota.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{t[$1 FS $2]+=$3} END {for (k in t) print k, t[k]}' f",
+        "desc": "sumas por dos columnas (GROUP BY 2)"
+      },
+      {
+        "cmd": "awk '{t[$1 FS $2]++} END {for (k in t) print k, t[k]}' f",
+        "desc": "conteos por dos columnas"
+      }
+    ],
+    "teach": "El tensor compuesto t[a FS b] es el modo BI de awk: cubeta jerárquica que GNU sort y uniq no alcanzan en una sola pasada. La nota cat es la evidencia que tras procesos necesita un lugar en el stream.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] }' /home/agent/stocks.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] } /home/agent/stocks.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/nota.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/nota.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] }' /home/agent/stocks.txt; cat /home/agent/nota.txt"
+  },
+  {
+    "id": "awk-l59",
+    "track": "awk",
+    "index": 59,
+    "title": "El principio y su consecuencia",
+    "subtitle": "getline: lee la fila siguiente",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Cada vez que el log dice «comienzo», la fila SIGUIENTE es el resultado. La marca viaja en una de las consequentes. getline lee ADELANTE sin doble pasada.",
+    "goal": "De flujo.txt: por cada fila que dice \"comienzo\", imprime ESA fila y ADEMÁS la fila siguiente inmediata (la marca viaja en una de las siguientes).",
+    "keywords": [
+      "awk",
+      "getline",
+      "siguiente",
+      "pares"
+    ],
+    "hints": [
+      "getline CONSUME la siguiente línea dentro del mismo bloque de patrón: print la actual, getline la siguiente, print la siguiente.",
+      "Sin getline tendrías que doble-pasar o escribir split con index; aquí todo en una pasada.",
+      "awk '/comienzo/ { print; getline; print }' flujo.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '/p/ {print; getline; print}' f",
+        "desc": "coincidente + fila siguiente"
+      },
+      {
+        "cmd": "awk '{cur=$0; if (getline nxt) print cur, nxt}' f",
+        "desc": "pares fila i, i+1"
+      }
+    ],
+    "teach": "getline es el telescopio de la fila N+1: patrones «evento → consecuencia» (BEGIN/END, request/response) se resuelven en UNA pasada. Con retención: st = $0; más la forma st = getline var.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '/comienzo/ { print; getline; print }' /home/agent/flujo.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "/comienzo/ { print; getline; print } /home/agent/flujo.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '/comienzo/ { print; getline; print }' /home/agent/flujo.txt"
+  },
+  {
+    "id": "awk-l60",
+    "track": "awk",
+    "index": 60,
+    "title": "El fichero elegido",
+    "subtitle": "FILENAME == ARGV[2]: solo el segundo",
+    "xp": 60,
+    "difficulty": 3,
+    "brief": "Awk procesa DOS ficheros en una llamada; solo interesa el SEGUNDO. FILENAME y ARGV volunteex el filtro. La marca viaja en una fila rota del segundo.",
+    "goal": "Con UNA llamada a awk sobre par.txt y rota.txt, imprime SOLAMENTE las filas del SEGUNDO fichero que estén rotas (menos de 3 campos): la marca viaja en una.",
+    "keywords": [
+      "awk",
+      "FILENAME",
+      "ARGV",
+      "multifichero"
+    ],
+    "hints": [
+      "FILENAME es el fichero que awk está leyendo AHORA; ARGV[2] es el SEGUNDO argumento (par=1, rota=2).",
+      "El guard compuesto filtra BOTH a la vez: fichero correcto + filas armas rotas.",
+      "awk 'FILENAME == ARGV[2] && NF < 3 { print }' par.txt rota.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'FILENAME == ARGV[2] {print}' f1 f2",
+        "desc": "procesa SOLO el segundo fichero"
+      },
+      {
+        "cmd": "awk 'FILENAME ~ /rota/ {print}' f1 rota.txt",
+        "desc": "selector por nombre con regex"
+      }
+    ],
+    "teach": "El selector por FILENAME convierte awk en herramienta MULTI-FICHERO con reglas distintas por fichero: prepocesa A y audita B SIN servicios intermedios de cat.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'FILENAME == ARGV[2] && NF < 3 { print }' /home/agent/par.txt /home/agent/rota.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "FILENAME == ARGV[2] && NF < 3 { print } /home/agent/par.txt /home/agent/rota.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'FILENAME == ARGV[2] && NF < 3 { print }' /home/agent/par.txt /home/agent/rota.txt"
+  },
+  {
+    "id": "awk-l61",
+    "track": "awk",
+    "index": 61,
+    "title": "El importe mínimo",
+    "subtitle": "mínimo dinámico con $0 capturado",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "Los importes llegan empidadados; el MÍNIMO es el cupón premiado. La marca viaja en la FILA COMPLETA del menor (con su fecha y firma).",
+    "goal": "De importes.txt imprime la FILA COMPLETA cuyo 2.º campo (el importe) sea el MÍNIMO de todos (la marca viaja en esa fila).",
+    "keywords": [
+      "awk",
+      "mínimo",
+      "max",
+      "fila"
+    ],
+    "hints": [
+      "m = 1e9 arranca el comparador por ARRIBA de todo importe razonable.",
+      "$2 + 0 fuerza NUMÉRICO (evita la comparación de strings); al mejor, GUARDA $0 COMPLETO, no solo el número.",
+      "En END imprimes ln: la fila completa ganadora (ahí viaja la marca).",
+      "awk 'BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print ln }' importes.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN{m=1e9} {if ($2+0<m) {m=$2+0; ln=$0}} END{print ln}' f",
+        "desc": "fila completa del EXTREMO"
+      },
+      {
+        "cmd": "awk 'BEGIN{m=-1e9} {if ($2+0>m) {m=$2+0; ln=$0}} END{print ln}' f",
+        "desc": "idem para el MÁXIMO"
+      }
+    ],
+    "teach": "Guardar $0 (la fila entera) en variable en vez de reconstruir $1..$NF deja una capación limpia: max/min + devolución de la FILA. `1e9` es el techo inicial de los imports de laboratorio.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print ln }' /home/agent/importes.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print ln } /home/agent/importes.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { m = 1e9 } { if ($2 + 0 < m) { m = $2 + 0; ln = $0 } } END { print ln }' /home/agent/importes.txt"
+  },
+  {
+    "id": "awk-l62",
+    "track": "awk",
+    "index": 62,
+    "title": "El diferencial",
+    "subtitle": "comparación ENTRE columnas",
+    "xp": 60,
+    "difficulty": 4,
+    "brief": "Cada fila trae el objetivo (col 3) y el RESULTADO (col 4): a las que SUPERAN se les abre válvula. La marca viaja en una fila que supera.",
+    "goal": "De objetivos.txt imprime las filas donde la columna 4 sea MAYOR que la 3 (comparación entre campos, no contra umbral fijo): la marca viaja en una.",
+    "keywords": [
+      "awk",
+      "comparación",
+      "columnas",
+      "KPI"
+    ],
+    "hints": [
+      "En el GUARD los campos se comparan NUMÉRICAMENTE: $4 > $3 pregunta «superó su objetivo?».",
+      "El umbral NO es fijo: viaja en la propia fila (por eso no sirve $4 > 50).",
+      "awk '$4 > $3 { print }' objetivos.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '$4 > $3 {print}' f",
+        "desc": "filas donde col4 supera col3"
+      }
+    ],
+    "teach": "La comparación CAMPO a CAMPO es el estado real de un KPI: objetivo vs resultado de la MISMA fila. Awk procesa cada fila aislada — es ideal para ese patrón de auto-regla.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '$4 > $3 { print }' /home/agent/objetivos.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "$4 > $3 { print } /home/agent/objetivos.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '$4 > $3 { print }' /home/agent/objetivos.txt"
+  },
+  {
+    "id": "awk-l63",
+    "track": "awk",
+    "index": 63,
+    "title": "La etiqueta del saldo",
+    "subtitle": "ternario de awk + emisión conservando fila",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El balance por fila decide su etiqueta: ganancia o pérdida según el 2.º campo ≥ 0. Y la fila marcada viaja intacta en el listado.",
+    "goal": "De balance.txt imprime cada fila SEGUIDA de su etiqueta (‹ganancia› si $2 ≥ 0, ‹pérdida› en caso contrario) como último campo: la marca viaja en una fila.",
+    "keywords": [
+      "awk",
+      "ternario",
+      "etiqueta",
+      "anotación"
+    ],
+    "hints": [
+      "El ternario cond ? a : b emite la ETIQUETA al final de cada fila sin if/else en bloque.",
+      "print $0, (...) conserva la FILA COMPLETA y añada el OSCULO recoleccto en su cola.",
+      "awk '{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") }' balance.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\")}' f",
+        "desc": "etiqueta por fila con ternario"
+      }
+    ],
+    "teach": "El ternario hace clase anotador por columna: emite ANOTACIONES (tags) a cada fila en una llamada. La fila marcada viaja completa — insensible si pades por head/grep después.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") }' /home/agent/balance.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") } /home/agent/balance.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") }' /home/agent/balance.txt"
+  },
+  {
+    "id": "awk-l64",
+    "track": "awk",
+    "index": 64,
+    "title": "El espejo inverso",
+    "subtitle": "array por NR + END en reversa",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "El patrón «0 1 2 3 …» es el NÚMERO de tanteo. La marca viaja en la ÚLTIMA fila del fichero (invierte el orden y se lee PRIMERA al imprimir en reverso).",
+    "goal": "De bitacora.txt imprime TODAS las filas en ORDEN INVERSO (última primera) usando awk con array + END (sin tac). La marca viaja en la última fila.",
+    "keywords": [
+      "awk",
+      "array",
+      "NR",
+      "reverse"
+    ],
+    "hints": [
+      "En el bloque de patrón guardas a[NR] = $0: array secuencial indexado por número de línea.",
+      "En END recorres DESCENDENTE: for (i = NR; i >= 1; i--) print a[i].",
+      "awk '{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] }' bitacora.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '{a[NR]=$0} END {for (i=NR; i>=1; i--) print a[i]}' f",
+        "desc": "voltea el fichero con awk"
+      },
+      {
+        "cmd": "awk '{a[NR]=$0} END {for (i=1; i<=NR; i++) print a[i]}' f",
+        "desc": "idem pero en orden normal"
+      }
+    ],
+    "teach": "El array por NR + END recorrió es el REVERSE de awk (anti-tac). Es el lookup de awk a nivel de índices: los arrays son O(1) y el recorrido manual da CONTROL TOTAL del orden.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] }' /home/agent/bitacora.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] } /home/agent/bitacora.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] }' /home/agent/bitacora.txt"
+  },
+  {
+    "id": "awk-l65",
+    "track": "awk",
+    "index": 65,
+    "title": "El escribano de comentarios",
+    "subtitle": "guard ^# + contador + último dato",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "La config mezcla COMENTARIOS (líneas #) con datos; hay que transcribir los comentarios y al final dar el CONTEO de datos y el ÚLTIMO dato (la marca viaja en él).",
+    "goal": "De config.txt: imprime las líneas de COMENTARIOS (las #) tal cual; al final imprime el número de filas de DATOS y la ÚLTIMA de ellas (la marca viaja en la última).",
+    "keywords": [
+      "awk",
+      "next",
+      "comentarios",
+      "contador"
+    ],
+    "hints": [
+      "El guard /^#/ { print; next } imprime el comentario y SALTA a la siguiente fila (no cuenta como dato).",
+      "Para datos: n++ cuenta y last = $0 RETIENE la última. En END imprimes ambos.",
+      "awk '/^#/ { print; next } { n++; last = $0 } END { print n, last }' config.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '/^#/ {print; next} {n++; last=$0} END {print n, last}' f",
+        "desc": "comentarios + conteo de datos"
+      },
+      {
+        "cmd": "awk '/^#/ {next} 1' f",
+        "desc": "purga comentarios y dejava el resto"
+      }
+    ],
+    "teach": "next es el corto-circuito de awk: en la misma pasada CLASIFICA (comentario vs dato), acumula (n) y MEMORIbase la marca final (last). Es el patrón de proxy de config marcado.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '/^#/ { print; next } { n++; last = $0 } END { print n, last }' /home/agent/config.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "/^#/ { print; next } { n++; last = $0 } END { print n, last } /home/agent/config.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '/^#/ { print; next } { n++; last = $0 } END { print n, last }' /home/agent/config.txt"
+  },
+  {
+    "id": "awk-l66",
+    "track": "awk",
+    "index": 66,
+    "title": "El producto de la escalera",
+    "subtitle": "acumulador multiplicativo + marcador aparte",
+    "xp": 65,
+    "difficulty": 4,
+    "brief": "Cada factor del fichero multiplica el acumulador: el PRODUCTO total es métrica. La marca viaja en un fichero aparte (escalera.txt) que se cierra al final.",
+    "goal": "De factores.txt imprime el PRODUCTO de todos los valores de la 1.a columna; a continuación muestra la escalera.txt completa (la marca viaja allí).",
+    "keywords": [
+      "awk",
+      "producto",
+      "acumulador",
+      "end"
+    ],
+    "hints": [
+      "p = 1 (identidad del producto); en cada fila p *= $1 multiplica y acumula.",
+      "En END imprimes el producto TOTAL; el cat firma la evidencia pedida.",
+      "awk 'BEGIN { p = 1 } { p *= $1 } END { print p }' factores.txt; cat escalera.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'BEGIN{p=1} {p*=$1} END {print p}' f",
+        "desc": "producto acumulado de la columna 1"
+      },
+      {
+        "cmd": "awk 'BEGIN{c=1} {c+=$1} END {print c}' f",
+        "desc": "sumatoria equivalent"
+      }
+    ],
+    "teach": "El acumulador no siempre es suma: product, max-key, jelly-score… todos cambian la INICIALIZACIÓN y el operador (+=, *=, >). Ese encadenado con cat de un marcador externo es el canon de scripts de auditoría vs informes.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'BEGIN { p = 1 } { p *= $1 } END { print p }' /home/agent/factores.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "BEGIN { p = 1 } { p *= $1 } END { print p } /home/agent/factores.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      },
+      {
+        "raw": "cat /home/agent/escalera.txt",
+        "cmds": [
+          {
+            "cmd": "cat",
+            "args": "/home/agent/escalera.txt",
+            "why": "vuelca el contenido de un fichero al stdout (concatenar archivos)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'BEGIN { p = 1 } { p *= $1 } END { print p }' /home/agent/factores.txt; cat /home/agent/escalera.txt"
+  },
+  {
+    "id": "awk-l67",
+    "track": "awk",
+    "index": 67,
+    "title": "Little boss: el campeón por categoría",
+    "subtitle": "array best[] con la FILA completa",
+    "xp": 110,
+    "difficulty": 5,
+    "brief": "Cada categoría del campeonato designa a SU fila ganadora (la de mayor puntaje, col 2). La marca viaja en la fila GANADORA de una categoría.",
+    "goal": "De campeones.txt imprime, POR CATEGORÍA (1.a col), la FILA COMPLETA con el MAYOR 2.º campo: la marca viaja en una fila ganadora.",
+    "keywords": [
+      "awk",
+      "boss",
+      "max",
+      "grupo",
+      "ranking"
+    ],
+    "hints": [
+      "Dos arrays en paralelo: mx[categoría] guarda la mejor PUNTUACIÓN; best[categoría] guarda la FILA COMPLETA ($0) ganadora.",
+      "La condición entra si la categoría es NUEVA (!($1 in mx)) o supera al actual.",
+      "En END recorres best[]: una fila ganadora por categoría (la marca viaja en una).",
+      "awk '!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for (k in best) print best[k] }' campeones.txt"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk '!($1 in mx) || $2+0 > mx[$1] {mx[$1]=$2+0; best[$1]=$0} END {for (k in best) print best[k]}' f",
+        "desc": "fila campeona por categoría"
+      },
+      {
+        "cmd": "awk '{if ($2+0>mx[$1]) mx[$1]=$2+0} END {for (k in mx) print k, mx[k]}' f",
+        "desc": "solo el máximo numérico por grupo"
+      }
+    ],
+    "teach": "El par mx/best es el patrón de RANKING bidimensional: máximo por clave sin sort, conservando la evidencia (fila). Superset del max global de la ronda 5: aquí es 1 dominante POR GRUPO.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk '!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for (k in best) print best[k] }' /home/agent/campeones.txt",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for (k in best) print best[k] } /home/agent/campeones.txt",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk '!($1 in mx) || $2 + 0 > mx[$1] { mx[$1] = $2 + 0; best[$1] = $0 } END { for (k in best) print best[k] }' /home/agent/campeones.txt"
+  },
+  {
+    "id": "awk-l68",
+    "track": "awk",
+    "index": 68,
+    "title": "¡Boss!: la transición crítica",
+    "subtitle": "guar prev + getline: OK→KO y su consecuencia",
+    "xp": 150,
+    "difficulty": 5,
+    "brief": "El history del servicio cae en KO tras estar OK; la fila de ESTADO KO y SU fila siguiente (donde viaja la marca) son la evidencia de incidente.",
+    "goal": "De estado.log detecta la TRANSICIÓN: la fila donde el ESTADO es KO (última columna) habiendo estado la ANTERIOR en OK — imprime ESA fila y la fila SIGUIENTE (la marca viaja en la siguiente).",
+    "keywords": [
+      "awk",
+      "boss",
+      "getline",
+      "transición",
+      "estado"
+    ],
+    "hints": [
+      "prev memoriza la FILA ANTERIOR ({ prev = $0 } al final del bloque); el guard la compara con la ACTUAL.",
+      "prev ~ / OK / && $2 == \"KO\" = la anterior llevaba OK y la ACTUAL es KO: eso es la TRANSICIÓN.",
+      "Al encontrarla print la fila KO y getline + print la SIGUIENTE (la marca viaja ahí).",
+      "awk 'prev ~ / OK / && $2 == \"KO\" { print; getline; print } { prev = $0 }' estado.log"
+    ],
+    "cheatsheet": [
+      {
+        "cmd": "awk 'prev ~ / OK / && $2 == \"KO\" {print; getline; print} {prev=$0}' f",
+        "desc": "transición OK→KO + fila siguiente"
+      },
+      {
+        "cmd": "awk '{prev=$0}' f",
+        "desc": "memoria de estado de la fila anterior"
+      }
+    ],
+    "teach": "El boss une MEMORIA DE ESTADO (prev) + TELESCOPIO (getline): máquina de estados mínima necesaria para detectar transiciones en logs (downgrades, handoffs,休假). Es el nivel de consolidación de todo lo practicado con awk.",
+    "examples": [
+      {
+        "title": "salida esperada (flag demo)",
+        "content": "FLAG{round6-demo}"
+      }
+    ],
+    "steps": [
+      {
+        "raw": "awk 'prev ~ / OK / && $2 == \"KO\" { print; getline; print } { prev = $0 }' /home/agent/estado.log",
+        "cmds": [
+          {
+            "cmd": "awk",
+            "args": "prev ~ / OK / && $2 == \"KO\" { print; getline; print } { prev = $0 } /home/agent/estado.log",
+            "why": "procesa texto campo a campo: divide cada línea por espacios/tabs y actúa con un mini-lenguaje ({print $2} imprime el 2.º campo;END se ejecuta al final)",
+            "flags": []
+          }
+        ]
+      }
+    ],
+    "raw": "awk 'prev ~ / OK / && $2 == \"KO\" { print; getline; print } { prev = $0 }' /home/agent/estado.log"
   },
   {
     "id": "grep-pro-l1",

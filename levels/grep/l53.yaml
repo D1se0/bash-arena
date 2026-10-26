@@ -1,0 +1,48 @@
+id: grep-l53
+track: grep
+index: 53
+title: La empresa exacta
+subtitle: "-x: línea completa + vecina con -A"
+xp: 50
+difficulty: 2
+brief: "El tablero lista estados: la mayoría son variantes; la línea EXACTA de proceder es
+  un baliza — y SU siguiente línea trae la marca."
+goal: 'De tareas.log imprime la línea EXACTA "procedimiento: completo" (y solo ella) JUNTO
+  con la línea que la sigue en el fichero: la marca viaja en la vecina.'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 53" "Grep"
+  cat > /home/agent/tareas.log <<EOF
+  procedimiento: completo parcial
+  procedimiento: completo revisado
+  procedimiento: completo cancelado
+  procedimiento: completo cancelado
+  procedimiento: completo
+  sello de vecindad flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/tareas.log
+solution: "grep -A 1 -x 'procedimiento: completo' /home/agent/tareas.log"
+hints:
+  - "-x ANCLA el patrón a toda la línea: para casar, la línea debe COINCIDIR de principio
+    a fin."
+  - Las variantes «parcial», «revisado», «cancelado» caen por no ser *exactamente* iguales.
+  - "Con -A 1 la coincidenciaexacta ARRASTRA su vecina siguiente: ahí está la marca."
+  - "grep -A 1 -x 'procedimiento: completo' tareas.log"
+teach: "-x + -A forman el par preciso: primero recorto a la línea ÚNICA; luego me quedo
+  con quien llega después. Es el reconocimiento de EVENTO + EFECTO sobre un log."
+cheatsheet:
+  - cmd: grep -x 'toda la línea' f
+    desc: coincide solo si ES la línea entera
+  - cmd: grep -A 1 -x 'toda la línea' f
+    desc: línea exacta + vecina de abajo
+keywords:
+  - grep
+  - -x
+  - -A
+  - exacta
+  - vecina
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

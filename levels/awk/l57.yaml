@@ -1,0 +1,54 @@
+id: awk-l57
+track: awk
+index: 57
+title: El bloque entero
+subtitle: BEGIN{RS=""} con registros de párrafo
+xp: 55
+difficulty: 3
+brief: El informe tiene PÁRRAFOS quasi-espaciados por línea vacía; el «sello» vive dentro
+  de UN bloque entero. Cambiar RS hace que awk razona a nivel BLOQUE.
+goal: De informe.txt imprime COMPLETO el párrafo (grupo de líneas separadas por línea en
+  blanco) que contiene la palabra "sello" (la marca viaja en el bloque).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 57" "Awk"
+  cat > /home/agent/informe.txt <<EOF
+  titul del informe
+
+  primer bloque
+  línea de datos primera
+  línea de datos segunda
+
+  segundo bloque
+  sello oficial flag=$DOJO_FLAG
+
+  tercer bloque
+  fin
+  EOF
+  chown agent:agent /home/agent/informe.txt
+solution: awk 'BEGIN { RS = "" } /sello/ { print }' /home/agent/informe.txt
+hints:
+  - |-
+    RS es el separador de REGISTRO; por defecto es "
+    " (línea). Con RS="" cada PÁRRAFO es un registro.
+  - En ese modo, /sello/ busca EN TODO EL BLOQUE y print emite el bloque COMPLETO (sin la
+    línea vacía).
+  - awk 'BEGIN { RS = "" } /sello/ { print }' informe.txt
+teach: "El cambio de RS re-formula qué es «una línea» para awk: párrafos, mensajes
+  multi-línea y bloques de config se procesan como UNA entidad. Es pivote para parsear
+  correos y configs."
+cheatsheet:
+  - cmd: awk 'BEGIN{RS=""} /p/ {print}' f
+    desc: imprime párrafos que contienen el patrón
+  - cmd: awk 'BEGIN{RS=""} {print NR, NF}' f
+    desc: cuántas párrafos y palabras por bloque
+keywords:
+  - awk
+  - RS
+  - párrafo
+  - bloque
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

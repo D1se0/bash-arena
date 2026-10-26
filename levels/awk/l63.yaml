@@ -1,0 +1,43 @@
+id: awk-l63
+track: awk
+index: 63
+title: La etiqueta del saldo
+subtitle: ternario de awk + emisión conservando fila
+xp: 65
+difficulty: 4
+brief: "El balance por fila decide su etiqueta: ganancia o pérdida según el 2.º campo ≥ 0.
+  Y la fila marcada viaja intacta en el listado."
+goal: "De balance.txt imprime cada fila SEGUIDA de su etiqueta (‹ganancia› si $2 ≥ 0,
+  ‹pérdida› en caso contrario) como último campo: la marca viaja en una fila."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 63" "Awk"
+  cat > /home/agent/balance.txt <<EOF
+  cta1 100 total
+  cta2 -40 saldo
+  cta3 15 apunte flag=$DOJO_FLAG
+  cta4 -2 rojo
+  EOF
+  chown agent:agent /home/agent/balance.txt
+solution: "awk '{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") }' /home/agent/balance.txt"
+hints:
+  - "El ternario cond ? a : b emite la ETIQUETA al final de cada fila sin if/else en
+    bloque."
+  - print $0, (...) conserva la FILA COMPLETA y añada el OSCULO recoleccto en su cola.
+  - "awk '{ print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\") }' balance.txt"
+teach: "El ternario hace clase anotador por columna: emite ANOTACIONES (tags) a cada fila
+  en una llamada. La fila marcada viaja completa — insensible si pades por head/grep
+  después."
+cheatsheet:
+  - cmd: "awk '{print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\")}' f"
+    desc: etiqueta por fila con ternario
+keywords:
+  - awk
+  - ternario
+  - etiqueta
+  - anotación
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

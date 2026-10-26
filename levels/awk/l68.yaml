@@ -1,0 +1,53 @@
+id: awk-l68
+track: awk
+index: 68
+title: "¡Boss!: la transición crítica"
+subtitle: "guar prev + getline: OK→KO y su consecuencia"
+xp: 150
+difficulty: 5
+brief: El history del servicio cae en KO tras estar OK; la fila de ESTADO KO y SU fila
+  siguiente (donde viaja la marca) son la evidencia de incidente.
+goal: "De estado.log detecta la TRANSICIÓN: la fila donde el ESTADO es KO (última columna)
+  habiendo estado la ANTERIOR en OK — imprime ESA fila y la fila SIGUIENTE (la marca viaja
+  en la siguiente)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 68" "Awk"
+  cat > /home/agent/estado.log <<EOF
+  09:01 OK estable
+  09:02 OK estable
+  09:03 OK estable
+  09:04 KO degradado
+  09:05 recuperado flag=$DOJO_FLAG
+  09:06 OK estable
+  09:07 OK estable
+  EOF
+  chown agent:agent /home/agent/estado.log
+solution: awk 'prev ~ / OK / && $2 == "KO" { print; getline; print } { prev = $0 }'
+  /home/agent/estado.log
+hints:
+  - prev memoriza la FILA ANTERIOR ({ prev = $0 } al final del bloque); el guard la
+    compara con la ACTUAL.
+  - 'prev ~ / OK / && $2 == "KO" = la anterior llevaba OK y la ACTUAL es KO: eso es la
+    TRANSICIÓN.'
+  - Al encontrarla print la fila KO y getline + print la SIGUIENTE (la marca viaja ahí).
+  - awk 'prev ~ / OK / && $2 == "KO" { print; getline; print } { prev = $0 }' estado.log
+teach: "El boss une MEMORIA DE ESTADO (prev) + TELESCOPIO (getline): máquina de estados
+  mínima necesaria para detectar transiciones en logs (downgrades, handoffs,休假). Es el
+  nivel de consolidación de todo lo practicado con awk."
+cheatsheet:
+  - cmd: awk 'prev ~ / OK / && $2 == "KO" {print; getline; print} {prev=$0}' f
+    desc: transición OK→KO + fila siguiente
+  - cmd: awk '{prev=$0}' f
+    desc: memoria de estado de la fila anterior
+keywords:
+  - awk
+  - boss
+  - getline
+  - transición
+  - estado
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

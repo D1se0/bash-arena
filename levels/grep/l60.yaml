@@ -1,0 +1,40 @@
+id: grep-l60
+track: grep
+index: 60
+title: La sombra legítima
+subtitle: "-l: ¿en QUÉ fichero está?"
+xp: 60
+difficulty: 3
+brief: 'Entre las sombras solo una se legitima: el ÚNICO fichero que contiene el
+  "sello"对所有 los demás pasan. La marca viaja dentro de él.'
+goal: 'Del directorio sombras/ localiza el ÚNICO fichero que contiene "sello" (sin
+  imprimir sus líneas) y muestra SU CONTENIDO completo: la marca viaja dentro.'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 60" "Grep"
+  mkdir -p /home/agent/sombras
+  echo "nota fantasma_alpha" > /home/agent/sombras/a.log
+  echo "sello oficial flag=$DOJO_FLAG" > /home/agent/sombras/b.log
+  echo "nota fantasma_beta" > /home/agent/sombras/c.log
+  echo "nota fantasma_gamma" > /home/agent/sombras/d.log
+  chown agent:agent /home/agent/sombras/*.log
+solution: f=$(grep -l 'sello' /home/agent/sombras/*.log); cat "$f"
+hints:
+  - -l imprime SOLO el nombre del fichero que casó (una vez), no sus líneas.
+  - Captúralo en una variable con $() y SACA su contenido completo.
+  - f=$(grep -l 'sello' sombras/*.log); cat "$f"
+teach: "-l + variable + cat es el REGRESO al fichero: grep te dice DÓNDE; tú decides QUÉ
+  ver. Modo de trabajo canónico en repos de tamaño logarítico."
+cheatsheet:
+  - cmd: f=$(grep -l p dir/*); cat "$f"
+    desc: localiza y muestra el fichero
+keywords:
+  - grep
+  - -l
+  - fichero
+  - localizar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

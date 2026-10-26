@@ -1,0 +1,50 @@
+id: grep-l67
+track: grep
+index: 67
+title: "El little boss: Plantilla literal"
+subtitle: "-Ff: lista literal desde fichero"
+xp: 110
+difficulty: 5
+brief: La plantilla contiene FRASES EXACTAS cargadas de metacaracteres; el flujo
+  boardioesto tracks que matchean. Con -F y -f a la vez, la lista y el filtro operan en
+  MODOFIJO. La marca viaja en la línea que casó.
+goal: "Del directorio actual: imprime las líneas de flujo.log cuyo texto contenga ALGUNA
+  de las frases LITERALES de plantilla.txt (sin interpretar regex; la marca viaja en
+  una)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 67" "Grep"
+  cat > /home/agent/plantilla.txt <<EOF
+  [evacuación] *cruda*
+  fase (1?) -{telecom}-
+  EOF
+  cat > /home/agent/flujo.log <<EOF
+  arranque normal del flujo
+  [evacuación] *cruda* señal alerta flag=$DOJO_FLAG
+  otra línea sin plantilla
+  fase (1?) -{telecom}- encendida flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/plantilla.txt /home/agent/flujo.log
+solution: grep -Ff /home/agent/plantilla.txt /home/agent/flujo.log
+hints:
+  - "-F activa modo fijo; -f toma los PATRONES de un fichero: las dos juntas = lista
+    literal de frases."
+  - Sin -F, los corchetes o el asterisco de la plantilla se interpretarían como regex y NO
+    casarían.
+  - grep -Ff plantilla.txt flujo.log
+teach: "-Ff es el mini-boss del filtrado por LISTA: cuando los patrones son FRASES de
+  config o SQL y no regex, es el único modo sano. Prueba quitar -F y mira cómo explota."
+cheatsheet:
+  - cmd: grep -Ff literales.txt f
+    desc: lista de frases LITERALES como patrones
+keywords:
+  - grep
+  - -F
+  - -f
+  - boss
+  - literal
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

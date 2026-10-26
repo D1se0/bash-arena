@@ -1,0 +1,47 @@
+id: grep-l54
+track: grep
+index: 54
+title: Los antecedentes
+subtitle: "-B: lo que pasó ANTES"
+xp: 55
+difficulty: 2
+brief: Al cerrar cada bloque del informe electronically borra las evidencias… pero las 2
+  líneas ANTERIORES al cierre siguen en disco. La marca viaja en una de ellas.
+goal: De informe.txt imprime las DOS líneas PREVIAS a cada "cierre de bloque" (la marca
+  viaja en una de las previas; la de cierre también puede aparecer).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 54" "Grep"
+  cat > /home/agent/informe.txt <<EOF
+  inicio del bloque 1
+  dato intermedio
+  resumen con marca flag=$DOJO_FLAG
+  anexo sin valor
+  cierre de bloque
+  fin del archivo
+  EOF
+  chown agent:agent /home/agent/informe.txt
+solution: grep -B 2 'cierre de bloque' /home/agent/informe.txt
+hints:
+  - "-B N arranca el corte ANTES de la coincidencia: imprime N líneas previas + la línea
+    de la coincidencia."
+  - Con -B 2, para «cierre de bloque» incluyes «resumen con marca…» y «anexo sin valor».
+  - grep -B 2 'cierre de bloque' informe.txt
+teach: "-B es el «contexto_previo»: inservible para informes de rollo-lineaal.» cuando el
+  HECHO está EN LA LÍNEA de cierre pero la marca viajó ANTES. Usado hasta el abeedo en
+  logs de auditoría real."
+cheatsheet:
+  - cmd: grep -B N p f
+    desc: N líneas previas + la coincidencia
+  - cmd: grep -C N p f
+    desc: N antes y N después (simétrico)
+keywords:
+  - grep
+  - -B
+  - contexto
+  - previas
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

@@ -1,0 +1,48 @@
+id: awk-l60
+track: awk
+index: 60
+title: El fichero elegido
+subtitle: "FILENAME == ARGV[2]: solo el segundo"
+xp: 60
+difficulty: 3
+brief: Awk procesa DOS ficheros en una llamada; solo interesa el SEGUNDO. FILENAME y ARGV
+  volunteex el filtro. La marca viaja en una fila rota del segundo.
+goal: "Con UNA llamada a awk sobre par.txt y rota.txt, imprime SOLAMENTE las filas del
+  SEGUNDO fichero que estén rotas (menos de 3 campos): la marca viaja en una."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 60" "Awk"
+  cat > /home/agent/par.txt <<EOF
+  fila sana de par
+  par dos buena
+  par tres rota
+  EOF
+  cat > /home/agent/rota.txt <<EOF
+  fila buena uno
+  fila buena dos
+  dato flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/par.txt /home/agent/rota.txt
+solution: awk 'FILENAME == ARGV[2] && NF < 3 { print }' /home/agent/par.txt /home/agent/rota.txt
+hints:
+  - FILENAME es el fichero que awk está leyendo AHORA; ARGV[2] es el SEGUNDO argumento
+    (par=1, rota=2).
+  - "El guard compuesto filtra BOTH a la vez: fichero correcto + filas armas rotas."
+  - awk 'FILENAME == ARGV[2] && NF < 3 { print }' par.txt rota.txt
+teach: "El selector por FILENAME convierte awk en herramienta MULTI-FICHERO con reglas
+  distintas por fichero: prepocesa A y audita B SIN servicios intermedios de cat."
+cheatsheet:
+  - cmd: awk 'FILENAME == ARGV[2] {print}' f1 f2
+    desc: procesa SOLO el segundo fichero
+  - cmd: awk 'FILENAME ~ /rota/ {print}' f1 rota.txt
+    desc: selector por nombre con regex
+keywords:
+  - awk
+  - FILENAME
+  - ARGV
+  - multifichero
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

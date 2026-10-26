@@ -1,0 +1,44 @@
+id: grep-l64
+track: grep
+index: 64
+title: El corte asimétrico
+subtitle: "-B 3 -A 1: distinto antes y después"
+xp: 60
+difficulty: 4
+brief: "El error crítico deja 3 líneas de antecedentes y solo 1 de reacción — la marca
+  viaja JUSTO DETRÁS. El corte no es simétrico: se afina por separado."
+goal: De secuencia.log imprime cada "ERROR crítico" con TRES líneas previas y UNA
+  posterior (la marca viaja en la posterior).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 64" "Grep"
+  cat > /home/agent/secuencia.log <<EOF
+  capa 1 iniciando
+  capa 2 sin alerta
+  capa 3 midiendo
+  capa 4 ERROR crítico
+  eco posterior flag=$DOJO_FLAG
+  modo de recuperación
+  fin del archivo
+  EOF
+  chown agent:agent /home/agent/secuencia.log
+solution: grep -B 3 -A 1 'ERROR crítico' /home/agent/secuencia.log
+hints:
+  - "Puedes combinar -B y -A en el MISMO grep: -B 3 -A 1 imprime 3 antes y 1 después."
+  - "La simetría NO es obligatoria: se ajusta al corte que tu auditoría necesita."
+  - grep -B 3 -A 1 'ERROR crítico' secuencia.log
+teach: "-B N -A M es el corte quirúrgico FACTURADO: prefacio y reacción por separado.
+  Prevalece antes que -C cuando el mapa del incidente es asimétrico."
+cheatsheet:
+  - cmd: grep -B 3 -A 1 p f
+    desc: "corte asimétrico: 3 antes, 1 después"
+keywords:
+  - grep
+  - -B
+  - -A
+  - asimétrico
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

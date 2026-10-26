@@ -1,0 +1,50 @@
+id: awk-l58
+track: awk
+index: 58
+title: La matriz del stock
+subtitle: claves compuestas con FS + nota final
+xp: 60
+difficulty: 3
+brief: "El stock se apila por CATEGORÍA y PRODUCTO: una clave compuesta es el resumen
+  justo. La marca viaja en una nota final aparte."
+goal: De stocks.txt sumar el 3.er campo agrupando por los DOS primeros (clave compuesta) y
+  al final imprimir la nota (cat nota.txt). La marca viaja en la nota.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 58" "Awk"
+  cat > /home/agent/stocks.txt <<EOF
+  electronico widget 10
+  electronico widget 5
+  electronico cable 3
+  mueble silla 4
+  mueble mesa 9
+  mueble silla 6
+  EOF
+  echo "nota de auditoria flag=$DOJO_FLAG" > /home/agent/nota.txt
+  chown agent:agent /home/agent/stocks.txt /home/agent/nota.txt
+solution: awk '{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] }'
+  /home/agent/stocks.txt; cat /home/agent/nota.txt
+hints:
+  - "Las claves asociativas aceptan CONCATENACIÓN: t[$1 FS $2] crea POR CATEGORÍA+PRODUCTO
+    un bucket sinón del «GROUP BY» a dos niveles."
+  - FS dentro de la clave garantiza unido SIN ambiguos; en END recorres el tensor y sumas
+    por bucket.
+  - awk '{ t[$1 FS $2] += $3 } END { for (k in t) print k, t[k] }' stocks.txt; cat nota.txt
+teach: "El tensor compuesto t[a FS b] es el modo BI de awk: cubeta jerárquica que GNU sort
+  y uniq no alcanzan en una sola pasada. La nota cat es la evidencia que tras procesos
+  necesita un lugar en el stream."
+cheatsheet:
+  - cmd: awk '{t[$1 FS $2]+=$3} END {for (k in t) print k, t[k]}' f
+    desc: sumas por dos columnas (GROUP BY 2)
+  - cmd: awk '{t[$1 FS $2]++} END {for (k in t) print k, t[k]}' f
+    desc: conteos por dos columnas
+keywords:
+  - awk
+  - array
+  - FS
+  - clave compuesta
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

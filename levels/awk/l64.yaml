@@ -1,0 +1,46 @@
+id: awk-l64
+track: awk
+index: 64
+title: El espejo inverso
+subtitle: array por NR + END en reversa
+xp: 65
+difficulty: 4
+brief: El patrón «0 1 2 3 …» es el NÚMERO de tanteo. La marca viaja en la ÚLTIMA fila del
+  fichero (invierte el orden y se lee PRIMERA al imprimir en reverso).
+goal: De bitacora.txt imprime TODAS las filas en ORDEN INVERSO (última primera) usando awk
+  con array + END (sin tac). La marca viaja en la última fila.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 64" "Awk"
+  cat > /home/agent/bitacora.txt <<EOF
+  vuelta 1
+  vuelta 2
+  vuelta 3
+  vuelta final flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/bitacora.txt
+solution: awk '{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] }'
+  /home/agent/bitacora.txt
+hints:
+  - "En el bloque de patrón guardas a[NR] = $0: array secuencial indexado por número de
+    línea."
+  - "En END recorres DESCENDENTE: for (i = NR; i >= 1; i--) print a[i]."
+  - awk '{ a[NR] = $0 } END { for (i = NR; i >= 1; i--) print a[i] }' bitacora.txt
+teach: "El array por NR + END recorrió es el REVERSE de awk (anti-tac). Es el lookup de
+  awk a nivel de índices: los arrays son O(1) y el recorrido manual da CONTROL TOTAL del
+  orden."
+cheatsheet:
+  - cmd: awk '{a[NR]=$0} END {for (i=NR; i>=1; i--) print a[i]}' f
+    desc: voltea el fichero con awk
+  - cmd: awk '{a[NR]=$0} END {for (i=1; i<=NR; i++) print a[i]}' f
+    desc: idem pero en orden normal
+keywords:
+  - awk
+  - array
+  - NR
+  - reverse
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

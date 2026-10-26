@@ -1,0 +1,44 @@
+id: awk-l54
+track: awk
+index: 54
+title: El prefijo ZM
+subtitle: substr() en el guard
+xp: 50
+difficulty: 2
+brief: Los códigos del almacén MEZclan series; a las filas cuyo código EMPIEZA con ZM se
+  las expedis hacia la zona segura. La marca viaja en una de ellas.
+goal: "De codigos.txt imprime Únicamente las filas cuyo PRIMER campo empieza por «ZM» (los
+  2 primeros caracteres de la columna 1): la marca viaja en una."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 54" "Awk"
+  cat > /home/agent/codigos.txt <<EOF
+  AB-1001-XY norte
+  ZM-2022-QA sur
+  CD-3033-ZW este
+  ZM-4044-FL oeste flag=$DOJO_FLAG
+  EF-5055-ZN centro
+  EOF
+  chown agent:agent /home/agent/codigos.txt
+solution: awk 'substr($1, 1, 2) == "ZM" {print}' /home/agent/codigos.txt
+hints:
+  - substr($1, 1, 2) recorta los DOS primeros caracteres del 1.er campo; compárralo en el
+    guard.
+  - El equivalente regex sería /^ZM/ anclado al inicio de la línea; con substr NO
+    necesitas regex.
+  - awk 'substr($1, 1, 2) == "ZM" {print}' codigos.txt
+teach: substr() en el GUARD es el mecanismo de REGLAS por prefijo (códigos, SKU, rutas).
+  Es lectura directa cuando la posición fija se conoce.
+cheatsheet:
+  - cmd: awk 'substr($1, 1, 2) == "XX" {print}' f
+    desc: filas cuyo 1.er campo empieza por XX
+keywords:
+  - awk
+  - substr
+  - prefijo
+  - guard
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

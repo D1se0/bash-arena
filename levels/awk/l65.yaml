@@ -1,0 +1,48 @@
+id: awk-l65
+track: awk
+index: 65
+title: El escribano de comentarios
+subtitle: guard ^# + contador + último dato
+xp: 65
+difficulty: 4
+brief: "La config mezcla COMENTARIOS (líneas #) con datos; hay que transcribir los
+  comentarios y al final dar el CONTEO de datos y el ÚLTIMO dato (la marca viaja en él)."
+goal: "De config.txt: imprime las líneas de COMENTARIOS (las #) tal cual; al final imprime
+  el número de filas de DATOS y la ÚLTIMA de ellas (la marca viaja en la última)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 65" "Awk"
+  cat > /home/agent/config.txt <<EOF
+  # sección principal
+  dato uno
+  # nota del admin
+  dato dos
+  dato tres flag=$DOJO_FLAG
+  # sección final
+  EOF
+  chown agent:agent /home/agent/config.txt
+solution: awk '/^#/ { print; next } { n++; last = $0 } END { print n, last }'
+  /home/agent/config.txt
+hints:
+  - El guard /^#/ { print; next } imprime el comentario y SALTA a la siguiente fila (no
+    cuenta como dato).
+  - "Para datos: n++ cuenta y last = $0 RETIENE la última. En END imprimes ambos."
+  - awk '/^#/ { print; next } { n++; last = $0 } END { print n, last }' config.txt
+teach: "next es el corto-circuito de awk: en la misma pasada CLASIFICA (comentario vs
+  dato), acumula (n) y MEMORIbase la marca final (last). Es el patrón de proxy de config
+  marcado."
+cheatsheet:
+  - cmd: awk '/^#/ {print; next} {n++; last=$0} END {print n, last}' f
+    desc: comentarios + conteo de datos
+  - cmd: awk '/^#/ {next} 1' f
+    desc: purga comentarios y dejava el resto
+keywords:
+  - awk
+  - next
+  - comentarios
+  - contador
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

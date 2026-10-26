@@ -1,0 +1,46 @@
+id: grep-l65
+track: grep
+index: 65
+title: El goteo de dominios
+subtitle: -oE con clase + nota al margen
+xp: 60
+difficulty: 4
+brief: La agenda cruza CONTACTO@DOMINIO; te interesan SOLO los dominios @dojo.lan… y al
+  final hay una nota al margen que contiene la marca.
+goal: De contactos.txt extrae SOLO los dominios (fragmentos que empezando por la @ van
+  seguidos de letras/números/puntos) y después imprime la línea "nota clave" (la marca
+  viaja en ella).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 65" "Grep"
+  cat > /home/agent/contactos.txt <<EOF
+  ana@dojo.lan casual
+  pepe@gmail.com externo
+  lucia@dojo.lan interna
+  muestra otro texto
+  nota clave flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/contactos.txt
+solution: grep -oE '@[A-Za-z0-9.]+' /home/agent/contactos.txt; grep 'nota clave'
+  /home/agent/contactos.txt
+hints:
+  - -o imprime solo el TEXTO casado; -E con clase @[A-Za-z0-9.]+ captura @ +
+    alfanuméricos/puntos.
+  - Después, el grep del segundo bloque imprime la línea de la marca (del mismo fichero).
+  - grep -oE '@[A-Za-z0-9.]+' contactos.txt; grep 'nota clave' contactos.txt
+teach: El patrón de «token pegado» con clases + -o es la EXTRACCIÓN por excelencia
+  (dominios, tags, refs). Combinado con un segundo grep del marcador obtienes extracción +
+  evidencia en una sola llamada.
+cheatsheet:
+  - cmd: grep -oE '@[A-Za-z0-9.]+' f
+    desc: extrae solo el fragmento casado
+keywords:
+  - grep
+  - -oE
+  - dominios
+  - extracción
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

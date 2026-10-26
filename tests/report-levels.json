@@ -1,85 +1,15 @@
 {
-  "generated": "2026-10-25T14:42:44.292Z",
-  "total": 11,
-  "ok": 11,
+  "generated": "2026-10-26T09:27:48.927Z",
+  "total": 1,
+  "ok": 1,
   "fail": 0,
   "results": [
     {
-      "name": "awk/l3.yaml",
+      "name": "grep/l68.yaml",
       "ok": true,
       "exitCode": 0,
       "abs": "",
       "secs": 2
-    },
-    {
-      "name": "awk/l30.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
-    },
-    {
-      "name": "awk/l31.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 2
-    },
-    {
-      "name": "awk/l32.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 2
-    },
-    {
-      "name": "awk/l33.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 2
-    },
-    {
-      "name": "awk/l34.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
-    },
-    {
-      "name": "awk/l35.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
-    },
-    {
-      "name": "awk/l36.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
-    },
-    {
-      "name": "awk/l37.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
-    },
-    {
-      "name": "awk/l38.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 2
-    },
-    {
-      "name": "awk/l39.yaml",
-      "ok": true,
-      "exitCode": 0,
-      "abs": "",
-      "secs": 1
     }
   ]
 }

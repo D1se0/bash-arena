@@ -7,7 +7,7 @@ import HowItWorks from './pages/HowItWorks';
 import Deploy from './pages/Deploy';
 import Technical from './pages/Technical';
 import Extras from './pages/Extras';
-// página de soluciones arrastra el catálogo entero (406 niveles) y cheatsheet lleva sus ~70 fichas: carga diferida
+// página de soluciones arrastra el catálogo entero (536 niveles) y cheatsheet lleva sus ~70 fichas: carga diferida
 const Soluciones = lazy(() => import('./pages/Soluciones'));
 const Cheatsheet = lazy(() => import('./pages/Cheatsheet'));
 import { searchIndex, SearchHit } from './search';

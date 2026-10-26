@@ -1,0 +1,44 @@
+id: grep-l52
+track: grep
+index: 52
+title: Palabra exacta
+subtitle: "-w: la coincidencia completa"
+xp: 50
+difficulty: 2
+brief: El fichero es un zoo de derivados «fallo», «fallos», «fallo2026»… solo con LA
+  PALABRA CASI SIN PEGAMENTO es legítima y ahí viaja la marca.
+goal: De acciones.txt imprime ÚNICAMENTE las líneas que contienen la PALABRA «fallo» como
+  palabra completa (no derivados ni mezclas).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 52" "Grep"
+  cat > /home/agent/acciones.txt <<EOF
+  sondeo fallo leve
+  make cierra el registro fallos
+  afin fallo2026 fuera de plazo
+  bancos sin fallo; sin aviso flag=$DOJO_FLAG
+  media fallo_media a controlar
+  EOF
+  chown agent:agent /home/agent/acciones.txt
+solution: grep -w 'fallo' /home/agent/acciones.txt
+hints:
+  - -w solo casa cuando el patrón está rodeado por límites de palabra (letras, números o _
+    cuentan como pegamento).
+  - "Con -w, «fallos» y «fallo2026» NO casan «fallo»: el pegamento de detrás mata la
+    coincidencia."
+  - grep -w 'fallo' acciones.txt
+teach: "-w es el antídoto contra el «casi»: cuando buscas un token EXACTO entre derivados,
+  evita recortados a MessageBox y falso-positivos de subsegún."
+cheatsheet:
+  - cmd: grep -w p f
+    desc: coincidencia con palabra completa
+keywords:
+  - grep
+  - -w
+  - palabra
+  - límites
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

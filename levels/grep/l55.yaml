@@ -1,0 +1,43 @@
+id: grep-l55
+track: grep
+index: 55
+title: El bache simétrico
+subtitle: "-C: contexto a AMBOS lados"
+xp: 55
+difficulty: 2
+brief: El sensor bota un valor PICO cada cierto tramo; alrededor de cada pico hay ruido
+  útil. La marca viaja pegada a un pico (a un lado u otro).
+goal: 'De sensor.txt imprime cada línea "PICO" con UNA línea de contexto por cada lado
+  (antes y después): la marca viaja en el alrededor.'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 55" "Grep"
+  cat > /home/agent/sensor.txt <<EOF
+  lectura nivel 1
+  valor alto flag=$DOJO_FLAG
+  PICO latencia
+  lectura nivel 2
+  PICO memoria
+  lectura nivel 3
+  EOF
+  chown agent:agent /home/agent/sensor.txt
+solution: grep -C 1 'PICO' /home/agent/sensor.txt
+hints:
+  - "-C N es el atajo de -A N -B N: contexto SIMÉTRICO alrededor de la coincidencia."
+  - Con -C 1 los PICOs «latencia» y «memoria» traen su vecina; entre ellas, la marcada.
+  - grep -C 1 'PICO' sensor.txt
+teach: "-C 1 es el modo «zoom» del log: ver el pico SIN perder el vecino. Casi todos los
+  triajes de monitoreo (alerta + entorno) se montan con -C."
+cheatsheet:
+  - cmd: grep -C N p f
+    desc: "simétrico: N antes+N después"
+keywords:
+  - grep
+  - -C
+  - simétrico
+  - contexto
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

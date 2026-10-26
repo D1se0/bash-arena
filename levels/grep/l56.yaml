@@ -1,0 +1,42 @@
+id: grep-l56
+track: grep
+index: 56
+title: Laповід casing
+subtitle: "-i: mayúsculas no les interesa"
+xp: 55
+difficulty: 3
+brief: "La radio reporta la señal en cualquier formato: «señal», «SEÑAL», «Señal»… la
+  marca viaja en la línea CON LA MAYÚSCULA más ruidosa."
+goal: De rf.log imprime TODAS las líneas con «señal» IGNORENDO mayúsculas/minúsculas (la
+  marca viaja en una con mayúsculas).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 56" "Grep"
+  cat > /home/agent/rf.log <<EOF
+  la señal es débil
+  SEÑAL CONSTANTE
+  falsas señales abajo
+  ruido sin nada
+  SEÑAL MAXIMA flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/rf.log
+solution: grep -i 'señal' /home/agent/rf.log
+hints:
+  - "-i ignora el CASE: «señal» casa con «SEÑAL», «Señal», «sEñal»…"
+  - Sin -i, la línea mayúsculizada que trae la flag SE ESCAPA.
+  - grep -i 'señal' rf.log
+teach: "Cuidado: -i SÍ traga acentos FREE-UTF8 en la locale C.UTF-8 del dojo. La regla
+  práctica: si tu patrón describe CONCEPTOS (no exactas), -i siempre."
+cheatsheet:
+  - cmd: grep -i p f
+    desc: case-insensitive
+keywords:
+  - grep
+  - -i
+  - case
+  - mayúsculas
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

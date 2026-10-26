@@ -1,0 +1,48 @@
+id: grep-l51
+track: grep
+index: 51
+title: El censo de fallos
+subtitle: "-c: cuenta, no muestra"
+xp: 50
+difficulty: 2
+brief: "El turnero registra los accesos; interesa CUÁNTOS fallos hubo y verlos todos: la
+  marca viaja en uno de ellos."
+goal: De acceso.log imprime PRIMERO el CONTEO de líneas FAIL (solo el número) y a
+  continuación TODAS las líneas FAIL (la marca viaja en una).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 51" "Grep"
+  cat > /home/agent/acceso.log <<EOF
+  08:01 OK usuario root
+  08:02 FAIL usuario root flag=$DOJO_FLAG
+  08:03 FAIL usuario root
+  08:04 OK usuario alice
+  08:05 FAIL usuario alice
+  08:06 OK usuario bob
+  08:07 FAIL usuario bob
+  EOF
+  chown agent:agent /home/agent/acceso.log
+solution: grep -c 'FAIL' /home/agent/acceso.log; grep 'FAIL' /home/agent/acceso.log
+hints:
+  - "-c cambia el modo de salida: en vez de las líneas, imprime CUÁNTAS casan."
+  - El conteo va en la primera impresión; para las líneas completas ejecuta un grep normal
+    después (separados por ; desde tu terminal).
+  - grep -c 'FAIL' acceso.log; grep 'FAIL' acceso.log
+teach: "-c es el «říke « cuántas?» de grep: en auditores de rápido uso es la primera
+  métrica. Combinarlo con un grep de líneas completas te da conteo Y evidencia en una sola
+  pasada de flujo."
+cheatsheet:
+  - cmd: grep -c p f
+    desc: número de líneas que casan (no las líneas)
+  - cmd: grep -cv p f
+    desc: cuenta de las que NO casan
+keywords:
+  - grep
+  - -c
+  - contar
+  - conteo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

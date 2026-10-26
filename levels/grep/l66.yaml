@@ -1,0 +1,45 @@
+id: grep-l66
+track: grep
+index: 66
+title: El token de plaza
+subtitle: -E con clase POSIX + cuantificador
+xp: 65
+difficulty: 4
+brief: El fichero de visitantes tiene identidades con códigos de longitud variable; a los
+  de AL MENOS 3 dígitos seguidos se les concede acceso. La marca viaja en una de esas
+  filas.
+goal: "De visitantes.log imprime SOLO las líneas cuyo texto contenga TRES O MÁS dígitos
+  CONSECUTIVOS (clase POSIX numeral + cuantificador): la marca viaja en una."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 66" "Grep"
+  cat > /home/agent/visitantes.log <<EOF
+  visor 12 sin números extra
+  portero 101 admitido
+  planimetría normal
+  portero 9X escapado
+  comprobante 8123 escaneado flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/visitantes.log
+solution: grep -E '[[:digit:]]{3,}' /home/agent/visitantes.log
+hints:
+  - "[[:digit:]] es la clase POSIX de dígitos (fiable incluso en locales raras); {3,}
+    exige TRES O MÁS seguidos."
+  - '"12" y "9X" quedan fuera: no alcanzan las 3 cifras seguidas.'
+  - grep -E '[[:digit:]]{3,}' visitantes.log
+teach: "POSIX con cuantificador mezcla PORTABILIDAD y semana: en logs multilenguaje la
+  clase POSIX evita sorpresas de acento/locale. Tres cifras seguidas suele significar
+  «código de plaza» real."
+cheatsheet:
+  - cmd: grep -E '[[:digit:]]{3,}' f
+    desc: 3+ dígitos seguidos si o si
+keywords:
+  - grep
+  - posix
+  - "[[:digit:]]"
+  - cuantificador
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

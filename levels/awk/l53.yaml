@@ -1,0 +1,42 @@
+id: awk-l53
+track: awk
+index: 53
+title: El token largo
+subtitle: "length($NF): medir el último campo"
+xp: 50
+difficulty: 2
+brief: El registro guarda tokens al final; los kunst LARGOS (más de 8 caracteres) son los
+  secretos. Ahí viaja la marca.
+goal: "De tokens.txt imprime las filas cuyo ÚLTIMO campo supere 8 caracteres (la marca
+  viaja en una: es un token largo)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 53" "Awk"
+  cat > /home/agent/tokens.txt <<EOF
+  gw corto
+  gw media1
+  gw larguitito
+  gw superlongtokenito flag=$DOJO_FLAG
+  gw fin
+  EOF
+  chown agent:agent /home/agent/tokens.txt
+solution: awk 'length($NF) > 8 {print}' /home/agent/tokens.txt
+hints:
+  - length($NF) mide la LONGITUD del último campo; compárrala en el patrón.
+  - "La cadena de 24 hex de la marca siempre supera 8: esa fila pasa el filtro."
+  - awk 'length($NF) > 8 {print}' tokens.txt
+teach: "length() en el GUARD es el compass de calibración del texto: tokens/sessiones/IDs
+  de tamaño ⁪min⁪imo se filtran sin éxito algo regex."
+cheatsheet:
+  - cmd: awk 'length($NF) > 8 {print}' f
+    desc: filas con último campo largo
+keywords:
+  - awk
+  - length
+  - último
+  - filtro
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

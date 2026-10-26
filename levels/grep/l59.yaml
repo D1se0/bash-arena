@@ -1,0 +1,49 @@
+id: grep-l59
+track: grep
+index: 59
+title: El patrocinio del bloc
+subtitle: "-f: patrones desde fichero"
+xp: 60
+difficulty: 3
+brief: El equipo franco «vencidos» es una lista en disco; el registro rumana maneja
+  eventos. Recetea con TODAS las líneas cuyo texto COINCIDA con ALGÚN FAHREN?—, y una de
+  ellas trae la marca.
+goal: De registro.log imprime las líneas que coinciden con ALGÚN patrón de vencidos.txt
+  (la lista puede ser larga; los patrones viven en un fichero). La marca viaja en una de
+  las líneas.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 59" "Grep"
+  cat > /home/agent/vencidos.txt <<EOF
+  tick 101
+  tick 207
+  revocado 004
+  EOF
+  cat > /home/agent/registro.log <<EOF
+  evento normal rotativo
+  tick 101 en curso
+  evento normal segundo
+  revocado 004 a decisión flag=$DOJO_FLAG
+  tick 999 sin lista
+  EOF
+  chown agent:agent /home/agent/vencidos.txt /home/agent/registro.log
+solution: grep -f /home/agent/vencidos.txt /home/agent/registro.log
+hints:
+  - "-f FICHERO toma los patrones, uno por línea del fichero: grep los testea TODOS."
+  - Es el equivalente a 3 greps con OR pero sin límite arbitrario de patrones.
+  - grep -f vencidos.txt registro.log
+teach: "-f convierte grep en un MATCHER INSTEAD más: lista negra/liverpool por fichero,
+  una rol fila por patrón. Es la SEMILLA de la auditoría periódica."
+cheatsheet:
+  - cmd: grep -f patrones.txt f
+    desc: muchos patrones desde fichero
+keywords:
+  - grep
+  - -f
+  - fichero de patrones
+  - lista negra
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

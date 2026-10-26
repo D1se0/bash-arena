@@ -498,6 +498,35 @@ export const RAW: CsCmd[] = [
     ],
   },
 
+  {
+    cat: 'filter', name: 'grep: auditoría y catálogo', tag: 'contar, localizar y regresar (ronda 6)',
+    what: 'El segundo idioma de grep: métrica (-c por fichero + ranking), localización (-l) y REGRESO (cat del fichero ganador), listas de patrones (-f) en modo literal (-Ff), barrido de árboles filtrado (-r --include) y contextos asimétricos. Del «dónde está» al «qué contiene».',
+    syntax: 'grep [-cwlF] [-A N] [-B M] [-f lista] [--include glob] [ficheros…] ',
+    flags: [
+      { flag: '-c', detail: 'por VARIOS ficheros imprime "fichero:conteo": la base del ranking con sort -t: -k2 -nr | head -1' },
+      { flag: '-l', detail: 'solo el NOMBRE del fichero que casa: f=$(grep -l p dir/*); cat "$f" localiza y muestra el fichero — el «regreso»' },
+      { flag: '-f LISTA', detail: 'patrones desde un FICHERO (uno por línea): lista negra/marcas en el instante; con -F los patrones son LITERALES' },
+      { flag: '-Ff', detail: 'frases con metacaracteres ([ ], (*), $) como patrones LITERALES desde fichero: la plantilla EXACTA de la auditoria' },
+      { flag: '-r --include', detail: 'barrido recursivo limitado a los ficheros que encajen en el glob (solo *.log, yaml…)' },
+      { flag: '-h', detail: 'en multi-fichero SUPRIME el prefijo "fichero:" → un único stream limpio para pipes' },
+      { flag: '-w', detail: 'coincidencia de PALABRA COMPLETA: «fallo» no casa ni «fallos» ni «fallo2026» (sin regex ruidosa)' },
+      { flag: '-x', detail: 'el patrón debe EQUALDAR la línea ENTERA: recorta a la línea única entre variantes' },
+      { flag: '-B N -A M', detail: 'contexto ASIMÉTRICO (N antes, M después): el mapa real del incidente, no la simetría de -C' },
+      { flag: '-oE', detail: 'extracción de tokens: IP/domain/referencia como fragmento suelto + sort | uniq -c para el dominante' },
+    ],
+    examples: [
+      { cmd: 'grep -c FALLA logs/* | sort -t: -k2 -nr | head -1', explain: 'BALANZA entre ficheros: ¿cuál acumula más fallos? (grep-l68 boss, paso 1)' },
+      { cmd: 'grep FAIL "$f" | grep -oE "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+" | sort | uniq -c | sort -nr | head -1', explain: 'IP DOMINANTE dentro del fichero ganador: extracción + conteo (paso 2)' },
+      { cmd: 'grep "ip $ip" "$f" | grep OK', explain: 'REGRESO: la única conexón OK del atacante — ahí viaja la flag (paso 3)' },
+      { cmd: 'f=$(grep -l sello sombras/*); cat "$f"', explain: 'el fichero ÚNICO marcado: -l localiza, cat devuelve el contenido' },
+      { cmd: 'grep -Ff plantilla.txt flujo.log', explain: 'LITERAL + LISTA: las frases de la plantilla chocan tal cual, sin que la regex destroce [ ] (*), $' },
+      { cmd: 'grep -r --include "*.log" sello pool/', explain: 'árbol entero pero SOLO los .log: el TXT/YAML queda fuera de la pasada' },
+      { cmd: 'grep -E "^[0-9]+.*cierre de sesión$" bitacora.log', explain: 'DOBLE ANCLA: empieza por dígitos Y termina en el texto — validación de esquema por línea' },
+      { cmd: 'grep -w fallo acciones.txt', explain: 'la palabra completa: ni fallos ni fallo2026', },
+    ],
+    tips: ['-c sobre MÚLTIPLES ficheros produce «fichero:conteo»: ese formato ES el input del ranking; sobre un solo fichero solo imprime el número', '-oE es SELECTIVo: lo que imprime es solo el fragmento casado, no la línea — perfecto para uniq -c'],
+  },
+
 /* ══════════════ sed ══════════════ */
   {
     cat: 'sed', name: 'sed', tag: 'editor de streams en línea',
@@ -565,6 +594,29 @@ export const RAW: CsCmd[] = [
       { cmd: "awk '{print length($0), $0}' texto.txt | sort -nr | head", explain: 'las líneas MÁS LARGAS primero: la métrica de longitud es la clave del ranking' },
     ],
     tips: ['los PROGRAMAS awk van íntegros en comillas SIMPLES: \'{print $1}\' — para meter variables shell usa -v kw="$valor"', 'awk es indiferente a los espacios múltiples: $1 es el primer campo AUNQUE haya varios espacios entre columnas'],
+  },
+  {
+    cat: 'awk', name: 'awk: estado y ranking', tag: 'máquinas de estado y campeones por grupo (ronda 6)',
+    what: 'Idiomas de awk para escenarios reales: memoria del registro ANTERIOR (máquina de estados con prev), campeón POR GRUPO (dos arrays en paralelo), selección por FICHERO (FILENAME vs ARGV), párrafos con RS="", ranking invertido y anotaciones con ternario.',
+    syntax: "awk 'patrón {acción} {prev = $0}' [ficheros…]",
+    flags: [
+      { flag: 'FILENAME', detail: 'el fichero que awk está leyendo AHORA; compárralo con ARGV[1..N] para reglas distintas por fichero' },
+      { flag: 'ARGV', detail: 'el VECTOR de argumentos: ARGV[1] = primer fichero, así que FILENAME == ARGV[2] procesa SOLO el 2.' },
+      { flag: 'RS = ""', detail: 'un PÁRRAFO por registro (separa por líneas en blanco): /patrón/ busca en todo el bloque y print lo emite entero' },
+      { flag: 'prev = $0', detail: 'memoria del REGISTRO ANTERIOR: prev ~ / OK / && $2 == "KO" detecta la TRANSICIÓN en una sola pasada' },
+      { flag: 'getline', detail: 'lee la línea SIGUIENTE dentro del bloque: prev mira atrás, getline mira adelante; juntos cubren evento → consecuencia' },
+      { flag: 'next', detail: 'SALTA al siguiente registro sin ejecutar el resto de acciones: clasificadores (&lsof comentarios con ^#) sin if/else anidado' },
+    ],
+    examples: [
+      { cmd: "awk 'prev ~ / OK / && $2 == \"KO\" {print; getline; print} {prev=$0}' servicio.log", explain: 'BOSS: detecta la transición OK→KO, imprime esa fila y la CONSECUENCIA (donde viaja la evidencia)' },
+      { cmd: "awk '!($1 in mx) || $2+0 > mx[$1] {mx[$1]=$2+0; best[$1]=$0} END {for (k in best) print best[k]}' scores.txt", explain: 'CAMPEÓN POR GRUPO: dos arrays paralelos (métrica y fila completa) — el ranking sin sort' },
+      { cmd: "awk 'FILENAME == ARGV[2] && NF < 3 {print}' par.txt rota.txt", explain: 'MULTI-FICHERO con reglas por fichero: solo las filas ROTAS del 2.' },
+      { cmd: "awk 'BEGIN{RS=\"\"} /sello/ {print}' informe.txt", explain: 'PÁRRAFOS: emite el bloque ENTIRE que contiene el patrón — correos, mensajes multi-línea, configs' },
+      { cmd: "awk '{a[NR]=$0} END {for (i=NR; i>=1; i--) print a[i]}' bitacora.txt", explain: 'REVERSA manual (anti-tac): array indexado por NR y recorrido descendente en END — control total del orden' },
+      { cmd: "awk '{print $0, ($2 >= 0 ? \"ganancia\" : \"pérdida\")}' balance.txt", explain: 'TERNARIO etiqueta cada fila sin if/else; $0 conserva la línea intacta y añade la clase al final' },
+      { cmd: "awk '/^#/ {print; next} {n++; last=$0} END {print n, last}' config.txt", explain: 'CLASIFICA en una pasada: comentarios se emiten con next, los datos se cuentan y se recuerda el ÚLTIMO' },
+    ],
+    tips: ['el guard de prev se evalúa ANTES de {prev = $0}: por eso el bloque de memoria va ÚLTIMO en el programa', 'getline con variable (getline var) no sobreescribe $0 — elígelas si no quieres machacar los campos'],
   },
   {
     cat: 'awk', name: 'perl', tag: 'regex de vertederos (one-liners)',

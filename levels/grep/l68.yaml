@@ -1,0 +1,68 @@
+id: grep-l68
+track: grep
+index: 68
+title: "¡Boss!: la balanza de las fallas"
+subtitle: -c ranking → IP dominante → regreso OK con flag
+xp: 150
+difficulty: 5
+brief: Tres logs compiten; el que más FALLAS acumula es el punto de intrusión. Dentro de
+  él, la IP con más fallos logró UNA conexión OK — ahí viaja la marca.
+goal: "Del directorio logs/: 1) localiza el fichero con MÁS FALLAS (grep -c + sort +
+  head); 2) extrae la IP dominante de sus fallos (grep -oE + sort | uniq -c); 3) regresa
+  al fichero y imprime su ÚNICA línea OK de esa IP (la marca viaja en ella)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 68" "Grep"
+  mkdir -p /home/agent/logs
+  mkdir -p /home/agent/logs
+  cat > /home/agent/logs/alpha.log <<EOF
+  01:00 FAIL ip 10.0.0.1
+  01:01 FAIL ip 10.0.0.1
+  01:02 OK ip 10.0.0.2
+  EOF
+  cat > /home/agent/logs/beta.log <<EOF
+  03:00 FAIL ip 10.7.7.7
+  03:05 OK ip 10.7.7.8
+  EOF
+  cat > /home/agent/logs/gamma.log <<EOF
+  06:00 FAIL ip 10.0.0.5
+  06:01 FAIL ip 10.0.0.7
+  06:02 FAIL ip 10.0.0.5
+  06:03 FAIL ip 10.0.0.9
+  06:04 OK ip 10.0.0.5 flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/logs/*.log
+solution: "f=$(grep -c 'FAIL' /home/agent/logs/*.log | sort -t: -k2 -nr | head -1 | cut
+  -d: -f1); ip=$(grep 'FAIL' \"$f\" | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort
+  | uniq -c | sort -nr | head -1 | awk '{print $2}'); grep \"ip $ip\" \"$f\" | grep 'OK'"
+hints:
+  - "Paso 1: la BALANZA por fichero: f=$(grep -c FAIL logs/* | sort -t: -k2 -nr | head -1
+    | cut -d: -f1) → gamma."
+  - 'Paso 2: la IP dominante de los FAIL de $f: grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"
+    + sort | uniq -c | sort -nr | head -1 | awk {print $2}.'
+  - 'Paso 3: el REGRESO: grep "ip $ip" "$f" | grep OK → una única línea (la de la marca).'
+  - "f=$(grep -c 'FAIL' logs/* | sort -t: -k2 -nr | head -1 | cut -d: -f1); ip=$(grep
+    'FAIL' \"$f\" | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' | sort | uniq -c | sort
+    -nr | head -1 | awk '{print $2}'); grep \"ip $ip\" \"$f\" | grep 'OK'"
+teach: "El boss de round 6 encadena TRES grep por función distinta: -c métrica, -oE
+  extractor, -h filtro final etapa. Es el flujo completo de ratio→detalle→evidencia de un
+  SOC, todo con una sola herramienta."
+cheatsheet:
+  - cmd: "grep -c p dir/* | sort -t: -k2 -nr | head -1"
+    desc: fichero con más coincidencias
+  - cmd: grep p f | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq -c | sort -nr |
+      head -1
+    desc: IP dominante
+  - cmd: grep "ip $ip" f | grep OK
+    desc: "regreso: la única línea OK del atacante"
+keywords:
+  - grep
+  - boss
+  - c
+  - ranking
+  - uniq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

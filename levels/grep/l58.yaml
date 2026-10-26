@@ -1,0 +1,50 @@
+id: grep-l58
+track: grep
+index: 58
+title: El recolector recursivo
+subtitle: "-r --include: solo los .log"
+xp: 55
+difficulty: 3
+brief: El pool tiene mezcla de yaml, txt y logs; el sello está en el ÚNICO log. Barrer
+  TODO con find es fácil… pero grep puede hacerlo solo.
+goal: Recorre POOL/ de forma recursiva y hayarle la línea "sello del pool" limitándose a
+  los ficheros EXTENSIÓN .log (la marca viaja en el único log).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 58" "Grep"
+
+  mkdir -p /home/agent/pool/sub
+
+  echo "nota informativa txt" > /home/agent/pool/base.txt
+
+  echo "sello del pool flag=$DOJO_FLAG" > /home/agent/pool/rastreo.log
+
+  echo "nota del yaml" > /home/agent/pool/sub/meta.yaml
+
+  echo "eco redundante" > /home/agent/pool/sub/eco.log
+
+  chown agent:agent /home/agent/pool/base.txt /home/agent/pool/rastreo.log
+  /home/agent/pool/sub/meta.yaml /home/agent/pool/sub/eco.log
+solution: grep -r --include '*.log' 'sello del pool' /home/agent/pool
+hints:
+  - -r baja recursivo por el árbol; --include PATTERN filtra los ficheros por su NOMBRE
+    (glob).
+  - Sin --include, el txt y el yaml también se procesarían (harto ruido).
+  - grep -r --include '*.log' 'sello del pool' ../pool
+teach: "-r con --include es la navaja del «barrer árboles SIN find»: en un nutrido
+  catálogo la diferencia es el ruido que evita."
+cheatsheet:
+  - cmd: grep -r --include "*.log" p dir
+    desc: recursivo SOLO ficheros .log
+keywords:
+  - grep
+  - -r
+  - include
+  - recursivo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

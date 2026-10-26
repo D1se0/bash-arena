@@ -1,0 +1,43 @@
+id: awk-l55
+track: awk
+index: 55
+title: La normalización de columnas
+subtitle: BEGIN{OFS} + composición de salida
+xp: 50
+difficulty: 2
+brief: "El visor quiere UNIFICAR el formato «ID | ESTADO» aunque la fila tenga muchos
+  campos del medio: awk recomponniendo con OFS. La marca viaja como estado."
+goal: 'De inventario.txt imprime dos columnas separadas por " | ": el PRIMER campo y el
+  ÚLTIMO campo de cada fila (la marca viaja en el último de una).'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 55" "Awk"
+  cat > /home/agent/inventario.txt <<EOF
+  id1 stock normal activo
+  id2 depósito revisar
+  id3 kit roto inactivo
+  id4 caja entera mixto flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/inventario.txt
+solution: awk 'BEGIN { OFS = " | " } { print $1, $NF }' /home/agent/inventario.txt
+hints:
+  - 'BEGIN { OFS = " | "} define el separador de SALIDA: los print con comas lo usan.'
+  - print $1, $NF emite 1.er campo y último con el OFS enmedio — el central se descarta.
+  - awk 'BEGIN { OFS = " | " } { print $1, $NF }' inventario.txt
+teach: "El par BEGIN{OFS} + print $1, $NF es el reconstructor de columnas: normaliza
+  formatos antes de un export u otro tool. $NF absorbe catálogos con muchos campos."
+cheatsheet:
+  - cmd: awk 'BEGIN{OFS=" | "} {print $1, $NF}' f
+    desc: recompone 1.º y último campo
+  - cmd: awk 'BEGIN{OFS=","} {print $3,$1}' f
+    desc: reordena y cambia separador
+keywords:
+  - awk
+  - OFS
+  - BEGIN
+  - columnas
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

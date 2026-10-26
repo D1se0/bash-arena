@@ -1,0 +1,43 @@
+id: awk-l62
+track: awk
+index: 62
+title: El diferencial
+subtitle: comparación ENTRE columnas
+xp: 60
+difficulty: 4
+brief: "Cada fila trae el objetivo (col 3) y el RESULTADO (col 4): a las que SUPERAN se
+  les abre válvula. La marca viaja en una fila que supera."
+goal: "De objetivos.txt imprime las filas donde la columna 4 sea MAYOR que la 3
+  (comparación entre campos, no contra umbral fijo): la marca viaja en una."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 62" "Awk"
+  cat > /home/agent/objetivos.txt <<EOF
+  id1 previsto 50 real 40
+  id2 previsto 50 real 61
+  id3 previsto 30 real 25
+  id4 previsto 70 real 88 flag=$DOJO_FLAG
+  id5 previsto 20 real 20
+  EOF
+  chown agent:agent /home/agent/objetivos.txt
+solution: awk '$4 > $3 { print }' /home/agent/objetivos.txt
+hints:
+  - "En el GUARD los campos se comparan NUMÉRICAMENTE: $4 > $3 pregunta «superó su
+    objetivo?»."
+  - "El umbral NO es fijo: viaja en la propia fila (por eso no sirve $4 > 50)."
+  - awk '$4 > $3 { print }' objetivos.txt
+teach: "La comparación CAMPO a CAMPO es el estado real de un KPI: objetivo vs resultado de
+  la MISMA fila. Awk procesa cada fila aislada — es ideal para ese patrón de auto-regla."
+cheatsheet:
+  - cmd: awk '$4 > $3 {print}' f
+    desc: filas donde col4 supera col3
+keywords:
+  - awk
+  - comparación
+  - columnas
+  - KPI
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

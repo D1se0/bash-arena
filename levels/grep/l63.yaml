@@ -1,0 +1,44 @@
+id: grep-l63
+track: grep
+index: 63
+title: La fórmula literal
+subtitle: "-F: los metacaracteres NO rompen"
+xp: 60
+difficulty: 4
+brief: El config usa fragmentos rícos de metacaracteres tipo mod[$1](*) ; grep con regex
+  los descompone… a no ser que Uses el MODOFIJO. La marca viaja en esa línea.
+goal: De config.toml imprime SOLO la línea cuyo texto contiene EXACTAMENTE el fragmento
+  mod[$1](*) (los corchetes, paréntesis y asterisco son LITERAres).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 63" "Grep"
+  cat > /home/agent/config.toml <<EOF
+  modes = "normal"
+  mod_lift = true
+  mod[2](x) otra variante
+  fin del config
+  EOF
+  printf '%s
+  ' 'mod[$1](*) flag=$DOJO_FLAG' >> /home/agent/config.toml
+  chown agent:agent /home/agent/config.toml
+solution: grep -F 'mod[$1](*)' /home/agent/config.toml
+hints:
+  - "-F cambia a modo FIJO: el patrón se compara línea por línea TAL CUAL, sin regex."
+  - "Con corchetes y paréntesis, el mod RE interpreta [... ] etc. y tu patrón se rompe:
+    con -F no."
+  - grep -F 'mod[$1](*)' config.toml
+teach: "-F es el antídoto del metacaracter: cuando buscas código, yaml, sql u otras
+  sintaxis LLENAS de símbolos especiales, el modo fijo te salva. Más rápido además."
+cheatsheet:
+  - cmd: grep -F 'texto.tal_cual[*]' f
+    desc: coincidencia literal sin regex
+keywords:
+  - grep
+  - -F
+  - literal
+  - metacaracteres
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

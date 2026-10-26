@@ -1,0 +1,53 @@
+id: awk-l56
+track: awk
+index: 56
+title: El código escondido
+subtitle: match() + RSTART + RLENGTH
+xp: 55
+difficulty: 3
+brief: "Cada fila tiene un código embebido de cualquier manera: DOS MAYÚSCULAS + guion + 4
+  dígitos. Awk puede localizarlos SIN saber en qué columna. La marca viaja en una fila
+  final aparte."
+goal: 'De codigos.txt: 1) extrae de cada fila el código que casa con DOS mayúsculas +
+  guion + 4 dígitos; 2) además imprimé la línea completa donde aparezca la palabra "marca"
+  (la marca viaja ahí).'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 56" "Awk"
+  cat > /home/agent/codigos.txt <<EOF
+  detalle XY-1234 calle
+  mini AB-5678
+  eco sin código
+  ZZ-9999 completo
+  línea con marca flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/codigos.txt
+solution: awk '{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) }
+  /marca/ { print }' /home/agent/codigos.txt
+hints:
+  - match($0, REGEX) devuelve posición y fija RSTART (inicio) y RLENGTH (largo) del TROSO
+    casado.
+  - substr($0, RSTART, RLENGTH) recoge EXACTAMENTE el fragmento casa — sin depender de
+    columnas.
+  - El guard /marca/ { print } imprime la fila completa de la firma (otro if por modo).
+  - awk '{ if (match($0, /[A-Z]{2}-[0-9]{4}/)) print substr($0, RSTART, RLENGTH) } /marca/
+    { print }' codigos.txt
+teach: "El trípode match + RSTART/RLENGTH + substr es el extractor UNIVERSAL de awk:
+  cuando el dato NO vive en una columna fija, es el plan B. La regex ERE compatible con
+  awk es potente."
+cheatsheet:
+  - cmd: awk 'match($0, /[A-Z]{2}-[0-9]{4}/) {print substr($0, RSTART, RLENGTH)}' f
+    desc: extrae el trozo casado
+  - cmd: awk 'match($0, re) {print RSTART, RLENGTH}' f
+    desc: posición y largo del match
+keywords:
+  - awk
+  - match
+  - RSTART
+  - RLENGTH
+  - substr
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

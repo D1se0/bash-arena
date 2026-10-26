@@ -1,0 +1,49 @@
+id: grep-l57
+track: grep
+index: 57
+title: Stream limpio
+subtitle: "-h: multi-fichero SIN prefijo"
+xp: 55
+difficulty: 3
+brief: Tres diarios del mismo servicio llegan mezclados; cuando grep recibe varios
+  ficheros, PREPONDRÁ el nombre a cada línea — para unir el stream necesitas quitarlo.
+goal: 'Del directorio diario/ imprime las líneas "eco especial" (están en los .log) SIN el
+  prefijo de nombre de fichero: la marca viaja en una de ellas.'
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 57" "Grep"
+
+  mkdir -p /home/agent/diario
+
+  echo "ciclo normal 1" > /home/agent/diario/d1.log
+
+  echo "eco especial flag=$DOJO_FLAG" > /home/agent/diario/d2.log
+
+  echo "ciclo normal 2" > /home/agent/diario/d3.log
+
+  echo "solo texto lista" > /home/agent/diario/indice.txt
+
+  chown agent:agent /home/agent/diario/d1.log /home/agent/diario/d2.log
+  /home/agent/diario/d3.log /home/agent/diario/indice.txt
+solution: grep -h 'eco especial' /home/agent/diario/*.log
+hints:
+  - Con VARIOS ficheros, grep antepone "fichero:" por defecto; -h SUPRIME ese prefijo.
+  - Con patrón literal "eco especial" el índice.txt (que no matchea) ni molesta.
+  - grep -h 'eco especial' diario/*.log
+teach: "-h es el interruptor del «stream JOIN»: el resultado se comporta como UN solo log,
+  ideal para redirecciones y pipes de análisis."
+cheatsheet:
+  - cmd: grep -h p f1 f2
+    desc: sin prefijo de nombre de fichero
+keywords:
+  - grep
+  - -h
+  - stream
+  - multifichero
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

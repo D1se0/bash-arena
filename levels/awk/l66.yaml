@@ -1,0 +1,46 @@
+id: awk-l66
+track: awk
+index: 66
+title: El producto de la escalera
+subtitle: acumulador multiplicativo + marcador aparte
+xp: 65
+difficulty: 4
+brief: "Cada factor del fichero multiplica el acumulador: el PRODUCTO total es métrica. La
+  marca viaja en un fichero aparte (escalera.txt) que se cierra al final."
+goal: De factores.txt imprime el PRODUCTO de todos los valores de la 1.a columna; a
+  continuación muestra la escalera.txt completa (la marca viaja allí).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 66" "Awk"
+  cat > /home/agent/factores.txt <<EOF
+  2
+  3
+  4
+  5
+  EOF
+  echo "la escalera trae marca flag=$DOJO_FLAG" > /home/agent/escalera.txt
+  chown agent:agent /home/agent/factores.txt /home/agent/escalera.txt
+solution: awk 'BEGIN { p = 1 } { p *= $1 } END { print p }' /home/agent/factores.txt; cat
+  /home/agent/escalera.txt
+hints:
+  - p = 1 (identidad del producto); en cada fila p *= $1 multiplica y acumula.
+  - En END imprimes el producto TOTAL; el cat firma la evidencia pedida.
+  - awk 'BEGIN { p = 1 } { p *= $1 } END { print p }' factores.txt; cat escalera.txt
+teach: "El acumulador no siempre es suma: product, max-key, jelly-score… todos cambian la
+  INICIALIZACIÓN y el operador (+=, *=, >). Ese encadenado con cat de un marcador externo
+  es el canon de scripts de auditoría vs informes."
+cheatsheet:
+  - cmd: awk 'BEGIN{p=1} {p*=$1} END {print p}' f
+    desc: producto acumulado de la columna 1
+  - cmd: awk 'BEGIN{c=1} {c+=$1} END {print c}' f
+    desc: sumatoria equivalent
+keywords:
+  - awk
+  - producto
+  - acumulador
+  - end
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

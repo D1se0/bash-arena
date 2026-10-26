@@ -1,0 +1,42 @@
+id: awk-l51
+track: awk
+index: 51
+title: La cola del registro
+subtitle: "$NF: el último campo"
+xp: 50
+difficulty: 2
+brief: El catálogo termina siempre en estado; el último campo es el que manda. La marca
+  viaja en el campo final de una fila.
+goal: De catalogo.txt imprime el ÚLTIMO campo de cada línea (la marca viaja en el de una fila).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 51" "Awk"
+  cat > /home/agent/catalogo.txt <<EOF
+  ref oro activo
+  ref plata vendido
+  ref cobre activo
+  ref paladium mixto flag=$DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/catalogo.txt
+solution: awk '{print $NF}' /home/agent/catalogo.txt
+hints:
+  - "$NF es el ÚLTIMO campo (NF = número de campos): no importa cuántos haya."
+  - Es la receta para «cualquiera que sea la última palabra», sin contar la posición.
+  - awk '{print $NF}' catalogo.txt
+teach: "$NF libera el campo variable: parses de logs con número de columnas irregular
+  viven de $NF (y de $(NF-1) para la penúltima)."
+cheatsheet:
+  - cmd: awk '{print $NF}' f
+    desc: último campo
+  - cmd: awk '{print $(NF-1)}' f
+    desc: penúltimo campo
+keywords:
+  - awk
+  - NF
+  - último
+  - campo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}

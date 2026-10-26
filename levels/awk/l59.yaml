@@ -1,0 +1,48 @@
+id: awk-l59
+track: awk
+index: 59
+title: El principio y su consecuencia
+subtitle: "getline: lee la fila siguiente"
+xp: 60
+difficulty: 3
+brief: Cada vez que el log dice «comienzo», la fila SIGUIENTE es el resultado. La marca
+  viaja en una de las consequentes. getline lee ADELANTE sin doble pasada.
+goal: 'De flujo.txt: por cada fila que dice "comienzo", imprime ESA fila y ADEMÁS la fila
+  siguiente inmediata (la marca viaja en una de las siguientes).'
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 59" "Awk"
+  cat > /home/agent/flujo.txt <<EOF
+  comienzo del ciclo
+  resultado normal
+  otra rutina sin cosa
+  comienzo del salto
+  resultado marcado flag=$DOJO_FLAG
+  cierre del flujo
+  EOF
+  chown agent:agent /home/agent/flujo.txt
+solution: awk '/comienzo/ { print; getline; print }' /home/agent/flujo.txt
+hints:
+  - "getline CONSUME la siguiente línea dentro del mismo bloque de patrón: print la
+    actual, getline la siguiente, print la siguiente."
+  - Sin getline tendrías que doble-pasar o escribir split con index; aquí todo en una
+    pasada.
+  - awk '/comienzo/ { print; getline; print }' flujo.txt
+teach: "getline es el telescopio de la fila N+1: patrones «evento → consecuencia»
+  (BEGIN/END, request/response) se resuelven en UNA pasada. Con retención: st = $0; más la
+  forma st = getline var."
+cheatsheet:
+  - cmd: awk '/p/ {print; getline; print}' f
+    desc: coincidente + fila siguiente
+  - cmd: awk '{cur=$0; if (getline nxt) print cur, nxt}' f
+    desc: pares fila i, i+1
+keywords:
+  - awk
+  - getline
+  - siguiente
+  - pares
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round6-demo}
