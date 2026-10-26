@@ -13,6 +13,7 @@ logs/
 *.log
 /progreso/
 /backups/
+/.backups/
 .DS_Store
 playwright-report/
 test-results/

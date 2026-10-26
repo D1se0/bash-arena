@@ -1,0 +1,44 @@
+id: grep-l38
+track: grep
+index: 38
+title: El recolector de tokens
+subtitle: "-o: imprime cada match suelto"
+xp: 50
+difficulty: 2
+brief: El fichero de etapas resume el cruce en frases largas; necesitas SOLO las palabras
+  terminadas en «ión» — y entre elles viaja la marca.
+goal: "De etapas.txt imprime, una por línea, todos los tokens que casan con la ERE del
+  conteo: las palabras que acaban en «ión» y la marca FLAG{…}."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 38" "Grep"
+  cat > /home/agent/etapas.txt <<EOF
+  la revisión define la posición y la fusión final
+  la marca del round es $DOJO_FLAG
+  otras cadenas no interesan aquí, solo la evolución
+  EOF
+  chown agent:agent /home/agent/etapas.txt
+solution: grep -oE '[a-z]+ión|FLAG{[a-f0-9]+}' /home/agent/etapas.txt
+hints:
+  - "-o cambia la SALIDA: imprime cada coincidencia aislada, una por línea, sin el resto
+    de la línea."
+  - La ERE [a-z]+ión captura palabras completas terminadas en ión; añade la alternativa
+    del formato de la marca.
+  - grep -oE '[a-z]+ión|FLAG{[a-f0-9]+}' etapas.txt
+teach: "grep -o pasa de líneas a tokens: con sort | uniq -c te da la frecuencia exacta de
+  cualquier patrón en un corpus. Es el cimiento del análisis léxico en shell."
+cheatsheet:
+  - cmd: grep -oE 'REGEX' f
+    desc: solo los matches, uno por línea
+  - cmd: grep -o 'palabra' f | sort | uniq -c
+    desc: conteo de frecuencia por token
+keywords:
+  - grep
+  - -o
+  - tokens
+  - análisis
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

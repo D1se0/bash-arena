@@ -1,4 +1,4 @@
-71 ok · 0 fail
+87 ok · 0 fail
 
 terminal: prompt del nivel visible (WS → xterm)
 app: sin scroll horizontal
@@ -13,7 +13,7 @@ app: terminal ampliada a pantalla completa sobre el resto de la página
 fullscreen: ↑ trae el comando anterior y ←+Delete corrigen «cat .profile» sin ruido de bash
 app: Esc sale de la pantalla completa y la página vuelve
 navegador: abre con el catálogo de niveles por sesión/tracks
-navegador: búsqueda por término devuelve niveles relevantes (52 filas, 4 jugables)
+navegador: búsqueda por término devuelve niveles relevantes (74 filas, 4 jugables)
 navegador: la búsqueda muestra también niveles bloqueados (🔒 visible)
 navegador: «jugar» de un nivel salta a su session (procesado-l1)
 terminal: Ctrl+C con selección copia al portapapeles (sin SIGINT)
@@ -21,7 +21,8 @@ terminal: «next» tecleado avanza de nivel (procesado-l2)
 app móvil (390px): sin scroll horizontal
 docs /soluciones: catálogo completo de guías (≥240 niveles)
 docs /soluciones: la tarjeta expandida muestra pasos detallados y explicaciones
-docs /soluciones: búsqueda «awk» filtra a 56 nivel(es)
+docs /soluciones: búsqueda «awk» filtra a 79 nivel(es)
+docs /soluciones: chips de los 3 tracks nuevos presentes (Sysadmin, DNS y resolución, SQL / SQLite)
 docs /soluciones (390px): sin scroll horizontal
 docs / (1440px): sin scroll horizontal
 docs / (1440px): header sin envoltura (57px)
@@ -35,6 +36,8 @@ docs /tecnico (1440px): sin scroll horizontal
 docs /tecnico (1440px): header sin envoltura (57px)
 docs /extras (1440px): sin scroll horizontal
 docs /extras (1440px): header sin envoltura (57px)
+docs /cheatsheet (1440px): sin scroll horizontal
+docs /cheatsheet (1440px): header sin envoltura (57px)
 docs / (1024px): sin scroll horizontal
 docs / (1024px): header sin envoltura (57px)
 docs /aprende (1024px): sin scroll horizontal
@@ -47,12 +50,15 @@ docs /tecnico (1024px): sin scroll horizontal
 docs /tecnico (1024px): header sin envoltura (57px)
 docs /extras (1024px): sin scroll horizontal
 docs /extras (1024px): header sin envoltura (57px)
+docs /cheatsheet (1024px): sin scroll horizontal
+docs /cheatsheet (1024px): header sin envoltura (57px)
 docs / (390px): sin scroll horizontal
 docs /aprende (390px): sin scroll horizontal
 docs /funciona (390px): sin scroll horizontal
 docs /desplegar (390px): sin scroll horizontal
 docs /tecnico (390px): sin scroll horizontal
 docs /extras (390px): sin scroll horizontal
+docs /cheatsheet (390px): sin scroll horizontal
 docs-light /: fondo claro aplicado (rgb(238, 240, 244))
 docs-light /: sin bloques de código oscuros fijados a mano
 docs-light / (1440px): sin scroll horizontal
@@ -71,3 +77,13 @@ docs-light /tecnico (1440px): sin scroll horizontal
 docs-light /extras: fondo claro aplicado (rgb(238, 240, 244))
 docs-light /extras: sin bloques de código oscuros fijados a mano
 docs-light /extras (1440px): sin scroll horizontal
+docs-light /cheatsheet: fondo claro aplicado (rgb(238, 240, 244))
+docs-light /cheatsheet: sin bloques de código oscuros fijados a mano
+docs-light /cheatsheet (1440px): sin scroll horizontal
+app: botón «informe PDF del perfil» abre el modal
+app: PDF real descargado (bash-arena-informe-tester-arena-2026-10-25.pdf, cabecera %PDF-)
+app: PDF renderizado a PNG (tests/webshots/pdf-preview-*.png)
+docs /cheatsheet: 83 fichas de comandos montadas
+docs /cheatsheet: filtro «uniq -c» ⇒ 4 ficha(s)
+docs /cheatsheet: limpiar restaura todas las fichas
+docs /cheatsheet: 16 anclas de sección

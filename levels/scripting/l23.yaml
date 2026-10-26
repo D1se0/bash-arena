@@ -1,0 +1,41 @@
+id: scripting-l23
+track: scripting
+index: 23
+title: El while del csv
+subtitle: while IFS= read -r línea
+xp: 30
+difficulty: 2
+brief: "El while de línea en línea es el bucle de los CSV grandes: cada línea llega a una
+  variable y la marca sale al cat final."
+goal: Con while read, imprime cada línea de conjunto.txt (que lleva una con la marca).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 23" "Scripting"
+
+  printf ' Helena eres genial\n y también trabajada\n línea final $DOJO_FLAG\n' >
+  $HOME/conjunto.txt
+
+  chown agent:agent $HOME/conjunto.txt
+solution: while IFS= read -r l; do echo "$l"; done < $HOME/conjunto.txt
+hints:
+  - "El bucle estándar de línea a línea: while IFS= read -r línea; do …; done < fichero."
+  - IFS= preserva espacios al principio; -r evita interpretar \\ en el dato.
+  - while IFS= read -r l; do echo "$l"; done < conjunto.txt
+teach: read -r lee LINEA por LINEA (no palabra por palabra). < fichero alimenta el while,
+  y la variable en $" es cada línea entera.
+cheatsheet:
+  - cmd: while read -r l; do echo "$l"; done < f
+    desc: procesa línea a línea
+  - cmd: while read -r a b; do echo "$b"; done < f
+    desc: lee por campos (a=1.º, b=resto)
+keywords:
+  - while
+  - read
+  - línea
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

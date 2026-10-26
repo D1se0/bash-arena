@@ -1,0 +1,37 @@
+id: scripting-l24
+track: scripting
+index: 24
+title: La función propia
+subtitle: function y llamadas
+xp: 30
+difficulty: 2
+brief: "Definir una función (mía) y llamarla una vez es scripting minimal: la llamada
+  devuelve el contenido (con la marca)."
+goal: Define una función shell llamada mifuncion que haga cat del fichero dato.txt y
+  LLÁMELA para ver el output (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Scripting"
+  echo "función ejecutada con $DOJO_FLAG" > $HOME/dato.txt
+  chown agent:agent $HOME/dato.txt
+solution: mifuncion() { cat $HOME/dato.txt; }; mifuncion
+hints:
+  - "Forma canónica: nombre() { comandos; } — declarada en la misma línea o en bloques."
+  - "La llamada es SIN paréntesis: solo mifuncion al final."
+  - mifuncion() { cat dato.txt; }; mifuncion
+teach: "Las funciones shell devuelven con $? (exit status) y no con return de datos: para
+  RESULTADOS se usa stdout (por eso capturamos con $(mifuncion))."
+cheatsheet:
+  - cmd: f() { cmds; }; f
+    desc: define y ejecuta
+  - cmd: x=$(f)
+    desc: captura el stdout de una función
+keywords:
+  - bash
+  - función
+  - def
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

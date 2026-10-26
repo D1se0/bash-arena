@@ -1,0 +1,41 @@
+id: busqueda-l25
+track: busqueda
+index: 25
+title: El medidor de línea larga
+subtitle: awk NF — filas con pocas columnas
+xp: 30
+difficulty: 2
+brief: El CSV tiene filas con deltaY columnas; las SINSULADAS (menos de 3) va a la
+  papelera, las COMPLETAS valen gold.
+goal: De columnas.csv imprime las filas con EXACTAMENTE 3 campos (NF==3).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Busqueda"
+  cat > /home/agent/columnas.csv <<EOF
+  a,b,c
+  d,e
+  f,g,h $DOJO_FLAG
+  i,j
+  EOF
+  chown agent:agent /home/agent/columnas.csv
+solution: awk -F',' 'NF==3' /home/agent/columnas.csv
+hints:
+  - "NF es el número de CAMPOS de la fila actual: NF==3 filtra las completas."
+  - La condición sin {print} imprime $0 (la línea entera).
+  - awk -F',' 'NF==3' columnas.csv
+teach: "NF es la variable de sanity-check de CSVs: filtra filas incompletas al vuelo, sin
+  wc ni miradas manuales."
+cheatsheet:
+  - cmd: awk -F, 'NF==3' f
+    desc: solo filas con 3 campos
+  - cmd: awk -F, 'NF>3 {print NF}' f
+    desc: las sobre-cargadas y su NF
+keywords:
+  - awk
+  - NF
+  - campos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

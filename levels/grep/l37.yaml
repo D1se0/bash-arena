@@ -1,0 +1,47 @@
+id: grep-l37
+track: grep
+index: 37
+title: La primera señal
+subtitle: "-m: deténte en la N-ésima coincidencia"
+xp: 45
+difficulty: 2
+brief: El radar emite sin parar y la señal «hallada» se repite; solo el PRIMER eco trae la
+  marca. grep tiene un freno de results.
+goal: Imprime de radar.log ÚNICAMENTE la primera línea que contiene hallada (la que lleva
+  la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 37" "Grep"
+  cat > /home/agent/radar.log <<EOF
+  04:12 contacto disperso
+  05:03 señal hallada $DOJO_FLAG
+  05:09 señal hallada repetida
+  06:30 ruido de fondo
+  07:45 hallada en el eco final
+  EOF
+  chown agent:agent /home/agent/radar.log
+solution: grep -m 1 'hallada' /home/agent/radar.log
+hints:
+  - "-m NUM corta después de la NUM-ésima coincidencia: con 1, solo imprime la primera y
+    para."
+  - "grep deja de LEER el fichero al alcanzar el límite: en logs gigantescos es una
+    diferencia abismal."
+  - grep -m 1 'hallada' radar.log
+teach: "-m limita resultados, no filtra contenido: imprime como máximo NUM líneas
+  acertadas y termina en cuanto las tiene. Es el remedio canónico ante logs demasaido
+  ruidosos."
+cheatsheet:
+  - cmd: grep -m 1 patrón f
+    desc: solo la primera aciertada y para
+  - cmd: grep -m 3 patrón f
+    desc: como máximo tres
+keywords:
+  - grep
+  - -m
+  - límite
+  - primera
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

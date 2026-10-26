@@ -1,0 +1,39 @@
+id: fundamentos-l25
+track: fundamentos
+index: 25
+title: La obsesión del organizado
+subtitle: mkdir -p + cp
+xp: 30
+difficulty: 2
+brief: Crea la Jerarquía archives/dia-2026 y copia alli la bitácora (ninguno debe quedarse
+  atrás).
+goal: Crea por completo el directorio archives/dia-2026 si no existía y copia allí
+  bitacora.txt; luego escanea el fichero copiado.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Fundamentos"
+  echo "bitácora $DOJO_FLAG" > /home/agent/bitacora.txt
+  chown agent:agent /home/agent/bitacora.txt
+solution: mkdir -p /home/agent/archives/dia-2026 && cp /home/agent/bitacora.txt
+  /home/agent/archives/dia-2026/ && cat /home/agent/archives/dia-2026/bitacora.txt
+hints:
+  - mkdir -p crea TODOS los niveles del árbol (padres incluidos) y no protesta si ya
+    existe.
+  - "cp copia pero no borra el original: ambos ficheros quedan."
+  - mkdir -p archives/dia-2026 && cp bitacora.txt archives/dia-2026/
+teach: -p de mkdir evita la escalera de directorios a mano; cp conserva el original (a
+  diferencia de mv).
+cheatsheet:
+  - cmd: mkdir -p a/b/c
+    desc: crea el árbol completo de una vez
+  - cmd: cp f dir/
+    desc: copia el fichero al directorio
+keywords:
+  - mkdir
+  - cp
+  - árbol
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

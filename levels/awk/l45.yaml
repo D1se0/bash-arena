@@ -1,0 +1,49 @@
+id: awk-l45
+track: awk
+index: 45
+title: La nómina unificada
+subtitle: NR==FNR — join de 2 ficheros
+xp: 70
+difficulty: 4
+brief: "Los datos están en 2 ficheros: salarios.txt (nombre, cantidad) y cargos.txt
+  (nombre, cargo); necesitas unirlos POR NOMBRE en una sola salida."
+goal: "Por cada línea de salarios.txt imprime: nombre, cantidad y el CARGO con el mismo
+  nombre leído de cargos.txt (dos ficheros, un solo awk) — el cargo de una trabajadora es
+  la credencial."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 45" "Awk"
+  cat > /home/agent/salarios.txt <<EOF
+  ana 3000
+  bruno 2800
+  carla 3200
+  EOF
+  cat > /home/agent/cargos.txt <<EOF
+  ana devops
+  bruno backend
+  carla $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/salarios.txt /home/agent/cargos.txt
+solution: awk 'NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]}'
+  /home/agent/cargos.txt /home/agent/salarios.txt
+hints:
+  - "NR==FNR distingue el PRIMER fichero del resto: patrón clásico de join en awk."
+  - Durante el 1.er fichero almacena cargo[nombre]; en el 2.º imprime resuelto cargo[$1].
+  - awk 'NR==FNR {cargo[$1]=$2; next} {print $1, $2, cargo[$1]}' cargos.txt salarios.txt
+teach: "El truco NR==FNR es EL join de awk: el 1.er fichero construye el índice, el 2.º
+  resuelve. Sin sort previo ni join externo: un único comando."
+cheatsheet:
+  - cmd: awk 'NR==FNR {a[$1]=$2; next} {print $1, a[$1]}' idx.txt datos.txt
+    desc: join de 2 ficheros por clave
+  - cmd: awk 'FNR==NR'
+    desc: idem equivalente (FNR vs NR)
+keywords:
+  - awk
+  - join
+  - NR
+  - FNR
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

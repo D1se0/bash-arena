@@ -1,0 +1,45 @@
+id: boss-l24
+track: boss
+index: 24
+title: "Boss: el alquimista integral"
+subtitle: awk sum con guard
+xp: 30
+difficulty: 2
+brief: El registro trae importes y filas rotas; el total VÁLIDO (solo importes numéricos)
+  lleva la marca.
+goal: Suma el 2.º campo de totales.txt SOLO donde sea un importe numérico (el guard de
+  regex que toque); imprime la SUMA TOTAL.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Boss"
+  cat > $HOME/totales.txt <<EOF
+  compra 100
+  devol
+  venta 35.5
+  compra 60
+  EOF
+  echo "total correlato $DOJO_FLAG" > $HOME/sumario.txt
+  chown agent:agent $HOME/totales.txt $HOME/sumario.txt
+solution: awk '$2 ~ /^[0-9]+(\.[0-9]+)?$/ {s+=$2} END {print s}' $HOME/totales.txt; cat
+  $HOME/sumario.txt
+hints:
+  - El guard $2 ~ /^[0-9]+(\.[0-9]+)?$/ filtra floats e ints (la fila rot «devol» se cae).
+  - "La marca viaja en sumario.txt: cat al final."
+  - awk '$2 ~ /^[0-9.]+$/{s+=$2} END {print s}' totales.txt; cat sumario.txt
+teach: "Combinar SUMA y GUARD de tipo es el escudo anti-datos-rotos de awk: ni suspendes
+  el cálculo ni sueltas el dato malo."
+cheatsheet:
+  - cmd: awk '$2 ~ /^[0-9.]+$/ {s+=$2} END {print s}' f
+    desc: suma blindada
+  - cmd: awk '!n[$0]++ {print}' f | sort
+    desc: "complemento: dedup antes de sumar"
+keywords:
+  - boss
+  - suma
+  - guard
+  - awk
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

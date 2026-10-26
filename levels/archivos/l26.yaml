@@ -1,0 +1,39 @@
+id: archivos-l26
+track: archivos
+index: 26
+title: El peso del mundo
+subtitle: du -sh y wc -c del resultado
+xp: 30
+difficulty: 2
+brief: El directorio lleva archivos de vario tamaño; du mide el total legible y el
+  manifest lleva la marca.
+goal: Mide el TAMAÑO total del directorio /home/agent/pesado con du -sh y luego cat
+  manifest.txt (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Archivos"
+  mkdir -p $HOME/pesado
+  dd if=/dev/zero of=$HOME/pesado/a.bin bs=1k count=10 2>/dev/null
+  echo "manifest del directorio pesado: $DOJO_FLAG" > $HOME/manifest.txt
+  chown -R agent:agent $HOME/pesado $HOME/manifest.txt
+solution: du -sh $HOME/pesado; cat $HOME/manifest.txt
+hints:
+  - "du resume por fichero/directorio: -s SOLO el total del objetivo, -h legible (K/M/G)."
+  - El manifest es el fichero que cataloga el contenido.
+  - du -sh pesado; cat manifest.txt
+teach: du -sh es el medidor de bolsillo de un directorio; con --max-depth=1 compara hijos
+  entre sí sin bajar más.
+cheatsheet:
+  - cmd: du -sh dir
+    desc: tamaño total del dir
+  - cmd: du -h --max-depth=1 dir
+    desc: por hijo (dimensionado)
+keywords:
+  - du
+  - tamaño
+  - peso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

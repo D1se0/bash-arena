@@ -1,0 +1,46 @@
+id: awk-l44
+track: awk
+index: 44
+title: Los invitados de una vez
+subtitle: "!a[k]++ — deduplicar"
+xp: 65
+difficulty: 4
+brief: La lista de invitados repite apuntes (alguien se apuntó dos veces); necesitas el
+  censo de UNA APARICIÓN por persona, en orden de llegada.
+goal: De invitados.txt imprime cada nombre UNA sola vez (mantendo el orden en que apareció).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 44" "Awk"
+  cat > /home/agent/invitados.txt <<EOF
+  ana
+  bruno
+  ana
+  carla
+  bruno
+  dani
+  EOF
+  sed -i '6s/.*/dani $DOJO_FLAG/' /home/agent/invitados.txt
+  chown agent:agent /home/agent/invitados.txt
+solution: awk '!visto[$1]++ {print}' /home/agent/invitados.txt
+hints:
+  - El idioma !a[k]++ deja pasar solo la PRIMERA aparición de una clave.
+  - La negación ! hace el patrón verdadero SOLO si la clave aún no existía.
+  - awk '!v[$1]++ {print}' invitados.txt
+teach: "El one-liner de deduplicación por excelencia: !a[k]++ guarda el estado en un array
+  asociativo (ojo: también la clave y el subíndice) y deja pasar el primer avistamiento de
+  cada valor. Sin sort, sin uniq, sin memoria extra."
+cheatsheet:
+  - cmd: awk '!a[$1]++ {print $1}' f
+    desc: deduplica manteniendo el orden original
+  - cmd: sort f | uniq
+    desc: idem con sort (alterna el orden alfabético)
+keywords:
+  - awk
+  - dedup
+  - array
+  - una vez
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

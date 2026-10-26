@@ -1,0 +1,36 @@
+id: procesos-l26
+track: procesos
+index: 26
+title: El semáforo de memoria
+subtitle: free -m — RAM y swap
+xp: 30
+difficulty: 2
+brief: El desbordamiento de memoria tumba el sistema en segundos; con free se vê el estado
+  de RAM en MB (el fichero memoria.txt lo ratifica con la marca).
+goal: Imprime free -m (memoria libre) y luego cat memoria.txt (donde viaja la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Procesos"
+  echo "memoria revisada: $DOJO_FLAG" > $HOME/memoria.txt
+  chown agent:agent $HOME/memoria.txt
+solution: free -m; cat $HOME/memoria.txt
+hints:
+  - free da memoria total/usada/libre (y swap). -m en MB (o -h legible).
+  - La fila libre REAL es la de «available», no la de «free» (cache inclusa).
+  - free -m; cat memoria.txt
+teach: La columna «available» resume lo que el kernel puede ceder sin arriesgar el
+  rendimiento; mirar la de «free» lleva a pánicos falsos.
+cheatsheet:
+  - cmd: free -m
+    desc: memoria en MB
+  - cmd: free -h
+    desc: ídem con unidades legibles
+keywords:
+  - free
+  - memoria
+  - RAM
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

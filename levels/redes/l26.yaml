@@ -1,0 +1,38 @@
+id: redes-l26
+track: redes
+index: 26
+title: El DNS simulado
+subtitle: getent hosts con /etc/hosts
+xp: 30
+difficulty: 2
+brief: En la sala la resolución incluye /etc/hosts; getent hosts lo refleja (el fichero
+  dns.txt confirma la marca).
+goal: Resuelve la entrada personalizada dojo.local con getent hosts y luego cat dns.txt
+  para confirmar (la marca viaja allí).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Redes"
+  echo "resolución ok: $DOJO_FLAG" > $HOME/dns.txt
+  echo "10.10.10.10 dojo.local" >> /etc/hosts 2>/dev/null || true
+  chown agent:agent $HOME/dns.txt
+solution: getent hosts dojo.local; cat $HOME/dns.txt
+hints:
+  - getent hosts NOMBRE consulta la cadena NSS (incluye /etc/hosts) igual que las apps.
+  - La entrada se añadió en /etc/hosts en el setup (e.g. 10.10.10.10 dojo.local).
+  - getent hosts dojo.local; cat dns.txt
+teach: "getent es lo que usan los programas (getaddrinfo), no lo que usan los humanos:
+  refleja el orden REAL de resolución (/etc/hosts primero, luego DNS)."
+cheatsheet:
+  - cmd: getent hosts NOMBRE
+    desc: resuelve como lo hace el sistema
+  - cmd: resolvectl status
+    desc: detalles del resolvedor (con systemd)
+keywords:
+  - getent
+  - dns
+  - hosts
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

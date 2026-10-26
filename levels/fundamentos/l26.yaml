@@ -1,0 +1,41 @@
+id: fundamentos-l26
+track: fundamentos
+index: 26
+title: El camino del binario
+subtitle: which + man-corta heredada
+xp: 30
+difficulty: 2
+brief: Los binaries viven en PATH; descubre dónde vive grep y ficha el output en un fichero.
+goal: Averigua QUÉ BINARIO de grep usa el sistema (which) y escribe el contenido del
+  fichero pista-which.txt que contiene el resultado confirmado.
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 26" "Fundamentos"
+
+  echo "el binario de grep vive en $(which grep); marca: $DOJO_FLAG" >
+  /home/agent/pista-which.txt
+
+  chown agent:agent /home/agent/pista-which.txt
+solution: type -P grep && cat /home/agent/pista-which.txt
+hints:
+  - which imprime la ruta absoluta del binario local en PATH (bash incorpora type -P).
+  - El fichero pista-which.txt ya trae la verificación (aquí viaja la marca).
+  - which grep && cat /home/agent/pista-which.txt
+teach: which localiza el BINARIO asignado a tu PATH (type/which/command -v equivalen en
+  bash). Si hay collisiones, PATH decides el orden.
+cheatsheet:
+  - cmd: which cmd
+    desc: ruta del binario en PATH
+  - cmd: command -v cmd
+    desc: idem interno de bash (más fiable en scripts)
+keywords:
+  - which
+  - type
+  - PATH
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

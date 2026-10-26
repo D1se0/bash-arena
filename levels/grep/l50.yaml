@@ -1,0 +1,52 @@
+id: grep-l50
+track: grep
+index: 50
+title: "Boss: la triangulación"
+subtitle: conteo dominante + regreso al log
+xp: 140
+difficulty: 5
+brief: Tres nodos reportan FAIL con distinta intensidad; el nodo que MÁS falla logró un
+  único SUCCESS… y ahí viaja la marca. Une el conteo y la extracción en una sola cadena.
+goal: De triangulo.log imprime ÚNICAMENTE la marca FLAG{…} que viaja en la línea de
+  SUCCESS del nodo con MÁS FAIL.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 50" "Grep"
+  cat > /home/agent/triangulo.log <<EOF
+  nodoA FAIL
+  nodoA FAIL
+  nodoA FAIL
+  nodoB FAIL
+  nodoC FAIL
+  nodoA SUCCESS con la marca $DOJO_FLAG
+  nodoB SUCCESS normal
+  nodoC SUCCESS normal
+  EOF
+  chown agent:agent /home/agent/triangulo.log
+solution: g=$(grep 'FAIL' /home/agent/triangulo.log | awk '{print $1}' | sort | uniq -c |
+  sort -nr | head -1 | awk '{print $2}'); grep "^$g " /home/agent/triangulo.log | grep
+  'SUCCESS'
+hints:
+  - 'Pasa 1: identifica el nodo dominante en FAIL con grep FAIL f | awk "{print $1}" |
+    sort | uniq -c | sort -nr.'
+  - "Pasa 2: vuelve al log CON ESA CLAVE y filtra por SUCCESS; ahí viaja la marca."
+  - g=$(grep FAIL triangulo.log | awk '{print $1}' | sort | uniq -c | sort -nr | head -1 |
+    awk '{print $2}'); grep "^$g " triangulo.log | grep SUCCESS
+teach: "El boss de auditoría real: primero «¿quién domina el fallo?» (conteo), luego
+  «¿cuál fue SU conexión buena?» (regreso al log por la clave). Dos pasadas, una
+  historia."
+cheatsheet:
+  - cmd: grep x f | awk … | sort | uniq -c | sort -nr | head -1
+    desc: el valor dominante en un campo
+  - cmd: grep "^$clave" f | grep OK
+    desc: regreso al log por la clave ganadora
+keywords:
+  - grep
+  - boss
+  - cadena
+  - uniq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

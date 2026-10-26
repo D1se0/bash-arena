@@ -1,0 +1,36 @@
+id: forense-l26
+track: forense
+index: 26
+title: El maletín base64 de doble capa
+subtitle: base64 dentro de base64
+xp: 30
+difficulty: 2
+brief: La marca fue codificada EN DOS CAPAS base64; decodifica doble para revelarla.
+goal: Lee doble.txt (base64 de base64) y decodifica DOS veces para revelar la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Forense"
+  printf '%s' "$DOJO_FLAG" | base64 | base64 > $HOME/doble.txt
+  chown agent:agent $HOME/doble.txt
+solution: base64 -d $HOME/doble.txt | base64 -d
+hints:
+  - "Decodifica DOS veces: la salida de la 1.a (binario) es la entrada de la 2.a."
+  - La primera decodificación devuelve OTRO base64; la segunda devuelve el texto (la
+    marca).
+  - base64 -d doble.txt | base64 -d
+teach: "Los ataques de ofuscación abusa del software-cuento (base64, base64, hex, rot13):
+  decodificar capas por orden es la técnica forense estándar."
+cheatsheet:
+  - cmd: base64 -d f | base64 -d
+    desc: doble decodificación encadenada
+  - cmd: base64 -d f | xxd -r -p
+    desc: base64 y después hex
+keywords:
+  - base64
+  - doble
+  - forense
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

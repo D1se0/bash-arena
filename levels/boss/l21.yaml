@@ -1,0 +1,47 @@
+id: boss-l21
+track: boss
+index: 21
+title: "Boss: la cadena completa"
+subtitle: grep+awk+sort+uniq
+xp: 30
+difficulty: 2
+brief: "El log encadena: extrae el campo clave con awk, cuéntalo y muestra el ganador con
+  su marca."
+goal: De cadena.log calcula el valor (2.º campo) que MÁS se repite y DESPUÉS imprime TODAS
+  sus líneas con grep (una lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Boss"
+  cat > $HOME/cadena.log <<EOF
+  ev1 alfa
+  ev2 beta
+  ev3 alfa
+  ev4 alfa $DOJO_FLAG
+  ev5 beta
+  EOF
+  chown agent:agent $HOME/cadena.log
+solution: g=$(awk '{print $2}' $HOME/cadena.log | sort | uniq -c | sort -nr | head -1 |
+  awk '{print $2}'); grep " $g " $HOME/cadena.log
+hints:
+  - awk saca el 2.º campo; sort agrupa; uniq -c cuenta; sort -nr ordena por frecuencia.
+  - El head -1 entrega el RANKING ganador; con awk {print $2} aislado el VALOR.
+  - Con el valor en mano, grep " $g " cadena.log imprime TODAS sus líneas (una lleva la
+    marca).
+  - g=$(awk '{print $2}' cadena.log | sort | uniq -c | sort -nr | head -1 | awk '{print
+    $2}'); grep " $g " cadena.log
+teach: La cadena sort | uniq -c | sort -nr es el análisis de frecuencia basico; con awk
+  delante descaturas de columna. Es el pipeline de «¿quién domina este campo?».
+cheatsheet:
+  - cmd: awk '{print $2}' f | sort | uniq -c | sort -nr | head -1
+    desc: el valor más frecuente del 2.º campo
+  - cmd: sort -k2 f | uniq -c -f1 | sort -nr | head
+    desc: ídem trabajando solo con sort/uniq
+keywords:
+  - boss
+  - pipeline
+  - uniq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

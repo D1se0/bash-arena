@@ -1,0 +1,35 @@
+id: forense-l22
+track: forense
+index: 22
+title: La marca base64
+subtitle: base64 -d
+xp: 30
+difficulty: 2
+brief: "La marca viaja en BASE64: decodificar con base64 -d revela el texto limpio."
+goal: Decodifica codificado.txt (su contenido, base64 puro) y revela la marca con base64 -d.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Forense"
+  printf '%s\n' "$DOJO_FLAG" | base64 > $HOME/codificado.txt
+  chown agent:agent $HOME/codificado.txt
+solution: base64 -d $HOME/codificado.txt
+hints:
+  - base64 SIN argumentos codifica; con -d decodifica lo que recibe.
+  - "El fichero es insert: una única línea BASE-64 (sin texto alrededor, o la
+    decodificación se queja)."
+  - base64 -d codificado.txt
+teach: "base64 saca cualquier binario por TEXTO seguro (87 % de overhead): imprescindible
+  para fichero emailing y cuerpos de HTTP."
+cheatsheet:
+  - cmd: base64 f
+    desc: codifica a base64
+  - cmd: base64 -d f
+    desc: decodifica (los -e alterna ambos sentidos)
+keywords:
+  - base64
+  - decode
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,0 +1,45 @@
+id: awk-l39
+track: awk
+index: 39
+title: Mayúsculas sin drama
+subtitle: toupper() — case-insensitive
+xp: 55
+difficulty: 2
+brief: El catálogo mezcla minúsculas y mayúsculas; el producto SELLADOR aparece escrito en
+  cualquier forma — y su fila completa lleva la marca.
+goal: De catalogo.txt imprime la FILA COMPLETA del producto cuyo 1.er campo, convertido a
+  MAYÚSCULAS, es SELLADOR (ahí viaja la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 39" "Awk"
+  cat > /home/agent/catalogo.txt <<EOF
+  pintura aisle-3
+  Sellador aisle-9 $DOJO_FLAG
+  sellador aisle-5
+  brocha aisle-1
+  rodillo aisle-4
+  EOF
+  chown agent:agent /home/agent/catalogo.txt
+solution: awk 'toupper($1)=="SELLADOR" {print}' /home/agent/catalogo.txt
+hints:
+  - "toupper(cadena) pasa a mayúsculas: comparar SIN depender del caso original."
+  - "Imprime la LÍNEA completa: print (o print $0), no print $2."
+  - awk 'toupper($1)=="SELLADOR" {print}' catalogo.txt
+teach: "toupper/tolower normalizan comparaciones textuales sin tocar el dato. Son la
+  versión completa del == case-insensitive: comparar la forma canónica y devolver la fila
+  ORIGINAAL intacta."
+cheatsheet:
+  - cmd: awk 'toupper($1)=="X" {print}' f
+    desc: compara sin case y devuelve la fila completa
+  - cmd: awk '{print tolower($0)}' f
+    desc: baja TODA la línea a minúsculas
+keywords:
+  - awk
+  - toupper
+  - comparar
+  - caso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

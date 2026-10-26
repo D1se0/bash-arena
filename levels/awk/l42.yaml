@@ -1,0 +1,48 @@
+id: awk-l42
+track: awk
+index: 42
+title: El incidente por bloques
+subtitle: rangos /a/,/b/
+xp: 60
+difficulty: 3
+brief: El diario marca el inicio del incidente con «INICIO» y su final con «FIN»; solo ese
+  BLOQUE (línea a línea, incluidos extremos) interesa, y DENTRO del bloque viaja la marca.
+goal: Imprime desde la línea que contiene INICIO hasta la que contiene FIN de
+  incidente.txt (ambas incluidas) — la marca está dentro del bloque.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 42" "Awk"
+  cat > /home/agent/incidente.txt <<EOF
+  tramo previo normal
+  == INICIO ==
+  exceso de conexiones
+  causa probable: $DOJO_FLAG
+  quota al 92%
+  == FIN ==
+  tramo posterior limpio
+  EOF
+  chown agent:agent /home/agent/incidente.txt
+solution: awk '/INICIO/,/FIN/' /home/agent/incidente.txt
+hints:
+  - El rango /a/,/b/ activa la impresión al casar a y la apaga al casar b (extremos
+    incluidos).
+  - El rango se reactiva cada vez que vuelve a casar el primer patrón.
+  - awk '/INICIO/,/FIN/' incidente.txt
+teach: "Los rangos de patrones seleccionan TRAMOS por evento, no por contenido:
+  equivalente a sed -n /a/,/b/p pero awk da además la aritmética de columnas dentro del
+  bloque."
+cheatsheet:
+  - cmd: awk '/a/,/b/' f
+    desc: desde casa a hasta casa b, incluidos
+  - cmd: awk '/a/,0' f
+    desc: desde a hasta el final del fichero
+keywords:
+  - awk
+  - rango
+  - regex
+  - bloque
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

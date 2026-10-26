@@ -1,0 +1,41 @@
+id: forense-l21
+track: forense
+index: 21
+title: La huella hexadecimal
+subtitle: "xxd -r -p: hex a bytes"
+xp: 30
+difficulty: 2
+brief: La marca llegó en formato hexadecimal; revertir con xxd -r -p es la herramienta neta.
+goal: Convierte huella.txt (hex plano) de VUELTA a bytes legibles con xxd -r -p (que lleva
+  la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Forense"
+  printf '%s\n' "$($DOJO_FLAG | xxd -p | tr -d '\n')" > $HOME/hx 2>/dev/null || true
+  echo "la marca en hexadecimal es:" > $HOME/huella.txt
+  printf '%s' "$DOJO_FLAG" | xxd -p | tr -d '\n' >> $HOME/hx2 >/dev/null 2>&1 || true
+  printf '%s' "$DOJO_FLAG" | xxd -p | tr -d "\n" > $HOME/hx3
+  echo "huella hex:" >> $HOME/huella.txt
+  cat $HOME/hx3 >> $HOME/huella.txt
+  chown agent:agent $HOME/huella.txt $HOME/hx3
+solution: xxd -r -p $HOME/hx3
+hints:
+  - xxd -p muestra el binario en HEX plano (sin offsets); -r lo devuelve a bytes.
+  - La pipe es huella hex → xxd -r -p → texto original (la marca intacta).
+  - xxd -r -p hx3
+teach: xxd es el convertidor hex↔bytes dependiente del formato; -p mantiene el flujo
+  limpio (sin offsets ni ASCII-gray).
+cheatsheet:
+  - cmd: xxd -p f
+    desc: bytes a hex plano
+  - cmd: xxd -r -p f
+    desc: hex plano a bytes
+keywords:
+  - xxd
+  - hex
+  - rev
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

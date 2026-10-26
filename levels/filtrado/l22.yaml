@@ -1,0 +1,36 @@
+id: filtrado-l22
+track: filtrado
+index: 22
+title: Los dedos únicos
+subtitle: "sort -u: dedup global"
+xp: 30
+difficulty: 2
+brief: El registro repite nombres sin control; el censo limpio exige ORDERARI y uniq.
+goal: De registro.txt imprime cada valor UNA sola vez ( SORT + uniq ) con la 1.er línea
+  del resultado sobre la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Filtrado"
+  printf 'b\n\na\n\nb\na\nc\n$DOJO_FLAG\n' | sed 's/ //' > /home/agent/registro.txt
+  chown agent:agent /home/agent/registro.txt
+solution: sort -u /home/agent/registro.txt
+hints:
+  - sort -u ordena y descarta duplicados en un paso.
+  - "Equivalencia: sort f | uniq."
+  - sort -u registro.txt
+teach: "sort -u es la versión integrada de sort | uniq: el dato sale limpio y en orden
+  natural (con -n para números, -r para invertir)."
+cheatsheet:
+  - cmd: sort -u f
+    desc: ordena y deduplica
+  - cmd: sort -nr f
+    desc: numérico descendente
+keywords:
+  - sort
+  - uniqs
+  - orden
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

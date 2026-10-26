@@ -1,0 +1,43 @@
+id: archivos-l21
+track: archivos
+index: 21
+title: El paquete sellado
+subtitle: tar -czf + -O extract
+xp: 30
+difficulty: 2
+brief: El secreto queda dentro de un tar.gz; crea el paquete, confírmalo con -t y extrae
+  el contenido con -O.
+goal: Empaqueta secreto.txt en paquete.tgz (tar -czf), verifica que la entrada está en el
+  listado (-t) y extrae su contenido a stdout con -O.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Archivos"
+  echo "secreto en el paquete $DOJO_FLAG" > $HOME/secreto.txt
+  chown agent:agent $HOME/secreto.txt
+solution: tar -czf $HOME/paquete.tgz -C $HOME secreto.txt && tar -tzf $HOME/paquete.tgz |
+  grep -q secreto && tar -Oxz f $HOME/paquete.tgz 2>/dev/null || tar -Oxzf
+  $HOME/paquete.tgz
+hints:
+  - tar -czf paquete.tgz fichero crea el paquete comprimido (z=gzip).
+  - -t lista el contenido sin extraer; -O extrae a STDOUT (no a disco) y permite cat-tear
+    el fichero interior.
+  - tar czf paquete.tgz secreto.txt; tar tzf paquete.tgz; tar Oxzf paquete.tgz
+teach: tar czf empaca; -t inspecciona sin descomprimir; -O extrae a consola. Con -C eliges
+  carpeta para nombrar rutas dentro del paquete (arboless limpios).
+cheatsheet:
+  - cmd: tar czf p.tgz f
+    desc: empaca y comprime
+  - cmd: tar tzf p.tgz
+    desc: lista el contenido
+  - cmd: tar xOzf p.tgz f
+    desc: extrae f a stdout
+keywords:
+  - tar
+  - czf
+  - tzf
+  - O
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

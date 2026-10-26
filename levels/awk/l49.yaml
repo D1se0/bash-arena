@@ -1,0 +1,48 @@
+id: awk-l49
+track: awk
+index: 49
+title: La suma con blindaje
+subtitle: $2 ~ /^[0-9.]+$/ — solo números
+xp: 65
+difficulty: 4
+brief: El recibo viene con encabezados y filas rotas; los importes válidos son el 2.nº
+  campo numérico. El cierre del total lleva la marca.
+goal: De recibo.txt imprime la suma del 2.º campo SOLO de las filas cuyo 2.º campo es un
+  número (entero o decimal); los headers no cuentan. Luego cat /home/agent/cierre.txt (la
+  marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 49" "Awk"
+  cat > /home/agent/recibo.txt <<EOF
+  concepto importe
+  teclado 45.5
+  monitor 120
+  cable eof
+  ratón 19.9
+  EOF
+  echo "cierre del recibo: $DOJO_FLAG" > /home/agent/cierre.txt
+  chown agent:agent /home/agent/recibo.txt /home/agent/cierre.txt
+solution: awk '$2 ~ /^[0-9]+(\.[0-9]+)?$/ {s+=$2} END {print s}' /home/agent/recibo.txt;
+  cat /home/agent/cierre.txt
+hints:
+  - El patrón $2 ~ /^[0-9]+(\.[0-9]+)?$/ garantiza que el 2.º campo ES un número (entero o
+    decimal).
+  - Suma con s+=$2 en el cuerpo, en END imprime el total y cierra con el fichero de cierre.
+  - awk '$2 ~ /^[0-9]+(\.[0-9]+)?$/ {s+=$2} END {print s}' recibo.txt; cat cierre.txt
+teach: 'El match de tipo con regex hace de "is_number": suma con blindaje; las filas rotas
+  se descartan sin bloquear el cálculo, y en END la total sale limpia.'
+cheatsheet:
+  - cmd: awk '$2 ~ /^[0-9.]+$/ {s+=$2} END {print s}' f
+    desc: suma solo importes numéricos
+  - cmd: awk '/^(concepto|teclado)/ {next} END {print s}' f
+    desc: descartar cabeceras con next
+keywords:
+  - awk
+  - suma
+  - regex
+  - END
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

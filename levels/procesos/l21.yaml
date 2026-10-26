@@ -1,0 +1,38 @@
+id: procesos-l21
+track: procesos
+index: 21
+title: El fugitivo dormido
+subtitle: ps ax -o pid,comm
+xp: 30
+difficulty: 2
+brief: Un proceso sleep quedó corriendo desde el setup; localiza su PID real con ps y
+  contrástalo con el fichero pid.txt (que lleva la marca).
+goal: Imprime el PID del proceso sleep y luego cat pid.txt para confirmar que ES el mismo
+  (el fichero lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Procesos"
+  sleep 600 & echo "pid en el setup: $! — $DOJO_FLAG" > $HOME/pid.txt
+  chown agent:agent $HOME/pid.txt
+solution: ps -o pid= -C sleep | head -1; cat $HOME/pid.txt
+hints:
+  - ps -o pid= -C sleep lista los PID de los procesos llamados sleep (sin cabecera por el
+    =).
+  - "El fichero pid.txt guarda el PID desde el setup: compáralos a simple vista."
+  - ps -o pid= -C sleep; cat pid.txt
+teach: "ps con -o (output) + -C (por nombre) es el listado quirúrgico: solo los campos que
+  pides, solo ese comando. El = quita la cabecera."
+cheatsheet:
+  - cmd: ps -o pid=,cmd= -C NAME
+    desc: PID+cmd de un proceso exacto
+  - cmd: ps aux | grep NAME
+    desc: búsqueda laxa clásica
+keywords:
+  - ps
+  - pid
+  - procesos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

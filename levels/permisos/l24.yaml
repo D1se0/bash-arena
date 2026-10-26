@@ -1,0 +1,37 @@
+id: permisos-l24
+track: permisos
+index: 24
+title: La umbral de recién creado
+subtitle: "umask: la máscara del cero"
+xp: 30
+difficulty: 2
+brief: El cero inicial del sistema determina los permisos al crear ficheros; hay que
+  CONSULTAR umask y apuntar la marca.
+goal: Muestra el umask ACTUAL de tu shell (comando umask) y luego cat nota-umask.txt que
+  relaciona ese valor con la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Permisos"
+  echo "umask corrente: 0022 — margin: $DOJO_FLAG" > /home/agent/nota-umask.txt
+  echo "umask referencia: 0022" > /home/agent/umask-ref.txt
+  chown agent:agent /home/agent/nota-umask.txt /home/agent/umask-ref.txt
+solution: umask | tee /home/agent/rez.txt >/dev/null; cat /home/agent/nota-umask.txt
+hints:
+  - umask sin argumentos IMPRIME el valor actual (cifar nxxx).
+  - La marca viaja en el fichero nota-umask; léelo con cat después de mostrar el umask.
+  - umask; cat /home/agent/nota-umask.txt
+teach: "umask SUBSTRAE permisos al crear ficheros: 022 al 666 da 644 para ficheros (y 755
+  para directorios dibujados con 777)."
+cheatsheet:
+  - cmd: umask
+    desc: imprime la máscara actual
+  - cmd: umask 022
+    desc: fija una máscara (no persiste solo en tu shell)
+keywords:
+  - umask
+  - creación
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

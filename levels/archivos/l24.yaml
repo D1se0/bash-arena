@@ -1,0 +1,37 @@
+id: archivos-l24
+track: archivos
+index: 24
+title: El espejo duro
+subtitle: "ln sin -s: hardlink"
+xp: 30
+difficulty: 2
+brief: Los hardlink son DOS NOMBRES para el MISMOS dato; cambia uno y el otro ve lo mismo.
+goal: Crea un hardlink de dato.txt llamado espejo.txt y comprueba que escribir en espejo
+  apareció también en dato (cat).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Archivos"
+  echo "dato original $DOJO_FLAG" > $HOME/dato.txt
+  chown agent:agent $HOME/dato.txt
+solution: ln $HOME/dato.txt $HOME/espejo.txt && echo "anexando nota a espejo" >>
+  $HOME/espejo.txt && cat $HOME/dato.txt
+hints:
+  - ln SIN -s crea hardlinks (mismo inode, dos nombres).
+  - Escribe en el espejo y lee el original para ver el efecto espejo.
+  - ln dato.txt espejo.txt; echo x >> espejo.txt; cat dato.txt
+teach: "Hardlink comparte inode (mismo dato, bajo dos nombres); symlink es un ACCESO con
+  destino: borra el original y el hardlink sigue vivo, el symlink queda roto."
+cheatsheet:
+  - cmd: ln a b
+    desc: "hardlink: mismo inode"
+  - cmd: ls -li f
+    desc: lista con número de inode para verificar
+keywords:
+  - ln
+  - hardlink
+  - inode
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

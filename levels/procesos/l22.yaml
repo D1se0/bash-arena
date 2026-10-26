@@ -1,0 +1,39 @@
+id: procesos-l22
+track: procesos
+index: 22
+title: El mata-sueño
+subtitle: pkill por nombre
+xp: 30
+difficulty: 2
+brief: El proceso sleep estorba; mátalo con pkill y demuestra que ya no existe (el fichero
+  de log lleva la marca).
+goal: Mata todos los procesos sleep con pkill y luego cat egolog.txt, que registra la
+  hazaña (con la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Procesos"
+  sleep 600 &
+  sleep 900 &
+  echo "los sueño han sido ejecutados: $DOJO_FLAG" > $HOME/egolog.txt
+  chown agent:agent $HOME/egolog.txt
+solution: pkill sleep || true; sleep 1; ! ps -o comm -C sleep | grep -q sleep; cat $HOME/egolog.txt
+hints:
+  - "pkill NAME es la receta corta: mata por nombre de proceso (sin PID a mano)."
+  - Verifica después con ps que ya NO aparece.
+  - pkill sleep; ps -C sleep; cat egolog.txt
+teach: pkill/pattern mata por NOMBRE; kill PID es quirúrgico. Con procesos que no mueren
+  al primer golpe, kill -9 es el martillo (último recurso).
+cheatsheet:
+  - cmd: pkill NAME
+    desc: manda TERM a procesos por nombre
+  - cmd: kill -9 PID
+    desc: mata a las bravas (sin rescate)
+keywords:
+  - pkill
+  - kill
+  - procesos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

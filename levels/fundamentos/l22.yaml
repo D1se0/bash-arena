@@ -1,0 +1,39 @@
+id: fundamentos-l22
+track: fundamentos
+index: 22
+title: El expósito invisible
+subtitle: "ls -A: ficheros ocultos"
+xp: 30
+difficulty: 2
+brief: En la cueva hay un fichero oculto (empieza por punto); sin la opción adecuada, ls
+  pasa de largo.
+goal: Lista TODO el contenido (incluidos ocultos) de /home/agent/cueva y LEE el fichero
+  oculto que encuentres.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Fundamentos"
+  mkdir -p /home/agent/cueva
+  echo "la $DOJO_FLAG" > /home/agent/cueva/.oculto
+  echo "texto normal" > /home/agent/cueva/visible.txt
+  chown -R agent:agent /home/agent/cueva
+solution: ls -A /home/agent/cueva && cat /home/agent/cueva/.oculto
+hints:
+  - ls -A muestra los ficheros que empiezan por punto (sin . y ..)
+  - "El fichero se llama .oculto: léelo igual que cualquier otro, OJO al punto delante."
+  - cat cueva/.oculto
+teach: Los dotfiles son configuración por excelencia (escondidos por defecto). ls -a
+  incluye . y ..; ls -A muestra solo el contenido real.
+cheatsheet:
+  - cmd: ls -A dir
+    desc: lista incluyendo ocultos (sin . ni ..)
+  - cmd: ls -la dir
+    desc: formato largo + ocultos
+keywords:
+  - ls
+  - ocultos
+  - dotfiles
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

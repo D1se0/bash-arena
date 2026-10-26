@@ -1,0 +1,47 @@
+id: archivos-l23
+track: archivos
+index: 23
+title: El parche que cicatriza
+subtitle: patch f < parche.diff
+xp: 30
+difficulty: 2
+brief: "Un diff -u describe el cambio y patch lo aplica a base.txt: al final las novedades
+  trae la marca."
+goal: Aplica parche.diff a base.txt con patch y luego cat base.txt (la linea NUEVA trae la
+  marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Archivos"
+  cat > $HOME/base.txt <<EOF
+  linea 1 original
+  EOF
+  cat > $HOME/parche.diff <<EOF
+  --- base.txt
+  +++ base.txt
+  @@ -1 +1 @@
+  -linea 1 original
+  +linea 1 parcheada $DOJO_FLAG
+  EOF
+  chown agent:agent $HOME/base.txt $HOME/parche.diff
+solution: cd $HOME && patch base.txt < parche.diff && cat base.txt
+hints:
+  - patch FICHERO < parche.diff aplica los cambios y muestra «hunk applied».
+  - "Si el fichero ya está parcheado, patch avisa con (reverse; apply anyway?): usa -N o
+    deshacer con -R."
+  - patch base.txt < parche.diff; cat base.txt
+teach: diff genera la RECETA (hunks @@); patch la ejecuta. Son el canal formal para
+  distribuir cambios de código sin fichero entero.
+cheatsheet:
+  - cmd: patch f < parche.diff
+    desc: aplica el parche
+  - cmd: patch -R f < parche.diff
+    desc: DESHACE el parche
+keywords:
+  - patch
+  - diff
+  - changu
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

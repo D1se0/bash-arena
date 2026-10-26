@@ -1,0 +1,49 @@
+id: permisos-l23
+track: permisos
+index: 23
+title: El grupo correcto
+subtitle: chgrp y verificación con ls -l
+xp: 30
+difficulty: 2
+brief: El fichero debe pertenecer al grupo dojo (el agente no tiene chown pero sí chgrp si
+  es suyo y del grupo).
+goal: Cambia el GRUPO de audit.txt a dojo (chgrp) y luego imprime los permisos+dueño para
+  verificarse (agente no puede cambiar el dueño sin sudo, pero SÍ el grupo si es miembro).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 23" "Permisos"
+
+  echo "audit $DOJO_FLAG" > /home/agent/audit.txt
+
+  chown agent:dojo /home/agent/audit.txt 2>/dev/null || chown agent:agent
+  /home/agent/audit.txt
+
+  chown agent:agent /home/agent/audit.txt 2>/dev/null || true
+
+  chgrp dojo /home/agent/audit.txt 2>/dev/null || true
+
+  echo "grupo actual de audit.txt: $(stat -c %G /home/agent/audit.txt)" >>
+  /home/agent/audit.txt
+solution: ls -l /home/agent/audit.txt && cat /home/agent/audit.txt
+hints:
+  - ls -l imprime dueño:grupo y permisos en la 1.ª línea por fichero.
+  - Si el grupo ya es dojo, la verificación se queda en ls (y el contenido lleva la marca).
+  - ls -l audit.txt && cat audit.txt
+teach: El dueño puede cambiar GRUPO del fichero a cualquier grupo al que pertenezca (sin
+  sudo). chown -R para árboles; chgrp solo toca grupo.
+cheatsheet:
+  - cmd: chgrp grupo f
+    desc: cambia el grupo (dueño lo puede si es miembro)
+  - cmd: stat -c %G f
+    desc: imprime solo el grupo actual
+keywords:
+  - chgrp
+  - grupo
+  - stat
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

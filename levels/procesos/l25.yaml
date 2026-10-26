@@ -1,0 +1,36 @@
+id: procesos-l25
+track: procesos
+index: 25
+title: El forestal del disco
+subtitle: "df -h: qué FS y cuán lleno"
+xp: 30
+difficulty: 2
+brief: Mide el ESPACIO del disco con df -h y deja la huella en el fichero disco.txt (que
+  lleva la marca).
+goal: Imprime df -h (uso del filesystem) y luego cat disco.txt, que confirma el paseo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Procesos"
+  echo "disco analizado: $DOJO_FLAG" > $HOME/disco.txt
+  chown agent:agent $HOME/disco.txt
+solution: df -h; cat $HOME/disco.txt
+hints:
+  - "df -h resume cada filesystem montado: tamaño, usado, libre y % de uso."
+  - "Última línea por fichero: la marca viaja en disco.txt."
+  - df -h; cat disco.txt
+teach: df mira los TAKES por filesystem; du mira el fichero/directorio concreto. Ambos son
+  navegación básica del sysadmin.
+cheatsheet:
+  - cmd: df -h
+    desc: uso de filesystems (legible)
+  - cmd: du -sh dir
+    desc: tamaño total del directorio
+keywords:
+  - df
+  - disco
+  - espacio
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

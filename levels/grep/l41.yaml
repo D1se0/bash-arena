@@ -1,0 +1,49 @@
+id: grep-l41
+track: grep
+index: 41
+title: La lista de culpables
+subtitle: "-f: patrones desde un fichero"
+xp: 60
+difficulty: 3
+brief: "El archivo prohibido lista comandos vetados (uno por línea). La auditoría anota
+  ejecuciones: solo la entrada donde el comando coincide con la lista lleva la marca."
+goal: Imprime de audit.log SOLO la línea cuyo comando aparece dentro de vetados.txt.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 41" "Grep"
+  cat > /home/agent/vetados.txt <<EOF
+  curl sketchy
+  sudo su
+  rm -rf /tmp
+  EOF
+  cat > /home/agent/audit.log <<EOF
+  09:12 usuario1 ls -la
+  09:14 usuario2 curl sketchy $DOJO_FLAG
+  09:16 usuario3 cat notas.txt
+  EOF
+  chown agent:agent /home/agent/vetados.txt /home/agent/audit.log
+solution: grep -Ff /home/agent/vetados.txt /home/agent/audit.log
+hints:
+  - "-f FICHAERO: cada línea del fichero se convierte en UN patrón a buscar (alternancia
+    masiva)."
+  - "Con -F los patrones se interpretan como texto literal (sin regex): ideal conslashes y
+    metacaracteres raros."
+  - grep -Ff vetados.txt audit.log
+teach: "El grep de listas negras: IPs baneadas, dominios dudosos, comandos vetados. -f
+  carga el diccionario; -F evita que los caracteres especiales de las entradas exploten la
+  regex."
+cheatsheet:
+  - cmd: grep -f patrones.txt f
+    desc: cada línea del fichero es un patrón
+  - cmd: grep -Ff patrones.txt f
+    desc: idem con patrones literales (sin regex)
+keywords:
+  - grep
+  - -f
+  - lista negra
+  - blacklist
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

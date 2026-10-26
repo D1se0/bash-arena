@@ -1,0 +1,42 @@
+id: busqueda-l24
+track: busqueda
+index: 24
+title: La fecha del delito
+subtitle: grep -oE con regex de fecha
+xp: 30
+difficulty: 2
+brief: El log de eventos lleva timestamps; solo el bloque 2026-10-25 trae la marca.
+goal: Imprime de eventos.log las líneas cuya fecha (formato AAAA-MM-DD al principio) sea
+  2026-10-25.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Busqueda"
+  cat > /home/agent/eventos.log <<EOF
+  2026-10-24 sesion normal
+  2026-10-25 evento marcado $DOJO_FLAG
+  2026-10-26 post evento
+  EOF
+  chown agent:agent /home/agent/eventos.log
+solution: grep -E '^2026-10-25' /home/agent/eventos.log
+hints:
+  - Anclar al origen de línea es ^; el patrón de fecha es AAAA-MM-DD literal (guiones
+    incluidos).
+  - Con -E los anclajes y cuantificadores funcionan directos.
+  - grep -E '^2026-10-25' eventos.log
+teach: El ancla ^ convierte la fecha prefijo en criterio de línea; para patrones de fecha
+  blancos añade [0-9]{4} etc.
+cheatsheet:
+  - cmd: grep -E '^AAAA-MM-DD' f
+    desc: líneas que empiezan por esa fecha
+  - cmd: grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}' f
+    desc: cualquier fecha al inicio
+keywords:
+  - grep
+  - fecha
+  - ancla
+  - ^
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

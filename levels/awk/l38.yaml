@@ -1,0 +1,44 @@
+id: awk-l38
+track: awk
+index: 38
+title: Las filas completas
+subtitle: $3 != \"\" — higiene de datos
+xp: 50
+difficulty: 2
+brief: El inventario tiene filas rotas (el 3.er campo quedó vacío); el informe solo tolera
+  filas COMPLETAS.
+goal: "De inventario.csv imprime el 3.er campo de las filas cuyo 3.er campo NO está vacío
+  (afecta: una completa trae la marca)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 38" "Awk"
+  cat > /home/agent/inventario.csv <<EOF
+  tornillos, 500, pasador
+  arandelas, 300,
+  tuercas, 120, $DOJO_FLAG
+  clavos, 900,
+  EOF
+  chown agent:agent /home/agent/inventario.csv
+solution: awk -F', ' '$3 != "" {print $3}' /home/agent/inventario.csv
+hints:
+  - 'Un campo vacío es la cadena vacía: compara con "" para filtrarlo.'
+  - Si el separador es una sola coma, el campo quedaría con espacio inicial; usa el FS
+    adecuado.
+  - awk -F', ' '$3 != "" {print $1}' inventario.csv
+teach: 'La comparación $N != "" es la higiene de datos más común en awk: descarta celdas
+  vacías sin recurrir a NF==k y deja el flujo de filtrado limpio para el informe.'
+cheatsheet:
+  - cmd: awk -F, '$3 != "" {print $1}' f
+    desc: solo filas con 3.er campo lleno
+  - cmd: awk -F, 'NF==3 {print $1}' f
+    desc: idem contando los campos de la fila
+keywords:
+  - awk
+  - campo vacío
+  - higiene
+  - filtro
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

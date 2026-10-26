@@ -1,0 +1,43 @@
+id: grep-l49
+track: grep
+index: 49
+title: La depuradora doble
+subtitle: "-v apilado: ni A ni B"
+xp: 60
+difficulty: 3
+brief: El volcado viene cargado de ruido y debug; limpiar DUPLICA el valor del signal real.
+goal: Imprime las líneas de volcado.txt que NO mencionan ruido y TAMPOCO debug.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 49" "Grep"
+  cat > /home/agent/volcado.txt <<EOF
+  marcador limpio
+  ruido inutil 42
+  debug interno ok
+  datos validos con la $DOJO_FLAG
+  otra linea de ruido
+  notas de debug finas
+  EOF
+  chown agent:agent /home/agent/volcado.txt
+solution: grep -v 'ruido' /home/agent/volcado.txt | grep -v 'debug'
+hints:
+  - "Cada -v elimina UN tipo de ruido: apílalos con pipes."
+  - 'Equivalente en un solo comando: grep -Ev "ruido|debug" volcado.txt'
+  - grep -v 'ruido' volcado.txt | grep -v 'debug'
+teach: 'Varios -v encadenados definen una lista de exclusiones: solo sobreviven las líneas
+  que no pegan con nada de la lista de ruido. En un solo paso: grep -Ev "A|B".'
+cheatsheet:
+  - cmd: grep -v A f | grep -v B
+    desc: ni A ni B (exclusiones apiladas)
+  - cmd: grep -Ev 'A|B' f
+    desc: idem en un solo comando
+keywords:
+  - grep
+  - -v
+  - exclusión
+  - limpieza
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

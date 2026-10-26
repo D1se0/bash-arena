@@ -1,0 +1,51 @@
+id: awk-l50
+track: awk
+index: 50
+title: "Boss: la normalización"
+subtitle: gsub + array + END + regreso
+xp: 140
+difficulty: 5
+brief: El registro viene con tags precedidos de «#»; limpia la almohadilla, cuenta por tag
+  y REESCATA la primera línea del tag ganador (que lleva la marca).
+goal: De registro.txt calcula el tag (4.º campo, sin «#») MÁS frecuente y, con esa clave,
+  imprime la PRIMERA línea de dicho tag (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 50" "Awk"
+  cat > /home/agent/registro.txt <<EOF
+  a1 b2 c3 #alpha extra $DOJO_FLAG
+  d4 e5 f6 #beta extra
+  g7 h8 i9 #alpha extra
+  j1 k2 l3 #gamma extra
+  m4 n5 o6 #alpha extra
+  EOF
+  chown agent:agent /home/agent/registro.txt
+solution: grep "#$(awk '{gsub(/#/, "", $4); t[$4]++} END {for (x in t) if (t[x] > m) {m =
+  t[x]; w = x} print w}' /home/agent/registro.txt)" /home/agent/registro.txt | head -1
+hints:
+  - Limpia la almohadilla con gsub(/#/, "", $4) ANTES de contar.
+  - El array t[$4]++ acumula la frecuencia; en END encuentra el ganador y guarda SU CLAVE
+    (no el conteo).
+  - "Con la clave en mano, regresa al log y ejecuta grep sobre el TAG ORIGINAL (con #
+    delante)."
+  - g=$(awk '{gsub(/#/, "", $4); t[$4]++} END {for (x in t) if (t[x] > m) {m = t[x]; w =
+    x} print w}' registro.txt); grep "#$g" registro.txt | head -1
+teach: "El boss de normalización encadena las 5 piezas de awk: gsub para limpiar, array
+  para contar, END para decidir, clave ganadora y regreso al log con grep. Es el flujo
+  completo de un mini-ETL textual."
+cheatsheet:
+  - cmd: awk '{gsub(/#/, "", $4); t[$4]++} END {for (x in t) if (t[x]>m) {m=t[x]; w=x} print
+      w}' f
+    desc: tag ganador (la clave, no el conteo)
+  - cmd: grep "#$g" f | head -1
+    desc: primera línea del tag ganador
+keywords:
+  - awk
+  - boss
+  - gsub
+  - frecuencia
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

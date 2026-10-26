@@ -50,7 +50,7 @@ type Msg =
   | { type: 'data'; payload: { data: string } }
   | { type: 'levelState'; payload: { level: PublicLevel | null; startedAt: number } }
   | { type: 'submitResult'; payload: { ok: boolean; passed: boolean; message?: string; xpGained?: number; totalXp?: number; rank?: string; nextLevelId?: string | null } }
-  | { type: 'hint'; payload: { text: string | null; index: number; total: number } }
+  | { type: 'hint'; payload: { text: string | null; index: number; total: number; penalty: number } }
   | { type: 'solution'; payload: { text: string | null } }
   | { type: 'status'; payload: { xp: number; rank: string; solvedLevels: number; totalLevels: number; levelId: string } }
   | { type: 'error'; payload: { message: string } }
@@ -69,7 +69,7 @@ interface ArenaState {
   rank: string;
   nextRankAt: number | null;
   lastSubmit: { passed: boolean; xpGained?: number; totalXp?: number; rank?: string } | null;
-  hintFlash: { text: string | null; index: number; total: number } | null;
+  hintFlash: { text: string | null; index: number; total: number; penalty: number } | null;
   solutionFlash: { text: string } | null;
   lastError: string | null;
   sessionDead: string | null;

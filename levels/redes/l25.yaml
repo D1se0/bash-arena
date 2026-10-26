@@ -1,0 +1,40 @@
+id: redes-l25
+track: redes
+index: 25
+title: Las conexiones estables
+subtitle: ss -tn (establecidas)
+xp: 30
+difficulty: 2
+brief: Hola TCP al servicio espía establece una conexión ESTABLECIDA (ESTAB) que ss lista;
+  el fichero conns.txt takea la marca.
+goal: Abre (en segundo plano) una conexión al puerto 4466 y con ss -tn comprueba que
+  existe ESTAB, luego cat conns.txt (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Redes"
+  echo "conexiones listadas: $DOJO_FLAG" > $HOME/conns.txt
+  chown agent:agent $HOME/conns.txt
+  (printf "hola\n"; sleep 600) | nc -l -p 4466 & sleep 0.3
+solution: nc -w 5 127.0.0.1 4466 < /dev/null > /dev/null 2>&1 & sleep 0.3; ss -tn | grep
+  -q ESTAB; ss -tn | head -5; cat $HOME/conns.txt
+hints:
+  - ss -tn lista las conexiones TCP establecidas (sin flags de estado LISTEN).
+  - "Cada conexión muestra SU STATUS: ESTAB si viva, y los endpoints (IP:PORT a desglose
+    completo)."
+  - ss -tn; cat conns.txt
+teach: "Cada boca de un socket TCP tiene 4 datos: local IP:PORT y remote IP:PORT. ss -tn
+  las lista EN ESTABLECIMIENTO (estado ESTAB)."
+cheatsheet:
+  - cmd: ss -tn
+    desc: conexiones TCP activas
+  - cmd: ss -tn state established
+    desc: filtra por estado directamente
+keywords:
+  - ss
+  - estab
+  - conexiones
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

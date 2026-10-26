@@ -1,0 +1,43 @@
+id: forense-l23
+track: forense
+index: 23
+title: El log arrugado
+subtitle: grep por fecha + rango de horas
+xp: 30
+difficulty: 2
+brief: El log chapuza en timestamp sin fecha; find por franja horaria 10:40 a 10:50 revela
+  la marca.
+goal: Imprime de syslog.txt las líneas entre las horas 10:40 y 10:50 (grep -E con el
+  patrón adecuado).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Forense"
+  cat > $HOME/syslog.txt <<EOF
+  10:35 arranque normal
+  10:42 entrada nocturna $DOJO_FLAG
+  10:55 paseo de servicio
+  11:02 arranque normal
+  EOF
+  chown agent:agent $HOME/syslog.txt
+solution: grep -E '^10:4[0-9]' $HOME/syslog.txt
+hints:
+  - "El criterio es la HORA (prefijo 10:4x): con la clase [0-9] flexibles las unidades."
+  - El ancla ^ garantiza que solo casa el timestamp al inicio.
+  - grep -E '^10:4[0-9]' syslog.txt
+teach: Los logs crecen al revés (latest first); grep con franjas de tiempo prefijo es el
+  cuchillo de la búsqueda temporal precisa.
+cheatsheet:
+  - cmd: grep -E '^10:4[0-9]' f
+    desc: franja de minutos concreta
+  - cmd: grep -E '^10:(40|41|42)' f
+    desc: alternancia literal de minutos
+keywords:
+  - grep
+  - log
+  - hora
+  - franja
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

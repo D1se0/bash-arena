@@ -1,0 +1,36 @@
+id: filtrado-l23
+track: filtrado
+index: 23
+title: La columna consular
+subtitle: cut con delimitador custom
+xp: 30
+difficulty: 2
+brief: El boletín separa campos por «|»; solo el 3.er campo (el estado) interesa… hay una
+  fila con estado especial.
+goal: De boletin.txt imprime SOLO la columna del estado (3.º campo, separador «|»).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Filtrado"
+  printf 'a|b|ok\nc|d|ok con $DOJO_FLAG\ne|f|fail\n' > /home/agent/boletin.txt
+  chown agent:agent /home/agent/boletin.txt
+solution: cut -d '|' -f3 /home/agent/boletin.txt
+hints:
+  - cut -d DELIM -f N selecciona el N-ésimo campo con ese delimitador.
+  - "El delimitador «|» va entre comillas: sino, bash lo interpreta como pipe."
+  - cut -d '|' -f3 boletin.txt
+teach: cut -d f es el corte de columnas con delimiter configurable (ubernetes raros
+  incluidos). Pairs bien con awk si necesitas lógica por campo.
+cheatsheet:
+  - cmd: cut -d '|' -f3 f
+    desc: 3.er campo con pipe como delimitador
+  - cmd: cut -d ',' -f1-2 f
+    desc: los dos primeros campos CSV
+keywords:
+  - cut
+  - delimitador
+  - columna
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

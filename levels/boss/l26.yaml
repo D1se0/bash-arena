@@ -1,0 +1,45 @@
+id: boss-l26
+track: boss
+index: 26
+title: "Boss: la batalla final"
+subtitle: "combina-x: awk+sort+grep+uniq+head"
+xp: 30
+difficulty: 2
+brief: "El colofón del track: un log entero se reduce a la línea GANADORA (que lleva la
+  marca), pasando por campo, conteo y extracción."
+goal: De final.log extrae el lugar (2.º campo) MÁS FRECUENTE, y con su clave imprime TODAS
+  sus líneas del log (una lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Boss"
+  cat > $HOME/final.log <<EOF
+  ord cafetería 1
+  ord aula 2
+  ord cafetería 3
+  ord gimnasio 4
+  ord cafetería 5 $DOJO_FLAG
+  EOF
+  chown agent:agent $HOME/final.log
+solution: g=$(awk '{print $2}' $HOME/final.log | sort | uniq -c | sort -nr | head -1 | awk
+  '{print $2}'); grep " $g " $HOME/final.log
+hints:
+  - "Paso 1: el valor dominante con awk+sort+uniq+sort -nr+head -1 (guárdalo como $g)."
+  - 'Paso 2: el head -1 del ranking NO sirve: regresa al log con grep " $g " e imprime
+    TODAS sus líneas.'
+  - g=$(awk '{print $2}' final.log | sort | uniq -c | sort -nr | head -1 | awk '{print
+    $2}'); grep " $g " final.log
+teach: "El boss de final de round: awk al análisis, sort|uniq al ranking, grep al regreso,
+  head al corte. Todo el repertorio operando en una sola línea — nivel MASTERS."
+cheatsheet:
+  - cmd: g=$(awk '{print $2}' f | sort | uniq -c | sort -nr | head -1 | awk '{print $2}');
+      grep " $g " f | head -1
+    desc: el campo dominante y SU línea
+keywords:
+  - boss
+  - master
+  - pipeline
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

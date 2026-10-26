@@ -1,0 +1,37 @@
+id: redes-l24
+track: redes
+index: 24
+title: El inventario de interfaces
+subtitle: ip -4 addr
+xp: 30
+difficulty: 2
+brief: El contenedor tiene interfaces de red concretas (lo y quizá alguna vlan); el
+  fichero red.txt ratifica el paseo (y la marca).
+goal: Imprime las direcciones IP del sistema (ip -4 addr) y luego cat red.txt donde viaje
+  la marca.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Redes"
+  echo "inventario IPV4: $DOJO_FLAG" > $HOME/red.txt
+  chown agent:agent $HOME/red.txt
+solution: ip -4 addr show; cat $HOME/red.txt
+hints:
+  - "ip -4 addr show es el ifconfig moderno (iproute2): muestra direcciones por interface."
+  - 127.0.0.1/8 en lo SIEMPRE existe aunque el contenedor carezca de red externa.
+  - ip -4 addr show; cat red.txt
+teach: El boot completo con «ip a» es el punto de partida para ver IPs, MTUs y estado de
+  cada interface; con -br sale a modo compacto.
+cheatsheet:
+  - cmd: ip -4 addr
+    desc: direcciones IPv4 por interfaz
+  - cmd: ip -br addr
+    desc: resumen breve (una línea por interfaz)
+keywords:
+  - ip
+  - addr
+  - interfaz
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

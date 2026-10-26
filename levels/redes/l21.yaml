@@ -1,0 +1,43 @@
+id: redes-l21
+track: redes
+index: 21
+title: El puerto a la escucha
+subtitle: ss -tln — SÍMBIOSIS de sockets
+xp: 30
+difficulty: 2
+brief: El servidor local nc quedó a la escucha en un puerto; ss muestra los LISTEN (y el
+  fichero puerto.txt lleva la marca si lo confirms).
+goal: Lista los puertos en escucha (ss -tln) y luego cat puerto.txt, que anota el puerto
+  del servicio espía (con la marca).
+setup: >-
+  #!/bin/bash
+
+  set -e
+
+  arena-prompt "LVL 21" "Redes"
+
+  (printf "banner de servicio\n"; sleep 600) | nc -l -p 4444 & echo "el espía escucha en
+  4444: $DOJO_FLAG" > $HOME/puerto.txt
+
+  chown agent:agent $HOME/puerto.txt
+solution: ss -tln | grep 4444; cat $HOME/puerto.txt
+hints:
+  - ss -tln lista sockets TCP (t) en estado LISTEN (l) con números de puerto (-n implicita
+    en tln).
+  - "El servicio espía quedó pegado al puerto 4444: ss debe listar su línea."
+  - ss -tln; cat puerto.txt
+teach: "ss ES el netstat moderno (iproute2): -t TCP, -l LISTEN, -n numérico sin resolver
+  nombres (muchos más rápido)."
+cheatsheet:
+  - cmd: ss -tln
+    desc: puertos TCP a la escucha
+  - cmd: ss -tlnp
+    desc: ídem con el PID del dueño
+keywords:
+  - ss
+  - listen
+  - puerto
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

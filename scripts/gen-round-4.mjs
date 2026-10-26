@@ -588,9 +588,9 @@ chown agent:agent ${HOME}/pedidos.txt ${HOME}/precios.txt`,
 }));
 
 AWK.push(mk({
-  track: 'awk', index: 36, title: 'Boss: la hora pico', subtitle: 'awkk acumula por franja y END top',
+  track: 'awk', index: 36, title: 'Boss: la hora pico', subtitle: 'awk acumula por franja y END top',
   xp: 140, difficulty: 5,
-  brief: 'El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la pico. Extrae el VALOR total acumulado de esa hora.',
+  brief: 'El registro de tráfico dice «hora endpoint megas». La hora con MÁS tráfico total es la franja pico. La marca viaja en la fila pico.',
   goal: 'Imprime de trafico.txt las LÍNEAS de la hora (1.º campo) con MÁS tráfico total (suma del 3.º campo) — la marca viaja en la fila pico.',
   setup: () => `arena-prompt "LVL 36" "Awk"
 cat > ${HOME}/trafico.txt <<EOF

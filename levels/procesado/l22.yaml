@@ -1,0 +1,38 @@
+id: procesado-l22
+track: procesado
+index: 22
+title: El repartidor de colas
+subtitle: "tee: salida y fichero a la vez"
+xp: 30
+difficulty: 2
+brief: El monitoreo necesita que la entrada pase A CONSOLA y TAMBIÉN al fichero hist.log,
+  en el mismo paseo de pipeline.
+goal: Vuelca el contenido de entrada.txt por stdout y guárdalo A LA VEZ en hist.log con
+  tee (cat | tee).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Procesado"
+  echo "entrada para tee $DOJO_FLAG" > /home/agent/entrada.txt
+  echo "preparado" > /home/agent/hist.log
+  chown agent:agent /home/agent/entrada.txt /home/agent/hist.log
+solution: cat /home/agent/entrada.txt | tee /home/agent/hist.log
+hints:
+  - "tee COPIA la entrada a stdout y a cada fichero argumento: pipea algo a tee fichero."
+  - "El «algo» es el contenido de entrada.txt: cat entrada.txt | tee hist.log."
+  - cat entrada.txt | tee hist.log
+teach: "tee es la bifurcación de flujo: consola + N ficheros en el mismo pipeline. Mejor
+  pipe a tee que dos comandos secuentes para ver y guardar."
+cheatsheet:
+  - cmd: cmd | tee fichero
+    desc: consola + fichero simultáneo
+  - cmd: cmd | tee -a fichero
+    desc: consola + APPEND al fichero
+keywords:
+  - tee
+  - split
+  - pipeline
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

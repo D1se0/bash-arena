@@ -1,0 +1,38 @@
+id: busqueda-l21
+track: busqueda
+index: 21
+title: El hallazgo por nombre
+subtitle: find -name + -exec cat
+xp: 30
+difficulty: 2
+brief: Un ticket perdido lleva la marca; find por nombre y leerlo en el mismo pasaje.
+goal: Busca en /home/agent los ficheros llamados ticket-*.txt y muestra su contenido (uno
+  lo lleva).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Busqueda"
+  mkdir -p /home/agent/uno
+  echo "ticket t-1 sin marca" > /home/agent/uno/ticket-x.txt
+  echo "ticket especial $DOJO_FLAG" > /home/agent/ticket-9.txt
+  chown -R agent:agent /home/agent/uno /home/agent/ticket-9.txt
+solution: find /home/agent -name 'ticket-*.txt' -exec cat {} \;
+hints:
+  - find RUTA -name 'glob' busca por nombre; pon el glob ENTRE COMILLAS.
+  - -exec comando {} \; ejecuta el comando con cada resultado en la posición de {}.
+  - find /home/agent -name 'ticket-*.txt' -exec cat {} \;
+teach: "-exec convierte a find en una cadena de acción: no solo encuentra, OPERA. El ;
+  cierra el -exec (y \\; también lo escapa en un solo -exec por fichero)."
+cheatsheet:
+  - cmd: find . -name '*.txt'
+    desc: todos los .txt
+  - cmd: find . -name '*.log' -exec cat {} \;
+    desc: encuentra y actúa
+keywords:
+  - find
+  - name
+  - exec
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

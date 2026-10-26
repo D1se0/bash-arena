@@ -1,0 +1,40 @@
+id: procesos-l24
+track: procesos
+index: 24
+title: La vida del PID
+subtitle: "kill -0: ¿sigue vivo?"
+xp: 30
+difficulty: 2
+brief: "Un PID apuntado en vida.txt pudo morir; kill -0 no mata, pregunta: el fichero de
+  respuesta lleva la marca."
+goal: Comprueba si el PID anotado en vida.txt RESPONDE a señales (kill -0 PID; exit status
+  0 = vivo) y luego cat respuesta.txt (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Procesos"
+  sleep 600 & echo "pid del sueño: $!" > $HOME/vida.txt
+  echo "respuesta del pulso: $DOJO_FLAG" > $HOME/respuesta.txt
+  chown agent:agent $HOME/vida.txt $HOME/respuesta.txt
+solution: "p=$(sed 's/pid del sueño: //' $HOME/vida.txt); kill -0 \"$p\" && echo \"el
+  proceso $p responde (vivo)\"; cat $HOME/respuesta.txt"
+hints:
+  - "kill -0 PID no envía señal real: solo comprueba si ENVIAR sería posible (proceso vivo
+    y permisos)."
+  - El PID se lee del fichero vida.txt (limpia su prefijo).
+  - "kill -0 $(sed 's/.*: //' vida.txt) && cat respuesta.txt"
+teach: "kill -0 es el ping de procesos: barato y fiable antes de hacer kill de verdad
+  (evita matar un PID reutilizado)."
+cheatsheet:
+  - cmd: kill -0 PID && echo vivo
+    desc: comprueba existencia sin señalar
+  - cmd: ps -p PID -o comm=
+    desc: ídem consultando la tabla
+keywords:
+  - kill
+  - "-0"
+  - señal
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

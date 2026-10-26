@@ -1,0 +1,45 @@
+id: grep-l47
+track: grep
+index: 47
+title: Los puertos 8xxx
+subtitle: ERE con {n} delimitado
+xp: 70
+difficulty: 4
+brief: El listado de servicios lista puertos y programas. Los de la serie 8000–8999 son
+  los inquietantes (y uno lleva la marca).
+goal: Imprime de ports.txt las líneas cuyo 2.nº campo es un número de 4 cifras que EMPIEZA
+  POR 8 (8000–8999).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 47" "Grep"
+  cat > /home/agent/ports.txt <<EOF
+  web     80    nginx
+  dev     8001  python http.server $DOJO_FLAG
+  api     8443  nginx ssl
+  bd      5432  postgres
+  cache   6379  redis
+  mono    8123  listener interno
+  EOF
+  chown agent:agent /home/agent/ports.txt
+solution: grep -E ' 8[0-9]{3} ' /home/agent/ports.txt
+hints:
+  - "Delimita el puerto con espacios: sin ellos 80 y 5432 colarían."
+  - El patrón 8[0-9]{3} exige un 8 seguido de TRES dígitos cualesquiera.
+  - grep -E ' 8[0-9]{3} ' ports.txt
+teach: 'Cuantificadores {n} + delimitadores explícitos evitan coincidencias parásitas: es
+  la gran diferencia entre grep -E "8" y grep -E " 8[0-9]{3} ".'
+cheatsheet:
+  - cmd: grep -E ' 8[0-9]{3} ' f
+    desc: números 4 cifras que empiezan por 8
+  - cmd: grep -E '[[:space:]]8080[[:space:]]' f
+    desc: el puerto exacto como palabra
+keywords:
+  - grep
+  - regex
+  - puertos
+  - "{n}"
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

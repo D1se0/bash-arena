@@ -1,0 +1,42 @@
+id: boss-l23
+track: boss
+index: 23
+title: "Boss: la malla de logs"
+subtitle: grep multi-criterio con anclas
+xp: 30
+difficulty: 2
+brief: El log mixto solo revela su marca si casan DOS criteria al mismo tiempo (IP y modo).
+goal: Imprime las líneas de malla.log que contengan 203.0.113.9 Y (ERROR o FAILED) al
+  mismo tiempo (grep -E patrones).*
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Boss"
+  cat > $HOME/malla.log <<EOF
+  10:01 CONNECT 203.0.113.9 OK
+  10:02 CONNECT 198.51.100.8 ERROR
+  10:03 CONNECT 203.0.113.9 FAILED $DOJO_FLAG
+  10:04 CONNECT 203.0.113.9 LISTENING
+  EOF
+  chown agent:agent $HOME/malla.log
+solution: grep '203.0.113.9' $HOME/malla.log | grep -E 'ERROR|FAILED'
+hints:
+  - El 1.er grep filtra IP; el 2.º exige ERROR o FAILED (grep -E con alternancia).
+  - "El criterio exacto AND/OR: la línea ganadora lleva la marca."
+  - grep '203.0.113.9' malla.log | grep -E 'ERROR|FAILED'
+teach: "El patrón «FILTRA A | EXIGE B» (pipa con and) es demasiado común en log-filtrado:
+  cada grep agrega un criterio sin regex síntesis."
+cheatsheet:
+  - cmd: grep A f | grep -E 'B|C'
+    desc: AND + OR combinados en 2 greps
+  - cmd: grep -E 'A.*B|B.*A' f
+    desc: ídem en un solo grep (más frágil)
+keywords:
+  - boss
+  - grep
+  - AND
+  - OR
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

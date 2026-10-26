@@ -1,0 +1,43 @@
+id: permisos-l25
+track: permisos
+index: 25
+title: El viajo del sudoers
+subtitle: sudo NO disponible en sandbox — sudoers audit
+xp: 30
+difficulty: 2
+brief: En la sala por defecto el agente NO tiene sudo (el perfil sudo lo habilita); aquí
+  se audita el fichero de ejemplo y se confirma el permiso con la marca.
+goal: Imprime las líneas del fichero sudoers-demo.conf que mencionan NOPASSWD y cat del
+  fichero que confirma el permiso real (con la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Permisos"
+  cat > /home/agent/sudoers-demo.conf <<EOF
+  ## regla demo
+  agent ALL=(ALL) NOPASSWD: /usr/bin/systemctl
+  root ALL=(ALL:ALL) ALL
+  EOF
+  echo "permiso real (sin sudo en sandbox): $DOJO_FLAG" > /home/agent/permiso-real.txt
+  chown agent:agent /home/agent/sudoers-demo.conf /home/agent/permiso-real.txt
+solution: grep 'NOPASSWD' /home/agent/sudoers-demo.conf && cat /home/agent/permiso-real.txt
+hints:
+  - grep NOPASSWD sudoers-demo.conf filtra las reglas sin contraseña.
+  - "La marca viaja en el fichero permiso-real: cat para verla."
+  - grep NOPASSWD sudoers-demo.conf && cat permiso-real.txt
+teach: "El sudoers real vive en /etc/sudoers: NUNCA lo edites sin visudo. En este track se
+  estudia un fichero de ejemplo (la sala no da sudo real por defecto: perfil sudo lo
+  habilita)."
+cheatsheet:
+  - cmd: visudo
+    desc: edita /etc/sudoers con validación
+  - cmd: sudo -l
+    desc: lista tus permisos sudo actuales
+keywords:
+  - sudoers
+  - NOPASSWD
+  - sudo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,3 +1,46 @@
+# bash-arena v0.3.0 — 500 niveles y repaso libre tras resolver
+
+Ronda de contenido masiva + pulido de la experiencia: el catálogo crece hasta
+**500 niveles en 18 tracks**, con especialización prioritaria de grep y awk.
+
+## Qué añade esta release
+
+- **Grep a 50 niveles (+14)**: especialización con `-m`, `-o`, `-v`, clases
+  POSIX (`[[:alpha:]]`), `--exclude-dir`, AND encadenado con `grep|grep`, ERE
+  `{n}`, `-n`+`cut`+`sed`, `grep -c` dominante y **boss**: conteo del atacante
+  + regreso al log para su única conexión OK.
+- **Awk a 50 niveles (+14)**: `FS` multichar, `$3 != ""`, `toupper()`, filas
+  pares con `NR%2`, `printf` alineado, rangos `/a/,/b/`, `gsub`, dedup
+  `!a[k]++`, join `NR==FNR`, `-v`, `split()`, `index()+substr()` y **boss**:
+  normalización con gsub + array asociativo + END + regreso al log.
+- **11 pistas base a 26 niveles (+6 cada una)**: fundamentos, filtrado,
+  búsqueda, procesado, permisos, procesos, redes, archivos, bash scripting,
+  forense y boss — con rediseños verificados (`xargs cat`, `cat | tee`,
+  `chgrp -R` donde `sudo` no existe por hardening, etc.).
+- **Solución libre tras capturar la flag**: al validar la flag, el nivel
+  queda disponible para repasar — la solución se puede mirar directamente
+  sin pistas antes, y las pistas/solución que ve DESPUÉS de resolver no
+  registran ni penalizan (el informe PDF refleja solo lo pre-solución).
+- **CheatSheet interactivo en la docs** (GitHub Pages): buscador por comando,
+  bandera o texto, fichas con opciones y ejemplos reales de los niveles.
+  Añadido punto de regresión visual para que ningún elemento del menú quede
+  cortado en ningún ancho.
+- **HUD/informe del jugador en PDF** (jsPDF, sin canvas): portada, resumen
+  XP/rango, progreso por track, niveles resueltos, logros y diploma.
+- **Verificación completa**: las 92 soluciones nuevas pasadas una a una en su
+  contenedor real (test-levels.mjs), lint de niveles, tests unitarios 22/22,
+  typecheck y build verdes; smoke E2E del stack desplegado por nginx.
+
+## Despliegue rápido (igual que v0.1.x)
+
+```bash
+docker build -t bash-arena/dojo-base:latest -f docker/ubuntu-dojo.Dockerfile .
+./scripts/deploy.sh
+# → plataforma en http://localhost:8091 · API en http://localhost:18080
+```
+
+---
+
 # bash-arena v0.2.0 — tracks de experto: grep-pro y awk-pro (292 niveles)
 
 Dos tracks nuevos de nivel experto **solo con una herramienta**: 48 niveles con

@@ -1,0 +1,46 @@
+id: awk-l40
+track: awk
+index: 40
+title: Posiciones pares
+subtitle: NR%2 — filtra por NÚMERO de línea
+xp: 55
+difficulty: 2
+brief: La señal alterna mensaje/ruido línea a línea; solo las líneas con número IMPAR
+  (1.ª, 3.ª, 5.ª…) son pulso real.
+goal: De senial.txt imprime SOLO las líneas con posición IMPAR (NR impar).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 40" "Awk"
+  cat > /home/agent/senial.txt <<EOF
+  pulso A
+  ruido 1
+  pulso B
+  ruido 2
+  pulso C $DOJO_FLAG
+  ruido 3
+  EOF
+  chown agent:agent /home/agent/senial.txt
+solution: awk 'NR%2==1' /home/agent/senial.txt
+hints:
+  - NR es el número de línea GLOBAL; el resto con % filtra por POSICIÓN, no por contenido.
+  - 'El patrón puede ser una expresión: awk "NR%2==1" es «imprime las impares».'
+  - awk 'NR%2==1' senial.txt
+teach: La aritmética sobre NR permite filtrar por posición (pares, impares, cada 3.ª con
+  NR%3==0) — algo que ni grep ni sed hacen tan cómodo.
+cheatsheet:
+  - cmd: awk 'NR%2==1' f
+    desc: líneas impares
+  - cmd: awk 'NR%2==0' f
+    desc: líneas pares
+  - cmd: awk 'NR%5==0' f
+    desc: cada 5.ª línea
+keywords:
+  - awk
+  - NR
+  - par
+  - posición
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

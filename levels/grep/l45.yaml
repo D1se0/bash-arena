@@ -1,0 +1,44 @@
+id: grep-l45
+track: grep
+index: 45
+title: El inspector de extensiones
+subtitle: -r + --include=*.ext
+xp: 60
+difficulty: 3
+brief: El directorio mezcla .log, .txt y .conf; solo los .log pueden contener la marca, el
+  resto es ruido.
+goal: Busca (recursivamente) la cadena marca en /home/agent/mixto imprimiendo SOLO las
+  coincidencias dentro de ficheros .log.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 45" "Grep"
+  mkdir -p /home/agent/mixto/logs /home/agent/mixto/conf
+  echo 'bueno marca $DOJO_FLAG' > /home/agent/mixto/logs/kernel.log
+  echo 'marca pero no es log' > /home/agent/mixto/notas.txt
+  echo 'marca en conf' > /home/agent/mixto/conf/app.conf
+  echo 'otro log con marca' > /home/agent/mixto/logs/acentos.log
+  chown -R agent:agent /home/agent/mixto
+solution: grep -r --include='*.log' 'marca' /home/agent/mixto
+hints:
+  - --include=GLOB limita la recursión a los ficheros que casan el patrón de nombre.
+  - "Pon el glob entre comillas: si no, bash intentaría expandirlo antes de pasarlo a
+    grep."
+  - grep -r --include='*.log' 'marca' mixto
+teach: --include filtra QUÉ ficheros se leen en la recursión (complemento de
+  --exclude-dir). Para auditorías por tipo (solo logs, solo logs y only.conf) es el riego
+  exacto.
+cheatsheet:
+  - cmd: grep -r --include='*.log' 'x' .
+    desc: recursivo pero solo .log
+  - cmd: grep -r --include='*.conf' 'x' .
+    desc: solo los de configuración
+keywords:
+  - grep
+  - include
+  - recursivo
+  - glob
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

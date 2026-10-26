@@ -1,0 +1,38 @@
+id: fundamentos-l21
+track: fundamentos
+index: 21
+title: El callejón de abajo
+subtitle: rutas relativas con cd
+xp: 30
+difficulty: 2
+brief: El dojo guarda una nota en un anejo del árbol; llegar y leerla es todo cuanto se pide.
+goal: Entra en /home/agent/anejo/abajo con una sola cd (ruta relativa desde tu home) y lee
+  nota.txt que hay dentro.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Fundamentos"
+  mkdir -p /home/agent/anejo/abajo
+  echo "nota: la $DOJO_FLAG" > /home/agent/anejo/abajo/nota.txt
+  chown -R agent:agent /home/agent/anejo
+solution: cd /home/agent/anejo/abajo && cat nota.txt
+hints:
+  - "Con ruta absoluta no fallas: cd /home/agent/anejo/abajo y desde ahí *nota.txt* ya es
+    directa."
+  - Si te pierdes, pwd dice dónde estás…
+  - cd /home/agent/anejo/abajo && cat nota.txt
+teach: "La navegación es el 80 % del trabajo diario: rutas absolutas (desde /) no fallan;
+  relativas dependen de donde estés (cd - vuelve al anterior)."
+cheatsheet:
+  - cmd: cd ruta
+    desc: cambia de directorio
+  - cmd: cd -
+    desc: vuelve al directorio anterior
+keywords:
+  - cd
+  - ruta
+  - navegar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

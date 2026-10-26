@@ -150,6 +150,15 @@ export function recordHints(playerId: string, levelId: string, track: string, co
     .run(playerId, levelId, track, count);
 }
 
+/** Fila de progreso de UN nivel concreto (o null si no hay registro). */
+export function getLevelProgress(playerId: string, levelId: string): ProgressRow | null {
+  const instance = getDb();
+  const row = instance
+    .prepare('SELECT * FROM progress WHERE player_id = ? AND level_id = ?')
+    .get(playerId, levelId) as ProgressRow | undefined;
+  return row ?? null;
+}
+
 export function getProgress(playerId: string): ProgressRow[] {
   const instance = getDb();
   const rows = instance

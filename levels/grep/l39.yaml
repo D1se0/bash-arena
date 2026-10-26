@@ -1,0 +1,43 @@
+id: grep-l39
+track: grep
+index: 39
+title: El censo limpio
+subtitle: "-v: solo lo que NO casa"
+xp: 45
+difficulty: 2
+brief: El control de calidad marca con «FALLA» los lotes defectuosos; una de las líneas
+  sanas lleva la marca.
+goal: Imprime las líneas de calidad.txt que NO contienen la palabra FALLA (una de ellas
+  lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 39" "Grep"
+  cat > /home/agent/calidad.txt <<EOF
+  lote 1 correcto
+  lote FALLA dos
+  lote 3 correcto con la $DOJO_FLAG
+  lote FALLA cuarta
+  lote 5 correcto
+  EOF
+  chown agent:agent /home/agent/calidad.txt
+solution: grep -v 'FALLA' /home/agent/calidad.txt
+hints:
+  - "-v invierte el filtro: imprime las líneas que NO contienen el patrón."
+  - Si además quieres contar, cronometra con grep -cv.
+  - grep -v 'FALLA' calidad.txt
+teach: "-v es el complemento del grep: el «límite fuera». Encadenado con otra condición
+  (grep -v A f | grep B) construyes lógica AND/OR compleja sin regex sobrecargadas."
+cheatsheet:
+  - cmd: grep -v 'x' f
+    desc: líneas que NO contienen x
+  - cmd: grep -cv 'x' f
+    desc: cuántas líneas NO contienen x
+keywords:
+  - grep
+  - -v
+  - complemento
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

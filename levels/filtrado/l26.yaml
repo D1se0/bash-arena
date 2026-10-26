@@ -1,0 +1,35 @@
+id: filtrado-l26
+track: filtrado
+index: 26
+title: El rango de columnas
+subtitle: cut con rango -f2-4
+xp: 30
+difficulty: 2
+brief: La cabecera lleva 5 columnas; el informe quiere las del MEDIO (2 a 4).
+goal: De cabecera.txt imprime los CAMPOS 2 a 4 (rango) con el delimitador que toque.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Filtrado"
+  printf 'a;b;c;d;e\nx;y;$DOJO_FLAG;w\n' > /home/agent/cabecera.txt
+  chown agent:agent /home/agent/cabecera.txt
+solution: cut -d ';' -f2-4 /home/agent/cabecera.txt
+hints:
+  - cut -f 2-4 selecciona un RANGO (sintaxis 2-4); listas por comas también valen (2,3,4).
+  - El delimitador de este fichero es el punto y coma.
+  - cut -d ';' -f2-4 cabecera.txt
+teach: El rango -f 2-4 (o lista 2,4) cubre cortes múltiples con delimiter; con espacios
+  como delim es cut -d ' ' -f2-4.
+cheatsheet:
+  - cmd: "cut -d: -f2-4 f"
+    desc: campos 2 a 4
+  - cmd: "cut -d: -f1,3 f"
+    desc: campos 1 y 3 (saltando el 2)
+keywords:
+  - cut
+  - rango
+  - campos
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

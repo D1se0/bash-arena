@@ -1,0 +1,37 @@
+id: procesado-l26
+track: procesado
+index: 26
+title: El traductor de tab
+subtitle: awk con FS de tabulador
+xp: 30
+difficulty: 2
+brief: El fichero usa TABULADORES como separador (poco común); awk tiene su -F "\t" para eso.
+goal: De tabulado.tsv imprime el 2.º campo de cada línea, con el tabulador como separador
+  de campo.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Procesado"
+  printf 'nombre\tdato $DOJO_FLAG\notro\tdato2\n' > /home/agent/tabulado.tsv
+  chown agent:agent /home/agent/tabulado.tsv
+solution: awk -F'\t' '{print $2}' /home/agent/tabulado.tsv
+hints:
+  - "El separador de TSV es el tabulador: -F'\t' lo asigna (no el espacio default)."
+  - $2 es el segundo campo (el valor real de la fila).
+  - awk -F'	' '{print $2}' tabulado.tsv
+teach: Con FS por defecto (espacios/tab mezclados), awk cierra tabuladores; cuando el FS
+  ES tab y hay espacios dentro del dato, hay que fijarlo explícito.
+cheatsheet:
+  - cmd: awk -F'	' '{print $2}' f
+    desc: con tabulador como separador
+  - cmd: awk 'BEGIN{FS=OFS="	"} {print $1,$3}' f
+    desc: mantener salida también en tabs
+keywords:
+  - awk
+  - FS
+  - tsv
+  - tabulador
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

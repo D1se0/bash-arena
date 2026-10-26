@@ -1,0 +1,40 @@
+id: boss-l25
+track: boss
+index: 25
+title: "Boss: el diagrama compositivo"
+subtitle: tar + grep del manifest interior
+xp: 30
+difficulty: 2
+brief: El manifiesto dentro del tar.gz lista los ficheros; hay que descomprimir, localizar
+  el fichero marcado y señalar SU contenido (que viajó dentro).
+goal: Empaqueta el árbol /home/agent/proy en proy.tgz (sin incluir el tar en sí), y
+  localiza via tar -t el fichero clave.txt; imprime su contenido con tar -Oxz.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Boss"
+  mkdir -p $HOME/proy/ins $HOME/proy/src
+  echo 'backend ok' > $HOME/proy/src/main.py
+  echo "clave con marca $DOJO_FLAG" > $HOME/proy/ins/clave.txt
+  chown -R agent:agent $HOME/proy
+solution: tar czf $HOME/proy.tgz -C $HOME proy && tar tzf $HOME/proy.tgz | grep clave &&
+  tar -Oxz -f $HOME/proy.tgz proy/ins/clave.txt
+hints:
+  - tar -C DIR cambia el BASE dir al empacar (rutas limpies dentro del tar).
+  - Con -O stracción con salida a stdout del fichero interior sin extraer a disco.
+  - tar czf proy.tgz -C ~ proy; tar tzf proy.tgz; tar -Oxz -f proy.tgz proy/ins/clave.txt
+teach: "El paquete de árbol con -C, la inspección con -t y la extracción quirúrgica con -O
+  forman el flujo de CASO REAL: luego es Copiarlo, no IMÁGENELO."
+cheatsheet:
+  - cmd: tar czf p.tgz -C born dir
+    desc: empaca con base limpio
+  - cmd: tar xOzf p.tgz path/dentro
+    desc: imprime un fichero interior
+keywords:
+  - boss
+  - tar
+  - paquete
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,0 +1,36 @@
+id: fundamentos-l24
+track: fundamentos
+index: 24
+title: La pieza renombrada
+subtitle: "mv: mover y renombrar"
+xp: 30
+difficulty: 2
+brief: "El borrador final ya está listo: renómbralo a final.txt en el mismo paseo y luego
+  léelo."
+goal: Renombra borrador.txt a final.txt (mv, sin mover de sitio) y comprueba su contenido.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Fundamentos"
+  echo "borrador $DOJO_FLAG" > /home/agent/borrador.txt
+  chown agent:agent /home/agent/borrador.txt
+solution: mv /home/agent/borrador.txt /home/agent/final.txt && cat /home/agent/final.txt
+hints:
+  - mv origen destino mueve O renombra (rename si el origen y destino están en la misma
+    ruta).
+  - Después del mv el fichero original ya no existe.
+  - mv borrador.txt final.txt && cat final.txt
+teach: "mv ES el mismo comando para mover y para renombrar: solo cambia si cambias de
+  directorio. Ojo, no pregunta: sobrescribe destino sin drama."
+cheatsheet:
+  - cmd: mv a b
+    desc: renombra a b (o mueve a dir b)
+  - cmd: mv -i a b
+    desc: pregunta antes de sobrescribir
+keywords:
+  - mv
+  - renombrar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

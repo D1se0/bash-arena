@@ -714,8 +714,9 @@ async function doHint(ws: WebSocket, st: ConnState): Promise<void> {
   if (!engine) return void sendText(ws, '\r\nsin nivel activo\r\n');
   const h = engine.hint();
   // al panel le llega el texto de la pista en plano (sin ANSI ni cabecera:
-  // ese texto lo pinta la UI) y a la terminal el bloque renderizado
-  send(ws, { type: 'hint', payload: { text: h.plain, index: h.index, total: h.total } });
+  // ese texto lo pinta la UI) y a la terminal el bloque renderizado;
+  // penalty=0 si el nivel ya está resuelto (repasar no penaliza)
+  send(ws, { type: 'hint', payload: { text: h.plain, index: h.index, total: h.total, penalty: h.penalty } });
   sendText(ws, h.text === null ? '\r\n\x1b[38;5;203mno hay más pistas. ¡A por él!\x1b[0m\r\n' : '\r\n' + h.text + '\r\n');
 }
 
@@ -725,7 +726,7 @@ async function doSolution(ws: WebSocket, st: ConnState): Promise<void> {
   const plain = engine.solutionPlain();
   send(ws, { type: 'solution', payload: { text: plain } });
   if (plain === null) {
-    sendText(ws, '\r\n\x1b[38;5;203msolution bloqueada:\x1b[0m usa 2 pistas (hint) o 5 intentos fallidos (submit).\r\n');
+    sendText(ws, '\r\n\x1b[38;5;203msolution bloqueada:\x1b[0m usa 2 pistas (hint) o 5 intentos fallidos (submit); tras capturar la flag queda libre.\r\n');
     return;
   }
   // a la terminal el bloque completo ya renderizado (color incluido)

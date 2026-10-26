@@ -1,0 +1,39 @@
+id: busqueda-l26
+track: busqueda
+index: 26
+title: La casa del marcador
+subtitle: find -type f + grep pipeline
+xp: 30
+difficulty: 2
+brief: Busca la única marca en el árbol con find + grep combinando la condición de nombre.
+goal: Encuentra en /home/agent/pasillos los ficheros .txt que contienen la cadena
+  escondida (grep -l vía -exec) y MUESTRA SU CONTENIDO añadiendo xargs cat.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Busqueda"
+  mkdir -p /home/agent/pasillos/norte
+  echo 'aquí nada' > /home/agent/pasillos/sur.md
+  echo 'aquí si la escondida $DOJO_FLAG' > /home/agent/pasillos/norte/x.txt
+  chown -R agent:agent /home/agent/pasillos
+solution: find /home/agent/pasillos -type f -name '*.txt' -exec grep -l 'escondida' {} \;
+  | xargs cat
+hints:
+  - "Encadena find (por nombre y tipo) con -exec grep: cada fichero leído individualmente."
+  - grep -l imprime el NOMBRE del fichero; xargs cat convierte esa lista en su contenido.
+  - find pasillos -type f -name '*.txt' -exec grep -l 'escondida' {} \; | xargs cat
+teach: "find | xargs | grep es la cadena de casa: filtra candidatos por TIPO/NOMBRE y deja
+  que grep decida por CONTENIDO. -exec es la versión más rápida para pocos ficheros."
+cheatsheet:
+  - cmd: find . -name '*.txt' -exec grep -l 'x' {} \;
+    desc: find + grep por fichero
+  - cmd: grep -rl 'x' --include='*.txt' .
+    desc: ídem en un solo comando
+keywords:
+  - find
+  - grep
+  - exec
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

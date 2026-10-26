@@ -160,7 +160,7 @@ export default function LevelPanel() {
           <div className="flex items-center gap-2 mb-1">
             <span className="font-mono text-xs text-ice font-semibold">◆ pista {hintFlash.index}/{hintFlash.total}</span>
             {hintFlash.text && (
-              <span className="text-[11px] text-frost/50">−10 XP usada {hintFlash.index === hintFlash.total ? '· última pista' : `· quedan ${hintFlash.total - hintFlash.index}`}</span>
+              <span className="text-[11px] text-frost/50">{hintFlash.penalty > 0 ? `−${hintFlash.penalty} XP usada ` : 'sin penalizar (nivel resuelto) '}{hintFlash.index === hintFlash.total ? '· última pista' : `· quedan ${hintFlash.total - hintFlash.index}`}</span>
             )}
           </div>
           {hintFlash.text ? (
@@ -216,7 +216,7 @@ export default function LevelPanel() {
         <button
           onClick={() => send?.({ type: 'solutionRequest', payload: {} })}
           className="rounded-lg bg-panel2 hover:bg-edge px-3 py-1.5"
-          title="disponible tras 2 pistas o 5 intentos fallidos"
+          title="gratis tras capturar la flag · si no, disponible con 2 pistas o 5 intentos fallidos"
         >
           solution
         </button>

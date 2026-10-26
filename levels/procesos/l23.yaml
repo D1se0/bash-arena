@@ -1,0 +1,37 @@
+id: procesos-l23
+track: procesos
+index: 23
+title: El pulso del sistema
+subtitle: uptime y load average
+xp: 30
+difficulty: 2
+brief: "El latido del sistema se mide con uptime: carga media, usuarios, tiempo activo… y
+  la marca viaja en el fichero final."
+goal: Imprime uptime (la carga media de la máquina) y luego cat pulso.txt (la marca viaja
+  allí).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Procesos"
+  echo "pulso confirmado: $DOJO_FLAG" > $HOME/pulso.txt
+  chown agent:agent $HOME/pulso.txt
+solution: uptime; cat $HOME/pulso.txt
+hints:
+  - uptime imprime la hora, uptime, usuarios y los 3 load-averages (1, 5, 15 min).
+  - Es el diagnóstico de casa y el 1.er dato en todo post-mortem.
+  - uptime; cat pulso.txt
+teach: "load average RELATIVO a núcleos: 2.0 en máquina de 4 cores es descanso; en 1 core
+  es ahogo. La regla de bolsillo: load ≈ cores está al límite."
+cheatsheet:
+  - cmd: uptime
+    desc: hora + uptime + load 1/5/15
+  - cmd: cat /proc/loadavg
+    desc: los mismos números desde procfs
+keywords:
+  - uptime
+  - load
+  - diagnóstico
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

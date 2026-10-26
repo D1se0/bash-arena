@@ -1,0 +1,44 @@
+id: awk-l41
+track: awk
+index: 41
+title: El panel alineado
+subtitle: printf con anchuras
+xp: 60
+difficulty: 3
+brief: "El panel del dojo exige columnas RECTAS: nombre a 10 posiciones a la izquierda y
+  nota a 6 a la derecha con 2 decimales. La última fila, de sistema, firma el panel."
+goal: "De panel.txt imprime cada fila alineada: nombre con %-10s y nota con %6.2f (printf)
+  y salto de línea final (la última fila con la firma sale tal cual)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 41" "Awk"
+  cat > /home/agent/panel.txt <<EOF
+  borja 7.5
+  nerea 9.125
+  alejandro 6
+  EOF
+  printf '%s 0\n' "$DOJO_FLAG" >> /home/agent/panel.txt
+  chown agent:agent /home/agent/panel.txt
+solution: awk '{printf "%-10s %6.2f\n", $1, $2}' /home/agent/panel.txt
+hints:
+  - printf usa "%-10s" (izquierda, 10 ancho) y "%6.2f" (derecha, 6 ancho, 2 decimales).
+  - "printf NO salta de línea solo: no olvides el \\n final."
+  - awk '{printf "%-10s %6.2f\n", $1, $2}' panel.txt
+teach: "printf da control total del formato: anchuras, alineación, decimales. Es
+  imprescindible para paneles legibles (tablas comparables) donde el print plano descuadra
+  por diferencias de longitud."
+cheatsheet:
+  - cmd: awk '{printf "%-10s %6.2f\n", $1, $2}' f
+    desc: columnas rectas con decimales
+  - cmd: awk 'END {printf "%d filas\n", NR}' f
+    desc: formato de enteros en el cierre
+keywords:
+  - awk
+  - printf
+  - alinear
+  - formato
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

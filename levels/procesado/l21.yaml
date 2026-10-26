@@ -1,0 +1,40 @@
+id: procesado-l21
+track: procesado
+index: 21
+title: El sed de sustitución
+subtitle: sed s/a/b/ con finales /g
+xp: 30
+difficulty: 2
+brief: El mensaje cifró saltos de línea como token «FIN» dentro de una sola línea; python
+  el sed lo devuelve al formato final.
+goal: De oculto.txt imprime todo el fichero con la palabra FIN cambiada por un SALTO DE
+  LíNEA (s//) para revelar el mensaje (y la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Procesado"
+  echo 'linea1 FIN linea2 FIN linea3 $DOJO_FLAG FIN fin' > /home/agent/oculto.txt
+  chown agent:agent /home/agent/oculto.txt
+solution: sed 's/ FIN /\n/g' /home/agent/oculto.txt
+hints:
+  - El separador de sed es /; s/patrón/reemplazo/flags. Con g cambia TODAS las ocurrencias.
+  - El reemplazo \n inserta salto de línea (GNU sed). Ojo al espacio alrededor del FIN
+    para no saltar a mitad de palabra.
+  - sed 's/ FIN /\n/g' oculto.txt
+teach: "sed es el editor de flujo: s///g con \\n descompacta texto plano en líneas
+  concretas. Para limpiar tokens invisibles, primero identifica el delimitador EXACTO (con
+  espacios)."
+cheatsheet:
+  - cmd: sed 's/a/b/g' f
+    desc: reemplaza TODAS las apariciones
+  - cmd: sed 's/SEP/\n/g' f
+    desc: reparte un token a líneas
+keywords:
+  - sed
+  - s///
+  - g
+  - salto
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

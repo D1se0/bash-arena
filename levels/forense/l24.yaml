@@ -1,0 +1,37 @@
+id: forense-l24
+track: forense
+index: 24
+title: El mensaje rot13
+subtitle: tr con rangos a-z
+xp: 30
+difficulty: 2
+brief: El mensaje guardado en roto.txt está en ROT13; tr con doble rango lo devuelve a
+  texto (la marca en claro).
+goal: Decodifica roto.txt con el algoritmo ROT13 (tr con los dos rangos de letras). La
+  marca aparece en claro.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Forense"
+  printf '%s' "$DOJO_FLAG FLAG{otra} texto" | tr 'a-zA-Z' 'n-za-mN-ZA-M' > $HOME/roto.txt
+  chown agent:agent $HOME/roto.txt
+solution: tr 'a-zA-Z' 'n-za-mN-ZA-M' < $HOME/roto.txt
+hints:
+  - "ROT13: tr a-zA-Z en n-za-mN-ZA-M (en minúsculas n-z = primera mitad; a-m = segunda)."
+  - Aplicar el MISMO tr dos veces reintegra el original (idempotente).
+  - tr 'a-zA-Z' 'n-za-mN-ZA-M' < roto.txt
+teach: tr traduce bajos bytes; el ROT13 es el cifrado más simple (rotate de 13
+  posiciones). Doble cifrado = mensaje original.
+cheatsheet:
+  - cmd: tr a-zA-Z n-za-mN-ZA-M < f
+    desc: aplica ROT13
+  - cmd: tr a-z A-Z < f
+    desc: "general: a mayúsculas"
+keywords:
+  - tr
+  - ROT13
+  - cifrado
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

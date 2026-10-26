@@ -470,9 +470,11 @@ const browser = await chromium.launch({
       const r = await page.evaluate(() => {
         const de = document.documentElement;
         const head = document.querySelector('header');
+        const nav = head ? head.querySelector('nav') : null;
         return {
           noH: de.scrollWidth <= de.clientWidth + 1,
           headH: head ? head.getBoundingClientRect().height : 0,
+          navOverflow: nav ? nav.scrollWidth > nav.clientWidth + 1 : false,
         };
       });
       if (r.noH) {
@@ -486,6 +488,11 @@ const browser = await chromium.launch({
         } else {
           fail(`docs /${p} (${width}px): header envuelto (${r.headH}px)`);
         }
+      }
+      if (width >= 1280 && r.navOverflow) {
+        fail(`docs /${p} (${width}px): nav del header desbordado (Cheatsheet cortado)`);
+      } else if (width >= 1280) {
+        ok(`docs /${p} (${width}px): nav completo sin cortes`);
       }
       await page.screenshot({ path: `${SHOTS}/docs-${p || 'home'}-${width}.png`, fullPage: p !== 'cheatsheet' });
     }

@@ -1,0 +1,41 @@
+id: permisos-l21
+track: permisos
+index: 21
+title: El permiso para ejecutarse
+subtitle: chmod u+x y correr
+xp: 30
+difficulty: 2
+brief: La herramienta viene SIN permiso de ejecución (x); primero se lo concederás y luego
+  la lanzarás.
+goal: Añade permiso de ejecución al dueño de herramienta.sh y después Ejecuta el script
+  (imprime la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Permisos"
+  cat > /home/agent/herramienta.sh <<EOF
+  #!/bin/bash
+  echo "ejecutada con la $DOJO_FLAG"
+  EOF
+  chown agent:agent /home/agent/herramienta.sh
+  chmod 644 /home/agent/herramienta.sh
+solution: chmod u+x /home/agent/herramienta.sh && /home/agent/herramienta.sh
+hints:
+  - chmod u+x anexe el bit de ejecución (x) al dueño (u).
+  - Sin ese bit, ./script protesta con «Permission denied».
+  - chmod u+x herramienta.sh && ./herramienta.sh
+teach: El bit x es la llave de arranque de todo script; chmod u+x es la modalidad AGREGAR
+  al dueño (octal exageraba permisos de lectura/escritura si no cuidado).
+cheatsheet:
+  - cmd: chmod u+x f
+    desc: permite ejecutar al dueño
+  - cmd: chmod a+x f
+    desc: todos los usuarios (a)
+keywords:
+  - chmod
+  - u+x
+  - script
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

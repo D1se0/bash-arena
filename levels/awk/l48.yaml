@@ -1,0 +1,44 @@
+id: awk-l48
+track: awk
+index: 48
+title: El apodo entre marcas
+subtitle: index() + substr() — bisturí
+xp: 65
+difficulty: 4
+brief: "El fichero lista tickets como tkt-9a1.txt: el identificador va entre el primer
+  guion y el punto final. La credencial viaja en el ticket del fondo."
+goal: De ficheros.txt imprime el identificador (lo situado entre el primer guion y el
+  punto final) de cada ticket, línea a línea.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 48" "Awk"
+  cat > /home/agent/ficheros.txt <<EOF
+  tkt-9a1.txt
+  tkt-c7d.txt
+  tkt-$DOJO_FLAG.txt
+  EOF
+  chown agent:agent /home/agent/ficheros.txt
+solution: awk '{n=index($1, "-"); m=index($1, "."); print substr($1, n+1, m-n-1)}'
+  /home/agent/ficheros.txt
+hints:
+  - index(cad, sub) devuelve la posición (1-based) del primer match; 0 si no está.
+  - "substr(cad, inicio, longitud) corta: substr($1, n+1, m-n-1) dónde empieza y cuánto
+    mide."
+  - awk '{n=index($1,"-"); m=index($1,"."); print substr($1,n+1,m-n-1)}' ficheros.txt
+teach: index + substr forman el bisturí de awk para extraer sub-cadenas por posición
+  (cuándo la regex es excesiva y el delimitador estable).
+cheatsheet:
+  - cmd: awk '{print substr($1, 2, 3)}' f
+    desc: corta desde la posición 2 tres letras
+  - cmd: awk '{print index($1, "x")}' f
+    desc: posición de la 1.ª aparición
+keywords:
+  - awk
+  - index
+  - substr
+  - cortar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

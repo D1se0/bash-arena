@@ -1,0 +1,39 @@
+id: scripting-l25
+track: scripting
+index: 25
+title: El menu atoi
+subtitle: case … esac — ramificación
+xp: 30
+difficulty: 2
+brief: "El case unifica ISвана por primera palabra de un fichero: la opción correcta
+  muestra la marca."
+goal: "Lee la 1.er palabra del fichero cmd.txt y con CASE imprime lo que pida: si dice
+  show, muestra el fichero secreto con cat (que lleva la marca)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Scripting"
+  echo "show" > $HOME/cmd.txt
+  echo "secreto mostrado con $DOJO_FLAG" > $HOME/secreto.txt
+  chown agent:agent $HOME/cmd.txt $HOME/secreto.txt
+solution: case $(head -1 $HOME/cmd.txt) in show) cat $HOME/secreto.txt;; *) echo "otro
+  comando";; esac
+hints:
+  - case VAR in patrón) …;; esac ramifica por patrón (ojo al «;;» de fin de rama).
+  - El «head -1 file» entrega la 1.er palabra de comándose (a para el case).
+  - case $(head -1 cmd.txt) in show) cat secreto.txt;; esac
+teach: "case es el switch de bash: va bien para menús (r como show, help, exit…). Su
+  ventaja: ESCAPA el if-elif anidado."
+cheatsheet:
+  - cmd: case $x in a) …;; b) …;; esac
+    desc: ramificación por patrones
+  - cmd: case $x in [0-9]) …;; esac
+    desc: patrones con clases
+keywords:
+  - case
+  - esac
+  - switch
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

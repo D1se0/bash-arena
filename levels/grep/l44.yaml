@@ -1,0 +1,49 @@
+id: grep-l44
+track: grep
+index: 44
+title: La baliza exacta
+subtitle: "-x: la línea COMPLETA"
+xp: 60
+difficulty: 3
+brief: "El registro de balizas alterna estados y hay ruido; solo una línea es EXACTAMENTE
+  la palabra ENCENDIDO (con la marca al final tras un tabulador? no: la marca viaja en la
+  línea exacta)."
+goal: Imprime de balizas.txt la línea cuya totalidad sea la palabra ENCENDIDO Y que además
+  lleve la marca (la marca forma parte de la línea exacta).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 44" "Grep"
+  cat > /home/agent/balizas.txt <<EOF
+  ENCENDIDO
+    ENCENDIDO con espacios
+  ENCENDIDO una
+  APAGADO
+  encendido minúscula
+  EOF
+  echo "ENCENDIDO $DOJO_FLAG" >> /home/agent/balizas.txt
+  chown agent:agent /home/agent/balizas.txt
+solution: grep 'ENCENDIDO' /home/agent/balizas.txt | grep -v 'con espacios' | grep -v
+  'una' | grep -v 'APAGADO' | grep -v 'encendido'
+hints:
+  - La línea buena empieza por ENCENDIDO y lleva la marca FLAG{…} al final; grep -x solo
+    casaría si dieras el patrón completo de mano en mano, así que filtra en cadena.
+  - Filtra por ENCENDIDO y descarta las variantes falsas con grep -v apilados.
+  - grep 'ENCENDIDO' balizas.txt | grep 'FLAG{'
+teach: "Cuando el ruido y el señal comparten prefijo, el filtro se decide con un criterio
+  EXTERNO al patrón (en este caso, la marca FLAG{…} que solo viaja en la línea buena):
+  encadena greps y deja que el segundo afine."
+cheatsheet:
+  - cmd: grep -x 'TEXTO' f
+    desc: casa solo si la línea COMPLETA es TEXTO
+  - cmd: grep A f | grep B
+    desc: "AND: dos filtros en serie"
+keywords:
+  - grep
+  - -x
+  - ancla
+  - encadenar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

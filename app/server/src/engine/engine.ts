@@ -13,6 +13,7 @@ import {
   recordHints,
   grantAchievement,
   bumpStat,
+  getLevelProgress,
 } from '../progress/db.js';
 import type { LevelDefinition } from '../levels/tracks.js';
 import { validateFlag } from '../flags.js';
@@ -48,12 +49,24 @@ export class GameEngine {
   private hintsUsed = 0;
   private sessionStart = Date.now();
   private failedSubmits = 0;
+  /** el nivel ya estaba resuelto al abrir la sesión (rejugar un nivel hecho) */
+  private solvedBefore: boolean;
+  /** la flag se captó en ESTA sesión */
+  private solvedNow = false;
+  /** índice de pistas SOLO para la vista en un nivel ya resuelto (sin registro) */
+  private hintsShown = 0;
 
   constructor(playerId: string, level: LevelDefinition, session: SessionRecord) {
     this.playerId = playerId;
     this.level = level;
     this.session = session;
+    this.solvedBefore = getLevelProgress(playerId, level.id)?.solved === 1;
     bumpStat(playerId, 'commands', 0);
+  }
+
+  /** ¿El nivel está resuelto (ahora o en una sesión anterior)? */
+  private isSolved(): boolean {
+    return this.solvedNow || this.solvedBefore;
   }
 
   elapsedSeconds(): number {
@@ -83,6 +96,7 @@ export class GameEngine {
   }
 
   private onPassed(): SubmitOutcome {
+    this.solvedNow = true;
     const timeS = this.elapsedSeconds();
     const xp = xpForLevel(this.level.xp, this.hintsUsed);
     const totalXp = addXp(this.playerId, xp);
@@ -115,8 +129,25 @@ export class GameEngine {
     };
   }
 
-  /** Siguiente pista (con penalización de XP). */
+  /** Siguiente pista (con penalización de XP). En un nivel YA RESUELTO las
+   *  pistas se muestran sin registrarlas ni penalizarlas: repasar después de
+   *  capturar la flag no debe contar para el progreso ni para el informe. */
   hint(): { text: string | null; plain: string | null; index: number; total: number; penalty: number } {
+    if (this.isSolved()) {
+      if (this.hintsShown >= this.level.hints.length) {
+        return { text: null, plain: null, index: this.hintsShown, total: this.level.hints.length, penalty: 0 };
+      }
+      this.hintsShown++;
+      const hintText = this.level.hints[this.hintsShown - 1];
+      const last = this.hintsShown === this.level.hints.length;
+      return {
+        text: renderHint(this.hintsShown, this.level.hints.length, hintText, last),
+        plain: hintText,
+        index: this.hintsShown,
+        total: this.level.hints.length,
+        penalty: 0,
+      };
+    }
     if (this.hintsUsed < this.level.hints.length) {
       this.hintsUsed++;
       recordHints(this.playerId, this.level.id, this.level.track, this.hintsUsed);
@@ -134,9 +165,11 @@ export class GameEngine {
     return { text: null, plain: null, index: this.hintsUsed, total: this.level.hints.length, penalty: 0 };
   }
 
-  /** ¿El comando `solution` está desbloqueado? (2 pistas o 5 intentos fallidos) */
+  /** ¿El comando `solution` está desbloqueado? (2 pistas o 5 intentos fallidos).
+   *  Con el nivel resuelto SIEMPRE está disponible: tras capturar la flag se
+   *  puede mirar la solución directamente, con cero pistas vistas. */
   solutionUnlocked(): boolean {
-    return this.hintsUsed >= 2 || this.failedSubmits >= 5;
+    return this.isSolved() || this.hintsUsed >= 2 || this.failedSubmits >= 5;
   }
 
   /** Devuelve la solución de referencia en modo texto (tras desbloqueo). */

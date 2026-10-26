@@ -1,0 +1,41 @@
+id: busqueda-l23
+track: busqueda
+index: 23
+title: Quién lleva la marca
+subtitle: "grep -l: solo nombres de fichero"
+xp: 30
+difficulty: 2
+brief: El árbol tiene varios ficheros con texto; en uno, la marca. grep -l identifica al
+  culpable y hacer la marca visible es cat.
+goal: En /home/agent/secreto localiza con grep -r -l los ficheros que contienen la cadena
+  marca y MUESTRA SU CONTENIDO encadenando xargs cat.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Busqueda"
+  mkdir -p /home/agent/secreto
+  echo 'nada por aquí' > /home/agent/secreto/a.txt
+  echo 'y ahí la marca $DOJO_FLAG' > /home/agent/secreto/b.txt
+  echo 'otro sin nada' > /home/agent/secreto/c.txt
+  chown -R agent:agent /home/agent/secreto
+solution: grep -rl 'marca' /home/agent/secreto | xargs cat
+hints:
+  - "-l NO imprime líneas: imprime el NOMBRE de cada fichero que contiene al menos una
+    coincidencia."
+  - Con -r itera el árbol; con xargs cat conviertes esa lista de ficheros en su CONTENIDO.
+  - grep -r -l 'marca' secreto | xargs cat
+teach: "grep -l pasa de resultados a ficheros: ideal para alimentar xargs y encadenar la
+  limpieza solo en los ficheros culpables."
+cheatsheet:
+  - cmd: grep -rl 'x' dir
+    desc: lista de ficheros del árbol que la contienen
+  - cmd: grep -L 'x' *.txt
+    desc: los ficheros que NO la contienen
+keywords:
+  - grep
+  - -l
+  - ficheros
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

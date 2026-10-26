@@ -1,0 +1,45 @@
+id: procesado-l25
+track: procesado
+index: 25
+title: La contabilidad por grupos
+subtitle: awk sum con array asociativo
+xp: 30
+difficulty: 2
+brief: El registro necesita el total AGRUPADO por usuario (la suma acumulada); el aval del
+  total trae la marca.
+goal: De gasto.txt imprime para cada usuario la SUMA de sus gastos (formato «usuario
+  SUMA», una línea por usuario) y luego cat /home/agent/aval.txt (la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Procesado"
+  cat > /home/agent/gasto.txt <<EOF
+  ana 10
+  borja 20
+  ana 5
+  borja 30
+  carla 40
+  EOF
+  echo "aval del gasto grup exy $DOJO_FLAG" > /home/agent/aval.txt
+  chown agent:agent /home/agent/gasto.txt /home/agent/aval.txt
+solution: awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' /home/agent/gasto.txt; cat
+  /home/agent/aval.txt
+hints:
+  - El array t[usuario] += cantidad acumula por GRUPO.
+  - En END el for recorre las claves y imprime cada acumulado.
+  - awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' gasto.txt; cat aval.txt
+teach: "El array asociativo es la base de todo grupo-by en awk: sumas, medias, dedup. El
+  for de END recorre las claves que acumulaste."
+cheatsheet:
+  - cmd: awk '{t[$1]+=$2} END {for (u in t) print u, t[u]}' f
+    desc: suma agrupada por clave
+  - cmd: awk '{c[$1]++} END {for (u in c) print u, c[u]}' f
+    desc: conteo de apariciones por clave
+keywords:
+  - awk
+  - array
+  - group by
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

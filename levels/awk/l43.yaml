@@ -1,0 +1,43 @@
+id: awk-l43
+track: awk
+index: 43
+title: Las fechas con guiones
+subtitle: gsub dentro del campo
+xp: 60
+difficulty: 3
+brief: Las fechas llegan con barras y el sistema nuevo exige guiones; cambia el 1.er campo
+  SIN perder el resto — y una fila lleva la marca.
+goal: "De fechas.txt imprime cada fila COMPLETA con el 1.er campo reformateado (12/05/2024
+  → 12-05-2024): gsub sobre $1 y print sin argumentos."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 43" "Awk"
+  cat > /home/agent/fechas.txt <<EOF
+  12/05/2024 prestamo A
+  03/11/2024 prestamo B
+  29/02/2024 prestamo C $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/fechas.txt
+solution: awk '{gsub(/\//, "-", $1); print}' /home/agent/fechas.txt
+hints:
+  - "gsub(rgx, reemplazo, campo) sustituye DENTRO del campo (aquí $1); al modificar $1,
+    awk reconstruye $0: print sin argumentos imprime la fila completa."
+  - "La regex de la barra se escapa: /\\// casaría /; el reemplazo es el guión literal."
+  - awk '{gsub(/\//, "-", $1); print}' fechas.txt
+teach: gsub opera sobre campo o variable y MODIFICA el dato en el mismo flujo awk (sin sed
+  externo). Es la herramienta de normalización cuando ya estás parseando columnas.
+cheatsheet:
+  - cmd: awk '{gsub(/a/, "b", $1); print}' f
+    desc: reemplaza TODAS las ocurrencias del 1.er campo (y $0 se reconstruye)
+  - cmd: awk '{sub(/a/, "b", $2); print $2}' f
+    desc: "sub: solo la PRIMERA ocurrencia"
+keywords:
+  - awk
+  - gsub
+  - sub
+  - reformat
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

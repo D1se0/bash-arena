@@ -1,0 +1,34 @@
+id: filtrado-l21
+track: filtrado
+index: 21
+title: Las últimas noticias
+subtitle: "tail -n: el final del log"
+xp: 30
+difficulty: 2
+brief: El log crece por abajo; lo último es lo importante (y una línea final trae la marca).
+goal: Imprime las ÚLTIMAS 3 líneas de noticias.log con tail.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Filtrado"
+  printf 'n1\nn2\nn3\nn4\nn5\nn6 ultima con marca $DOJO_FLAG\n' > /home/agent/noticias.log
+  chown agent:agent /home/agent/noticias.log
+solution: tail -n 3 /home/agent/noticias.log
+hints:
+  - tail imprime el FINAL del fichero; -n NUM limita a NUM líneas.
+  - default son 10 líneas; con muchas menos, -n manda.
+  - tail -n 3 noticias.log
+teach: tail -f sigue el fichero EN VIVO (el clásico de logs); tail -c NUM corta por bytes
+  como head.
+cheatsheet:
+  - cmd: tail -n 5 f
+    desc: últimas 5 líneas
+  - cmd: tail -f f
+    desc: sigue el fichero en tiempo real
+keywords:
+  - tail
+  - final
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

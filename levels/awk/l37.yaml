@@ -1,0 +1,43 @@
+id: awk-l37
+track: awk
+index: 37
+title: Separador de dos piezas
+subtitle: -F ", " — FS multichar
+xp: 50
+difficulty: 2
+brief: El CSV del dojo usa «, » (coma con espacio) como separador para que los nombres con
+  espacios no se rompan; awk acepta un FS de varios caracteres.
+goal: De personas.csv imprime el 3.er campo de la fila 2 con el separador «, » (es la
+  credencial).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 37" "Awk"
+  cat > /home/agent/personas.csv <<EOF
+  ana, QA senior, perros
+  bruno, dev backend, $DOJO_FLAG
+  carla, ops, tortugas
+  EOF
+  chown agent:agent /home/agent/personas.csv
+solution: awk -F', ' 'NR==2 {print $3}' /home/agent/personas.csv
+hints:
+  - 'Un FS puede tener VARIOS caracteres o ser regex: -F", " corta por coma+espacio.'
+  - "NR filtra por posición de línea: NR==2 es la segunda."
+  - awk -F', ' 'NR==2 {print $3}' personas.csv
+teach: 'El separador no está atado a un único carácter: cualquier string (o regex
+  completa) sirve. Con ", " evitas arrastrar el espacio sobrante a $2 y $3 — sin él, print
+  $3 imprimiría " perros" con espacio inicial.'
+cheatsheet:
+  - cmd: awk -F', ' '{print $3}' f
+    desc: "separador multichar: coma + espacio"
+  - cmd: awk 'BEGIN {FS="\t\t"} {print $2}' f
+    desc: dos tabuladores como delimitador
+keywords:
+  - awk
+  - FS
+  - csv
+  - separador
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

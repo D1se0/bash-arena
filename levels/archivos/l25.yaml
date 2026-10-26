@@ -1,0 +1,38 @@
+id: archivos-l25
+track: archivos
+index: 25
+title: El tipo del fichero
+subtitle: file + strings en binario
+xp: 30
+difficulty: 2
+brief: Un fichero BINARIO lleva la marca en texto libre; file determina el tipo y strings
+  extrae cadenas legibles.
+goal: Determina el tipo de img.bin con file y extrae con strings la marca FLAG que hay
+  escondida en el binario.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Archivos"
+  printf '\x89PNG\r\n' > $HOME/img.bin
+  printf 'cadena-lible-invisible $DOJO_FLAG\n' >> $HOME/img.bin
+  chown agent:agent $HOME/img.bin
+solution: file $HOME/img.bin; strings $HOME/img.bin | grep 'FLAG'
+hints:
+  - file lee la firma (magic bytes) y determina el tipo real (no el extension).
+  - strings impime cadenas ASCII legibles dentro de datos binarios.
+  - file img.bin; strings img.bin | grep FLAG
+teach: file examina los magic bytes al inicio de la cabecera (PNG, ELF, gzip…); strings
+  recorre el binario paraHumanizar las secuencias de impresión que hay dentro.
+cheatsheet:
+  - cmd: file f
+    desc: identifica el tipo real
+  - cmd: strings f | grep x
+    desc: cadens legibles dentro del binario
+keywords:
+  - file
+  - strings
+  - binario
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

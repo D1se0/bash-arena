@@ -1,0 +1,46 @@
+id: grep-l40
+track: grep
+index: 40
+title: Dígitos de tres
+subtitle: clases POSIX + repetición {n}
+xp: 55
+difficulty: 3
+brief: El padrón de inventario usa etiquetas; solo las líneas con TRES dígitos seguidos
+  son válidas (y una de ellas trae la marca).
+goal: Imprime de padron.txt las líneas que contienen 3 dígitos seguidos (usa la clase
+  POSIX [[:digit:]]).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 40" "Grep"
+  cat > /home/agent/padron.txt <<EOF
+  agente-abc sin número
+  camisa-402 en el almacén
+  pantalones sin etiqueta
+  reloj-777 en la vitrina $DOJO_FLAG
+  guantes de tela pura
+  EOF
+  chown agent:agent /home/agent/padron.txt
+solution: grep -E '[[:digit:]]{3}' /home/agent/padron.txt
+hints:
+  - "Las clases POSIX van con corchetes dobles: [[:digit:]] es la clase COMPLETA dentro de
+    un par externo."
+  - Con -E el cuantificador {3} exige exactamente tres repeticiones seguidas de la clase.
+  - grep -E '[[:digit:]]{3}' padron.txt
+teach: "[[:digit:]] [[:alpha:]] [[:space:]] [[:upper:]]… son clases POSIX portables
+  (resistentes a locales raras donde [0-9] puede no valer). Cuantificador {n} =
+  «exactamente n veces»."
+cheatsheet:
+  - cmd: grep -E '[[:digit:]]{3}' f
+    desc: tres dígitos seguidos
+  - cmd: grep -E '[[:alpha:]]{4}' f
+    desc: cuatro letras seguidas
+keywords:
+  - grep
+  - posix
+  - clases
+  - "{n}"
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

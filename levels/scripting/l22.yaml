@@ -1,0 +1,38 @@
+id: scripting-l22
+track: scripting
+index: 22
+title: La pregunta pertinente
+subtitle: test -d / [ -d dir ]
+xp: 30
+difficulty: 2
+brief: Antes de escribir en un dir, SIEMPRE preguntar probe exista [ -d dir ] — el fichero
+  vale la pregunta final con marca.
+goal: Comprueba si /home/agent/estantería existe como DIRECTORIO ([ -d ]) y luego cat la
+  lista que lleva la marca (lista-ok.txt o similar, según la prueba).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Scripting"
+  mkdir -p $HOME/estantería
+  echo "prueba de directorio: $DOJO_FLAG" > $HOME/resultado-test.txt
+  chown agent:agent $HOME/resultado-test.txt
+solution: '[ -d $HOME/estantería ] && echo "es directorio ✓"; cat $HOME/resultado-test.txt'
+hints:
+  - "[ -d PATH ] es la prueba de EXISTENCIA COMO DIRECTORIO (exit 0 si existe)."
+  - "Y si no es un dir: la alternativa es [ -f ] (fichero normal)."
+  - "[ -d estantería ] && cat resultado-test.txt"
+teach: "Los [ expr ] son las pruebas de la shell: -d dir, -f fichero, -e exist, -r
+  legible, -x ejecutable. El espacio DENTRO de los corchetes es OBLIGATORIO."
+cheatsheet:
+  - cmd: "[ -d dir ] && …"
+    desc: es directorio
+  - cmd: "[ -f f ] && …"
+    desc: es fichero normal
+keywords:
+  - test
+  - -d
+  - if
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

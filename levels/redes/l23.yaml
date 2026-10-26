@@ -1,0 +1,37 @@
+id: redes-l23
+track: redes
+index: 23
+title: El nombre de la casa
+subtitle: hostname y /etc/hosts
+xp: 30
+difficulty: 2
+brief: El hostname del sandbox es la firma del contenedor; el fichero hosts trae la marca
+  si se lampado.
+goal: Imprime el hostname del sistema y luego cat /home/agent/hosts-marcado.txt (que lleva
+  la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Redes"
+  echo "hosts local con firma: $DOJO_FLAG" > $HOME/hosts-marcado.txt
+  echo "127.0.0.1 $(hostname) $DOJO_FLAG" >> /etc/hosts 2>/dev/null || true
+  chown agent:agent $HOME/hosts-marcado.txt
+solution: hostname; cat $HOME/hosts-marcado.txt
+hints:
+  - hostname imprime el nombre del contenedor (CONFIG en docker).
+  - El fichero /etc/hosts mapea IP→nombre SIN DNS (nos vamos con dnsmasq).
+  - hostname; cat hosts-marcado.txt
+teach: "La resolución local ocurre ANTES del DNS si /etc/nsswitch.conf prioriza files:
+  getent hosts consulta esa cadena completa."
+cheatsheet:
+  - cmd: hostname
+    desc: nombre del host
+  - cmd: getent hosts localhost
+    desc: resolución real (NSS+DNS)
+keywords:
+  - hostname
+  - etc hosts
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

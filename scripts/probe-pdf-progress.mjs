@@ -1,6 +1,7 @@
 /* probe-pdf-progress — insufla progreso sintético a un jugador de test y
  * genera su PDF a través de la app desplegada (flujos: tabla paginada,
  * logros, diploma, barras por track). Uso: node scripts/probe-pdf-progress.mjs */
+/* global window, localStorage */
 import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

@@ -62,7 +62,7 @@ export interface ServerToClient {
     rank?: string;
     nextLevelId?: string | null;
   };
-  hint: { text: string | null; index: number; total: number };
+  hint: { text: string | null; index: number; total: number; penalty: number };
   solution: { text: string | null };
   status: { xp: number; rank: string; solvedLevels: number; totalLevels: number; levelId: string };
   error: { message: string };

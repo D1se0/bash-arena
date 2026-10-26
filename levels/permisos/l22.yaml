@@ -1,0 +1,38 @@
+id: permisos-l22
+track: permisos
+index: 22
+title: El cofre del grupo
+subtitle: chmod octal preciso
+xp: 30
+difficulty: 2
+brief: "A digitaliza: rw para el dueño, r para el grupo, NADA para otros. Y luego se
+  cattea el contenido (protegido no es nada)."
+goal: Pon al fichero cofre.txt EXACTAMENTE los permisos rw-r----- (640) y luego lee su
+  contenido (agente es el dueño).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Permisos"
+  echo "cofre con la $DOJO_FLAG" > /home/agent/cofre.txt
+  chown agent:agent /home/agent/cofre.txt
+  chmod 666 /home/agent/cofre.txt
+solution: chmod 640 /home/agent/cofre.txt && cat /home/agent/cofre.txt
+hints:
+  - El octal 640 es r=4+w=2=6 para dueño, r=4 para grupo, 0 (nada) para otros.
+  - "Orden: chmod en octal SIEMPRE de exacto (sustituye, no añade)."
+  - chmod 640 cofre.txt && cat cofre.txt
+teach: "El octal reemplaza sin drama: u=rwx g=rx o= nada — 750. Formato simbólico exacto
+  con = (u=rw,g=r,o=) para asignar precisión."
+cheatsheet:
+  - cmd: chmod 640 f
+    desc: rw-r----- dueño, grupo lea
+  - cmd: chmod u=rw,g=r,o= f
+    desc: ídem con formato simbólico exacto
+keywords:
+  - chmod
+  - octal
+  - "640"
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

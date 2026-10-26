@@ -1,0 +1,39 @@
+id: busqueda-l22
+track: busqueda
+index: 22
+title: Las jaulas vacías
+subtitle: find -type d y -empty
+xp: 30
+difficulty: 2
+brief: El tree dejó directorios vacíos; el limpiador quiere la lista — contra el
+  manifiesto del árbol, que lleva la marca.
+goal: Lista los directorios VACÍOS de /home/agent/arbol con find -type d -empty y luego
+  cat /home/agent/arbol/manifiesto.txt (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Busqueda"
+  mkdir -p /home/agent/arbol/vacio /home/agent/arbol/lleno
+  echo 'esto se ve' > /home/agent/arbol/lleno/f.txt
+  echo "manifiesto del árbol: $DOJO_FLAG" > /home/agent/arbol/manifiesto.txt
+  chown -R agent:agent /home/agent/arbol
+solution: find /home/agent/arbol -type d -empty; cat /home/agent/arbol/manifiesto.txt
+hints:
+  - -type d filtra directorios (f fichero); -empty exige sin contenido.
+  - El resultado imprime las RUTAS vacías.
+  - find arbol -type d -empty
+teach: "La pareja -type + -empty es el limpiador de árboles: encontrar candidatos a rmdir
+  sin explorar a mano."
+cheatsheet:
+  - cmd: find . -type d -empty
+    desc: directorios vacíos
+  - cmd: find . -type f -empty
+    desc: ficheros de 0 bytes
+keywords:
+  - find
+  - type
+  - empty
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

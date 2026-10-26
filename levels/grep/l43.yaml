@@ -1,0 +1,42 @@
+id: grep-l43
+track: grep
+index: 43
+title: El coto de caza
+subtitle: -r + --exclude-dir
+xp: 60
+difficulty: 3
+brief: El proyecto tiene node_modules enorme y un fichero real con la marca. Busca
+  recursivamente PERO omite esa jaula.
+goal: Busca la cadena marca (recursivamente) en /home/agent/proyecto excluyendo
+  node_modules, e imprime las líneas acertadas.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 43" "Grep"
+  mkdir -p /home/agent/proyecto/src /home/agent/proyecto/node_modules/lib
+  echo 'buena marca $DOJO_FLAG' > /home/agent/proyecto/src/app.js
+  echo 'ruido sin marca real' > /home/agent/proyecto/src/otro.js
+  echo 'marca falsa en la jaula' > /home/agent/proyecto/node_modules/lib/x.js
+  chown -R agent:agent /home/agent/proyecto
+solution: grep -r --exclude-dir=node_modules 'marca' /home/agent/proyecto
+hints:
+  - La búsqueda recursiva es -r.
+  - --exclude-dir=DIR omite directorios completos durante el recorrido (se puede repetir).
+  - grep -r --exclude-dir=node_modules 'marca' proyecto
+teach: "En árboles reales grep -r sin filtro escanea node_modules, .git, __pycache__…
+  --exclude-dir los aparta y convierte minutos en milisegundos. Admite globs:
+  --exclude-dir={node_modules,.git} tras expandir bash."
+cheatsheet:
+  - cmd: grep -r --exclude-dir=node_modules 'x' .
+    desc: recursivo sin ese directorio
+  - cmd: grep -r --exclude-dir='.git' --exclude-dir='venv' 'x' .
+    desc: varios excluidos apilados
+keywords:
+  - grep
+  - -r
+  - exclude-dir
+  - recursivo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

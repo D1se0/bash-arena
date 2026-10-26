@@ -1,0 +1,45 @@
+id: awk-l47
+track: awk
+index: 47
+title: El mapa de subredes
+subtitle: split() — cortar por puntos
+xp: 65
+difficulty: 4
+brief: El registro de accesos guarda IPs completas; el informe de privacidad las ANONIMIZA
+  a nivel de SUBRED (los 3 primeros octetos) — y una fila lleva la marca.
+goal: De accesos.log imprime cada fila con la IP reducida a «o1.o2.o3.*» (anónima) y el
+  resto de columnas intacto (split).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 47" "Awk"
+  cat > /home/agent/accesos.log <<EOF
+  203.0.113.9 login
+  203.0.113.9 login
+  198.51.100.8 login
+  203.0.113.9 login $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/accesos.log
+solution: awk '{split($1, o, "."); print o[1]"."o[2]"."o[3]".*", $2, $3}' /home/agent/accesos.log
+hints:
+  - split(cadena, array, sep) corta la IP por puntos y deja o[1], o[2], o[3] (y o[4]).
+  - 'La salida necesita CONCATENAR octetos: o[1] "." o[2] "." o[3] ".*", seguido de $2 y
+    $3.'
+  - awk '{split($1,o,"."); print o[1]"."o[2]"."o[3]".*", $2, $3}' accesos.log
+teach: split corta cadenas estructuradas (IPs, paths, timestamps) en campos propios.
+  Reimplantar la fila con los pedazos elegidos (aquí «+ .*») es la anonimización a nivel
+  de subred en awk.
+cheatsheet:
+  - cmd: awk '{split($1,a,"."); print a[1]"."a[2]"."a[3]".*", $2, $3}' f
+    desc: IP a nivel de subred, resto intacto
+  - cmd: awk '{n=split($1,a,"."); print n}' f
+    desc: split devuelve cuántas piezas corta
+keywords:
+  - awk
+  - split
+  - ip
+  - subred
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

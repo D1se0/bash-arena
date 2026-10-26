@@ -15,11 +15,11 @@ import { useTheme } from './theme';
 
 const NAV = [
   { to: '/', label: 'Inicio' },
-  { to: '/aprende', label: 'Qué se aprende' },
-  { to: '/funciona', label: 'Cómo funciona' },
+  { to: '/aprende', label: 'Aprende' },
+  { to: '/funciona', label: 'Funciona' },
   { to: '/desplegar', label: 'Desplegar' },
-  { to: '/tecnico', label: 'Documentación técnica' },
-  { to: '/extras', label: 'Roadmap y créditos' },
+  { to: '/tecnico', label: 'Técnica' },
+  { to: '/extras', label: 'Extras' },
   { to: '/soluciones', label: 'Soluciones' },
   { to: '/cheatsheet', label: 'Cheatsheet' },
 ];
@@ -53,7 +53,7 @@ export default function App() {
             <span className="text-morado">[</span>bash-arena<span className="text-morado">]</span>
             <span className="text-frost/60 text-xs ml-2 hidden sm:inline">docs</span>
           </Link>
-          <nav className="hidden xl:flex gap-1 ml-2 overflow-x-auto no-scrollbar">
+          <nav className="hidden xl:flex gap-0.5 ml-1 mr-2 overflow-x-auto no-scrollbar min-w-0 flex-1">
             {NAV.map((n) => (
               <Link
                 key={n.to}

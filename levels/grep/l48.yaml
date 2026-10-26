@@ -1,0 +1,49 @@
+id: grep-l48
+track: grep
+index: 48
+title: Los números del acierto
+subtitle: "-n + cut + sed -n: línea N a línea"
+xp: 60
+difficulty: 3
+brief: El almacén tiene réplicas GOOD y POS (posiblemente rotas); el informe se arma SOLO
+  con los NÚMEROS de las líneas GOOD — y esos números rescatan el registro marcado.
+goal: De almacen.txt calcula los números de línea que contienen GOOD (grep -n | cut) y usa
+  ese listado dentro de sed -n 'N1p;N2p;…' para IMPRIMIR esas líneas completas.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 48" "Grep"
+  cat > /home/agent/almacen.txt <<EOF
+  estante 1 GOOD
+  estante 2 POS
+  estante 3 GOOD
+  estante 4 vacio
+  estante 5 GOOD $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/almacen.txt
+solution: "sed -n \"$(grep -n 'GOOD' /home/agent/almacen.txt | cut -d: -f1 | sed 's/$/p/'
+  | paste -sd';')\" /home/agent/almacen.txt"
+hints:
+  - "-n prefija cada coincidencia con su número de línea: «N: contenido»; cut -d: -f1 deja
+    solo N."
+  - sed 's/$/p/' convierte cada número en el comando «Np» y paste -sd';' los une
+    (1p;3p;5p).
+  - "sed -n \"$(grep -n 'GOOD' almacen.txt | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\"
+    almacen.txt"
+teach: "La cadena -n → cut → sed 's/$/p/' → paste -sd';' construye una EXPRESIÓN de sed a
+  partir de un grep: los números vuelven convertidos en comandos p. Es el patrón «obtén
+  los números y retómalos»."
+cheatsheet:
+  - cmd: "grep -n 'x' f | cut -d: -f1"
+    desc: solo los números de línea acertados
+  - cmd: "sed -n \"$(grep -n 'x' f | cut -d: -f1 | sed 's/$/p/' | paste -sd';')\" f"
+    desc: rescatar las líneas por número calculado
+keywords:
+  - grep
+  - -n
+  - cut
+  - números
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

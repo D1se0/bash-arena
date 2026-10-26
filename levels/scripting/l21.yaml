@@ -1,0 +1,39 @@
+id: scripting-l21
+track: scripting
+index: 21
+title: El bucle de los archivos
+subtitle: for f in glob; do … done
+xp: 30
+difficulty: 2
+brief: El bucle for itera un glob y procesa cada fichero (cat) — una lleva la marca.
+goal: Con bucle for, imprime el contenido de cada fichero .txt de /home/agent/lotes/ (uno
+  lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 21" "Scripting"
+  mkdir -p $HOME/lotes
+  printf 'lote uno\n' > $HOME/lotes/a.txt
+  printf 'lote dos\n' > $HOME/lotes/b.txt
+  printf 'lote con $DOJO_FLAG\n' > $HOME/lotes/c.txt
+  chown -R agent:agent $HOME/lotes
+solution: for f in $HOME/lotes/*.txt; do cat "$f"; done
+hints:
+  - for f in GLOB; do cat "$f"; done es la plantilla base de tratamientos por lotes.
+  - El glob *.txt EXPANDE en la lista de ficheros para el for.
+  - for f in lotes/*.txt; do cat "$f"; done
+teach: La tripleta for+glob+done es el cimiento de los pipelines batch. "Citar la
+  variable" ($f) ENCERRA nombres con espacios — sin cita, rompe.
+cheatsheet:
+  - cmd: for f in *.txt; do echo "$f"; done
+    desc: itera ficheros del dir actual
+  - cmd: for i in 1 2 3; do …; done
+    desc: itera una lista literal
+keywords:
+  - bash
+  - for
+  - glob
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

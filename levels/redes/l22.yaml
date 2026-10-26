@@ -1,0 +1,35 @@
+id: redes-l22
+track: redes
+index: 22
+title: El saludo del servidor
+subtitle: "nc client: eco TCP simple"
+xp: 30
+difficulty: 2
+brief: El servidor espía devuelve un banner al conectarte por TCP; ese banner lleva la marca.
+goal: Conéctate con nc al puerto 4455 LOCAL y muestra el banner que devuelve (que trae la
+  marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Redes"
+  (printf "banner de bienvenida $DOJO_FLAG\n" ; sleep 600) | nc -l -p 4455 & sleep 0.3
+solution: nc -w 2 127.0.0.1 4455 < /dev/null
+hints:
+  - nc HOST PORT abre una conexión TCP y pasa stdin/stdout a través.
+  - Con < /dev/null evitas que nc espere tu entrada; solo lee el banner del servidor.
+  - nc -w 2 127.0.0.1 4455 < /dev/null
+teach: "nc es la navaja suiza TCP/UDP: cliente, servidor o escáner. En este nivel hace de
+  CLIENTE y captura el banner."
+cheatsheet:
+  - cmd: nc host port
+    desc: conexión TCP simple
+  - cmd: nc -z host 1-1000
+    desc: escaneo de puertos (bandera/z)
+keywords:
+  - nc
+  - cliente
+  - tcp
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

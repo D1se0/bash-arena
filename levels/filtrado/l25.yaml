@@ -1,0 +1,35 @@
+id: filtrado-l25
+track: filtrado
+index: 25
+title: El eco invertido
+subtitle: "tac: el cat al revés"
+xp: 30
+difficulty: 2
+brief: El poste del dojo enumera hacia abajo; pero el orden correcto es INVERSO para
+  revisarlo último-primero.
+goal: Imprime poste.txt con las líneas en ORDEN INVERSO.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Filtrado"
+  printf 'p1\np2\np3\n$DOJO_FLAG p4\n' > /home/agent/poste.txt
+  chown agent:agent /home/agent/poste.txt
+solution: tac /home/agent/poste.txt
+hints:
+  - tac imprime el fichero al revés (es cat invertido, une sus letras).
+  - "leed: la última línea sale arriba."
+  - tac poste.txt
+teach: tac es barato y directo para último-primero (ideal revisar latest FIRST); a nivel
+  de CARACTERES es rev.
+cheatsheet:
+  - cmd: tac f
+    desc: líneas en orden inverso
+  - cmd: rev f
+    desc: invierte los caracteres de cada línea
+keywords:
+  - tac
+  - inverso
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

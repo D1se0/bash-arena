@@ -1,0 +1,37 @@
+id: archivos-l22
+track: archivos
+index: 22
+title: El_Cuerpo _Comprido
+subtitle: gzip -c + zcat
+xp: 30
+difficulty: 2
+brief: Comprime ASsenza tocar el fichero (gzip -c > .gz) y comprueba que se puede devolver
+  por zcat.
+goal: Comprime notas.txt a datos_notas.txt.gz sin tocar el original (gzip -c), luego
+  imprime su contenido comprimido en stdout con zcat (que lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Archivos"
+  echo "notas comprimidas con marca $DOJO_FLAG" > $HOME/notas.txt
+  chown agent:agent $HOME/notas.txt
+solution: gzip -c $HOME/notas.txt > $HOME/notas.txt.gz && zcat $HOME/notas.txt.gz
+hints:
+  - gzip -c escribe el fichero COMPRIMIDO a stdout (no renombra ni borra el original).
+  - zcat (registro de Z-CAT) desenplota los .gz en stdout.
+  - gzip -c notas.txt > notas.txt.gz; zcat notas.txt.gz
+teach: "gzip SIN -c elimina el fichero original (le pone el nombre .gz) — usar -c +
+  redirección es la forma no destructiva. Alias: zcat = gzip -dc."
+cheatsheet:
+  - cmd: gzip -c f > f.gz
+    desc: comprime sin tocar el original
+  - cmd: zcat f.gz
+    desc: descomprime a stdout
+keywords:
+  - gzip
+  - zcat
+  - comprimir
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

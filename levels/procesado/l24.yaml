@@ -1,0 +1,42 @@
+id: procesado-l24
+track: procesado
+index: 24
+title: El primero que duele
+subtitle: awk exit al primer hit
+xp: 30
+difficulty: 2
+brief: El log de alarma tiene infinitas líneas de latencia; la ALARMA es la PRIMERA línea
+  con el umbral pequeño y ahí viaja la marca.
+goal: De alarma.txt imprime la PRIMERA línea con valor en la 2.ª columna < 30 y TERMINA
+  (sin seguir escaneando).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Procesado"
+  cat > /home/agent/alarma.txt <<EOF
+  t1 200
+  t2 55
+  t3 12 $DOJO_FLAG
+  t4 8
+  EOF
+  chown agent:agent /home/agent/alarma.txt
+solution: awk '{if ($2 < 30) {print; exit}}' /home/agent/alarma.txt
+hints:
+  - exit detiene el awk INMEDIATAMENTE (ni lee más líneas ni ejecuta END).
+  - El criterio del umbral es solo el 2.º campo.
+  - awk '{if ($2 < 30) {print; exit}}' alarma.txt
+teach: "exit corta el flujo: es el «break» de awk. Para logs largos con una única alarma
+  evita escanear (y emitir) el resto."
+cheatsheet:
+  - cmd: awk 'cond {print; exit}' f
+    desc: primera línea que cumple y para
+  - cmd: awk 'cond {print}' f
+    desc: todas las que cumplan
+keywords:
+  - awk
+  - exit
+  - break
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

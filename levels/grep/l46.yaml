@@ -1,0 +1,45 @@
+id: grep-l46
+track: grep
+index: 46
+title: El intruso concreto
+subtitle: "grep | grep: AND encadenado"
+xp: 65
+difficulty: 4
+brief: El log de autenticación mezcla FAIL y OK con varias IPs; el atacante concreto es
+  203.0.113.77 y SU línea de OK lleva la marca.
+goal: Imprime de auth.log ÚNICAMENTE la línea con la IP 203.0.113.77 Y el estado OK (las
+  dos condiciones).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 46" "Grep"
+  cat > /home/agent/auth2.log <<EOF
+  06:00 AUTH FAIL ip 203.0.113.77 root
+  06:01 AUTH OK ip 198.51.100.4 admin2
+  06:03 AUTH FAIL ip 198.51.100.4 admin2
+  06:04 AUTH OK ip 203.0.113.77 root $DOJO_FLAG
+  06:05 AUTH OK ip 203.0.113.99 backup
+  EOF
+  chown agent:agent /home/agent/auth2.log
+solution: grep '203.0.113.77' /home/agent/auth2.log | grep 'AUTH OK'
+hints:
+  - "Un solo grep no conduce un AND con dos criterios: encadena DOS greps con pipe."
+  - Ordena los filtros del más ruidoso al más fino para que el segundo pase lo mínimo.
+  - grep '203.0.113.77' auth2.log | grep 'AUTH OK'
+teach: 'grep | grep es el patrón más repetido del mundo real: cada grep añade un criterio.
+  Alternativa equivalente: un único grep -E "203.0.113.77.*AUTH OK|AUTH OK.*203.0.113.77"
+  (más feo y frágil).'
+cheatsheet:
+  - cmd: grep A f | grep B
+    desc: "AND: líneas que cumplen A y también B"
+  - cmd: grep -E 'A|B' f
+    desc: "OR: un solo grep con alternancia"
+keywords:
+  - grep
+  - pipe
+  - AND
+  - encadenar
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,0 +1,44 @@
+id: grep-l42
+track: grep
+index: 42
+title: El censo de palabras
+subtitle: "-w: palabra COMPLETA"
+xp: 55
+difficulty: 3
+brief: El diario habla de «hilo», «hilos» y «hilo2» a la vez; solo la fila donde hilo es
+  palabra ENTERA trae la marca.
+goal: Imprime las líneas de diario.txt donde hilo aparece como PALABRA COMPLETA (no dentro
+  de hilos ni hilo2).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 42" "Grep"
+  cat > /home/agent/diario.txt <<EOF
+  hilo uno cosido
+  el hilo rojo se rompió
+  hilos y más hilos en el costado
+  hilo2 no es el hilo buscado
+  EOF
+  sed -i '1s/$/ con marca $DOJO_FLAG/' /home/agent/diario.txt
+  chown agent:agent /home/agent/diario.txt
+solution: grep -w 'hilo' /home/agent/diario.txt
+hints:
+  - "-w exige coincidencia de palabra entera: hilo no casa dentro de hilos ni hilo2."
+  - Sin -w también saldrían hilos y hilo2 (son coincidencias de SUBCADENA).
+  - grep -w 'hilo' diario.txt
+teach: -w delimita por fronteras de palabra (equivalente a \< y \> en BRE). Es la
+  diferencia entre buscar un nombre exacto y un prefijo de todo lo que empiece igual.
+cheatsheet:
+  - cmd: grep -w 'palabra' f
+    desc: coincidencia de palabra entera
+  - cmd: grep -wo 'palabra' f
+    desc: imprime la palabra misma si casa entera
+keywords:
+  - grep
+  - -w
+  - palabra
+  - frontera
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

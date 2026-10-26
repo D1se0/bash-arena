@@ -1,0 +1,37 @@
+id: filtrado-l24
+track: filtrado
+index: 24
+title: El contador de términos
+subtitle: wc -w y wc -c
+xp: 30
+difficulty: 2
+brief: Los logs se miden por labor; necesitas las PALABRAS y los CARACTERES de la nota técnica.
+goal: Imprime las PALABRAS de notas.txt con wc -w y luego el CONTENIDO entero con cat (la
+  marca viaja en el texto).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 24" "Filtrado"
+  echo "la nota técnica detallada $DOJO_FLAG" > /home/agent/notas.txt
+  chown agent:agent /home/agent/notas.txt
+solution: wc -w /home/agent/notas.txt; cat /home/agent/notas.txt
+hints:
+  - wc hace líneas (-l), palabras (-w) y bytes (-c); el combo habitual es wc -l.
+  - "Solo las palabras no revelan el texto: cierra con cat notas.txt."
+  - wc -w notas.txt; cat notas.txt
+teach: wc -w cuenta palabras separadas por whitespace (cualquiera); wc -m cuenta
+  caracteres. wc SUMARIZA; cat MUESTRA — para leer la marca necesitas el texto completo.
+cheatsheet:
+  - cmd: wc -l f
+    desc: líneas
+  - cmd: wc -w f
+    desc: palabras
+  - cmd: wc -c f
+    desc: bytes
+keywords:
+  - wc
+  - palabras
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,0 +1,41 @@
+id: fundamentos-l23
+track: fundamentos
+index: 23
+title: Variables del agente
+subtitle: source + variables
+xp: 30
+difficulty: 2
+brief: El perfil del agente trae variables guardadas en un fichero; cargarlas y saludarlas
+  trae la marca.
+goal: Carga el fichero perfil.sh con source y luego imprime el saludo con la variable
+  $NOMBRE ya definida.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 23" "Fundamentos"
+  cat > /home/agent/perfil.sh <<EOF
+  NOMBRE="agente $DOJO_FLAG"
+  EOF
+  chown agent:agent /home/agent/perfil.sh
+solution: source /home/agent/perfil.sh && echo "hola, $NOMBRE"
+hints:
+  - "source fichero (o . fichero) ejecuta el script EN TU SHELL: las variables quedan
+    definidas."
+  - "Ojo: ejecutarlo con bash fichero NO sirve — las variables morirían al terminar el
+    proceso hijo."
+  - source perfil.sh && echo "hola, $NOMBRE"
+teach: source ejecuta en el proceso ACTUAL; bash fichero crea un proceso hijo (variables
+  privadas). La diferencia decide si el estado queda en tu shell o se esfuma.
+cheatsheet:
+  - cmd: source f.sh
+    desc: carga variables/funciones en la shell actual
+  - cmd: bash f.sh
+    desc: "secto: proceso independiente (no exporta)"
+keywords:
+  - source
+  - variables
+  - env
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

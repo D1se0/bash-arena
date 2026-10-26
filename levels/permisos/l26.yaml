@@ -1,0 +1,42 @@
+id: permisos-l26
+track: permisos
+index: 26
+title: El grupo extranjero
+subtitle: chgrp de árboles con -R
+xp: 30
+difficulty: 2
+brief: El árbol transferido quedó con GRUPO ajeno (adm); siendo su dueño, el agente puede
+  reasignar TODO el grupo a su propio equipo con chgrp -R.
+goal: Cambia el GRUPO de TODO el árbol /home/agent/arbol-roto al grupo agent (chgrp -R) y
+  luego cat firma.txt (la marca).
+setup: |
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Permisos"
+  mkdir -p /home/agent/arbol-roto/dados
+  echo 'contenido normal' > /home/agent/arbol-roto/dados/f1.txt
+  echo "firma con marca $DOJO_FLAG" > /home/agent/arbol-roto/firma.txt
+  chown -R agent:adm /home/agent/arbol-roto
+solution: chgrp -R agent /home/agent/arbol-roto && cat /home/agent/arbol-roto/firma.txt
+hints:
+  - chgrp -R aplica el grupo recursivamente a TODO el árbol (dirs y ficheros).
+  - Cambiar el DUEÑO requiere root, pero el dueño de un fichero sí puede fijar su GRUPO a
+    uno propio de su pertenencia (agent).
+  - chgrp -R agent arbol-roto && cat arbol-roto/firma.txt
+teach: chgrp -R reasigna el grupo de todo el tree de una tacada (el dueño puede, si el
+  grupo nuevo le pertenece). Cambiar el DUEÑO (chown) en cambio exige root — por eso las
+  transferencias de dueño se hacen en admin.
+cheatsheet:
+  - cmd: chgrp -R group dir
+    desc: cambia el grupo de TODO el árbol
+  - cmd: find dir ! -group group
+    desc: qué ficheros NO están en ese grupo
+keywords:
+  - chgrp
+  - -R
+  - grupo
+  - recursivo
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

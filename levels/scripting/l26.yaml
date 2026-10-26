@@ -1,0 +1,37 @@
+id: scripting-l26
+track: scripting
+index: 26
+title: El trap de salida
+subtitle: trap … EXIT
+xp: 30
+difficulty: 2
+brief: "El trap EXIT se dispara al abandonar el script: imprimiendo la marca al morir — la
+  firma del agente de buena muerte."
+goal: Define un trap EXIT que imprime el contenido de salida.txt cuando el script acaba (y
+  termina la shell para que de dispare).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 26" "Scripting"
+  echo "adiós del agente $DOJO_FLAG" > $HOME/salida.txt
+  chown agent:agent $HOME/salida.txt
+solution: bash -c 'trap "cat $HOME/salida.txt" EXIT; echo "el roble"'
+hints:
+  - trap "cmds" EXIT ejecuta cmds CADA VEZ que la shell termina sea bien o mal.
+  - Con bash -c se crea una shell REVIENTA (sale tras echo y dispara el trap).
+  - bash -c 'trap "cat salida.txt" EXIT; echo fin'
+teach: "trap EXIT es la acción final del script: limpieza, bitácora, cierre de sockets. En
+  los scripts HARDR es obligatorio para liberar recursos."
+cheatsheet:
+  - cmd: trap "cmds" EXIT
+    desc: ejecuta cmds al salir de la shell
+  - cmd: trap - EXIT
+    desc: quita el trap definido
+keywords:
+  - trap
+  - EXIT
+  - limpieza
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

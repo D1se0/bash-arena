@@ -1,0 +1,44 @@
+id: awk-l46
+track: awk
+index: 46
+title: El umbral a la carta
+subtitle: -v var=valor — parámetros
+xp: 60
+difficulty: 3
+brief: El umbral del panel cambia a diario (30, 50, 70…); no edites el awk — PARAMETRIZA
+  el valor con -v.
+goal: De umbral.txt imprime las FILAS COMPLETAS cuya nota (2.º campo) sea >= al valor
+  pasado con -v u=60.
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 46" "Awk"
+  cat > /home/agent/umbral.txt <<EOF
+  lola 85
+  pablo 55
+  rocio 72 $DOJO_FLAG
+  EOF
+  chown agent:agent /home/agent/umbral.txt
+solution: awk -v u=60 '$2 >= u {print}' /home/agent/umbral.txt
+hints:
+  - -v var=valor define una variable awk desde la CLI.
+  - "Dentro del programa: $2 >= u — ¡sin $ delante de la VARIABLE (u) y con $ en el campo
+    ($2)!"
+  - "Imprime la fila completa: print sin argumentos (la marca va en las filas que pasan)."
+  - awk -v u=60 '$2 >= u {print}' umbral.txt
+teach: "Con -v el awk se vuelve un mini-programa parametrizable: umbrales, tags, regex —
+  todo viaja en la CLI sin reescribir el código."
+cheatsheet:
+  - cmd: awk -v u=60 '$2>=u {print $1}' f
+    desc: pasa el UMBRAL como parámetro
+  - cmd: awk -v tag=hoy 'END {print tag}' f
+    desc: incluye texto externo en el awk
+keywords:
+  - awk
+  - -v
+  - variable
+  - umbral
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

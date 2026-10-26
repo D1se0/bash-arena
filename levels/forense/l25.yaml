@@ -1,0 +1,48 @@
+id: forense-l25
+track: forense
+index: 25
+title: Las visitas del intruso
+subtitle: conteo por IP con sort/uniq
+xp: 30
+difficulty: 2
+brief: El log de visitas repite IPs; la más FRECUENTE es el intruso y SU línea lleva la marca.
+goal: De visitas.log calcula la IP MÁS frecuente (ranking) y DESPUÉS imprime TODAS sus
+  visitas con grep (una lleva la marca).
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 25" "Forense"
+  cat > $HOME/visitas.log <<EOF
+  visitante 203.0.113.9
+  visitante 198.51.100.8
+  visitante 203.0.113.9
+  visitante 192.168.44.4
+  visitante 203.0.113.9 $DOJO_FLAG
+  EOF
+  chown agent:agent $HOME/visitas.log
+solution: g=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' $HOME/visitas.log | sort | uniq -c
+  | sort -nr | head -1 | awk '{print $2}'); grep "$g" $HOME/visitas.log
+hints:
+  - grep -oE "([0-9]+\.){3}[0-9]+" extrae IPs.
+  - sort | uniq -c | sort -nr ordena por FRECUENCIA descendente; con awk {print $2}
+    aislada la IP ganadora.
+  - Con la IP en mano, grep "$ip" visitas.log imprime TODAS sus visitas (la última lleva
+    la marca).
+  - g=$(grep -oE '([0-9]+\.){3}[0-9]+' visitas.log | sort | uniq -c | sort -nr | head -1 |
+    awk '{print $2}'); grep "$g" visitas.log
+teach: La espiral sort | uniq -c | sort -nr es EL ranking de frecuencias; con IPs,
+  dominios y user-agents es el primer análisis forense real.
+cheatsheet:
+  - cmd: grep -oE ' patron' f | sort | uniq -c | sort -nr
+    desc: ranking de los patrones más repetidos
+  - cmd: uniq -c | sort -rn | head -3
+    desc: top 3
+keywords:
+  - forense
+  - ips
+  - ranking
+  - uniq
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}

@@ -1,0 +1,45 @@
+id: boss-l22
+track: boss
+index: 22
+title: "Boss: dos llaves, un talón"
+subtitle: join awk across files
+xp: 30
+difficulty: 2
+brief: Dos ficheros comparten el nombre como Clave; un awk unel el precio con el stock y
+  marca la línea COMPLETA.
+goal: "Une precios.txt con stock.txt POR NOMBRE e imprime el catálogo combinado: nombre,
+  precio del primero y TODAS las columnas del stock (donde viaja la marca)."
+setup: |-
+  #!/bin/bash
+  set -e
+  arena-prompt "LVL 22" "Boss"
+  cat > $HOME/precios.txt <<EOF
+  lampara 100
+  mesa 200
+  EOF
+  cat > $HOME/stock.txt <<EOF
+  lampara 5 $DOJO_FLAG
+  mesa 2
+  EOF
+  chown agent:agent $HOME/precios.txt $HOME/stock.txt
+solution: awk 'NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2, $3}' $HOME/precios.txt
+  $HOME/stock.txt
+hints:
+  - NR==FNR construye el índice del 1.er fichero (p = precio); en el 2.º, imprime y
+    resuelve.
+  - "El fase procesando: precios.txt PRIMERO, stock.txt después (los órdenes importan)."
+  - awk 'NR==FNR {p[$1]=$2; next} {print $1, p[$1], $2}' precios.txt stock.txt | grep
+    lampara
+teach: "El awk-join es el relacional de shell: dos tablas, una clave, un solo comando. Su
+  posición de orden: indice primero, datos después."
+cheatsheet:
+  - cmd: awk 'NR==FNR {a[$1]=$2; next} {print a[$1], $0}' idx datos
+    desc: join tablas por clave
+keywords:
+  - boss
+  - join
+  - awk
+profile: default
+examples:
+  - title: salida esperada (flag demo)
+    content: FLAG{round5-demo}
