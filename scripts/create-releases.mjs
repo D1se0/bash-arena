@@ -60,9 +60,10 @@ for (const v of VERSIONS) {
   const rel = await api('releases', {
     method: 'POST',
     body: JSON.stringify({
+      // el tag ya está pushado al remoto: crear la release Sobre el tag
+      // (target_commitish solo aplica al crear el tag en el vuelo)
       tag_name: v,
       name: `bash-arena ${v}`,
-      target_commitish: v,
       body: readFileSync(notesFile, 'utf8'),
     }),
   });
